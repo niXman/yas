@@ -48,7 +48,7 @@ namespace yas {
 /***************************************************************************/
 
 struct intrusive_buffer {
-	intrusive_buffer(const void* data, uint32_t size)
+	intrusive_buffer(const void* data, yas::uint32_t size)
 		:data(data)
 		,size(size)
 	{}
@@ -58,7 +58,7 @@ struct intrusive_buffer {
 	{}
 
 	const void* data;
-	const uint32_t size;
+	const yas::uint32_t size;
 
 private:
 	intrusive_buffer();
@@ -73,7 +73,7 @@ struct shared_buffer {
 	shared_buffer()
 		:size(0)
 	{}
-	shared_buffer(const void* ptr, uint32_t size)
+	shared_buffer(const void* ptr, yas::uint32_t size)
 		:size(0)
 	{
 		data.reset(new char[size], &deleter);
@@ -81,14 +81,14 @@ struct shared_buffer {
 		this->size = size;
 	}
 #if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR)
-	shared_buffer(std::shared_ptr<char> buf, uint32_t size)
+	shared_buffer(std::shared_ptr<char> buf, yas::uint32_t size)
 		:size(0)
 	{
 		data = buf;
 		this->size = size;
 	}
 #elif defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
-	shared_buffer(boost::shared_ptr<char> buf, uint32_t size)
+	shared_buffer(boost::shared_ptr<char> buf, yas::uint32_t size)
 		:size(0)
 	{
 		data.reset(new char[size], &deleter);
@@ -111,7 +111,7 @@ struct shared_buffer {
 #endif
 
 	shared_array_type data;
-	uint32_t size;
+	yas::uint32_t size;
 
 	static void deleter(void* ptr) { delete[] ((char*)ptr); }
 };

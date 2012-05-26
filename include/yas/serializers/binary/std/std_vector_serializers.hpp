@@ -33,6 +33,7 @@
 #ifndef _yas__binary__std_vector_serializer_hpp__included_
 #define _yas__binary__std_vector_serializer_hpp__included_
 
+#include <yas/config/config.hpp>
 #include <yas/mpl/type_traits.hpp>
 #include <yas/serializers/detail/properties.hpp>
 #include <yas/serializers/detail/serializer_fwd.hpp>
@@ -55,7 +56,7 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::vector<T>& vector) {
-		ar & vector.size();
+		ar & static_cast<yas::uint32_t>(vector.size());
 		if ( is_pod<T>::value ) {
 			ar.write(&vector[0], sizeof(T)*vector.size());
 		} else {
@@ -78,7 +79,7 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, std::vector<T>& vector) {
-		std::size_t size = 0;
+		yas::uint32_t size = 0;
 		ar & size;
 		vector.resize(size);
 		if ( detail::is_pod<T>::value ) {

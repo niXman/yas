@@ -51,15 +51,14 @@ struct serializer<
 	e_archive_type::binary,
 	e_direction::out,
 	std::set<K>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::set<K>& set) {
-		ar & set.size();
+		ar & static_cast<yas::uint32_t>(set.size());
 		typename std::set<K>::const_iterator it = set.begin();
 		if ( detail::is_pod<K>::value ) {
 			for ( ; it != set.end(); ++it ) {
-				ar.write(&*it, sizeof(K));
+				ar.write(&(*it), sizeof(K));
 			}
 		} else {
 			for ( ; it != set.end(); ++it ) {
@@ -76,21 +75,20 @@ struct serializer<
 	e_archive_type::binary,
 	e_direction::in,
 	std::set<K>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, std::set<K>& set) {
-		std::size_t size = 0;
+		yas::uint32_t size = 0;
 		ar & size;
 		if ( detail::is_pod<K>::value ) {
 			K key;
-			for ( std::size_t idx = 0; idx < size; ++idx ) {
+			for ( ; size; --size ) {
 				ar.read(&key, sizeof(K));
 				set.insert(key);
 			}
 		} else {
 			K key = K();
-			for ( std::size_t idx = 0; idx < size; ++idx ) {
+			for ( ; size; --size ) {
 				ar & key;
 				set.insert(key);
 			}

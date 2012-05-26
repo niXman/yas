@@ -35,9 +35,10 @@
 
 #include <stdint.h>
 #include <cassert>
+#include <stdexcept>
 
+#include <yas/config/config.hpp>
 #include <yas/tools/utf8conv.hpp>
-
 #include <yas/serializers/detail/properties.hpp>
 #include <yas/serializers/detail/serializer_fwd.hpp>
 
@@ -53,8 +54,7 @@ struct serializer<
 	e_archive_type::binary,
 	e_direction::out,
 	T[N]
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, const wchar_t(&v)[N]) {
 		ar & detail::TypeConverter<std::string, std::wstring>::Convert(v);
@@ -62,9 +62,8 @@ struct serializer<
 
 	template<typename Archive, typename U>
 	static void apply(Archive& ar, const U(&v)[N]) {
-		const std::size_t size = N*sizeof(T);
-		ar.write(&size, sizeof(size));
-		ar.write(&v, size);
+		ar & static_cast<yas::uint32_t>(N*sizeof(T));
+		ar.write(&v, N*sizeof(T));
 	}
 };
 
@@ -75,21 +74,21 @@ struct serializer<
 	e_archive_type::binary,
 	e_direction::in,
 	T[N]
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, wchar_t(&v)[N]) {
 		std::string string;
 		ar & string;
-		assert(string.size() == N);
+		if ( string.size() != N ) throw std::runtime_error("size of arrays is not equal");
 		std::wstring wstring = detail::TypeConverter<std::wstring, std::string>::Convert(string);
 		std::copy(wstring.begin(), wstring.end(), &v);
 	}
 
 	template<typename Archive, typename U>
 	static void apply(Archive& ar, U(&v)[N]) {
-		std::size_t size = N*sizeof(T);
-		ar.read(&size, sizeof(size));
+		yas::uint32_t size = 0;
+		ar & size;
+		if ( size != N*sizeof(T) ) throw std::runtime_error("size of arrays is not equal");
 		ar.read(&v, size);
 	}
 };
@@ -103,12 +102,10 @@ struct serializer<
 	e_archive_type::binary,
 	e_direction::out,
 	T[N]
->
-{
+> {
 	template<typename Archive, typename U>
 	static void apply(Archive& ar, const U(&v)[N]) {
-		const uint16_t size(N);
-		ar.write(&size, sizeof(size));
+		ar & static_cast<yas::uint32_t>(N);
 		for ( size_t idx = 0; idx < N; ++idx ) {
 			ar & v[idx];
 		}
@@ -124,13 +121,12 @@ struct serializer<
 	e_archive_type::binary,
 	e_direction::in,
 	T[N]
->
-{
+> {
 	template<typename Archive, typename U>
 	static void apply(Archive& ar, U(&v)[N]) {
-		uint16_t size = 0;
-		ar.read(&size, sizeof(size));
-		assert(size == N);
+		yas::uint32_t size = 0;
+		ar & size;
+		if (size != N) throw std::runtime_error("size of arrays is not equal");
 		for ( size_t idx = 0; idx < N; ++idx ) {
 			ar & v[idx];
 		}

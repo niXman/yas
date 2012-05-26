@@ -33,9 +33,11 @@
 #ifndef _yas__binary__std_tuple_serializer_hpp__included_
 #define _yas__binary__std_tuple_serializer_hpp__included_
 
-#include <yas/config/config.hpp>
-
 #if defined(YAS_HAS_STD_TUPLE)
+
+#include <stdexcept>
+
+#include <yas/config/config.hpp>
 #include <yas/mpl/type_traits.hpp>
 #include <yas/serializers/detail/properties.hpp>
 #include <yas/serializers/detail/serializer_fwd.hpp>
@@ -50,10 +52,6 @@ namespace detail {
 
 /***************************************************************************/
 
-#define YAS__BINARY__WRITE_STD_TUPLE_SIZE(count) \
-	const uint8_t size = count; \
-	ar.write(&size, sizeof(size))
-
 #define YAS__BINARY__WRITE_STD_TUPLE_ITEM(unused, idx, type) \
 	if ( detail::is_pod<YAS_PP_CAT(type, idx)>::value ) \
 		ar.write(&std::get<idx>(tuple), sizeof(YAS_PP_CAT(type, idx))); \
@@ -61,9 +59,9 @@ namespace detail {
 		ar & std::get<idx>(tuple);
 
 #define YAS__BINARY__READ_AND_CHECK_STD_TUPLE_SIZE(count) \
-	uint8_t size = 0; \
-	ar.read(&size, sizeof(size)); \
-	assert(size == count/*, "size error on deserialize std::tuple"*/);
+	yas::uint8_t size = 0; \
+	ar & size; \
+	if ( size != count ) throw std::runtime_error("size error on deserialize std::tuple");
 
 #define YAS__BINARY__READ_STD_TUPLE_ITEM(unused, idx, type) \
 	if ( detail::is_pod<YAS_PP_CAT(type, idx)>::value ) \
@@ -97,7 +95,7 @@ namespace detail {
 	> { \
 		template<typename Archive> \
 		static void apply(Archive& ar, const std::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
-			YAS__BINARY__WRITE_STD_TUPLE_SIZE(YAS_PP_INC(count)); \
+			ar & static_cast<yas::uint8_t>(YAS_PP_INC(count)); \
 			YAS_PP_REPEAT( \
 				YAS_PP_INC(count), \
 				YAS__BINARY__WRITE_STD_TUPLE_ITEM, \

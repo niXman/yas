@@ -50,13 +50,11 @@ struct serializer<
 	e_archive_type::binary,
 	e_direction::out,
 	std::string
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::string& string) {
-		std::size_t size = string.length();
-		ar.write(&size, sizeof(size));
-		ar.write(string.c_str(), size);
+		ar & static_cast<yas::uint32_t>(string.length());
+		ar.write(&string[0], string.length());
 	}
 };
 
@@ -67,12 +65,11 @@ struct serializer<
 	e_archive_type::binary,
 	e_direction::in,
 	std::string
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, std::string& string) {
-		std::size_t size = 0;
-		ar.read(&size, sizeof(size));
+		yas::uint32_t size = 0;
+		ar & size;
 		string.resize(size);
 		ar.read(&string[0], size);
 	}

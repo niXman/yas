@@ -34,10 +34,10 @@
 #define _yas__binary__fusion_set_serializer_hpp__included_
 
 #if defined(YAS_HAS_BOOST_FUSION)
-
-#include <yas/mpl/type_traits.hpp>
+#include <yas/config/config.hpp>
 
 namespace yas {
+namespace detail {
 
 /***************************************************************************/
 
@@ -45,6 +45,7 @@ namespace yas {
 
 /***************************************************************************/
 
+} // namespace detail
 } // namespace yas
 
 #endif // defined(YAS_HAS_BOOST_FUSION)

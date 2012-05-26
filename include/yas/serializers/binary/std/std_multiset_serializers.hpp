@@ -55,8 +55,7 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::multiset<K>& set) {
-		std::size_t size = set.size();
-		ar.write(&size, sizeof(size));
+		ar & static_cast<yas::uint32_t>(set.size());
 		typename std::multiset<K>::const_iterator it = set.begin();
 		if ( is_pod<K>::value ) {
 			for ( ; it != set.end(); ++it ) {
@@ -81,17 +80,17 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, std::multiset<K>& set) {
-		std::size_t size = 0;
-		ar.read(&size, sizeof(size));
+		yas::uint32_t size = 0;
+		ar & size;
 		if ( is_pod<K>::value ) {
 			K key;
-			for ( std::size_t idx = 0; idx < size; ++idx ) {
+			for ( ; size; --size ) {
 				ar.read(&key, sizeof(K));
 				set.insert(key);
 			}
 		} else {
 			K key = K();
-			for ( std::size_t idx = 0; idx < size; ++idx ) {
+			for ( ; size; --size ) {
 				ar & key;
 				set.insert(key);
 			}

@@ -33,9 +33,8 @@
 #ifndef _yas__binary__fusion_pair_serializer_hpp__included_
 #define _yas__binary__fusion_pair_serializer_hpp__included_
 
-#include <yas/config/config.hpp>
-
 #if defined(YAS_HAS_BOOST_FUSION)
+#include <yas/config/config.hpp>
 #include <yas/mpl/type_traits.hpp>
 #include <yas/serializers/detail/properties.hpp>
 #include <yas/serializers/detail/serializer_fwd.hpp>
@@ -50,40 +49,40 @@ namespace detail {
 
 template<typename T1, typename T2>
 struct serializer<
-   e_type_type::e_type_type::not_a_pod,
-   e_ser_method::use_internal_serializer,
-   e_archive_type::binary,
-   e_direction::out,
-   boost::fusion::pair<T1, T2>
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::binary,
+	e_direction::out,
+	boost::fusion::pair<T1, T2>
 >
 {
-   template<typename Archive>
-   static void apply(Archive& ar, const boost::fusion::pair<T1, T2>& pair) {
-      if ( is_pod<T2>::value ) {
-         ar.write(&pair.second, sizeof(T2));
-      } else {
-         ar & pair.second;
-      }
-   }
+	template<typename Archive>
+	static void apply(Archive& ar, const boost::fusion::pair<T1, T2>& pair) {
+		if ( is_pod<T2>::value ) {
+			ar.write(&pair.second, sizeof(T2));
+		} else {
+			ar & pair.second;
+		}
+	}
 };
 
 template<typename T1, typename T2>
 struct serializer<
-   e_type_type::e_type_type::not_a_pod,
-   e_ser_method::use_internal_serializer,
-   e_archive_type::binary,
-   e_direction::in,
-   boost::fusion::pair<T1, T2>
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::binary,
+	e_direction::in,
+	boost::fusion::pair<T1, T2>
 >
 {
-   template<typename Archive>
-   static void apply(Archive& ar, boost::fusion::pair<T1, T2>& pair) {
-      if ( is_pod<T2>::value ) {
-         ar.read(&pair.second, sizeof(T2));
-      } else {
-         ar & pair.second;
-      }
-   }
+	template<typename Archive>
+	static void apply(Archive& ar, boost::fusion::pair<T1, T2>& pair) {
+		if ( is_pod<T2>::value ) {
+			ar.read(&pair.second, sizeof(T2));
+		} else {
+			ar & pair.second;
+		}
+	}
 };
 
 /***************************************************************************/

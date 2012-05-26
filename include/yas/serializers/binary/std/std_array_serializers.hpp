@@ -33,6 +33,8 @@
 #ifndef _yas__binary__std_array_serializer_hpp__included_
 #define _yas__binary__std_array_serializer_hpp__included_
 
+#include <stdexcept>
+
 #include <yas/config/config.hpp>
 
 #if defined(YAS_HAS_STD_ARRAY)
@@ -58,8 +60,7 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::array<T, N>& array) {
-		const std::size_t size = N;
-		ar.write(&size, sizeof(size));
+		ar & static_cast<yas::uint32_t>(N);
 		if ( is_pod<T>::value ) {
 			ar.write(array.data(), sizeof(T)*N);
 		} else {
@@ -82,10 +83,11 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, std::array<T, N>& array) {
-		std::size_t size = 0;
-		ar.read(&size, sizeof(size));
+		yas::uint32_t size = 0;
+		ar & size;
+		if ( size != N ) throw std::runtime_error("array size is not equal");
 		if ( is_pod<T>::value ) {
-			ar.read(array.data(), sizeof(T)*N);
+			ar.read(&array[0], sizeof(T)*N);
 		} else {
 			typename std::array<T, N>::iterator it = array.begin();
 			for ( ; it != array.end(); ++it ) {

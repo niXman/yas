@@ -51,6 +51,14 @@
 #include <yas/serializers/text/std/std_vector_serializers.hpp>
 #include <yas/serializers/json/std/std_vector_serializers.hpp>
 
+#include <yas/serializers/binary/std/std_list_serializers.hpp>
+#include <yas/serializers/text/std/std_list_serializers.hpp>
+#include <yas/serializers/json/std/std_list_serializers.hpp>
+
+#include <yas/serializers/binary/std/std_forward_list_serializers.hpp>
+//#include <yas/serializers/text/std/std_forward_list_serializers.hpp>
+//#include <yas/serializers/json/std/std_forward_list_serializers.hpp>
+
 #include <yas/serializers/binary/std/std_map_serializers.hpp>
 #include <yas/serializers/text/std/std_map_serializers.hpp>
 #include <yas/serializers/json/std/std_map_serializers.hpp>

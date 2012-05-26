@@ -510,6 +510,66 @@ bool _binary_vector_test() {
 
 /***************************************************************************/
 
+bool _binary_list_test() {
+	std::list<int> ilist1 = {1,1,3,4,56,67,5,3,2,3}, ilist2;
+	yas::binary_mem_oarchive oa1;
+	oa1 & ilist1;
+
+	yas::binary_mem_iarchive ia1(oa1.get_intrusive_buffer());
+	ia1 & ilist2;
+
+	if ( ilist1 != ilist2 ) {
+		std::cout << "LIST deserialization error!" << std::endl;
+		return false;
+	}
+
+	std::list<std::string> slist1 = {"23", "56", "22", "76", "17"}, slist2;
+	yas::binary_mem_oarchive oa2;
+	oa2 & slist1;
+
+	yas::binary_mem_iarchive ia2(oa2.get_intrusive_buffer());
+	ia2 & slist2;
+
+	if ( slist1 != slist2 ) {
+		std::cout << "LIST deserialization error!" << std::endl;
+		return false;
+	}
+
+	return true;
+}
+
+/***************************************************************************/
+
+bool _binary_forward_list_test() {
+	std::forward_list<int> ilist1 = {1,1,3,4,56,67,5,3,2,3}, ilist2;
+	yas::binary_mem_oarchive oa1;
+	oa1 & ilist1;
+
+	yas::binary_mem_iarchive ia1(oa1.get_intrusive_buffer());
+	ia1 & ilist2;
+
+	if ( ilist1 != ilist2 ) {
+		std::cout << "FORWARD LIST deserialization error!" << std::endl;
+		return false;
+	}
+
+	std::forward_list<std::string> slist1 = {"23", "56", "22", "76", "17"}, slist2;
+	yas::binary_mem_oarchive oa2;
+	oa2 & slist1;
+
+	yas::binary_mem_iarchive ia2(oa2.get_intrusive_buffer());
+	ia2 & slist2;
+
+	if ( slist1 != slist2 ) {
+		std::cout << "FORWARD LIST deserialization error!" << std::endl;
+		return false;
+	}
+
+	return true;
+}
+
+/***************************************************************************/
+
 bool _binary_map_test() {
 	yas::binary_mem_oarchive oa;
 	std::map<int, int> pod_map, pod_map2;
@@ -1105,16 +1165,18 @@ bool _binary_fusion_tuple_test() {
 		return false;
 	}
 
-	boost::fusion::tuple<boost::uint64_t, std::string> v5(33, "str"), v6;
+	static const char str[] = "str";
+	boost::fusion::tuple<yas::uint64_t, std::string> v5(33, str), v6;
 	yas::binary_mem_oarchive oa4;
 	oa4 & v5;
 
 	const size_t expected_size =
 		4+ // archive information
-		sizeof(boost::uint8_t)+ // fusion::tuple size marker
-		sizeof(boost::uint64_t)+ // first type
-		sizeof(size_t) // string size marker
-		+3; // string length
+		sizeof(yas::uint8_t)+ // fusion::tuple size marker
+		sizeof(yas::uint64_t)+ // first type
+		sizeof(yas::uint32_t)+ // string size marker
+		strlen(str); // string length
+
 	const size_t current_size = oa4.get_intrusive_buffer().size;
 	if ( current_size != expected_size ) {
 		std::cout << "FUSION_TUPLE deserialization error!" << std::endl;
@@ -1129,7 +1191,7 @@ bool _binary_fusion_tuple_test() {
 	}
 
 	yas::binary_mem_oarchive oa5;
-	oa5 & boost::fusion::make_tuple<boost::uint64_t, std::string>(33, "str");
+	oa5 & boost::fusion::make_tuple<yas::uint64_t, std::string>(33, "str");
 
 	const size_t current_size2 = oa5.get_intrusive_buffer().size;
 	if ( current_size2 != expected_size ) {
@@ -1193,16 +1255,18 @@ bool _binary_fusion_vector_test() {
 		return false;
 	}
 
-	boost::fusion::vector<boost::uint64_t, std::string> v5(33, "str"), v6;
+	static const char str[] = "str";
+	boost::fusion::vector<boost::uint64_t, std::string> v5(33, str), v6;
 	yas::binary_mem_oarchive oa4;
 	oa4 & v5;
 
 	const size_t expected_size =
 		4+ // archive information
-		sizeof(boost::uint8_t)+ // fusion::vector size marker
-		sizeof(boost::uint64_t)+ // first type
-		sizeof(size_t) // string size marker
-		+3; // string length
+		sizeof(yas::uint8_t)+ // fusion::vector size marker
+		sizeof(yas::uint64_t)+ // first type
+		sizeof(yas::uint32_t)+ // string size marker
+		strlen(str); // string length
+
 	const size_t current_size = oa4.get_intrusive_buffer().size;
 	if ( current_size != expected_size ) {
 		std::cout << "FUSION_VECTOR deserialization error!" << std::endl;
@@ -1281,16 +1345,18 @@ bool _binary_fusion_list_test() {
 		return false;
 	}
 
-	boost::fusion::list<boost::uint64_t, std::string> v5(33, "str"), v6;
+	static const char str[] = "str";
+	boost::fusion::list<boost::uint64_t, std::string> v5(33, str), v6;
 	yas::binary_mem_oarchive oa4;
 	oa4 & v5;
 
 	const size_t expected_size =
 		4+ // archive information
-		sizeof(boost::uint8_t)+ // fusion::list size marker
-		sizeof(boost::uint64_t)+ // first type
-		sizeof(size_t) // string size marker
-		+3; // string length
+		sizeof(yas::uint8_t)+ // fusion::list size marker
+		sizeof(yas::uint64_t)+ // first type
+		sizeof(yas::uint32_t)+ // string size marker
+		strlen(str); // string length
+
 	const size_t current_size = oa4.get_intrusive_buffer().size;
 	if ( current_size != expected_size ) {
 		std::cout << "FUSION_LIST deserialization error!" << std::endl;
@@ -1650,6 +1716,8 @@ bool binary_tests() {
 	printf("TUPLE              test %s\n", (_binary_tuple_test()?passed:failed));
 #endif
 	printf("VECTOR             test %s\n", (_binary_vector_test()?passed:failed));
+	printf("LIST               test %s\n", (_binary_list_test()?passed:failed));
+	printf("FORWARD LIST       test %s\n", (_binary_forward_list_test()?passed:failed));
 	printf("MAP                test %s\n", (_binary_map_test()?passed:failed));
 	printf("SET                test %s\n", (_binary_set_test()?passed:failed));
 	printf("MULTIMAP           test %s\n", (_binary_multimap_test()?passed:failed));

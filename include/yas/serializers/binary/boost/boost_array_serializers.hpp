@@ -33,23 +33,17 @@
 #ifndef _yas__binary__boost_array_serializers_hpp__included_
 #define _yas__binary__boost_array_serializers_hpp__included_
 
-
-#include <yas/config/config.hpp>
-
 #if defined(YAS_HAS_BOOST_ARRAY)
+#include <yas/config/config.hpp>
 #include <yas/mpl/type_traits.hpp>
 #include <yas/serializers/detail/serializer_fwd.hpp>
 
 #include <boost/array.hpp>
-#include <boost/assert.hpp>
-#endif
 
 namespace yas {
 namespace detail {
 
 /***************************************************************************/
-
-#if defined(YAS_HAS_BOOST_ARRAY)
 
 template<typename T, size_t N>
 struct serializer<
@@ -58,14 +52,12 @@ struct serializer<
 	e_archive_type::binary,
 	e_direction::out,
 	boost::array<T, N>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, const boost::array<T, N>& array) {
-		const size_t size = N;
-		ar.write(&size, sizeof(size));
+		ar & static_cast<yas::uint32_t>(N);
 		if ( is_pod<T>::value ) {
-			ar.write(array.data(), sizeof(T)*N);
+			ar.write(&array[0], sizeof(T)*N);
 		} else {
 			typename boost::array<T, N>::const_iterator it = array.begin();
 			for ( ; it != array.end(); ++it ) {
@@ -82,15 +74,14 @@ struct serializer<
 	e_archive_type::binary,
 	e_direction::in,
 	boost::array<T, N>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, boost::array<T, N>& array) {
-		std::size_t size = 0;
-		ar.read(&size, sizeof(size));
-		BOOST_ASSERT(size == N);
+		yas::uint32_t size = 0;
+		ar & size;
+		if ( size != N ) throw std::runtime_error("array size is not equal");
 		if ( is_pod<T>::value ) {
-			ar.read(array.data(), sizeof(T)*N);
+			ar.read(&array[0], sizeof(T)*N);
 		} else {
 			typename boost::array<T, N>::iterator it = array.begin();
 			for ( ; it != array.end(); ++it ) {
@@ -100,11 +91,11 @@ struct serializer<
 	}
 };
 
-#endif
-
 /***************************************************************************/
 
 } // namespace detail
 } // namespace yas
+
+#endif // defined(YAS_HAS_BOOST_ARRAY)
 
 #endif // _yas__binary__boost_array_serializers_hpp__included_

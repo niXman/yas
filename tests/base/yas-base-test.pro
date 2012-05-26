@@ -278,4 +278,6 @@ HEADERS += \
 	 ../../include/yas/serializers/text/utility/usertype_serializers.hpp \
 	 ../../include/yas/serializers/text/utility/pod_serializers.hpp \
 	 ../../include/yas/serializers/text/utility/autoarray_serializers.hpp \
-	 ../../include/yas/serializers/text/utility/buffer_serializers.hpp
+	 ../../include/yas/serializers/text/utility/buffer_serializers.hpp \
+	 ../../include/yas/serializers/binary/std/std_forward_list_serializers.hpp \
+	 types_test.hpp

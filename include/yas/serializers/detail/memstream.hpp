@@ -90,7 +90,8 @@ struct omemstream: std::stringbuf {
 		return sputn(static_cast<const char_type*>(ptr), size);
 	}
 
-	intrusive_buffer get_intrusive_buffer() const {return intrusive_buffer(pbase(), pptr()-pbase());}
+	intrusive_buffer get_intrusive_buffer() const
+		{return intrusive_buffer(pbase(), pptr()-pbase());}
 	std::string str() const {return std::string(pbase(), pptr());}
 
 private:

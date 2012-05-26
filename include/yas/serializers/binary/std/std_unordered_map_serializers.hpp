@@ -50,89 +50,88 @@ namespace detail {
 
 template<typename K, typename V>
 struct serializer<
-   e_type_type::e_type_type::not_a_pod,
-   e_ser_method::use_internal_serializer,
-   e_archive_type::binary,
-   e_direction::out,
-   std::unordered_map<K, V>
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::binary,
+	e_direction::out,
+	std::unordered_map<K, V>
 >
 {
-   template<typename Archive>
-   static void apply(Archive& ar, const std::unordered_map<K, V>& map) {
-      const std::size_t size = map.size();
-      ar.write(&size, sizeof(size));
-      typename std::unordered_map<K, V>::const_iterator it = map.begin();
-      if ( is_pod<K>::value && is_pod<V>::value ) {
-         for ( ; it != map.end(); ++it ) {
-            ar.write(&it->first, sizeof(K));
-            ar.write(&it->second, sizeof(V));
-         }
-      } else if ( is_pod<K>::value ) {
-         for ( ; it != map.end(); ++it ) {
-            ar.write(&it->first, sizeof(K));
-            ar & it->second;
-         }
-      } else if ( is_pod<V>::value ) {
-         for ( ; it != map.end(); ++it ) {
-            ar & it->first;
-            ar.write(&it->second, sizeof(V));
-         }
-      } else {
-         for ( ; it != map.end(); ++it ) {
-            ar & it->first
-               & it->second;
-         }
-      }
-   }
+	template<typename Archive>
+	static void apply(Archive& ar, const std::unordered_map<K, V>& map) {
+		ar & static_cast<yas::uint32_t>(map.size());
+		typename std::unordered_map<K, V>::const_iterator it = map.begin();
+		if ( is_pod<K>::value && is_pod<V>::value ) {
+			for ( ; it != map.end(); ++it ) {
+				ar.write(&it->first, sizeof(K));
+				ar.write(&it->second, sizeof(V));
+			}
+		} else if ( is_pod<K>::value ) {
+			for ( ; it != map.end(); ++it ) {
+				ar.write(&it->first, sizeof(K));
+				ar & it->second;
+			}
+		} else if ( is_pod<V>::value ) {
+			for ( ; it != map.end(); ++it ) {
+				ar & it->first;
+				ar.write(&it->second, sizeof(V));
+			}
+		} else {
+			for ( ; it != map.end(); ++it ) {
+				ar & it->first
+					& it->second;
+			}
+		}
+	}
 };
 
 template<typename K, typename V>
 struct serializer<
-   e_type_type::e_type_type::not_a_pod,
-   e_ser_method::use_internal_serializer,
-   e_archive_type::binary,
-   e_direction::in,
-   std::unordered_map<K, V>
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::binary,
+	e_direction::in,
+	std::unordered_map<K, V>
 >
 {
-   template<typename Archive>
-   static void apply(Archive& ar, std::unordered_map<K, V>& map) {
-      std::size_t size = 0;
-      ar.read(&size, sizeof(size));
-      if ( is_pod<K>::value && is_pod<V>::value ) {
-         K key;
-         V val;
-         for ( std::size_t idx = 0; idx < size; ++idx ) {
-            ar.read(&key, sizeof(K));
-            ar.read(&val, sizeof(V));
-            map[key] = val;
-         }
-      } else if ( is_pod<K>::value ) {
-         K key;
-         V val = V();
-         for ( std::size_t idx = 0; idx < size; ++idx ) {
-            ar.read(&key, sizeof(K));
-            ar & val;
-            map[key] = val;
-         }
-      } else if ( is_pod<V>::value ) {
-         K key = K();
-         V val;
-         for ( std::size_t idx = 0; idx < size; ++idx ) {
-            ar & key;
-            ar.read(&val, sizeof(V));
-            map[key] = val;
-         }
-      } else {
-         K key = K();
-         V val = V();
-         for ( std::size_t idx = 0; idx < size; ++idx ) {
-            ar & key
-               & val;
-            map[key] = val;
-         }
-      }
-   }
+	template<typename Archive>
+	static void apply(Archive& ar, std::unordered_map<K, V>& map) {
+		yas::uint32_t size = 0;
+		ar & size;
+		if ( is_pod<K>::value && is_pod<V>::value ) {
+			K key;
+			V val;
+			for ( ; size; --size ) {
+				ar.read(&key, sizeof(K));
+				ar.read(&val, sizeof(V));
+				map[key] = val;
+			}
+		} else if ( is_pod<K>::value ) {
+			K key;
+			V val = V();
+			for ( ; size; --size ) {
+				ar.read(&key, sizeof(K));
+				ar & val;
+				map[key] = val;
+			}
+		} else if ( is_pod<V>::value ) {
+			K key = K();
+			V val;
+			for ( ; size; --size ) {
+				ar & key;
+				ar.read(&val, sizeof(V));
+				map[key] = val;
+			}
+		} else {
+			K key = K();
+			V val = V();
+			for ( ; size; --size ) {
+				ar & key
+					& val;
+				map[key] = val;
+			}
+		}
+	}
 };
 
 /***************************************************************************/

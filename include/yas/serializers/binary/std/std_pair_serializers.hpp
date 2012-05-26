@@ -51,8 +51,7 @@ struct serializer<
 	e_archive_type::binary,
 	e_direction::out,
 	std::pair<T1, T2>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::pair<T1, T2>& pair) {
 		if ( is_pod<T1>::value && is_pod<T2>::value ) {
@@ -78,8 +77,7 @@ struct serializer<
 	e_archive_type::binary,
 	e_direction::in,
 	std::pair<T1, T2>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, std::pair<T1, T2>& pair) {
 		if ( is_pod<T1>::value && is_pod<T2>::value ) {

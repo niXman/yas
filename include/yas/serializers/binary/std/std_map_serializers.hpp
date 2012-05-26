@@ -55,7 +55,7 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::map<K, V>& map) {
-		ar & map.size();
+		ar & static_cast<yas::uint32_t>(map.size());
 		typename std::map<K, V>::const_iterator it = map.begin();
 		if ( detail::is_pod<K>::value && detail::is_pod<V>::value ) {
 			for ( ; it != map.end(); ++it ) {
@@ -92,12 +92,12 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, std::map<K, V>& map) {
-		std::size_t size = 0;
+		yas::uint32_t size = 0;
 		ar & size;
 		if ( detail::is_pod<K>::value && detail::is_pod<V>::value ) {
 			K key;
 			V val;
-			for ( std::size_t idx = 0; idx < size; ++idx ) {
+			for ( ; size; --size ) {
 				ar.read(&key, sizeof(K));
 				ar.read(&val, sizeof(V));
 				map[key] = val;
@@ -105,7 +105,7 @@ struct serializer<
 		} else if ( detail::is_pod<K>::value ) {
 			K key;
 			V val = V();
-			for ( std::size_t idx = 0; idx < size; ++idx ) {
+			for ( ; size; --size ) {
 				ar.read(&key, sizeof(K));
 				ar & val;
 				map[key] = val;
@@ -113,7 +113,7 @@ struct serializer<
 		} else if ( detail::is_pod<V>::value ) {
 			K key = K();
 			V val;
-			for ( std::size_t idx = 0; idx < size; ++idx ) {
+			for ( ; size; --size ) {
 				ar & key;
 				ar.read(&val, sizeof(V));
 				map[key] = val;
@@ -121,7 +121,7 @@ struct serializer<
 		} else {
 			K key = K();
 			V val = V();
-			for ( std::size_t idx = 0; idx < size; ++idx ) {
+			for ( ; size; --size ) {
 				ar & key
 					& val;
 				map[key] = val;
