@@ -238,6 +238,8 @@ bool _binary_auto_array_test() {
 
 /***************************************************************************/
 
+#if defined(YAS_HAS_STD_ARRAY) || defined(YAS_HAS_BOOST_ARRAY)
+
 bool _binary_array_test() {
 #if defined(YAS_HAS_STD_ARRAY)
 	std::array<int, 10> arr1 = {
@@ -306,9 +308,9 @@ bool _binary_array_test() {
 	return true;
 }
 
-/***************************************************************************/
+#endif // defined(YAS_HAS_STD_ARRAY) || defined(YAS_HAS_BOOST_ARRAY)
 
-#include <yas/tools/hexdumper.hpp>
+/***************************************************************************/
 
 bool _binary_buffer_test() {
 	const std::string str1 = "intrusive buffer test"; // 21 + 4(header) + 4(size of array) = 29
