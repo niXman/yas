@@ -59,6 +59,11 @@ struct no_header_exception: std::exception {
 
 /***************************************************************************/
 
+} // namespace yas
+
+/***************************************************************************/
+
+namespace yas {
 namespace detail {
 
 #pragma pack(push, 1)
@@ -74,17 +79,20 @@ union archive_header {
 
 	struct {
 		unsigned char version:4; // 0 ... 15
-		unsigned char type:3; // binary, text, json, xml
+		unsigned char type:3; // binary, text, json
 		unsigned char bits:1; // 0 - 32 bit, 1 - 64 bit
 	} bits;
 	char as_char;
 };
 #pragma pack(pop)
+extern char __ALIGNMENT_ERROR__[sizeof(archive_header) == sizeof(char)?1:-1];
 
-static_assert(sizeof(archive_header) == sizeof(char), "alignment error");
+/***************************************************************************/
 
 static const char yas_id[3] = {'y', 'a', 's'};
 static const char full_header_size = sizeof(yas_id)+sizeof(archive_header);
+
+/***************************************************************************/
 
 template<typename Ar>
 void read_header(archive_header& hdr, Ar* ar) {
@@ -126,32 +134,37 @@ void write_header(e_archive_type::type art, Ar* ar) {
 #define YAS_WRITE_ONE_ARCHIVE_INFORMATION_SPECIALIZATION(unused, idx, seq) \
 	template<typename Ar> \
 	struct archive_information<YAS_PP_SEQ_ELEM(idx, seq), e_direction::in, Ar> { \
-		archive_information(Ar* ar, header_t::type op) { \
-			header.bits.version=0; \
-			header.bits.type=0; \
-			header.bits.bits=0; \
+		archive_information(Ar* ar, header_t::type op) \
+			:header() \
+		{ \
 			if ( op == header_t::no_header ) {return;} \
 			read_header(header, ar); \
 		} \
+		\
 		YAS_WRITE_IARCHIVE_ACCESSORS(YAS_PP_SEQ_ELEM(idx, seq)); \
-		static const e_archive_type::type _type = YAS_PP_SEQ_ELEM(idx, seq); \
-		static const e_direction::type _direction = e_direction::in; \
-		static const bool _is_readable = true; \
-		static const bool _is_writable = false; \
+		\
+		static const e_archive_type::type	_archive_type	= YAS_PP_SEQ_ELEM(idx, seq); \
+		static const e_direction::type		_direction		= e_direction::in; \
+		static const bool							_is_readable	= true; \
+		static const bool							_is_writable	= false; \
+		\
 	private: \
 		archive_header header; \
 	}; \
+	\
 	template<typename Ar> \
 	struct archive_information<YAS_PP_SEQ_ELEM(idx, seq), e_direction::out, Ar> { \
 		archive_information(Ar* ar, header_t::type op) { \
 			if ( op == header_t::no_header ) {return;} \
 			write_header(YAS_PP_SEQ_ELEM(idx, seq), ar); \
 		} \
+		\
 		YAS_WRITE_OARCHIVE_ACCESSORS(YAS_PP_SEQ_ELEM(idx, seq)); \
-		static const e_archive_type::type _type = YAS_PP_SEQ_ELEM(idx, seq); \
-		static const e_direction::type _direction = e_direction::in; \
-		static const bool _is_readable = false; \
-		static const bool _is_writable = true; \
+		\
+		static const e_archive_type::type	_archive_type	= YAS_PP_SEQ_ELEM(idx, seq); \
+		static const e_direction::type		_direction		= e_direction::in; \
+		static const bool							_is_readable	= false; \
+		static const bool							_is_writable	= true; \
 	};
 
 #define YAS_WRITE_ARCHIVE_INFORMATION_SPECIALIZATIONS(seq) \
