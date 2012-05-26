@@ -39,6 +39,10 @@
 #include <yas/serializers/text/std/std_pair_serializers.hpp>
 #include <yas/serializers/json/std/std_pair_serializers.hpp>
 
+#include <yas/serializers/binary/std/std_bitset_serializers.hpp>
+#include <yas/serializers/text/std/std_bitset_serializers.hpp>
+#include <yas/serializers/json/std/std_bitset_serializers.hpp>
+
 #include <yas/serializers/binary/std/std_string_serializers.hpp>
 #include <yas/serializers/text/std/std_string_serializers.hpp>
 #include <yas/serializers/json/std/std_string_serializers.hpp>
@@ -56,8 +60,8 @@
 #include <yas/serializers/json/std/std_list_serializers.hpp>
 
 #include <yas/serializers/binary/std/std_forward_list_serializers.hpp>
-//#include <yas/serializers/text/std/std_forward_list_serializers.hpp>
-//#include <yas/serializers/json/std/std_forward_list_serializers.hpp>
+#include <yas/serializers/text/std/std_forward_list_serializers.hpp>
+#include <yas/serializers/json/std/std_forward_list_serializers.hpp>
 
 #include <yas/serializers/binary/std/std_map_serializers.hpp>
 #include <yas/serializers/text/std/std_map_serializers.hpp>

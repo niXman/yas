@@ -30,27 +30,75 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__binary__qbitarray_serializer_hpp__included_
-#define _yas__binary__qbitarray_serializer_hpp__included_
+#ifndef _yas__json__std_forward_list_serializer_hpp__included_
+#define _yas__json__std_forward_list_serializer_hpp__included_
 
-#if defined(YAS_SERIALIZE_QT_TYPES)
+#include <yas/mpl/type_traits.hpp>
+#include <yas/serializers/detail/properties.hpp>
+#include <yas/serializers/detail/serializer_fwd.hpp>
 
-#include <yas/config/config.hpp>
-
-#include <QtCore/QBitArray>
+#include <forward_list>
 
 namespace yas {
 namespace detail {
 
 /***************************************************************************/
 
+template<typename T>
+struct serializer<
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::json,
+	e_direction::out,
+	std::forward_list<T>
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, const std::forward_list<T>& list) {
+		ar & static_cast<yas::uint32_t>(std::distance(list.begin(), list.end()));
+		if ( detail::is_pod<T>::value ) {
+			typename std::forward_list<T>::const_iterator it = list.begin();
+			for ( ; it != list.end(); ++it ) {
+				ar.write(&(*it), sizeof(T));
+			}
+		} else {
+			typename std::forward_list<T>::const_iterator it = list.begin();
+			for ( ; it != list.end(); ++it ) {
+				ar & (*it);
+			}
+		}
+	}
+};
 
+template<typename T>
+struct serializer<
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::json,
+	e_direction::in,
+	std::forward_list<T>
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, std::forward_list<T>& list) {
+		yas::uint32_t size = 0;
+		ar & size;
+		list.resize(size);
+		if ( detail::is_pod<T>::value ) {
+			typename std::forward_list<T>::iterator it = list.begin();
+			for ( ; it != list.end(); ++it ) {
+				ar.read(&(*it), sizeof(T));
+			}
+		} else {
+			typename std::forward_list<T>::iterator it = list.begin();
+			for ( ; it != list.end(); ++it ) {
+				ar & (*it);
+			}
+		}
+	}
+};
 
 /***************************************************************************/
 
 } // namespace detail
 } // namespace yas
 
-#endif // defined(YAS_SERIALIZE_QT_TYPES)
-
-#endif // _yas__binary__qbitarray_serializer_hpp__included_
+#endif // _yas__json__std_forward_list_serializer_hpp__included_

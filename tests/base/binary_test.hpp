@@ -312,6 +312,31 @@ bool _binary_array_test() {
 
 /***************************************************************************/
 
+bool _binary_bitset_test() {
+	std::bitset<33> bs1, bs2;
+	bs1[2] = 1;
+	bs1[9] = 1;
+	bs1[4] = 1;
+	bs1[6] = 1;
+	bs1[1] = 1;
+	bs1[8] = 1;
+
+	yas::binary_mem_oarchive oa1;
+	oa1 & bs1;
+
+	yas::binary_mem_iarchive ia1(oa1.get_intrusive_buffer());
+	ia1 & bs2;
+
+	if ( bs1 != bs2 ) {
+		std::cout << "BITSET deserialization error!" << std::endl;
+		return false;
+	}
+
+	return true;
+}
+
+/***************************************************************************/
+
 bool _binary_buffer_test() {
 	const std::string str1 = "intrusive buffer test"; // 21 + 4(header) + 4(size of array) = 29
 	const unsigned char ostr1[] = {
@@ -1705,6 +1730,7 @@ bool binary_tests() {
 #if defined(YAS_HAS_BOOST_ARRAY) || defined(YAS_HAS_STD_ARRAY)
 	printf("ARRAY              test %s\n", (_binary_array_test()?passed:failed));
 #endif
+	printf("BITSET             test %s\n", (_binary_bitset_test()?passed:failed));
 #if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || \
 	defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
 	printf("BUFFER             test %s\n", (_binary_buffer_test()?passed:failed));

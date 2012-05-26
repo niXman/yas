@@ -31,6 +31,7 @@ Currently only GCC-4.6.3 x32/x64 tested.
 Planned the support for the following serializable types:
  - all built-in types
  - std::array
+ - std::bitset
  - std::string
  - std::wstring
  - std::pair

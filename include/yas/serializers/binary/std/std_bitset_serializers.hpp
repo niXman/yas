@@ -30,27 +30,70 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__binary__qbitarray_serializer_hpp__included_
-#define _yas__binary__qbitarray_serializer_hpp__included_
+#ifndef _yas__binary__std_bitset_serializer_hpp__included_
+#define _yas__binary__std_bitset_serializer_hpp__included_
 
-#if defined(YAS_SERIALIZE_QT_TYPES)
+#include <stdexcept>
 
 #include <yas/config/config.hpp>
+#include <yas/mpl/type_traits.hpp>
+#include <yas/serializers/detail/properties.hpp>
+#include <yas/serializers/detail/serializer_fwd.hpp>
 
-#include <QtCore/QBitArray>
+#include <bitset>
+#include <vector>
 
 namespace yas {
 namespace detail {
 
 /***************************************************************************/
 
+template<std::size_t N>
+struct serializer<
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::binary,
+	e_direction::out,
+	std::bitset<N>
+>
+{
+	template<typename Archive>
+	static void apply(Archive& ar, const std::bitset<N>& bits) {
+		ar & static_cast<yas::uint32_t>(N);
+		std::vector<yas::uint8_t> result((N + 7) >> 3);
+		for ( std::size_t idx = 0; idx < N; ++idx ) {
+			result[idx>>3] |= (bits[idx] << (idx & 7));
+		}
+		ar & result;
+	}
+};
 
+template<std::size_t N>
+struct serializer<
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::binary,
+	e_direction::in,
+	std::bitset<N>
+>
+{
+	template<typename Archive>
+	static void apply(Archive& ar, std::bitset<N>& bits) {
+		yas::uint32_t size = 0;
+		ar & size;
+		if ( size != N ) throw std::runtime_error("bitsets size is not equal");
+		std::vector<yas::uint8_t> buf;
+		ar & buf;
+		if ( buf.size() != ((N + 7) >> 3) ) throw std::runtime_error("bitsets storrage size is not equal");
+		for ( std::size_t idx = 0; idx < N; ++idx ) {
+			bits[idx] = ((buf[idx>>3] >> (idx & 7)) & 1);
+		}
+	}
+};
 
 /***************************************************************************/
 
 } // namespace detail
 } // namespace yas
 
-#endif // defined(YAS_SERIALIZE_QT_TYPES)
-
-#endif // _yas__binary__qbitarray_serializer_hpp__included_
+#endif // _yas__binary__std_bitset_serializer_hpp__included_

@@ -280,4 +280,9 @@ HEADERS += \
 	 ../../include/yas/serializers/text/utility/autoarray_serializers.hpp \
 	 ../../include/yas/serializers/text/utility/buffer_serializers.hpp \
 	 ../../include/yas/serializers/binary/std/std_forward_list_serializers.hpp \
-	 types_test.hpp
+	 types_test.hpp \
+    ../../include/yas/serializers/binary/std/std_bitset_serializers.hpp \
+    ../../include/yas/serializers/json/std/std_forward_list_serializers.hpp \
+    ../../include/yas/serializers/json/std/std_bitset_serializers.hpp \
+    ../../include/yas/serializers/text/std/std_forward_list_serializers.hpp \
+    ../../include/yas/serializers/text/std/std_bitset_serializers.hpp

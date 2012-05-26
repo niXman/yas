@@ -30,27 +30,57 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__binary__qbitarray_serializer_hpp__included_
-#define _yas__binary__qbitarray_serializer_hpp__included_
+#ifndef _yas__json__std_bitset_serializer_hpp__included_
+#define _yas__json__std_bitset_serializer_hpp__included_
 
-#if defined(YAS_SERIALIZE_QT_TYPES)
+#include <stdexcept>
 
 #include <yas/config/config.hpp>
+#include <yas/mpl/type_traits.hpp>
+#include <yas/serializers/detail/properties.hpp>
+#include <yas/serializers/detail/serializer_fwd.hpp>
 
-#include <QtCore/QBitArray>
+#include <bitset>
 
 namespace yas {
 namespace detail {
 
 /***************************************************************************/
 
+template<std::size_t N>
+struct serializer<
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::json,
+	e_direction::out,
+	std::bitset<N>
+>
+{
+	template<typename Archive>
+	static void apply(Archive& ar, const std::bitset<N>& bits) {
+		ar & static_cast<yas::uint32_t>(N);
+	}
+};
 
+template<std::size_t N>
+struct serializer<
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::json,
+	e_direction::in,
+	std::bitset<N>
+>
+{
+	template<typename Archive>
+	static void apply(Archive& ar, std::bitset<N>& bits) {
+		yas::uint32_t size = 0;
+		ar & size;
+	}
+};
 
 /***************************************************************************/
 
 } // namespace detail
 } // namespace yas
 
-#endif // defined(YAS_SERIALIZE_QT_TYPES)
-
-#endif // _yas__binary__qbitarray_serializer_hpp__included_
+#endif // _yas__json__std_bitset_serializer_hpp__included_
