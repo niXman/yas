@@ -43,13 +43,41 @@ namespace detail {
 
 /***************************************************************************/
 
+struct buffer_holder {
+	buffer_holder()
+		:data(0)
+		,size(0)
+	{}
+
+	buffer_holder(size_t size) {
+		data = new char[size];
+		this->size = size;
+	}
+
+	~buffer_holder() { delete[] data; }
+
+	char* data;
+	size_t size;
+};
+
+/***************************************************************************/
+
 struct omemstream: std::stringbuf {
+	enum { default_buffer_size = 1024*4 };
+
 	omemstream()
 		:std::stringbuf()
-	{}
+		,buf(default_buffer_size)
+	{setp(buf.data, buf.data+buf.size);}
+
+	omemstream(size_t size)
+		:std::stringbuf()
+		,buf(size)
+	{setp(buf.data, buf.data+buf.size);}
+
 	omemstream(char* ptr, size_t size)
 		:std::stringbuf()
-	{ setp(ptr, ptr+size); }
+	{setp(ptr, ptr+size);}
 
 	char_type* beg() const {return pbase();}
 	char_type* cur() const {return pptr();}
@@ -64,6 +92,9 @@ struct omemstream: std::stringbuf {
 
 	intrusive_buffer get_intrusive_buffer() const {return intrusive_buffer(pbase(), pptr()-pbase());}
 	std::string str() const {return std::string(pbase(), pptr());}
+
+private:
+	buffer_holder buf;
 };
 
 /***************************************************************************/

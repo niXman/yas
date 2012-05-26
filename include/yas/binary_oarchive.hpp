@@ -61,12 +61,16 @@ struct binary_mem_oarchive:
 	typedef binary_mem_oarchive this_type;
 
 	binary_mem_oarchive(header_t::type op = header_t::with_header)
-		:detail::omemstream(),
-		detail::archive_information<e_archive_type::binary, e_direction::out, this_type>(this, op)
+		:detail::omemstream()
+		,detail::archive_information<e_archive_type::binary, e_direction::out, this_type>(this, op)
+	{}
+	binary_mem_oarchive(size_t size, header_t::type op = header_t::with_header)
+		:detail::omemstream(size)
+		,detail::archive_information<e_archive_type::binary, e_direction::out, this_type>(this, op)
 	{}
 	binary_mem_oarchive(char* ptr, size_t size, header_t::type op = header_t::with_header)
-		:detail::omemstream(ptr, size),
-		detail::archive_information<e_archive_type::binary, e_direction::out, this_type>(this, op)
+		:detail::omemstream(ptr, size)
+		,detail::archive_information<e_archive_type::binary, e_direction::out, this_type>(this, op)
 	{}
 
 	template<typename T>

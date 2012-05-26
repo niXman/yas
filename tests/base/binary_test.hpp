@@ -1600,11 +1600,12 @@ void _binary_boost_archive(const size_t iteration) {
 
 void _binary_yas_archive(const size_t iteration) {
 	_binary_size_test::_binary_size_test_pod_type t;
-	yas::binary_mem_oarchive oa;
+	yas::binary_mem_oarchive oa/*(new char[1024*1024*200], 1024*1024*200)*/;
 	for ( size_t idx = 0; idx < iteration; ++idx ) {
 		t.x = t.y = idx;
 		oa & t;
 	}
+	//std::cout << oa.get_intrusive_buffer().size << std::endl;
 }
 
 bool _binary_speed_test() {
