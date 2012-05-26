@@ -33,13 +33,14 @@
 #ifndef _yas__config_gcc_config_hpp__included_
 #define _yas__config_gcc_config_hpp__included_
 
+/***************************************************************************/
+
 #if ((__GNUC__ >= 4) && (__GNUC_MINOR__ >= 6) && defined(__GXX_EXPERIMENTAL_CXX0X__)) \
 	|| __cplusplus == 201103L
 #  define YAS_HAS_STD_UNORDERED 1
 #  define YAS_HAS_STD_ARRAY 1
 #  define YAS_HAS_STD_TUPLE 1
 #  define YAS_HAS_DECLTYPE 1
-
 #	define YAS_SHARED_BUFFER_USE_STD_SHARED_PTR 1
 #endif
 
@@ -48,15 +49,36 @@
 #  define YAS_HAS_BOOST_ARRAY 1
 #  define YAS_HAS_BOOST_TUPLE 1
 #  define YAS_HAS_BOOST_FUSION 1
-
 #	define YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR 1
 #endif
 
-#ifdef YAS_SERIALIZE_QT_TYPES
+/***************************************************************************/
 
-#endif
+namespace yas {
 
-#define YAS_PLATFORM_BITS_IS_32() (sizeof(void*)==4)
-#define YAS_PLATFORM_BITS_IS_64() (sizeof(void*)==8)
+#if __x86_64__
+#define YAS_PLATFORM_BITS_IS_32() (0)
+#define YAS_PLATFORM_BITS_IS_64() (1)
+
+typedef int int32_t;
+typedef unsigned int uint32_t;
+typedef long int64_t;
+typedef unsigned long uint64_t;
+
+#else // !__x86_64__ /******************************************************/
+
+#define YAS_PLATFORM_BITS_IS_32() (1)
+#define YAS_PLATFORM_BITS_IS_64() (0)
+
+typedef int int32_t;
+typedef unsigned int uint32_t;
+typedef long long int64_t;
+typedef unsigned long long uint64_t;
+
+#endif // __x86_64__
+
+} // namespace yas
+
+/***************************************************************************/
 
 #endif // _yas__config_gcc_config_hpp__included_

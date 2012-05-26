@@ -44,7 +44,7 @@ namespace detail {
 template<typename T>
 struct serializer<
    e_type_type::e_type_type::not_a_pod,
-   e_ser_method::use_const_free_function,
+   e_ser_method::has_split_functions,
    e_archive_type::text,
    e_direction::out,
    T
@@ -62,7 +62,7 @@ struct serializer<
 template<typename T>
 struct serializer<
    e_type_type::e_type_type::not_a_pod,
-   e_ser_method::use_free_function,
+   e_ser_method::has_one_function,
    e_archive_type::text,
    e_direction::out,
    T
@@ -77,7 +77,7 @@ struct serializer<
 template<typename T>
 struct serializer<
    e_type_type::e_type_type::not_a_pod,
-   e_ser_method::use_free_function,
+   e_ser_method::has_one_function,
    e_archive_type::text,
    e_direction::in,
    T
@@ -92,7 +92,7 @@ struct serializer<
 template<typename T>
 struct serializer<
    e_type_type::e_type_type::not_a_pod,
-   e_ser_method::use_const_free_function,
+   e_ser_method::has_split_functions,
    e_archive_type::text,
    e_direction::in,
    T
@@ -109,7 +109,7 @@ struct serializer<
 template<typename T>
 struct serializer<
    e_type_type::e_type_type::not_a_pod,
-   e_ser_method::use_class_method,
+   e_ser_method::has_one_method,
    e_archive_type::text,
    e_direction::out,
    T
@@ -123,7 +123,7 @@ struct serializer<
 template<typename T>
 struct serializer<
    e_type_type::e_type_type::not_a_pod,
-   e_ser_method::use_const_class_method,
+   e_ser_method::has_split_methods,
    e_archive_type::text,
    e_direction::out,
    T
@@ -138,7 +138,7 @@ struct serializer<
 template<typename T>
 struct serializer<
    e_type_type::e_type_type::not_a_pod,
-   e_ser_method::use_class_method,
+   e_ser_method::has_one_method,
    e_archive_type::text,
    e_direction::in,
    T

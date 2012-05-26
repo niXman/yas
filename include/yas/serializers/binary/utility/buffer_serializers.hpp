@@ -60,6 +60,49 @@ struct serializer<
 
 /***************************************************************************/
 
+#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || \
+	defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
+
+template<>
+struct serializer<
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::binary,
+	e_direction::out,
+	shared_buffer
+>
+{
+	template<typename Archive>
+	static void apply(Archive& ar, const shared_buffer& buf) {
+		ar.write(&buf.size, sizeof(buf.size));
+		ar.write(buf.data.get(), buf.size);
+	}
+};
+
+template<>
+struct serializer<
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::binary,
+	e_direction::in,
+	shared_buffer
+>
+{
+	template<typename Archive>
+	static void apply(Archive& ar, shared_buffer& buf) {
+		uint32_t size = 0;
+		ar.read(&size, sizeof(size));
+		buf.data.reset(new char[size+1], &shared_buffer::deleter);
+		ar.read(buf.data.get(), size);
+		buf.size = size;
+		buf.data.get()[size] = 0;
+	}
+};
+
+#endif
+
+/***************************************************************************/
+
 } // namespace detail
 } // namespace yas
 

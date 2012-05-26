@@ -50,7 +50,7 @@ namespace detail {
 template<typename K>
 struct serializer<
    e_type_type::e_type_type::not_a_pod,
-   e_ser_method::use_const_free_function,
+   e_ser_method::has_split_functions,
    e_archive_type::json,
    e_direction::out,
    boost::unordered_set<K>
@@ -69,7 +69,7 @@ struct serializer<
 template<typename K>
 struct serializer<
    e_type_type::e_type_type::not_a_pod,
-   e_ser_method::use_const_free_function,
+   e_ser_method::has_split_functions,
    e_archive_type::json,
    e_direction::in,
    boost::unordered_set<K>

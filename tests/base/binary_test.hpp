@@ -308,6 +308,84 @@ bool _binary_array_test() {
 
 /***************************************************************************/
 
+#include <yas/tools/hexdumper.hpp>
+
+bool _binary_buffer_test() {
+	const std::string str1 = "intrusive buffer test"; // 21 + 4(header) + 4(size of array) = 29
+	const unsigned char ostr1[] = {
+		 0x79,0x61,0x73,0x81,0x15,0x00,0x00,0x00,0x69,0x6e,0x74,0x72,0x75,0x73
+		,0x69,0x76,0x65,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
+	};
+
+	yas::intrusive_buffer buf1(str1.c_str(), str1.length());
+	yas::binary_mem_oarchive oa1;
+	oa1 & buf1;
+	if ( oa1.get_intrusive_buffer().size != sizeof(ostr1)
+		|| memcmp(oa1.get_intrusive_buffer().data, ostr1, oa1.get_intrusive_buffer().size))
+	{
+		std::cout << "BUFFER intrusive serialization error!" << std::endl;
+		return false;
+	}
+
+#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR)
+	const std::string str2 = "std shared buffer test"; // 22 + 4(header) + 4(size of array) = 30
+	const unsigned char ostr2[] = {
+		 0x79,0x61,0x73,0x81,0x16,0x00,0x00,0x00,0x73,0x74,0x64,0x20,0x73,0x68,0x61
+		,0x72,0x65,0x64,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
+	};
+
+	yas::shared_buffer buf2(str2.c_str(), str2.length());
+	yas::binary_mem_oarchive oa2;
+	oa2 & buf2;
+	if ( oa2.get_intrusive_buffer().size != sizeof(ostr2)
+		|| memcmp(oa2.get_intrusive_buffer().data, ostr2, oa2.get_intrusive_buffer().size))
+	{
+		std::cout << "BUFFER std shared buffer serialization error!" << std::endl;
+		return false;
+	}
+
+	yas::binary_mem_iarchive ia1(oa2.get_intrusive_buffer());
+	yas::shared_buffer buf4;
+	ia1 & buf4;
+
+	if ( buf4.size != str2.length() || str2 != buf4.data.get() ) {
+		std::cout << "BUFFER std shared buffer deserialization error!" << std::endl;
+		return false;
+	}
+#endif
+
+#if defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
+	const std::string str3 = "boost shared buffer test"; // 24 + 4(header) + 4(size of array) = 32
+	const unsigned char ostr3[] = {
+		 0x79,0x61,0x73,0x81,0x18,0x00,0x00,0x00,0x62,0x6f,0x6f,0x73,0x74,0x20,0x73,0x68
+		,0x61,0x72,0x65,0x64,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
+	};
+
+	yas::shared_buffer buf3(str3.c_str(), str3.length());
+	yas::binary_mem_oarchive oa3;
+	oa3 & buf3;
+	if ( oa3.get_intrusive_buffer().size != sizeof(ostr3)
+		|| memcmp(oa3.get_intrusive_buffer().data, ostr3, oa3.get_intrusive_buffer().size))
+	{
+		std::cout << "BUFFER boost shared buffer serialization error!" << std::endl;
+		return false;
+	}
+
+	yas::binary_mem_iarchive ia2(oa3.get_intrusive_buffer());
+	yas::shared_buffer buf5;
+	ia2 & buf5;
+
+	if ( buf5.size != str3.length() || str3 != buf5.data.get() ) {
+		std::cout << "BUFFER boost shared buffer deserialization error!" << std::endl;
+		return false;
+	}
+#endif
+
+	return true;
+}
+
+/***************************************************************************/
+
 bool _binary_string_test() {
 	yas::binary_mem_oarchive oa;
 	std::string s("string string"), ss;
@@ -1557,6 +1635,10 @@ bool binary_tests() {
 	printf("AUTO_ARRAY         test %s\n", (_binary_auto_array_test()?passed:failed));
 #if defined(YAS_HAS_BOOST_ARRAY) || defined(YAS_HAS_STD_ARRAY)
 	printf("ARRAY              test %s\n", (_binary_array_test()?passed:failed));
+#endif
+#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || \
+	defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
+	printf("BUFFER             test %s\n", (_binary_buffer_test()?passed:failed));
 #endif
 	printf("STRING             test %s\n", (_binary_string_test()?passed:failed));
 	printf("WSTRING            test %s\n", (_binary_wstring_test()?passed:failed));

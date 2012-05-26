@@ -30,8 +30,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__binary__buffer_serializer_hpp_included_
-#define _yas__binary__buffer_serializer_hpp_included_
+#ifndef _yas__text__buffer_serializer_hpp_included_
+#define _yas__text__buffer_serializer_hpp_included_
 
 #include <yas/tools/buffer.hpp>
 #include <yas/serializers/detail/properties.hpp>
@@ -46,7 +46,7 @@ template<>
 struct serializer<
 	e_type_type::e_type_type::not_a_pod,
 	e_ser_method::use_internal_serializer,
-	e_archive_type::binary,
+	e_archive_type::text,
 	e_direction::out,
 	intrusive_buffer
 >
@@ -63,4 +63,4 @@ struct serializer<
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__binary__buffer_serializer_hpp_included_
+#endif // _yas__text__buffer_serializer_hpp_included_

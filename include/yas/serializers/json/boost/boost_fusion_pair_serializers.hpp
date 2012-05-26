@@ -51,7 +51,7 @@ namespace detail {
 template<typename T1, typename T2>
 struct serializer<
    e_type_type::e_type_type::not_a_pod,
-   e_ser_method::use_const_free_function,
+   e_ser_method::has_split_functions,
    e_archive_type::json,
    e_direction::out,
    boost::fusion::pair<T1, T2>
@@ -68,7 +68,7 @@ struct serializer<
 template<typename T1, typename T2>
 struct serializer<
    e_type_type::e_type_type::not_a_pod,
-   e_ser_method::use_const_free_function,
+   e_ser_method::has_split_functions,
    e_archive_type::json,
    e_direction::in,
    boost::fusion::pair<T1, T2>

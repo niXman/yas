@@ -33,8 +33,9 @@
 #ifndef _yas__const_buffer_hpp__included_
 #define _yas__const_buffer_hpp__included_
 
-#include <cstddef>
 #include <cstring>
+
+#include <yas/config/config.hpp>
 
 #if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR)
 #	include <memory>
@@ -47,7 +48,7 @@ namespace yas {
 /***************************************************************************/
 
 struct intrusive_buffer {
-	intrusive_buffer(const void* data, std::size_t size)
+	intrusive_buffer(const void* data, uint32_t size)
 		:data(data)
 		,size(size)
 	{}
@@ -57,7 +58,7 @@ struct intrusive_buffer {
 	{}
 
 	const void* data;
-	const std::size_t size;
+	const uint32_t size;
 
 private:
 	intrusive_buffer();
@@ -65,20 +66,54 @@ private:
 
 /***************************************************************************/
 
-#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) \
-	|| defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
+#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || \
+	defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
 
 struct shared_buffer {
+	shared_buffer()
+		:size(0)
+	{}
+	shared_buffer(const void* ptr, uint32_t size)
+		:size(0)
+	{
+		data.reset(new char[size], &deleter);
+		std::memcpy(data.get(), ptr, size);
+		this->size = size;
+	}
 #if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR)
-	std::shared_ptr<char> data;
+	shared_buffer(std::shared_ptr<char> buf, uint32_t size)
+		:size(0)
+	{
+		data = buf;
+		this->size = size;
+	}
 #elif defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
-	boost::shared_ptr<char> data;
+	shared_buffer(boost::shared_ptr<char> buf, uint32_t size)
+		:size(0)
+	{
+		data.reset(new char[size], &deleter);
+		std::memcpy(data.get(), buf.get(), size);
+		this->size = size;
+	}
 #endif
 
-private:
-	static void deleter(void* ptr) {
-		delete[] ((char*)ptr);
+	shared_buffer(const shared_buffer& buf)
+		:size(0)
+	{
+		data = buf.data;
+		size = buf.size;
 	}
+
+#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR)
+	typedef std::shared_ptr<char> shared_array_type;
+#elif defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
+	typedef boost::shared_ptr<char> shared_array_type;
+#endif
+
+	shared_array_type data;
+	uint32_t size;
+
+	static void deleter(void* ptr) { delete[] ((char*)ptr); }
 };
 
 #endif /* defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) \

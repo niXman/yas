@@ -56,10 +56,10 @@ struct e_type_type {
 
 struct e_ser_method {
 	enum type {
-		 use_class_method
-		,use_const_class_method
-		,use_free_function
-		,use_const_free_function
+		 has_one_method
+		,has_split_methods
+		,has_one_function
+		,has_split_functions
 		,use_internal_serializer
 	};
 };
@@ -93,13 +93,13 @@ template<typename T, typename Ar>
 struct serialization_method {
 	static const e_ser_method::type value =
 	has_const_method_serializer<or_<is_pod<T>, is_array<T> >::value,T,void(Ar)>::value
-	? e_ser_method::use_const_class_method
+	? e_ser_method::has_split_methods
 	: has_method_serializer<or_<is_pod<T>, is_array<T> >::value,T,void(Ar)>::value
-		? e_ser_method::use_class_method
+		? e_ser_method::has_one_method
 		: has_function_const_serialize<or_<is_pod<T>, is_array<T> >::value, Ar, T>::value
-			? e_ser_method::use_const_free_function
+			? e_ser_method::has_split_functions
 			: has_function_serialize<or_<is_pod<T>, is_array<T> >::value, Ar, T>::value
-				? e_ser_method::use_free_function
+				? e_ser_method::has_one_function
 				: e_ser_method::use_internal_serializer
 	;
 };

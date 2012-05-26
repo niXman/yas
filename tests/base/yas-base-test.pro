@@ -10,7 +10,9 @@ DEFINES += \
 	YAS_HAS_BOOST_ARRAY=1 \
 	YAS_HAS_BOOST_TUPLE=1 \
 	YAS_HAS_BOOST_FUSION=1 \
-	YAS_HAS_DECLTYPE=1
+	YAS_HAS_DECLTYPE=1 \
+	YAS_SHARED_BUFFER_USE_STD_SHARED_PTR=1 \
+	YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR=1
 
 QMAKE_CXXFLAGS += \
 	-std=c++0x
@@ -273,7 +275,7 @@ HEADERS += \
 	 text_test.hpp \
 	 json_test.hpp \
 	 binary_test.hpp \
-    ../../include/yas/serializers/text/utility/usertype_serializers.hpp \
-    ../../include/yas/serializers/text/utility/pod_serializers.hpp \
-    ../../include/yas/serializers/text/utility/autoarray_serializers.hpp \
-    ../../include/yas/serializers/text/utility/buffer_serializers.hpp
+	 ../../include/yas/serializers/text/utility/usertype_serializers.hpp \
+	 ../../include/yas/serializers/text/utility/pod_serializers.hpp \
+	 ../../include/yas/serializers/text/utility/autoarray_serializers.hpp \
+	 ../../include/yas/serializers/text/utility/buffer_serializers.hpp

@@ -47,7 +47,7 @@ namespace detail {
 template<typename K, typename V>
 struct serializer<
 	e_type_type::e_type_type::not_a_pod,
-	e_ser_method::use_const_free_function,
+	e_ser_method::has_split_functions,
 	e_archive_type::json,
 	e_direction::out,
 	std::multimap<K, V>
@@ -61,7 +61,7 @@ struct serializer<
 template<typename K, typename V>
 struct serializer<
 	e_type_type::e_type_type::not_a_pod,
-	e_ser_method::use_const_free_function,
+	e_ser_method::has_split_functions,
 	e_archive_type::json,
 	e_direction::in,
 	std::multimap<K, V>
