@@ -15,8 +15,8 @@ Currently only a binary serialization implemented.
 ===
 Planned the support for the following types of archives:
  - binary
- - text (currently not implemented)(-)
- - json (-)
+ - text
+ - json
 
 ===
 Planned the support for the following compilers:
