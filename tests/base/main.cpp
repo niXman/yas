@@ -131,7 +131,6 @@ bool pod_test() {
 	return true;
 }
 
-#if 0
 /***************************************************************************/
 
 template<typename OA, typename IA>
@@ -1734,7 +1733,6 @@ bool split_methods_serializer_test() {
 	return true;
 }
 
-#endif // #if 0
 /***************************************************************************/
 
 namespace _binary_size_test {
@@ -1822,7 +1820,6 @@ bool tests() {
 
 	printf("%s VERSION            test %s\n", test_type, (version_test<OA, IA>()?passed:failed));
 	printf("%s POD                test %s\n", test_type, (pod_test<OA, IA>()?passed:failed));
-#if 0
 	printf("%s AUTO_ARRAY         test %s\n", test_type, (auto_array_test<OA, IA>()?passed:failed));
 #if defined(YAS_HAS_BOOST_ARRAY) || defined(YAS_HAS_STD_ARRAY)
 	printf("%s ARRAY              test %s\n", test_type, (array_test<OA, IA>()?passed:failed));
@@ -1865,7 +1862,6 @@ bool tests() {
 	printf("%s SPLIT_FUNCTIONS    test %s\n", test_type, (split_functions_serializer_test<OA, IA>()?passed:failed));
 	printf("%s ONE_METHOD         test %s\n", test_type, (one_method_serializer_test<OA, IA>()?passed:failed));
 	printf("%s SPLIT_METHODS      test %s\n", test_type, (split_methods_serializer_test<OA, IA>()?passed:failed));
-#endif
 
 	speed_test<OA, IA>();
 
