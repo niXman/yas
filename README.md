@@ -98,3 +98,5 @@ Planned the support for the following serializable types:
 Currently supports all types except Qt types.
 
 ===
+If you use YAS in your project - tell to the author with the short description of the reasons and advantages in comparison with other libraries of serialization! ;)
+Thanks!

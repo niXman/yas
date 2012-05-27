@@ -29,14 +29,22 @@
 /***************************************************************************/
 
 void types_test() {
-	extern char __BAD_YAS__INT8_T__SIZEOF__[(sizeof(yas::int8_t)==1)?1:-1];(void)__BAD_YAS__INT8_T__SIZEOF__;
-	extern char __BAD_YAS__UINT8_T__SIZEOF__[sizeof(yas::uint8_t)==1?1:-1];(void)__BAD_YAS__UINT8_T__SIZEOF__;
-	extern char __BAD_YAS__INT16_T__SIZEOF__[sizeof(yas::int16_t)==2?1:-1];(void)__BAD_YAS__INT16_T__SIZEOF__;
-	extern char __BAD_YAS__UINT16_T__SIZEOF__[sizeof(yas::uint16_t)==2?1:-1];(void)__BAD_YAS__UINT16_T__SIZEOF__;
-	extern char __BAD_YAS__INT32_T__SIZEOF__[sizeof(yas::int32_t)==4?1:-1];(void)__BAD_YAS__INT32_T__SIZEOF__;
-	extern char __BAD_YAS__UINT32_T__SIZEOF__[sizeof(yas::uint32_t)==4?1:-1];(void)__BAD_YAS__UINT32_T__SIZEOF__;
-	extern char __BAD_YAS__INT64_T__SIZEOF__[sizeof(yas::int64_t)==8?1:-1];(void)__BAD_YAS__INT64_T__SIZEOF__;
-	extern char __BAD_YAS__UINT64_T__SIZEOF__[sizeof(yas::uint64_t)==8?1:-1];(void)__BAD_YAS__UINT64_T__SIZEOF__;
+	extern char __BAD_YAS__INT8_T__SIZEOF__[(sizeof(yas::int8_t)==1)?1:-1];
+	(void)__BAD_YAS__INT8_T__SIZEOF__;
+	extern char __BAD_YAS__UINT8_T__SIZEOF__[sizeof(yas::uint8_t)==1?1:-1];
+	(void)__BAD_YAS__UINT8_T__SIZEOF__;
+	extern char __BAD_YAS__INT16_T__SIZEOF__[sizeof(yas::int16_t)==2?1:-1];
+	(void)__BAD_YAS__INT16_T__SIZEOF__;
+	extern char __BAD_YAS__UINT16_T__SIZEOF__[sizeof(yas::uint16_t)==2?1:-1];
+	(void)__BAD_YAS__UINT16_T__SIZEOF__;
+	extern char __BAD_YAS__INT32_T__SIZEOF__[sizeof(yas::int32_t)==4?1:-1];
+	(void)__BAD_YAS__INT32_T__SIZEOF__;
+	extern char __BAD_YAS__UINT32_T__SIZEOF__[sizeof(yas::uint32_t)==4?1:-1];
+	(void)__BAD_YAS__UINT32_T__SIZEOF__;
+	extern char __BAD_YAS__INT64_T__SIZEOF__[sizeof(yas::int64_t)==8?1:-1];
+	(void)__BAD_YAS__INT64_T__SIZEOF__;
+	extern char __BAD_YAS__UINT64_T__SIZEOF__[sizeof(yas::uint64_t)==8?1:-1];
+	(void)__BAD_YAS__UINT64_T__SIZEOF__;
 }
 
 /***************************************************************************/
@@ -123,14 +131,15 @@ bool pod_test() {
 	return true;
 }
 
+#if 0
 /***************************************************************************/
 
 template<typename OA, typename IA>
 bool auto_array_test() {
 	static const size_t array_size = 6;
 
-	char ca1[] = {"123456"}, ca2[array_size+1] = {0};
-	unsigned char uca1[] = {"123456"}, uca2[array_size+1] = {0};
+	char ca1[] = {"signed-char string"}, ca2[array_size+1] = {0};
+	unsigned char uca1[] = {0x75,0x6e,0x73,0x69,0x67,0x6e,0x65,0x64,0x2d,0x63,0x68,0x61,0x72,0x20,0x73,0x74,0x72,0x69,0x6e,0x67}, uca2[array_size+1] = {0};
 	short sa1[array_size] = {1,2,3,4,5,6}, sa2[array_size];
 	unsigned short usa1[array_size] = {1,2,3,4,5,6}, usa2[array_size];
 	int ia1[array_size] = {1,2,3,4,5,6}, ia2[array_size];
@@ -1725,6 +1734,7 @@ bool split_methods_serializer_test() {
 	return true;
 }
 
+#endif // #if 0
 /***************************************************************************/
 
 namespace _binary_size_test {
@@ -1812,6 +1822,7 @@ bool tests() {
 
 	printf("%s VERSION            test %s\n", test_type, (version_test<OA, IA>()?passed:failed));
 	printf("%s POD                test %s\n", test_type, (pod_test<OA, IA>()?passed:failed));
+#if 0
 	printf("%s AUTO_ARRAY         test %s\n", test_type, (auto_array_test<OA, IA>()?passed:failed));
 #if defined(YAS_HAS_BOOST_ARRAY) || defined(YAS_HAS_STD_ARRAY)
 	printf("%s ARRAY              test %s\n", test_type, (array_test<OA, IA>()?passed:failed));
@@ -1854,6 +1865,7 @@ bool tests() {
 	printf("%s SPLIT_FUNCTIONS    test %s\n", test_type, (split_functions_serializer_test<OA, IA>()?passed:failed));
 	printf("%s ONE_METHOD         test %s\n", test_type, (one_method_serializer_test<OA, IA>()?passed:failed));
 	printf("%s SPLIT_METHODS      test %s\n", test_type, (split_methods_serializer_test<OA, IA>()?passed:failed));
+#endif
 
 	speed_test<OA, IA>();
 
@@ -1867,7 +1879,7 @@ int main() {
 
 	types_test();
 	tests<yas::binary_mem_oarchive, yas::binary_mem_iarchive>();
-	//tests<yas::text_mem_oarchive, yas::text_mem_iarchive>();
+	tests<yas::text_mem_oarchive, yas::text_mem_iarchive>();
 	//tests<yas::json_mem_oarchive, yas::json_mem_iarchive>();
 }
 

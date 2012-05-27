@@ -47,13 +47,13 @@ namespace yas {
 
 /***************************************************************************/
 
-struct empty_archive_exception: std::exception {
+struct empty_archive: std::exception {
 	const char* what() const throw() {return "archive is empty";}
 };
-struct bad_archive_information_exception: std::exception {
+struct bad_archive_information: std::exception {
 	const char* what() const throw() {return "archive is corrupted or try to use with \"no_header\" flag";}
 };
-struct no_header_exception: std::exception {
+struct no_header: std::exception {
 	const char* what() const throw() {return "you cannot use information functions with \"no_header\" flag";}
 };
 
@@ -85,6 +85,7 @@ union archive_header {
 	char as_char;
 };
 #pragma pack(pop)
+
 extern char __ALIGNMENT_ERROR__[sizeof(archive_header) == sizeof(char)?1:-1];
 
 /***************************************************************************/
@@ -94,54 +95,26 @@ static const char full_header_size = sizeof(yas_id)+sizeof(archive_header);
 
 /***************************************************************************/
 
-template<typename Ar>
-void read_header(archive_header& hdr, Ar* ar) {
-	typename Ar::char_type raw_hdr[full_header_size];
-	if ( ar->sgetn(raw_hdr, full_header_size) != full_header_size ) {
-		throw empty_archive_exception();
-	}
-
-	if ( memcmp(raw_hdr, yas_id, sizeof(yas_id)) ) {
-		throw bad_archive_information_exception();
-	}
-
-	hdr = *reinterpret_cast<archive_header*>(raw_hdr+sizeof(yas_id));
-}
-
-template<typename Ar>
-void write_header(e_archive_type::type art, Ar* ar) {
-	static const archive_header hdr(
-		(unsigned char)archive_version,
-		(unsigned char)art,
-		(unsigned char)YAS_PLATFORM_BITS_IS_64()
-	);
-	ar->sputn(yas_id, sizeof(yas_id));
-	ar->sputc(hdr.as_char);
-}
-
-/***************************************************************************/
-
-#define YAS_WRITE_OARCHIVE_ACCESSORS(art) \
-	e_archive_type::type archive_type() const {return art;} \
-	int bits() const {return YAS_PLATFORM_BITS();} \
-	int version() const {return archive_version;}
-
-#define YAS_WRITE_IARCHIVE_ACCESSORS(art) \
-	e_archive_type::type archive_type() const {return art;} \
-	int bits() const {return(header.bits.version)?header.bits.bits?64:32:(throw no_header_exception());} \
-	int version() const {return(header.bits.version)?header.bits.version:(throw no_header_exception());}
-
-#define YAS_WRITE_ONE_ARCHIVE_INFORMATION_SPECIALIZATION(unused, idx, seq) \
+#define YAS_WRITE_ARCHIVE_INFORMATION_SPECIALIZATION_IMPL(unused, idx, seq) \
 	template<typename Ar> \
 	struct archive_information<YAS_PP_SEQ_ELEM(idx, seq), e_direction::in, Ar> { \
 		archive_information(Ar* ar, header_t::type op) \
 			:header() \
 		{ \
 			if ( op == header_t::no_header ) {return;} \
-			read_header(header, ar); \
+			typename Ar::char_type raw_hdr[full_header_size]; \
+			if ( ar->sgetn(raw_hdr, full_header_size) != full_header_size ) { \
+				throw empty_archive(); \
+			} \
+			if ( memcmp(raw_hdr, yas_id, sizeof(yas_id)) ) { \
+				throw bad_archive_information(); \
+			} \
+			header = *reinterpret_cast<archive_header*>(raw_hdr+sizeof(yas_id)); \
 		} \
 		\
-		YAS_WRITE_IARCHIVE_ACCESSORS(YAS_PP_SEQ_ELEM(idx, seq)); \
+		e_archive_type::type archive_type() const {return YAS_PP_SEQ_ELEM(idx, seq);} \
+		int bits() const {return(header.bits.version)?header.bits.bits?64:32:(throw no_header());} \
+		int version() const {return(header.bits.version)?header.bits.version:(throw no_header());} \
 		\
 		static const e_archive_type::type	_archive_type	= YAS_PP_SEQ_ELEM(idx, seq); \
 		static const e_direction::type		_direction		= e_direction::in; \
@@ -156,10 +129,18 @@ void write_header(e_archive_type::type art, Ar* ar) {
 	struct archive_information<YAS_PP_SEQ_ELEM(idx, seq), e_direction::out, Ar> { \
 		archive_information(Ar* ar, header_t::type op) { \
 			if ( op == header_t::no_header ) {return;} \
-			write_header(YAS_PP_SEQ_ELEM(idx, seq), ar); \
+			static const archive_header hdr( \
+				(unsigned char)archive_version, \
+				(unsigned char)YAS_PP_SEQ_ELEM(idx, seq), \
+				(unsigned char)YAS_PLATFORM_BITS_IS_64() \
+			); \
+			ar->sputn(yas_id, sizeof(yas_id)); \
+			ar->sputc(hdr.as_char); \
 		} \
 		\
-		YAS_WRITE_OARCHIVE_ACCESSORS(YAS_PP_SEQ_ELEM(idx, seq)); \
+		e_archive_type::type archive_type() const {return YAS_PP_SEQ_ELEM(idx, seq);} \
+		int bits() const {return YAS_PLATFORM_BITS();} \
+		int version() const {return archive_version;} \
 		\
 		static const e_archive_type::type	_archive_type	= YAS_PP_SEQ_ELEM(idx, seq); \
 		static const e_direction::type		_direction		= e_direction::in; \
@@ -170,7 +151,11 @@ void write_header(e_archive_type::type art, Ar* ar) {
 #define YAS_WRITE_ARCHIVE_INFORMATION_SPECIALIZATIONS(seq) \
 	template<e_archive_type::type, e_direction::type, typename> \
 	struct archive_information; \
-	YAS_PP_REPEAT(YAS_PP_SEQ_SIZE(seq), YAS_WRITE_ONE_ARCHIVE_INFORMATION_SPECIALIZATION, seq)
+	YAS_PP_REPEAT( \
+		YAS_PP_SEQ_SIZE(seq), \
+		YAS_WRITE_ARCHIVE_INFORMATION_SPECIALIZATION_IMPL, \
+		seq \
+	)
 
 /***************************************************************************/
 
