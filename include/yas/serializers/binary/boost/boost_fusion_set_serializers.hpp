@@ -33,8 +33,9 @@
 #ifndef _yas__binary__fusion_set_serializer_hpp__included_
 #define _yas__binary__fusion_set_serializer_hpp__included_
 
-#if defined(YAS_HAS_BOOST_FUSION)
 #include <yas/config/config.hpp>
+
+#if defined(YAS_HAS_BOOST_FUSION)
 
 namespace yas {
 namespace detail {

@@ -43,40 +43,24 @@ namespace detail {
 
 /***************************************************************************/
 
-struct buffer_holder {
-	buffer_holder()
-		:data(0)
-		,size(0)
-	{}
-
-	buffer_holder(size_t size) {
-		data = new char[size];
-		this->size = size;
-	}
-
-	~buffer_holder() { delete[] data; }
-
-	char* data;
-	size_t size;
-};
-
-/***************************************************************************/
-
 struct omemstream: std::stringbuf {
 	enum { default_buffer_size = 1024*4 };
 
 	omemstream()
 		:std::stringbuf()
 		,buf(default_buffer_size)
+		,stream(this)
 	{setp(buf.data, buf.data+buf.size);}
 
 	omemstream(size_t size)
 		:std::stringbuf()
 		,buf(size)
+		,stream(this)
 	{setp(buf.data, buf.data+buf.size);}
 
 	omemstream(char* ptr, size_t size)
 		:std::stringbuf()
+		,stream(this)
 	{setp(ptr, ptr+size);}
 
 	char_type* beg() const {return pbase();}
@@ -90,12 +74,34 @@ struct omemstream: std::stringbuf {
 		return sputn(static_cast<const char_type*>(ptr), size);
 	}
 
+	template<typename T>
+	std::ostream& operator<< (const T& v) {
+		return (stream << v);
+	}
+
 	intrusive_buffer get_intrusive_buffer() const
 		{return intrusive_buffer(pbase(), pptr()-pbase());}
 	std::string str() const {return std::string(pbase(), pptr());}
 
 private:
-	buffer_holder buf;
+	struct buffer_holder {
+		buffer_holder()
+			:data(0)
+			,size(0)
+		{}
+
+		buffer_holder(size_t size) {
+			data = new char[size];
+			this->size = size;
+		}
+
+		~buffer_holder() { delete[] data; }
+
+		char* data;
+		size_t size;
+	} buf;
+
+	std::ostream stream;
 };
 
 /***************************************************************************/
@@ -103,6 +109,7 @@ private:
 struct imemstream: std::stringbuf {
 	imemstream(const char* ptr, size_t size)
 		:std::stringbuf()
+		,stream(this)
 	{
 		setg(const_cast<char_type*>(ptr),
 			  const_cast<char_type*>(ptr),
@@ -111,6 +118,7 @@ struct imemstream: std::stringbuf {
 	}
 	imemstream(const intrusive_buffer& buf)
 		:std::stringbuf()
+		,stream(this)
 	{
 		setg(const_cast<char_type*>(static_cast<const char_type*>(buf.data)),
 			  const_cast<char_type*>(static_cast<const char_type*>(buf.data)),
@@ -126,6 +134,13 @@ struct imemstream: std::stringbuf {
 	size_t avail()const {return egptr()-gptr();}
 
 	size_t read(void* ptr, size_t size) {return sgetn(static_cast<char_type*>(ptr), size);}
+
+	template<typename T>
+	std::istream& operator>> (T& v) {
+		return (stream >> v);
+	}
+
+	std::istream stream;
 };
 
 /***************************************************************************/

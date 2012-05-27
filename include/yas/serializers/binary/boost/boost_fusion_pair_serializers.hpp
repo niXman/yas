@@ -33,8 +33,9 @@
 #ifndef _yas__binary__fusion_pair_serializer_hpp__included_
 #define _yas__binary__fusion_pair_serializer_hpp__included_
 
-#if defined(YAS_HAS_BOOST_FUSION)
 #include <yas/config/config.hpp>
+
+#if defined(YAS_HAS_BOOST_FUSION)
 #include <yas/mpl/type_traits.hpp>
 #include <yas/serializers/detail/properties.hpp>
 #include <yas/serializers/detail/serializer_fwd.hpp>

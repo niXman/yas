@@ -5,17 +5,9 @@ CONFIG -= app_bundle qt
 TEMPLATE = app
 
 DEFINES += \
-	YAS_SERIALIZE_BOOST_TYPES=1 \
-	YAS_HAS_BOOST_UNORDERED=1 \
-	YAS_HAS_BOOST_ARRAY=1 \
-	YAS_HAS_BOOST_TUPLE=1 \
-	YAS_HAS_BOOST_FUSION=1 \
-	YAS_HAS_DECLTYPE=1 \
-	YAS_SHARED_BUFFER_USE_STD_SHARED_PTR=1 \
-	YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR=1
+	YAS_SERIALIZE_BOOST_TYPES=1
 
-QMAKE_CXXFLAGS += \
-	-std=c++0x
+QMAKE_CXXFLAGS += -std=c++0x
 
 INCLUDEPATH += \
 	../../include \
@@ -272,17 +264,13 @@ HEADERS += \
 	../../include/yas/serializers/text/std/std_vector_serializers.hpp \
 	../../include/yas/serializers/text/std/std_wstring_serializers.hpp \
 	../../include/yas/serializers/binary/utility/usertype_serializers.hpp \
-	 text_test.hpp \
-	 json_test.hpp \
-	 binary_test.hpp \
 	 ../../include/yas/serializers/text/utility/usertype_serializers.hpp \
 	 ../../include/yas/serializers/text/utility/pod_serializers.hpp \
 	 ../../include/yas/serializers/text/utility/autoarray_serializers.hpp \
 	 ../../include/yas/serializers/text/utility/buffer_serializers.hpp \
 	 ../../include/yas/serializers/binary/std/std_forward_list_serializers.hpp \
-	 types_test.hpp \
-    ../../include/yas/serializers/binary/std/std_bitset_serializers.hpp \
-    ../../include/yas/serializers/json/std/std_forward_list_serializers.hpp \
-    ../../include/yas/serializers/json/std/std_bitset_serializers.hpp \
-    ../../include/yas/serializers/text/std/std_forward_list_serializers.hpp \
-    ../../include/yas/serializers/text/std/std_bitset_serializers.hpp
+	 ../../include/yas/serializers/binary/std/std_bitset_serializers.hpp \
+	 ../../include/yas/serializers/json/std/std_forward_list_serializers.hpp \
+	 ../../include/yas/serializers/json/std/std_bitset_serializers.hpp \
+	 ../../include/yas/serializers/text/std/std_forward_list_serializers.hpp \
+	 ../../include/yas/serializers/text/std/std_bitset_serializers.hpp

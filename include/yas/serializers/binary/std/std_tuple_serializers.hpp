@@ -33,11 +33,12 @@
 #ifndef _yas__binary__std_tuple_serializer_hpp__included_
 #define _yas__binary__std_tuple_serializer_hpp__included_
 
+#include <yas/config/config.hpp>
+
 #if defined(YAS_HAS_STD_TUPLE)
 
 #include <stdexcept>
 
-#include <yas/config/config.hpp>
 #include <yas/mpl/type_traits.hpp>
 #include <yas/serializers/detail/properties.hpp>
 #include <yas/serializers/detail/serializer_fwd.hpp>

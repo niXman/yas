@@ -53,26 +53,25 @@ namespace yas {
 
 /***************************************************************************/
 
-struct text_oarchive:
-		detail::omemstream,
-		detail::archive_information<e_archive_type::text, e_direction::out, text_oarchive>,
-		private detail::noncopyable
+struct text_mem_oarchive
+	:detail::omemstream
+	,detail::archive_information<e_archive_type::text, e_direction::out, text_mem_oarchive>
+	,private detail::noncopyable
 {
-	typedef text_oarchive this_type;
+	typedef text_mem_oarchive this_type;
 
-	text_oarchive(header_t::type op = header_t::with_header)
-		:detail::omemstream(),
-		detail::archive_information<e_archive_type::text, e_direction::out, this_type>(this, op)
+	text_mem_oarchive(header_t::type op = header_t::with_header)
+		:detail::omemstream()
+		,detail::archive_information<e_archive_type::text, e_direction::out, this_type>(this, op)
 	{}
-	text_oarchive(char* ptr, size_t size, header_t::type op = header_t::with_header)
-		:detail::omemstream(ptr, size),
-		detail::archive_information<e_archive_type::text, e_direction::out, this_type>(this, op)
+	text_mem_oarchive(char* ptr, size_t size, header_t::type op = header_t::with_header)
+		:detail::omemstream(ptr, size)
+		,detail::archive_information<e_archive_type::text, e_direction::out, this_type>(this, op)
 	{}
 
 	template<typename T>
-	text_oarchive& operator& (const T& v) {
+	text_mem_oarchive& operator& (const T& v) {
 		using namespace detail;
-
 		serializer<
 			type_propertyes<T>::value,
 			serialization_method<T, this_type>::value,

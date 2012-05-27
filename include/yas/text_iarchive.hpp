@@ -41,10 +41,10 @@
 #include <yas/serializers/detail/serializer_fwd.hpp>
 #include <yas/serializers/detail/memstream.hpp>
 
-#include <yas/serializers/binary/utility/pod_serializers.hpp>
-#include <yas/serializers/binary/utility/usertype_serializers.hpp>
-#include <yas/serializers/binary/utility/autoarray_serializers.hpp>
-#include <yas/serializers/binary/utility/buffer_serializers.hpp>
+#include <yas/serializers/text/utility/pod_serializers.hpp>
+#include <yas/serializers/text/utility/usertype_serializers.hpp>
+#include <yas/serializers/text/utility/autoarray_serializers.hpp>
+#include <yas/serializers/text/utility/buffer_serializers.hpp>
 
 #include <yas/tools/buffer.hpp>
 #include <yas/tools/noncopyable.hpp>
@@ -53,28 +53,28 @@ namespace yas {
 
 /***************************************************************************/
 
-struct text_iarchive:
-		detail::imemstream,
-		detail::archive_information<e_archive_type::text, e_direction::in, text_iarchive>,
-		private detail::noncopyable
+struct text_mem_iarchive
+	:detail::imemstream
+	,detail::archive_information<e_archive_type::text, e_direction::in, text_mem_iarchive>
+	,private detail::noncopyable
 {
-	typedef text_iarchive this_type;
+	typedef text_mem_iarchive this_type;
 
-	text_iarchive(const intrusive_buffer& o, header_t::type op = header_t::with_header)
-		:detail::imemstream(o),
-		detail::archive_information<e_archive_type::text, e_direction::in, this_type>(this, op)
+	text_mem_iarchive(const intrusive_buffer& o, header_t::type op = header_t::with_header)
+		:detail::imemstream(o)
+		,detail::archive_information<e_archive_type::text, e_direction::in, this_type>(this, op)
 	{}
-	text_iarchive(const std::string& o, header_t::type op = header_t::with_header)
-		:detail::imemstream(o.c_str(), o.size()),
-		detail::archive_information<e_archive_type::text, e_direction::in, this_type>(this, op)
+	text_mem_iarchive(const std::string& o, header_t::type op = header_t::with_header)
+		:detail::imemstream(o.c_str(), o.size())
+		,detail::archive_information<e_archive_type::text, e_direction::in, this_type>(this, op)
 	{}
-	text_iarchive(const char* ptr, size_t size, header_t::type op = header_t::with_header)
-		:detail::imemstream(ptr, size),
-		detail::archive_information<e_archive_type::text, e_direction::in, this_type>(this, op)
+	text_mem_iarchive(const char* ptr, size_t size, header_t::type op = header_t::with_header)
+		:detail::imemstream(ptr, size)
+		,detail::archive_information<e_archive_type::text, e_direction::in, this_type>(this, op)
 	{}
 
 	template<typename T>
-	text_iarchive& operator& (T& v) {
+	text_mem_iarchive& operator& (T& v) {
 		using namespace detail;
 
 		serializer<

@@ -36,6 +36,9 @@
 #include <yas/config/config.hpp>
 
 #if defined(YAS_HAS_BOOST_TUPLE)
+
+#include <stdexcept>
+
 #include <yas/mpl/type_traits.hpp>
 #include <yas/serializers/detail/properties.hpp>
 #include <yas/serializers/detail/serializer_fwd.hpp>
@@ -50,96 +53,92 @@ namespace detail {
 
 /***************************************************************************/
 
-#define YAS__BINARY__WRITE_BOOST_TUPLE_SIZE(count) \
-   const uint8_t size = count; \
-   ar.write(&size, sizeof(size))
-
 #define YAS__BINARY__WRITE_BOOST_TUPLE_ITEM(unused, idx, type) \
-   if ( is_pod<YAS_PP_CAT(type, idx)>::value ) \
-      ar.write(&boost::tuples::get<idx>(tuple), sizeof(YAS_PP_CAT(type, idx))); \
-   else \
-      ar & boost::tuples::get<idx>(tuple);
+	if ( is_pod<YAS_PP_CAT(type, idx)>::value ) \
+		ar.write(&boost::tuples::get<idx>(tuple), sizeof(YAS_PP_CAT(type, idx))); \
+	else \
+		ar & boost::tuples::get<idx>(tuple);
 
 #define YAS__BINARY__READ_AND_CHECK_BOOST_TUPLE_SIZE(count) \
-   uint8_t size = 0; \
-   ar.read(&size, sizeof(size)); \
-   BOOST_ASSERT_MSG(size == count, "size error on deserialize boost::tuple")
+	yas::uint8_t size = 0; \
+	ar & size; \
+	if ( size != count ) throw std::runtime_error("size error on deserialize boost::tuple")
 
 #define YAS__BINARY__READ_BOOST_TUPLE_ITEM(unused, idx, type) \
-   if ( is_pod<YAS_PP_CAT(type, idx)>::value ) \
-      ar.read(&boost::tuples::get<idx>(tuple), sizeof(YAS_PP_CAT(type, idx))); \
-   else \
-      ar & boost::tuples::get<idx>(tuple);
+	if ( is_pod<YAS_PP_CAT(type, idx)>::value ) \
+		ar.read(&boost::tuples::get<idx>(tuple), sizeof(YAS_PP_CAT(type, idx))); \
+	else \
+		ar & boost::tuples::get<idx>(tuple);
 
 #define YAS__BINARY__GENERATE_EMPTY_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC() \
-   template<> \
-   struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
-      e_archive_type::binary,e_direction::out,boost::tuples::tuple<> \
-   > { \
-      template<typename Archive> \
-      static void apply(Archive&, const boost::tuples::tuple<>&) {} \
-   };
+	template<> \
+	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
+		e_archive_type::binary,e_direction::out,boost::tuples::tuple<> \
+	> { \
+		template<typename Archive> \
+		static void apply(Archive&, const boost::tuples::tuple<>&) {} \
+	};
 
 #define YAS__BINARY__GENERATE_EMPTY_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC() \
-   template<> \
-   struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
-      e_archive_type::binary, e_direction::in,boost::tuples::tuple<> \
-   > { \
-      template<typename Archive> \
-      static void apply(Archive&, boost::tuples::tuple<>&) {} \
-   };
+	template<> \
+	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
+		e_archive_type::binary, e_direction::in,boost::tuples::tuple<> \
+	> { \
+		template<typename Archive> \
+		static void apply(Archive&, boost::tuples::tuple<>&) {} \
+	};
 
 #define YAS__BINARY__GENERATE_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC(unused, count, text) \
-   template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
-   struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
-      e_archive_type::binary, e_direction::out, \
-      boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> \
-   > \
-   { \
-      template<typename Archive> \
-      static void apply(Archive& ar, const boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
-         YAS__BINARY__WRITE_BOOST_TUPLE_SIZE(YAS_PP_INC(count)); \
-         YAS_PP_REPEAT( \
-            YAS_PP_INC(count), \
-            YAS__BINARY__WRITE_BOOST_TUPLE_ITEM, \
-            T \
-         ) \
-      } \
-   };
+	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
+	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
+		e_archive_type::binary, e_direction::out, \
+		boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> \
+	> \
+	{ \
+		template<typename Archive> \
+		static void apply(Archive& ar, const boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
+			ar & static_cast<yas::uint8_t>(YAS_PP_INC(count)); \
+			YAS_PP_REPEAT( \
+				YAS_PP_INC(count), \
+				YAS__BINARY__WRITE_BOOST_TUPLE_ITEM, \
+				T \
+			) \
+		} \
+	};
 
 #define YAS__BINARY__GENERATE_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTIONS_VARIADIC(count) \
-   YAS__BINARY__GENERATE_EMPTY_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC(); \
-   YAS_PP_REPEAT( \
-      count, \
-      YAS__BINARY__GENERATE_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC, \
-      ~ \
-   )
+	YAS__BINARY__GENERATE_EMPTY_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC(); \
+	YAS_PP_REPEAT( \
+		count, \
+		YAS__BINARY__GENERATE_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC, \
+		~ \
+	)
 
 #define YAS__BINARY__GENERATE_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC(unused, count, text) \
-   template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
-   struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
-      e_archive_type::binary,e_direction::in, \
-      boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> \
-   > \
-   { \
-      template<typename Archive> \
-      static void apply(Archive& ar, boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
-         YAS__BINARY__READ_AND_CHECK_BOOST_TUPLE_SIZE(YAS_PP_INC(count)); \
-         YAS_PP_REPEAT( \
-            YAS_PP_INC(count), \
-            YAS__BINARY__READ_BOOST_TUPLE_ITEM, \
-            T \
-         ) \
-      } \
-   };
+	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
+	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
+		e_archive_type::binary,e_direction::in, \
+		boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> \
+	> \
+	{ \
+		template<typename Archive> \
+		static void apply(Archive& ar, boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
+			YAS__BINARY__READ_AND_CHECK_BOOST_TUPLE_SIZE(YAS_PP_INC(count)); \
+			YAS_PP_REPEAT( \
+				YAS_PP_INC(count), \
+				YAS__BINARY__READ_BOOST_TUPLE_ITEM, \
+				T \
+			) \
+		} \
+	};
 
 #define YAS__BINARY__GENERATE_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTIONS_VARIADIC(count) \
-   YAS__BINARY__GENERATE_EMPTY_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC(); \
-   YAS_PP_REPEAT( \
-      count, \
-      YAS__BINARY__GENERATE_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC, \
-      ~ \
-   )
+	YAS__BINARY__GENERATE_EMPTY_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC(); \
+	YAS_PP_REPEAT( \
+		count, \
+		YAS__BINARY__GENERATE_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC, \
+		~ \
+	)
 
 /***************************************************************************/
 

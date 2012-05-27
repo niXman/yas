@@ -33,8 +33,9 @@
 #ifndef _yas__binary__boost_array_serializers_hpp__included_
 #define _yas__binary__boost_array_serializers_hpp__included_
 
-#if defined(YAS_HAS_BOOST_ARRAY)
 #include <yas/config/config.hpp>
+
+#if defined(YAS_HAS_BOOST_ARRAY)
 #include <yas/mpl/type_traits.hpp>
 #include <yas/serializers/detail/serializer_fwd.hpp>
 
