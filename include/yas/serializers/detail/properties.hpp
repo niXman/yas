@@ -62,23 +62,23 @@ struct e_direction {
 };
 
 template<typename Ar>
-struct is_binary: detail::bool_<Ar::_archive_type == e_archive_type::binary>
+struct is_binary_archive: detail::bool_<Ar::_archive_type == e_archive_type::binary>
 {};
 
 template<typename Ar>
-struct is_text: detail::bool_<Ar::_archive_type == e_archive_type::text>
+struct is_text_archive: detail::bool_<Ar::_archive_type == e_archive_type::text>
 {};
 
 template<typename Ar>
-struct is_json: detail::bool_<Ar::_archive_type == e_archive_type::json>
+struct is_json_archive: detail::bool_<Ar::_archive_type == e_archive_type::json>
 {};
 
 template<typename Ar>
-struct is_readable: detail::bool_<Ar::_is_readable>
+struct is_readable_archive: detail::bool_<Ar::_is_readable>
 {};
 
 template<typename Ar>
-struct is_writable: detail::bool_<Ar::_is_writable>
+struct is_writable_archive: detail::bool_<Ar::_is_writable>
 {};
 
 /***************************************************************************/

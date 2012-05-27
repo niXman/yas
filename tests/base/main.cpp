@@ -99,20 +99,24 @@ bool pod_test() {
 		& f
 		& d;
 
-	const size_t expected =
-		4+ // archive information
-		sizeof(c)+
-		sizeof(s)+
-		sizeof(i)+
-		sizeof(l)+
-		sizeof(f)+
-		sizeof(d)
-	;
-	if ( oa.size() != expected ) {
-		std::cout
-		<< "POD test failed! bad size from serializer archive! expected = " << expected
-		<< ", current = " << oa.size() << std::endl;
-		return false;
+	if ( yas::is_binary_archive<OA>::value ) {
+		const size_t expected =
+			4+ // archive information
+			sizeof(c)+
+			sizeof(s)+
+			sizeof(i)+
+			sizeof(l)+
+			sizeof(f)+
+			sizeof(d)
+		;
+		if ( oa.size() != expected ) {
+			std::cout
+			<< "POD test failed! bad size of serialized archive! expected = " << expected
+			<< ", current = " << oa.size() << std::endl;
+			return false;
+		}
+	} else {
+		std::cout << (const char*)oa.get_intrusive_buffer().data << std::endl;
 	}
 
 	IA ia(oa.get_intrusive_buffer());
@@ -132,7 +136,7 @@ bool pod_test() {
 }
 
 /***************************************************************************/
-
+#if 0
 template<typename OA, typename IA>
 bool auto_array_test() {
 	static const size_t array_size = 6;
@@ -1732,7 +1736,7 @@ bool split_methods_serializer_test() {
 
 	return true;
 }
-
+#endif
 /***************************************************************************/
 
 namespace _binary_size_test {
@@ -1820,13 +1824,13 @@ bool tests() {
 
 	printf("%s VERSION            test %s\n", test_type, (version_test<OA, IA>()?passed:failed));
 	printf("%s POD                test %s\n", test_type, (pod_test<OA, IA>()?passed:failed));
+#if 0
 	printf("%s AUTO_ARRAY         test %s\n", test_type, (auto_array_test<OA, IA>()?passed:failed));
 #if defined(YAS_HAS_BOOST_ARRAY) || defined(YAS_HAS_STD_ARRAY)
 	printf("%s ARRAY              test %s\n", test_type, (array_test<OA, IA>()?passed:failed));
 #endif
 	printf("%s BITSET             test %s\n", test_type, (bitset_test<OA, IA>()?passed:failed));
-#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || \
-	defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
+#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
 	printf("%s BUFFER             test %s\n", test_type, (buffer_test<OA, IA>()?passed:failed));
 #endif
 	printf("%s STRING             test %s\n", test_type, (string_test<OA, IA>()?passed:failed));
@@ -1864,7 +1868,7 @@ bool tests() {
 	printf("%s SPLIT_METHODS      test %s\n", test_type, (split_methods_serializer_test<OA, IA>()?passed:failed));
 
 	speed_test<OA, IA>();
-
+#endif
 	return true;
 }
 

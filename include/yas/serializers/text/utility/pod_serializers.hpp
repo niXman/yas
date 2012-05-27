@@ -48,8 +48,7 @@ struct serializer<
 	e_archive_type::text,
 	e_direction::out,
 	T
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, const T& v) {
 		ar << v << ' ';
@@ -63,8 +62,7 @@ struct serializer<
 	e_archive_type::text,
 	e_direction::in,
 	T
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, T& v) {
 		ar >> v;

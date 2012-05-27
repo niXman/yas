@@ -33,8 +33,7 @@
 #ifndef _yas__json_oarchive_hpp__included_
 #define _yas__json_oarchive_hpp__included_
 
-#include <yas/mpl/type_traits.hpp>
-#include <yas/mpl/metafunctions.hpp>
+#include <yas/serializers/detail/properties.hpp>
 #include <yas/serializers/detail/has_method_serialize.hpp>
 #include <yas/serializers/detail/has_function_serialize.hpp>
 
