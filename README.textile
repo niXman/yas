@@ -8,13 +8,13 @@ Increase speed of the YAS serialization compared with boost.serialization is:
 <li>6..7 times in debug mode</li><br />
 </ul></p>
 
-	<h2>Planned the support for the following types of archives:
+	<h2>Planned the support for the following types of archives:</h2>
 
 <ul><br />
 <li>binary</li><br />
 <li>text</li><br />
 <li>json</li><br />
-</ul></h2>
+</ul>
 
 	<p><em>Currently only a binary serialization implemented.</em></p>
 
