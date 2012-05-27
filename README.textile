@@ -1,7 +1,9 @@
 	<h1>YAS &#8211; Yet Another Serialization</h1>
 
 	<p>YAS is created as a replacement of boost.serialization because of its insufficient speed of serialization.<br />
-Increase speed of the YAS serialization compared with boost.serialization is:<ul><br />
+Increase speed of the YAS serialization compared with boost.serialization is:
+
+<ul><br />
 <li>2..3 times in release mode</li><br />
 <li>6..7 times in debug mode</li><br />
 </ul></p>
