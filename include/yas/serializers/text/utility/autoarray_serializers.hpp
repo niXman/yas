@@ -48,75 +48,75 @@ namespace detail {
 
 template<typename T, size_t N>
 struct serializer<
-   e_type_type::e_type_type::is_array_of_pods,
-   e_ser_method::use_internal_serializer,
-   e_archive_type::text,
-   e_direction::out,
-   T[N]
+	e_type_type::e_type_type::is_array_of_pods,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::text,
+	e_direction::out,
+	T[N]
 >
 {
-   template<typename Archive>
-   static void apply(Archive& ar, const wchar_t(&v)[N]) {
-      ar & detail::TypeConverter<std::string, std::wstring>::Convert(v);
-   }
+	template<typename Archive>
+	static void apply(Archive& ar, const wchar_t(&v)[N]) {
+		ar & detail::TypeConverter<std::string, std::wstring>::Convert(v);
+	}
 
-   template<typename Archive, typename U>
-   static void apply(Archive& ar, const U(&v)[N]) {
-      ar & N & ' ';
-      for ( std::size_t idx = 0; idx < N; ++idx ) {
-         ar & v[idx] & ' ';
-      }
-   }
+	template<typename Archive, typename U>
+	static void apply(Archive& ar, const U(&v)[N]) {
+		ar << N <<  ' ';
+		for ( std::size_t idx = 0; idx < N; ++idx ) {
+			ar << v[idx] << ' ';
+		}
+	}
 };
 
 template<typename T, size_t N>
 struct serializer<
-   e_type_type::e_type_type::is_array_of_pods,
-   e_ser_method::use_internal_serializer,
-   e_archive_type::text,
-   e_direction::in,
-   T[N]
+	e_type_type::e_type_type::is_array_of_pods,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::text,
+	e_direction::in,
+	T[N]
 >
 {
-   template<typename Archive>
-   static void apply(Archive& ar, wchar_t(&v)[N]) {
-   }
+	template<typename Archive>
+	static void apply(Archive& ar, wchar_t(&v)[N]) {
+	}
 
-   template<typename Archive, typename U>
-   static void apply(Archive& ar, U(&v)[N]) {
-   }
-};
-
-/***************************************************************************/
-
-template<typename T, size_t N>
-struct serializer<
-   e_type_type::e_type_type::is_array,
-   e_ser_method::use_internal_serializer,
-   e_archive_type::text,
-   e_direction::out,
-   T[N]
->
-{
-   template<typename Archive, typename U>
-   static void apply(Archive& ar, const U(&v)[N]) {
-   }
+	template<typename Archive, typename U>
+	static void apply(Archive& ar, U(&v)[N]) {
+	}
 };
 
 /***************************************************************************/
 
 template<typename T, size_t N>
 struct serializer<
-   e_type_type::e_type_type::is_array,
-   e_ser_method::use_internal_serializer,
-   e_archive_type::text,
-   e_direction::in,
-   T[N]
+	e_type_type::e_type_type::is_array,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::text,
+	e_direction::out,
+	T[N]
 >
 {
-   template<typename Archive, typename U>
-   static void apply(Archive& ar, U(&v)[N]) {
-   }
+	template<typename Archive, typename U>
+	static void apply(Archive& ar, const U(&v)[N]) {
+	}
+};
+
+/***************************************************************************/
+
+template<typename T, size_t N>
+struct serializer<
+	e_type_type::e_type_type::is_array,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::text,
+	e_direction::in,
+	T[N]
+>
+{
+	template<typename Archive, typename U>
+	static void apply(Archive& ar, U(&v)[N]) {
+	}
 };
 
 /***************************************************************************/

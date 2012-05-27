@@ -64,7 +64,9 @@ struct serializer<
 		for ( std::size_t idx = 0; idx < N; ++idx ) {
 			result[idx>>3] |= (bits[idx] << (idx & 7));
 		}
-		ar & result;
+		yas::uint8_t size = result.size();
+		ar.write(&size, sizeof(size));
+		ar.write(&result[0], size);
 	}
 };
 
@@ -83,8 +85,11 @@ struct serializer<
 		ar & size;
 		if ( size != N ) throw std::runtime_error("bitsets size is not equal");
 		std::vector<yas::uint8_t> buf;
-		ar & buf;
-		if ( buf.size() != ((N + 7) >> 3) ) throw std::runtime_error("bitsets storrage size is not equal");
+		yas::uint8_t storage = 0;
+		ar.read(&storage, sizeof(storage));
+		buf.resize(storage);
+		ar.read(&buf[0], storage);
+		if ( buf.size() != ((N + 7) >> 3) ) throw std::runtime_error("bitsets storage size is not equal");
 		for ( std::size_t idx = 0; idx < N; ++idx ) {
 			bits[idx] = ((buf[idx>>3] >> (idx & 7)) & 1);
 		}
