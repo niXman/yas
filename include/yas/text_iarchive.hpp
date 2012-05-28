@@ -57,28 +57,25 @@ struct text_mem_iarchive
 	,detail::archive_information<e_archive_type::text, e_direction::in, text_mem_iarchive>
 	,private detail::noncopyable
 {
-	typedef text_mem_iarchive this_type;
-
 	text_mem_iarchive(const intrusive_buffer& o, header_t::type op = header_t::with_header)
 		:detail::imemstream(o)
-		,detail::archive_information<e_archive_type::text, e_direction::in, this_type>(this, op)
+		,detail::archive_information<e_archive_type::text, e_direction::in, text_mem_iarchive>(this, op)
 	{}
 	text_mem_iarchive(const std::string& o, header_t::type op = header_t::with_header)
 		:detail::imemstream(o.c_str(), o.size())
-		,detail::archive_information<e_archive_type::text, e_direction::in, this_type>(this, op)
+		,detail::archive_information<e_archive_type::text, e_direction::in, text_mem_iarchive>(this, op)
 	{}
 	text_mem_iarchive(const char* ptr, size_t size, header_t::type op = header_t::with_header)
 		:detail::imemstream(ptr, size)
-		,detail::archive_information<e_archive_type::text, e_direction::in, this_type>(this, op)
+		,detail::archive_information<e_archive_type::text, e_direction::in, text_mem_iarchive>(this, op)
 	{}
 
 	template<typename T>
 	text_mem_iarchive& operator& (T& v) {
 		using namespace detail;
-
 		serializer<
 			type_propertyes<T>::value,
-			serialization_method<T, this_type>::value,
+			serialization_method<T, text_mem_iarchive>::value,
 			e_archive_type::text,
 			e_direction::in,
 			T

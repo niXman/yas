@@ -57,15 +57,13 @@ struct text_mem_oarchive
 	,detail::archive_information<e_archive_type::text, e_direction::out, text_mem_oarchive>
 	,private detail::noncopyable
 {
-	typedef text_mem_oarchive this_type;
-
 	text_mem_oarchive(header_t::type op = header_t::with_header)
 		:detail::omemstream()
-		,detail::archive_information<e_archive_type::text, e_direction::out, this_type>(this, op)
+		,detail::archive_information<e_archive_type::text, e_direction::out, text_mem_oarchive>(this, op)
 	{}
 	text_mem_oarchive(char* ptr, size_t size, header_t::type op = header_t::with_header)
 		:detail::omemstream(ptr, size)
-		,detail::archive_information<e_archive_type::text, e_direction::out, this_type>(this, op)
+		,detail::archive_information<e_archive_type::text, e_direction::out, text_mem_oarchive>(this, op)
 	{}
 
 	template<typename T>
@@ -73,7 +71,7 @@ struct text_mem_oarchive
 		using namespace detail;
 		serializer<
 			type_propertyes<T>::value,
-			serialization_method<T, this_type>::value,
+			serialization_method<T, text_mem_oarchive>::value,
 			e_archive_type::text,
 			e_direction::out,
 			T
