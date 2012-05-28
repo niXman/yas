@@ -74,35 +74,27 @@ struct shared_buffer {
 		:size(0)
 	{}
 	shared_buffer(const void* ptr, yas::uint32_t size)
-		:size(0)
+		:size(size)
 	{
 		data.reset(new char[size], &deleter);
 		std::memcpy(data.get(), ptr, size);
-		this->size = size;
 	}
 #if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR)
 	shared_buffer(std::shared_ptr<char> buf, yas::uint32_t size)
-		:size(0)
-	{
-		data = buf;
-		this->size = size;
-	}
+		:data(buf)
+		,size(size)
+	{}
 #elif defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
 	shared_buffer(boost::shared_ptr<char> buf, yas::uint32_t size)
-		:size(0)
-	{
-		data.reset(new char[size], &deleter);
-		std::memcpy(data.get(), buf.get(), size);
-		this->size = size;
-	}
+		:data(buf)
+		,size(size)
+	{}
 #endif
 
 	shared_buffer(const shared_buffer& buf)
-		:size(0)
-	{
-		data = buf.data;
-		size = buf.size;
-	}
+		:data(buf.data)
+		,size(buf.size)
+	{}
 
 #if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR)
 	typedef std::shared_ptr<char> shared_array_type;
@@ -111,7 +103,7 @@ struct shared_buffer {
 #endif
 
 	shared_array_type data;
-	yas::uint32_t size;
+	const yas::uint32_t size;
 
 	static void deleter(void* ptr) { delete[] ((char*)ptr); }
 };
