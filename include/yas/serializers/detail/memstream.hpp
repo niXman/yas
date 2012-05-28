@@ -81,6 +81,8 @@ struct omemstream: std::stringbuf {
 
 	intrusive_buffer get_intrusive_buffer() const
 		{return intrusive_buffer(pbase(), pptr()-pbase());}
+	shared_buffer get_shared_buffer() const
+		{return shared_buffer(pbase(), pptr()-pbase());}
 	std::string str() const {return std::string(pbase(), pptr());}
 
 private:
@@ -123,6 +125,15 @@ struct imemstream: std::stringbuf {
 		setg(const_cast<char_type*>(static_cast<const char_type*>(buf.data)),
 			  const_cast<char_type*>(static_cast<const char_type*>(buf.data)),
 			  const_cast<char_type*>(static_cast<const char_type*>(buf.data))+buf.size
+		);
+	}
+	imemstream(const shared_buffer& buf)
+		:std::stringbuf()
+		,stream(this)
+	{
+		setg(const_cast<char_type*>(static_cast<const char_type*>(buf.data.get())),
+			  const_cast<char_type*>(static_cast<const char_type*>(buf.data.get())),
+			  const_cast<char_type*>(static_cast<const char_type*>(buf.data.get()))+buf.size
 		);
 	}
 
