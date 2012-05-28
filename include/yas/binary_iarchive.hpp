@@ -61,6 +61,10 @@ struct binary_mem_iarchive:
 		:detail::imemstream(o),
 		detail::archive_information<e_archive_type::binary, e_direction::in, binary_mem_iarchive>(this, op)
 	{}
+	binary_mem_iarchive(const shared_buffer& o, header_t::type op = header_t::with_header)
+		:detail::imemstream(o),
+		detail::archive_information<e_archive_type::binary, e_direction::in, binary_mem_iarchive>(this, op)
+	{}
 	binary_mem_iarchive(const std::string& o, header_t::type op = header_t::with_header)
 		:detail::imemstream(o.c_str(), o.size()),
 		detail::archive_information<e_archive_type::binary, e_direction::in, binary_mem_iarchive>(this, op)
