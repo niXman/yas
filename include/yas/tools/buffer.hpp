@@ -103,7 +103,7 @@ struct shared_buffer {
 #endif
 
 	shared_array_type data;
-	const yas::uint32_t size;
+	yas::uint32_t size;
 
 	static void deleter(void* ptr) { delete[] ((char*)ptr); }
 };
