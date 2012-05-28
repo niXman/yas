@@ -9,6 +9,8 @@ Increase speed of the YAS serialization compared with boost.serialization is:
  - ~2...3 times in release mode
  - ~6...7 times in debug mode
 
+Yas is header only library. You do not need to link it with your code.
+
 ===
 Currently only a binary serialization implemented.
 
