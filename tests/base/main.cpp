@@ -68,6 +68,11 @@ bool version_test() {
 		std::cout << "VERSION test failed! archive versions is not equal!" << std::endl;
 		return false;
 	}
+
+	if ( oa.header_size() != OA::_header_size || OA::_header_size != sizeof(yas::uint32_t) ) {
+		std::cout << "VERSION test failed! bad archive header size!" << std::endl;
+		return false;
+	}
 //   std::cout
 //   << "binary_mem_oarchive: type = " << oa.archive_type() << std::endl
 //   << "binary_mem_oarchive: bits = " << oa.bits() << std::endl

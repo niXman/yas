@@ -112,10 +112,12 @@ static const char full_header_size = sizeof(yas_id)+sizeof(archive_header);
 			header = *reinterpret_cast<archive_header*>(raw_hdr+sizeof(yas_id)); \
 		} \
 		\
+		static yas::uint32_t	header_size() {return full_header_size;} \
 		e_archive_type::type archive_type() const {return YAS_PP_SEQ_ELEM(idx, seq);} \
 		int bits() const {return(header.bits.version)?header.bits.bits?64:32:(throw no_header());} \
 		int version() const {return(header.bits.version)?header.bits.version:(throw no_header());} \
 		\
+		static const yas::uint32_t				_header_size	= full_header_size; \
 		static const e_archive_type::type	_archive_type	= YAS_PP_SEQ_ELEM(idx, seq); \
 		static const e_direction::type		_direction		= e_direction::in; \
 		static const bool							_is_readable	= true; \
@@ -138,10 +140,12 @@ static const char full_header_size = sizeof(yas_id)+sizeof(archive_header);
 			ar->sputc(hdr.as_char); \
 		} \
 		\
+		static yas::uint32_t header_size() {return full_header_size;} \
 		e_archive_type::type archive_type() const {return YAS_PP_SEQ_ELEM(idx, seq);} \
 		int bits() const {return YAS_PLATFORM_BITS();} \
 		int version() const {return archive_version;} \
 		\
+		static const yas::uint32_t				_header_size	= full_header_size; \
 		static const e_archive_type::type	_archive_type	= YAS_PP_SEQ_ELEM(idx, seq); \
 		static const e_direction::type		_direction		= e_direction::in; \
 		static const bool							_is_readable	= false; \
