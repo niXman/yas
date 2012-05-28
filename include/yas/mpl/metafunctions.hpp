@@ -42,18 +42,20 @@ namespace detail {
 
 template<bool ok, typename T1, typename T2>
 struct if_c {
-   typedef T1 type;
+	typedef T1 type;
 };
 
 template<typename T1, typename T2>
 struct if_c<false, T1, T2> {
-   typedef T2 type;
+	typedef T2 type;
 };
 
 template<typename P, typename T1, typename T2>
 struct if_ {
-   typedef typename if_c<P::value, T1, T2>::type type;
+	typedef typename if_c<P::value, T1, T2>::type type;
 };
+
+/***************************************************************************/
 
 template<typename A1, typename A2>
 struct and_: bool_<(A1::value && A2::value)>::type {};
@@ -63,6 +65,30 @@ struct or_: bool_<(A1::value || A2::value)>::type {};
 
 template<typename A1>
 struct not_: bool_<(!A1::value)>::type {};
+
+/***************************************************************************/
+
+template<bool, typename T = void>
+struct enable_if_c {
+	typedef T type;
+};
+
+template<typename T>
+struct enable_if_c<false, T> {};
+
+template<typename cmp, typename T = void>
+struct enable_if: enable_if_c<cmp::value, T> {};
+
+template<bool, typename T = void>
+struct disable_if_c {
+	typedef T type;
+};
+
+template<typename T>
+struct disable_if_c<true, T> {};
+
+template<typename cmp, typename T = void>
+struct disable_if: disable_if_c<cmp::value, T> {};
 
 /***************************************************************************/
 

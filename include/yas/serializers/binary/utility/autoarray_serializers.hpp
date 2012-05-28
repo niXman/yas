@@ -55,10 +55,10 @@ struct serializer<
 	e_direction::out,
 	T[N]
 > {
-	template<typename Archive>
-	static void apply(Archive& ar, const wchar_t(&v)[N]) {
-		ar & detail::TypeConverter<std::string, std::wstring>::Convert(v);
-	}
+//	template<typename Archive>
+//	static void apply(Archive& ar, const wchar_t(&v)[N]) {
+//		ar & detail::TypeConverter<std::string, std::wstring>::Convert(v);
+//	}
 
 	template<typename Archive, typename U>
 	static void apply(Archive& ar, const U(&v)[N]) {
@@ -75,14 +75,14 @@ struct serializer<
 	e_direction::in,
 	T[N]
 > {
-	template<typename Archive>
-	static void apply(Archive& ar, wchar_t(&v)[N]) {
-		std::string string;
-		ar & string;
-		if ( string.size() != N ) throw std::runtime_error("size of arrays is not equal");
-		std::wstring wstring = detail::TypeConverter<std::wstring, std::string>::Convert(string);
-		std::copy(wstring.begin(), wstring.end(), &v);
-	}
+//	template<typename Archive>
+//	static void apply(Archive& ar, wchar_t(&v)[N]) {
+//		std::string string;
+//		ar & string;
+//		if ( string.size() != N ) throw std::runtime_error("size of arrays is not equal");
+//		std::wstring wstring = detail::TypeConverter<std::wstring, std::string>::Convert(string);
+//		std::copy(wstring.begin(), wstring.end(), &v);
+//	}
 
 	template<typename Archive, typename U>
 	static void apply(Archive& ar, U(&v)[N]) {

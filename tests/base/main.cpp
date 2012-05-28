@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <algorithm>
 #include <cstdio>
 
 #include <yas/serializers/std_types_serializers.hpp>
@@ -121,7 +122,7 @@ bool pod_test() {
 			return false;
 		}
 	} else {
-		std::cout << (const char*)oa.get_intrusive_buffer().data << std::endl;
+		std::cout.write(oa.beg(), oa.size()) << std::endl;
 	}
 
 	IA ia(oa.get_intrusive_buffer());
@@ -141,13 +142,13 @@ bool pod_test() {
 }
 
 /***************************************************************************/
-#if 0
+
 template<typename OA, typename IA>
 bool auto_array_test() {
 	static const size_t array_size = 6;
 
-	char ca1[] = {"signed-char string"}, ca2[array_size+1] = {0};
-	unsigned char uca1[] = {0x75,0x6e,0x73,0x69,0x67,0x6e,0x65,0x64,0x2d,0x63,0x68,0x61,0x72,0x20,0x73,0x74,0x72,0x69,0x6e,0x67}, uca2[array_size+1] = {0};
+	char ca1[] = {"string"}, ca2[array_size+1] = {0};
+	unsigned char uca1[] = {0x73,0x74,0x72,0x69,0x6e,0x67,0x00}, uca2[array_size+1] = {0};
 	short sa1[array_size] = {1,2,3,4,5,6}, sa2[array_size];
 	unsigned short usa1[array_size] = {1,2,3,4,5,6}, usa2[array_size];
 	int ia1[array_size] = {1,2,3,4,5,6}, ia2[array_size];
@@ -254,27 +255,48 @@ bool auto_array_test() {
 		oa & lda1;
 		IA ia(oa.get_intrusive_buffer());
 		ia & lda2;
-		if ( memcmp(lda1, lda2, array_size*sizeof(lda1[0])) ) {
-			std::cout << "AUTO_ARRAY deserialization error!" << std::endl;
-			return false;
+		if ( yas::is_binary_archive<OA>::value ) {
+			if ( memcmp(lda1, lda2, array_size*sizeof(lda1[0])) ) {
+				std::cout << "AUTO_ARRAY deserialization error!" << std::endl;
+				return false;
+			}
+		} else {
+			if ( !std::equal(lda1, lda1+array_size, lda2) ) {
+				std::cout << "AUTO_ARRAY deserialization error!" << std::endl;
+				return false;
+			}
 		}
 	}
 	{  OA oa;
 		oa & da1;
 		IA ia(oa.get_intrusive_buffer());
 		ia & da2;
-		if ( memcmp(da1, da2, array_size*sizeof(da1[0])) ) {
-			std::cout << "AUTO_ARRAY deserialization error!" << std::endl;
-			return false;
+		if ( yas::is_binary_archive<OA>::value ) {
+			if ( memcmp(da1, da2, array_size*sizeof(da1[0])) ) {
+				std::cout << "AUTO_ARRAY deserialization error!" << std::endl;
+				return false;
+			}
+		} else {
+			if ( !std::equal(da1, da1+array_size, da2) ) {
+				std::cout << "AUTO_ARRAY deserialization error!" << std::endl;
+				return false;
+			}
 		}
 	}
 	{  OA oa;
 		oa & fa1;
 		IA ia(oa.get_intrusive_buffer());
 		ia & fa2;
-		if ( memcmp(fa1, fa2, array_size*sizeof(fa1[0])) ) {
-			std::cout << "AUTO_ARRAY deserialization error!" << std::endl;
-			return false;
+		if ( yas::is_binary_archive<OA>::value ) {
+			if ( memcmp(fa1, fa2, array_size*sizeof(fa1[0])) ) {
+				std::cout << "AUTO_ARRAY deserialization error!" << std::endl;
+				return false;
+			}
+		} else {
+			if ( !std::equal(fa1, fa1+array_size, fa2) ) {
+				std::cout << "AUTO_ARRAY deserialization error!" << std::endl;
+				return false;
+			}
 		}
 	}
 
@@ -282,7 +304,7 @@ bool auto_array_test() {
 }
 
 /***************************************************************************/
-
+#if 0
 #if defined(YAS_HAS_STD_ARRAY) || defined(YAS_HAS_BOOST_ARRAY)
 
 template<typename OA, typename IA>
@@ -1819,9 +1841,9 @@ bool speed_test() {
 template<typename OA, typename IA>
 bool tests() {
 	static const char* test_type =
-	yas::detail::is_same<OA, OA>::value ? "binary:"
-		: yas::detail::is_same<OA, yas::text_mem_oarchive>::value ? "text:"
-			: yas::detail::is_same<OA, yas::json_mem_oarchive>::value ? "json:"
+	yas::is_binary_archive<OA>::value ? "binary:"
+		: yas::is_text_archive<OA>::value ? "text:"
+			: yas::is_json_archive<OA>::value ? "json:"
 				: "unknown:";
 
 	static const char* passed = "passed";
@@ -1829,8 +1851,8 @@ bool tests() {
 
 	printf("%s VERSION            test %s\n", test_type, (version_test<OA, IA>()?passed:failed));
 	printf("%s POD                test %s\n", test_type, (pod_test<OA, IA>()?passed:failed));
-#if 0
 	printf("%s AUTO_ARRAY         test %s\n", test_type, (auto_array_test<OA, IA>()?passed:failed));
+#if 0
 #if defined(YAS_HAS_BOOST_ARRAY) || defined(YAS_HAS_STD_ARRAY)
 	printf("%s ARRAY              test %s\n", test_type, (array_test<OA, IA>()?passed:failed));
 #endif
