@@ -36,7 +36,7 @@
 
 #include <yas/tools/utf8conv.hpp>
 
-#include <yas/serializers/detail/serializer_fwd.hpp>
+#include <yas/serializers/detail/selector.hpp>
 #include <yas/serializers/detail/properties.hpp>
 
 namespace yas {

@@ -30,22 +30,14 @@
 /***************************************************************************/
 
 void types_test() {
-	extern char __BAD_YAS__INT8_T__SIZEOF__[(sizeof(yas::int8_t)==1)?1:-1];
-	(void)__BAD_YAS__INT8_T__SIZEOF__;
-	extern char __BAD_YAS__UINT8_T__SIZEOF__[sizeof(yas::uint8_t)==1?1:-1];
-	(void)__BAD_YAS__UINT8_T__SIZEOF__;
-	extern char __BAD_YAS__INT16_T__SIZEOF__[sizeof(yas::int16_t)==2?1:-1];
-	(void)__BAD_YAS__INT16_T__SIZEOF__;
-	extern char __BAD_YAS__UINT16_T__SIZEOF__[sizeof(yas::uint16_t)==2?1:-1];
-	(void)__BAD_YAS__UINT16_T__SIZEOF__;
-	extern char __BAD_YAS__INT32_T__SIZEOF__[sizeof(yas::int32_t)==4?1:-1];
-	(void)__BAD_YAS__INT32_T__SIZEOF__;
-	extern char __BAD_YAS__UINT32_T__SIZEOF__[sizeof(yas::uint32_t)==4?1:-1];
-	(void)__BAD_YAS__UINT32_T__SIZEOF__;
-	extern char __BAD_YAS__INT64_T__SIZEOF__[sizeof(yas::int64_t)==8?1:-1];
-	(void)__BAD_YAS__INT64_T__SIZEOF__;
-	extern char __BAD_YAS__UINT64_T__SIZEOF__[sizeof(yas::uint64_t)==8?1:-1];
-	(void)__BAD_YAS__UINT64_T__SIZEOF__;
+	YAS_STATIC_ASSERT(sizeof(yas::int8_t)==1, BAD_YAS_INT8_T_SIZEOF);
+	YAS_STATIC_ASSERT(sizeof(yas::int8_t)==1, BAD_YAS_UINT8_T_SIZEOF);
+	YAS_STATIC_ASSERT(sizeof(yas::int16_t)==2, BAD_YAS_INT16_T_SIZEOF);
+	YAS_STATIC_ASSERT(sizeof(yas::int16_t)==2, BAD_YAS_UINT16_T_SIZEOF);
+	YAS_STATIC_ASSERT(sizeof(yas::int32_t)==4, BAD_YAS_INT32_T_SIZEOF);
+	YAS_STATIC_ASSERT(sizeof(yas::int32_t)==4, BAD_YAS_UINT32_T_SIZEOF);
+	YAS_STATIC_ASSERT(sizeof(yas::int64_t)==8, BAD_YAS_INT64_T_SIZEOF);
+	YAS_STATIC_ASSERT(sizeof(yas::int64_t)==8, BAD_YAS_UINT64_T_SIZEOF);
 }
 
 /***************************************************************************/
@@ -97,7 +89,7 @@ bool pod_test() {
 	int i = 3, ii;
 	long l = 4, ll;
 	float f = 3.14, ff;
-	double d = 3.14256159, dd;
+	double d = 3.14, dd;
 	oa & c
 		& s
 		& i
@@ -1842,8 +1834,8 @@ template<typename OA, typename IA>
 bool tests() {
 	static const char* test_type =
 	yas::is_binary_archive<OA>::value ? "binary:"
-		: yas::is_text_archive<OA>::value ? "text:"
-			: yas::is_json_archive<OA>::value ? "json:"
+		: yas::is_text_archive<OA>::value ? "text  :"
+			: yas::is_json_archive<OA>::value ? "json  :"
 				: "unknown:";
 
 	static const char* passed = "passed";

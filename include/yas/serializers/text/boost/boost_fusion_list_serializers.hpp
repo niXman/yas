@@ -38,7 +38,7 @@
 #if defined(YAS_HAS_BOOST_FUSION)
 #include <yas/mpl/type_traits.hpp>
 #include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/serializer_fwd.hpp>
+#include <yas/serializers/detail/selector.hpp>
 #include <yas/tools/boost_preprocessor/preprocessor.hpp>
 
 #include <boost/fusion/container/list.hpp>

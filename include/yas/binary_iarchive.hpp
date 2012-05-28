@@ -37,7 +37,7 @@
 #include <yas/serializers/detail/has_method_serialize.hpp>
 #include <yas/serializers/detail/has_function_serialize.hpp>
 
-#include <yas/serializers/detail/serializer_fwd.hpp>
+#include <yas/serializers/detail/selector.hpp>
 #include <yas/serializers/detail/memstream.hpp>
 
 #include <yas/serializers/binary/utility/pod_serializers.hpp>

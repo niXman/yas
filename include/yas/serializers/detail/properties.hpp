@@ -85,4 +85,4 @@ struct is_writable_archive: detail::bool_<Ar::_is_writable>
 
 } // namespace yas
 
-#endif // _yas__serializer_fwd_hpp__included_
+#endif // _yas__selector_hpp__included_

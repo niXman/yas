@@ -38,7 +38,7 @@
 #include <yas/config/config.hpp>
 #include <yas/tools/buffer.hpp>
 #include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/serializer_fwd.hpp>
+#include <yas/serializers/detail/selector.hpp>
 
 namespace yas {
 namespace detail {

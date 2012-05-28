@@ -140,62 +140,63 @@ struct remove_all_extents<T const volatile[]>
 
 template<typename T>
 struct is_array_of_pods: bool_<
-   is_array<T>::value && is_pod<typename remove_all_extents<T>::type>::value
+	is_array<T>::value && is_pod<typename remove_all_extents<T>::type>::value
 >
 {};
 
 /***************************************************************************/
 
 template<typename T, typename A1, typename A2, typename A3 = void, typename A4 = void>
-struct is_any_of: bool_<
-   is_same<T, A1>::value
-   || is_same<T, A2>::value
-   || is_same<T, A3>::value
-   || is_same<T, A4>::value
+struct is_any_of: bool_
+<
+		is_same<T, A1>::value
+	|| is_same<T, A2>::value
+	|| is_same<T, A3>::value
+	|| is_same<T, A4>::value
 >
 {};
 
 /***************************************************************************/
 
 #define YAS_WRITE_ONE_SPECIALIZATION(unused, idx, seq) \
-   template<> \
-   struct YAS_PP_TUPLE_ELEM(2, 0, YAS_PP_SEQ_ELEM(idx, seq)) \
-      <YAS_PP_TUPLE_ELEM(2, 1, YAS_PP_SEQ_ELEM(idx, seq))> {static const bool value = true;}; \
-   \
-   template<> \
-   struct YAS_PP_TUPLE_ELEM(2, 0, YAS_PP_SEQ_ELEM(idx, seq)) \
-      <YAS_PP_TUPLE_ELEM(2, 1, YAS_PP_SEQ_ELEM(idx, seq)) const> {static const bool value = true;}; \
-   \
-   template<> \
-   struct YAS_PP_TUPLE_ELEM(2, 0, YAS_PP_SEQ_ELEM(idx, seq)) \
-      <YAS_PP_TUPLE_ELEM(2, 1, YAS_PP_SEQ_ELEM(idx, seq)) volatile> {static const bool value = true;}; \
-   \
-   template<> \
-   struct YAS_PP_TUPLE_ELEM(2, 0, YAS_PP_SEQ_ELEM(idx, seq)) \
-      <YAS_PP_TUPLE_ELEM(2, 1, YAS_PP_SEQ_ELEM(idx, seq)) const volatile> {static const bool value = true;};
+	template<> \
+	struct YAS_PP_TUPLE_ELEM(2, 0, YAS_PP_SEQ_ELEM(idx, seq)) \
+		<YAS_PP_TUPLE_ELEM(2, 1, YAS_PP_SEQ_ELEM(idx, seq))> {static const bool value = true;}; \
+	\
+	template<> \
+	struct YAS_PP_TUPLE_ELEM(2, 0, YAS_PP_SEQ_ELEM(idx, seq)) \
+		<YAS_PP_TUPLE_ELEM(2, 1, YAS_PP_SEQ_ELEM(idx, seq)) const> {static const bool value = true;}; \
+	\
+	template<> \
+	struct YAS_PP_TUPLE_ELEM(2, 0, YAS_PP_SEQ_ELEM(idx, seq)) \
+		<YAS_PP_TUPLE_ELEM(2, 1, YAS_PP_SEQ_ELEM(idx, seq)) volatile> {static const bool value = true;}; \
+	\
+	template<> \
+	struct YAS_PP_TUPLE_ELEM(2, 0, YAS_PP_SEQ_ELEM(idx, seq)) \
+		<YAS_PP_TUPLE_ELEM(2, 1, YAS_PP_SEQ_ELEM(idx, seq)) const volatile> {static const bool value = true;};
 
 #define YAS_WRITE_POD_SPECIALIZATIONS(seq) \
-   YAS_PP_REPEAT(YAS_PP_SEQ_SIZE(seq), YAS_WRITE_ONE_SPECIALIZATION, seq)
+	YAS_PP_REPEAT(YAS_PP_SEQ_SIZE(seq), YAS_WRITE_ONE_SPECIALIZATION, seq)
 
 /***************************************************************************/
 
 YAS_WRITE_POD_SPECIALIZATIONS(
-   ((is_void,void))
-   ((is_pod, char))
-   ((is_pod, wchar_t))
-   ((is_pod, signed char))
-   ((is_pod, unsigned char))
-   ((is_pod, short))
-   ((is_pod, unsigned short))
-   ((is_pod, int))
-   ((is_pod, unsigned int))
-   ((is_pod, long))
-   ((is_pod, unsigned long))
-   ((is_pod, long long))
-   ((is_pod, unsigned long long))
-   ((is_pod, long double))
-   ((is_pod, double))
-   ((is_pod, float))
+	((is_void,void))
+	((is_pod, char))
+	((is_pod, wchar_t))
+	((is_pod, signed char))
+	((is_pod, unsigned char))
+	((is_pod, short))
+	((is_pod, unsigned short))
+	((is_pod, int))
+	((is_pod, unsigned int))
+	((is_pod, long))
+	((is_pod, unsigned long))
+	((is_pod, long long))
+	((is_pod, unsigned long long))
+	((is_pod, long double))
+	((is_pod, double))
+	((is_pod, float))
 );
 
 /***************************************************************************/

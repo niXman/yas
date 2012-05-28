@@ -33,13 +33,15 @@
 #ifndef _yas__text__autoarray_serializer_hpp__included_
 #define _yas__text__autoarray_serializer_hpp__included_
 
-#include <stdint.h>
-#include <cassert>
+#include <stdexcept>
 
+#include <yas/config/config.hpp>
 #include <yas/tools/utf8conv.hpp>
-
+#include <yas/tools/static_assert.hpp>
+#include <yas/mpl/type_traits.hpp>
+#include <yas/mpl/metafunctions.hpp>
 #include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/serializer_fwd.hpp>
+#include <yas/serializers/detail/selector.hpp>
 
 namespace yas {
 namespace detail {
@@ -53,18 +55,23 @@ struct serializer<
 	e_archive_type::text,
 	e_direction::out,
 	T[N]
->
-{
-//	template<typename Archive>
-//	static void apply(Archive& ar, const wchar_t(&v)[N]) {
-//		ar & detail::TypeConverter<std::string, std::wstring>::Convert(v);
-//	}
+> {
+	template<
+		 typename Archive
+		,typename U
+	>
+	static void apply(Archive& ar, const U(&v)[N], typename enable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
+		(ar & (N-1)).write(v, N-1) & ' ';
+	}
 
-	template<typename Archive, typename U>
-	static void apply(Archive& ar, const U(&v)[N]) {
-		ar << N <<  ' ';
-		for ( std::size_t idx = 0; idx < N; ++idx ) {
-			ar << v[idx] << ' ';
+	template<
+		 typename Archive
+		,typename U
+	>
+	static void apply(Archive& ar, const U(&v)[N], typename disable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
+		ar & N & ' ';
+		for ( size_t idx = 0; idx < N; ++idx ) {
+			ar & v[idx] & ' ';
 		}
 	}
 };
@@ -76,14 +83,30 @@ struct serializer<
 	e_archive_type::text,
 	e_direction::in,
 	T[N]
->
-{
-//	template<typename Archive>
-//	static void apply(Archive& ar, wchar_t(&v)[N]) {
-//	}
+> {
+	template<
+		 typename Archive
+		,typename U
+	>
+	static void apply(Archive& ar, U(&v)[N], typename enable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
+		yas::uint32_t size = 0;
+		ar & size;
+		if ( size != N-1 ) throw std::runtime_error("bad array size");
+		ar.read(v, size);
+		v[size] = 0;
+	}
 
-	template<typename Archive, typename U>
-	static void apply(Archive& ar, U(&v)[N]) {
+	template<
+		 typename Archive
+		,typename U
+	>
+	static void apply(Archive& ar, U(&v)[N], typename disable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
+		yas::uint32_t size = 0;
+		ar & size;
+		if ( size != N ) throw std::runtime_error("bad array size");
+		for ( size_t idx = 0; idx < N; ++idx ) {
+			ar & v[idx];
+		}
 	}
 };
 
@@ -96,10 +119,13 @@ struct serializer<
 	e_archive_type::text,
 	e_direction::out,
 	T[N]
->
-{
-	template<typename Archive, typename U>
-	static void apply(Archive& ar, const U(&v)[N]) {
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, const T(&v)[N]) {
+		ar & N & ' ';
+		for ( size_t idx = 0; idx < N; ++idx ) {
+			ar & v[idx] & ' ';
+		}
 	}
 };
 
@@ -112,10 +138,15 @@ struct serializer<
 	e_archive_type::text,
 	e_direction::in,
 	T[N]
->
-{
-	template<typename Archive, typename U>
-	static void apply(Archive& ar, U(&v)[N]) {
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, T(&v)[N]) {
+		yas::uint32_t size = 0;
+		(ar & size).snextc();
+		if ( size != N ) throw std::runtime_error("bad array size");
+		for ( size_t idx = 0; idx < N; ++idx ) {
+			(ar & v[idx]).snextc();
+		}
 	}
 };
 

@@ -7,7 +7,7 @@ TEMPLATE = app
 DEFINES += \
 	YAS_SERIALIZE_BOOST_TYPES=1
 
-QMAKE_CXXFLAGS += -std=c++0x
+#QMAKE_CXXFLAGS += -std=c++0x
 
 INCLUDEPATH += \
 	../../include \
@@ -46,7 +46,6 @@ HEADERS += \
 	../../include/yas/serializers/detail/information.hpp \
 	../../include/yas/serializers/detail/memstream.hpp \
 	../../include/yas/serializers/detail/properties.hpp \
-	../../include/yas/serializers/detail/serializer_fwd.hpp \
 	../../include/yas/tools/boost_preprocessor/auto_rec.hpp \
 	../../include/yas/tools/boost_preprocessor/bool.hpp \
 	../../include/yas/tools/boost_preprocessor/cat.hpp \
@@ -273,4 +272,6 @@ HEADERS += \
 	 ../../include/yas/serializers/json/std/std_forward_list_serializers.hpp \
 	 ../../include/yas/serializers/json/std/std_bitset_serializers.hpp \
 	 ../../include/yas/serializers/text/std/std_forward_list_serializers.hpp \
-	 ../../include/yas/serializers/text/std/std_bitset_serializers.hpp
+	 ../../include/yas/serializers/text/std/std_bitset_serializers.hpp \
+	 ../../include/yas/tools/static_assert.hpp \
+	 ../../include/yas/serializers/detail/selector.hpp

@@ -30,8 +30,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__serializer_fwd_hpp__included_
-#define _yas__serializer_fwd_hpp__included_
+#ifndef _yas__selector_hpp__included_
+#define _yas__selector_hpp__included_
 
 #include <yas/mpl/type_traits.hpp>
 #include <yas/mpl/metafunctions.hpp>
@@ -109,4 +109,4 @@ struct serialization_method {
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__serializer_fwd_hpp__included_
+#endif // _yas__selector_hpp__included_

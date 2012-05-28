@@ -33,7 +33,7 @@
 #ifndef _yas__json__std_string_serializer_hpp__included_
 #define _yas__json__std_string_serializer_hpp__included_
 
-#include <yas/serializers/detail/serializer_fwd.hpp>
+#include <yas/serializers/detail/selector.hpp>
 #include <yas/serializers/detail/properties.hpp>
 
 #include <string>

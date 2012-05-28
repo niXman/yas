@@ -35,7 +35,7 @@
 
 #include <yas/serializers/detail/properties.hpp>
 #include <yas/serializers/detail/has_function_serialize.hpp>
-#include <yas/serializers/detail/serializer_fwd.hpp>
+#include <yas/serializers/detail/selector.hpp>
 
 namespace yas {
 namespace detail {

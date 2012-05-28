@@ -34,7 +34,7 @@
 #define _yas__text__pod_serializer_hpp__included_
 
 #include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/serializer_fwd.hpp>
+#include <yas/serializers/detail/selector.hpp>
 
 namespace yas {
 namespace detail {
@@ -65,7 +65,7 @@ struct serializer<
 > {
 	template<typename Archive>
 	static void apply(Archive& ar, T& v) {
-		ar >> v;
+		(ar >> v).get();
 	}
 };
 

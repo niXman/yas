@@ -33,14 +33,15 @@
 #ifndef _yas__binary__autoarray_serializer_hpp__included_
 #define _yas__binary__autoarray_serializer_hpp__included_
 
-#include <stdint.h>
-#include <cassert>
 #include <stdexcept>
 
 #include <yas/config/config.hpp>
 #include <yas/tools/utf8conv.hpp>
+#include <yas/tools/static_assert.hpp>
+#include <yas/mpl/type_traits.hpp>
+#include <yas/mpl/metafunctions.hpp>
 #include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/serializer_fwd.hpp>
+#include <yas/serializers/detail/selector.hpp>
 
 namespace yas {
 namespace detail {
@@ -55,15 +56,20 @@ struct serializer<
 	e_direction::out,
 	T[N]
 > {
-//	template<typename Archive>
-//	static void apply(Archive& ar, const wchar_t(&v)[N]) {
-//		ar & detail::TypeConverter<std::string, std::wstring>::Convert(v);
-//	}
+	template<
+		 typename Archive
+		,typename U
+	>
+	static void apply(Archive& ar, const U(&v)[N], typename enable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
+		(ar & static_cast<yas::uint32_t>(N-1)).write(v, N-1);
+	}
 
-	template<typename Archive, typename U>
-	static void apply(Archive& ar, const U(&v)[N]) {
-		ar & static_cast<yas::uint32_t>(N*sizeof(T));
-		ar.write(&v, N*sizeof(T));
+	template<
+		 typename Archive
+		,typename U
+	>
+	static void apply(Archive& ar, const U(&v)[N], typename disable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
+		(ar & static_cast<yas::uint32_t>(N*sizeof(T))).write(v, N*sizeof(T));
 	}
 };
 
@@ -75,21 +81,27 @@ struct serializer<
 	e_direction::in,
 	T[N]
 > {
-//	template<typename Archive>
-//	static void apply(Archive& ar, wchar_t(&v)[N]) {
-//		std::string string;
-//		ar & string;
-//		if ( string.size() != N ) throw std::runtime_error("size of arrays is not equal");
-//		std::wstring wstring = detail::TypeConverter<std::wstring, std::string>::Convert(string);
-//		std::copy(wstring.begin(), wstring.end(), &v);
-//	}
-
-	template<typename Archive, typename U>
-	static void apply(Archive& ar, U(&v)[N]) {
+	template<
+		 typename Archive
+		,typename U
+	>
+	static void apply(Archive& ar, U(&v)[N], typename enable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
 		yas::uint32_t size = 0;
 		ar & size;
-		if ( size != N*sizeof(T) ) throw std::runtime_error("size of arrays is not equal");
-		ar.read(&v, size);
+		if ( size != N-1 ) throw std::runtime_error("bad array size");
+		ar.read(v, size);
+		v[size] = 0;
+	}
+
+	template<
+		 typename Archive
+		,typename U
+	>
+	static void apply(Archive& ar, U(&v)[N], typename disable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
+		yas::uint32_t size = 0;
+		ar & size;
+		if ( size != (N*sizeof(T)) ) throw std::runtime_error("bad array size");
+		ar.read(v, sizeof(T)*N);
 	}
 };
 
@@ -103,8 +115,8 @@ struct serializer<
 	e_direction::out,
 	T[N]
 > {
-	template<typename Archive, typename U>
-	static void apply(Archive& ar, const U(&v)[N]) {
+	template<typename Archive>
+	static void apply(Archive& ar, const T(&v)[N]) {
 		ar & static_cast<yas::uint32_t>(N);
 		for ( size_t idx = 0; idx < N; ++idx ) {
 			ar & v[idx];
@@ -122,11 +134,11 @@ struct serializer<
 	e_direction::in,
 	T[N]
 > {
-	template<typename Archive, typename U>
-	static void apply(Archive& ar, U(&v)[N]) {
+	template<typename Archive>
+	static void apply(Archive& ar, T(&v)[N]) {
 		yas::uint32_t size = 0;
 		ar & size;
-		if (size != N) throw std::runtime_error("size of arrays is not equal");
+		if ( size != N ) throw std::runtime_error("bad array size");
 		for ( size_t idx = 0; idx < N; ++idx ) {
 			ar & v[idx];
 		}

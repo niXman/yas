@@ -41,6 +41,7 @@
 #  define YAS_HAS_STD_ARRAY 1
 #  define YAS_HAS_STD_TUPLE 1
 #  define YAS_HAS_DECLTYPE 1
+#  define YAS_HAS_STATIC_ASSERT 1
 #	define YAS_SHARED_BUFFER_USE_STD_SHARED_PTR 1
 #endif
 

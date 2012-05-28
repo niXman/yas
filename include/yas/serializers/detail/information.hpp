@@ -40,6 +40,7 @@
 
 #include <yas/config/config.hpp>
 #include <yas/tools/version.hpp>
+#include <yas/tools/static_assert.hpp>
 #include <yas/serializers/detail/properties.hpp>
 #include <yas/tools/boost_preprocessor/preprocessor.hpp>
 
@@ -86,7 +87,7 @@ union archive_header {
 };
 #pragma pack(pop)
 
-extern char __ALIGNMENT_ERROR__[sizeof(archive_header) == sizeof(char)?1:-1];
+YAS_STATIC_ASSERT(sizeof(archive_header)==sizeof(char), ALIGNMENT_ERROR);
 
 /***************************************************************************/
 

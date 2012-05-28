@@ -34,7 +34,7 @@
 #define _yas__binary__pod_serializer_hpp__included_
 
 #include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/serializer_fwd.hpp>
+#include <yas/serializers/detail/selector.hpp>
 
 namespace yas {
 namespace detail {

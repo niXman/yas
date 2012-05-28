@@ -34,7 +34,7 @@
 #define _yas__text__std_pair_serializer_hpp__included_
 
 #include <yas/mpl/type_traits.hpp>
-#include <yas/serializers/detail/serializer_fwd.hpp>
+#include <yas/serializers/detail/selector.hpp>
 #include <yas/serializers/detail/properties.hpp>
 
 #include <utility>
