@@ -33,13 +33,13 @@
 #ifndef _yas__text__std_tuple_serializer_hpp__included_
 #define _yas__text__std_tuple_serializer_hpp__included_
 
-#include <yas/config/config.hpp>
+#include <yas/detail/config/config.hpp>
 
 #if defined(YAS_HAS_STD_TUPLE)
-#include <yas/mpl/type_traits.hpp>
-#include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/selector.hpp>
-#include <yas/tools/boost_preprocessor/preprocessor.hpp>
+#include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/selector.hpp>
+#include <yas/detail/boost_preprocessor/preprocessor.hpp>
 
 #include <stdint.h>
 #include <cassert>
@@ -50,25 +50,10 @@ namespace detail {
 
 /***************************************************************************/
 
-#define YAS__TEXT__WRITE_STD_TUPLE_SIZE(count) \
-	const uint8_t size = count; \
-	ar.write(&size, sizeof(size))
-
 #define YAS__TEXT__WRITE_STD_TUPLE_ITEM(unused, idx, type) \
-	if ( detail::is_pod<YAS_PP_CAT(type, idx)>::value ) \
-		ar.write(&std::get<idx>(tuple), sizeof(YAS_PP_CAT(type, idx))); \
-	else \
 		ar & std::get<idx>(tuple);
 
-#define YAS__TEXT__READ_AND_CHECK_STD_TUPLE_SIZE(count) \
-	uint8_t size = 0; \
-	ar.read(&size, sizeof(size)); \
-	assert(size == count/*, "size error on deserialize std::tuple"*/);
-
 #define YAS__TEXT__READ_STD_TUPLE_ITEM(unused, idx, type) \
-	if ( detail::is_pod<YAS_PP_CAT(type, idx)>::value ) \
-		ar.read(&std::get<idx>(tuple), sizeof(YAS_PP_CAT(type, idx))); \
-	else \
 		ar & std::get<idx>(tuple);
 
 #define YAS__TEXT__GENERATE_EMPTY_SAVE_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC() \
@@ -97,7 +82,7 @@ namespace detail {
 	> { \
 		template<typename Archive> \
 		static void apply(Archive& ar, const std::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
-			YAS__TEXT__WRITE_STD_TUPLE_SIZE(YAS_PP_INC(count)); \
+			ar & YAS_PP_INC(count); \
 			YAS_PP_REPEAT( \
 				YAS_PP_INC(count), \
 				YAS__TEXT__WRITE_STD_TUPLE_ITEM, \
@@ -122,7 +107,9 @@ namespace detail {
 	> { \
 		template<typename Archive> \
 		static void apply(Archive& ar, std::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
-			YAS__TEXT__READ_AND_CHECK_STD_TUPLE_SIZE(YAS_PP_INC(count)); \
+			yas::int32_t size = 0; \
+			ar & size; \
+			if ( size != YAS_PP_INC(count) ) throw std::runtime_error("size error on deserialize boost::tuple"); \
 			YAS_PP_REPEAT( \
 				YAS_PP_INC(count), \
 				YAS__TEXT__READ_STD_TUPLE_ITEM, \

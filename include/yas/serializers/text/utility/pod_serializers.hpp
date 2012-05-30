@@ -33,8 +33,8 @@
 #ifndef _yas__text__pod_serializer_hpp__included_
 #define _yas__text__pod_serializer_hpp__included_
 
-#include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/selector.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/selector.hpp>
 
 namespace yas {
 namespace detail {
@@ -49,8 +49,19 @@ struct serializer<
 	e_direction::out,
 	T
 > {
-	template<typename Archive>
-	static void apply(Archive& ar, const T& v) {
+	template<
+		 typename Archive
+		,typename U
+	>
+	static void apply(Archive& ar, const U& v, typename enable_if<is_any_of<U, char, signed char> >::type* = 0) {
+		ar << v;
+	}
+
+	template<
+		 typename Archive
+		,typename U
+	>
+	static void apply(Archive& ar, const U& v, typename disable_if<is_any_of<U, char, signed char> >::type* = 0) {
 		ar << v << ' ';
 	}
 };
@@ -63,8 +74,19 @@ struct serializer<
 	e_direction::in,
 	T
 > {
-	template<typename Archive>
-	static void apply(Archive& ar, T& v) {
+	template<
+		 typename Archive
+		,typename U
+	>
+	static void apply(Archive& ar, U& v, typename enable_if<is_any_of<U, char, signed char> >::type* = 0) {
+		ar >> v;
+	}
+
+	template<
+		 typename Archive
+		,typename U
+	>
+	static void apply(Archive& ar, U& v, typename disable_if<is_any_of<U, char, signed char> >::type* = 0) {
 		(ar >> v).get();
 	}
 };

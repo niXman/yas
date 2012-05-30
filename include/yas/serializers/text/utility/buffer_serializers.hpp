@@ -33,9 +33,12 @@
 #ifndef _yas__text__buffer_serializer_hpp_included_
 #define _yas__text__buffer_serializer_hpp_included_
 
-#include <yas/tools/buffer.hpp>
-#include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/selector.hpp>
+#include <stdexcept>
+
+#include <yas/detail/config/config.hpp>
+#include <yas/detail/tools/buffer.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/selector.hpp>
 
 namespace yas {
 namespace detail {
@@ -49,14 +52,57 @@ struct serializer<
 	e_archive_type::text,
 	e_direction::out,
 	intrusive_buffer
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, const intrusive_buffer& buf) {
-		ar.write(&buf.size, sizeof(buf.size));
+		ar & buf.size;
 		ar.write(buf.data, buf.size);
+		ar & ' ';
 	}
 };
+
+/***************************************************************************/
+
+#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || \
+	defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
+
+template<>
+struct serializer<
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::text,
+	e_direction::out,
+	shared_buffer
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, const shared_buffer& buf) {
+		ar & buf.size;
+		ar.write(buf.data.get(), buf.size);
+		ar & ' ';
+	}
+};
+
+template<>
+struct serializer<
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::text,
+	e_direction::in,
+	shared_buffer
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, shared_buffer& buf) {
+		yas::uint32_t size = 0;
+		ar & size;
+		buf.data.reset(new char[size+1], &shared_buffer::deleter);
+		assert(ar.read(buf.data.get(), size) == size);
+		ar.snextc();
+		buf.size = size;
+		buf.data.get()[size] = 0;
+	}
+};
+
+#endif
 
 /***************************************************************************/
 

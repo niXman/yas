@@ -33,10 +33,10 @@
 #ifndef _yas__text__std_wstring_serializer_hpp__included_
 #define _yas__text__std_wstring_serializer_hpp__included_
 
-#include <yas/tools/utf8conv.hpp>
+#include <yas/detail/tools/utf8conv.hpp>
 
-#include <yas/serializers/detail/selector.hpp>
-#include <yas/serializers/detail/properties.hpp>
+#include <yas/detail/selector.hpp>
+#include <yas/detail/properties.hpp>
 
 namespace yas {
 namespace detail {

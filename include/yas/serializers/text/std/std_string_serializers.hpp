@@ -33,8 +33,8 @@
 #ifndef _yas__text__std_string_serializer_hpp__included_
 #define _yas__text__std_string_serializer_hpp__included_
 
-#include <yas/serializers/detail/selector.hpp>
-#include <yas/serializers/detail/properties.hpp>
+#include <yas/detail/selector.hpp>
+#include <yas/detail/properties.hpp>
 
 #include <string>
 
@@ -54,6 +54,9 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::string& string) {
+		ar & static_cast<yas::uint32_t>(string.length());
+		ar.write(&string[0], string.length());
+		ar & ' ';
 	}
 };
 
@@ -68,6 +71,11 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, std::string& string) {
+		yas::uint32_t size = 0;
+		ar & size;
+		string.resize(size);
+		ar.read(&string[0], size);
+		ar.snextc();
 	}
 };
 

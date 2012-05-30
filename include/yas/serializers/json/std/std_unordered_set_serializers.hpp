@@ -33,12 +33,12 @@
 #ifndef _yas__json__std_unordered_set_serializer_hpp__included_
 #define _yas__json__std_unordered_set_serializer_hpp__included_
 
-#include <yas/config/config.hpp>
+#include <yas/detail/config/config.hpp>
 
 #if defined(YAS_HAS_STD_UNORDERED)
-#include <yas/mpl/type_traits.hpp>
-#include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/selector.hpp>
+#include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/selector.hpp>
 
 #include <unordered_set>
 
@@ -49,37 +49,37 @@ namespace detail {
 
 template<typename K>
 struct serializer<
-   e_type_type::e_type_type::not_a_pod,
-   e_ser_method::use_internal_serializer,
-   e_archive_type::json,
-   e_direction::out,
-   std::unordered_set<K>
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::json,
+	e_direction::out,
+	std::unordered_set<K>
 >
 {
-   template<typename Archive>
-   static void apply(Archive& ar, const std::unordered_set<K>& set) {
-      if ( is_pod<K>::value ) {
-      } else {
-      }
-   }
+	template<typename Archive>
+	static void apply(Archive& ar, const std::unordered_set<K>& set) {
+		if ( is_pod<K>::value ) {
+		} else {
+		}
+	}
 };
 
 
 template<typename K>
 struct serializer<
-   e_type_type::e_type_type::not_a_pod,
-   e_ser_method::use_internal_serializer,
-   e_archive_type::json,
-   e_direction::in,
-   std::unordered_set<K>
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::json,
+	e_direction::in,
+	std::unordered_set<K>
 >
 {
-   template<typename Archive>
-   static void apply(Archive& ar, std::unordered_set<K>& set) {
-      if ( is_pod<K>::value ) {
-      } else {
-      }
-   }
+	template<typename Archive>
+	static void apply(Archive& ar, std::unordered_set<K>& set) {
+		if ( is_pod<K>::value ) {
+		} else {
+		}
+	}
 };
 
 /***************************************************************************/

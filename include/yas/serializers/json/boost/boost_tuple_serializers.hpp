@@ -33,11 +33,11 @@
 #ifndef _yas__json__boost_tuple_serializer_hpp__included_
 #define _yas__json__boost_tuple_serializer_hpp__included_
 
-#include <yas/config/config.hpp>
+#include <yas/detail/config/config.hpp>
 
 #if defined(YAS_HAS_BOOST_TUPLE)
-#include <yas/mpl/type_traits.hpp>
-#include <yas/tools/boost_preprocessor/preprocessor.hpp>
+#include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/boost_preprocessor/preprocessor.hpp>
 
 #include <stdint.h>
 #include <boost/tuple/tuple.hpp>
@@ -50,71 +50,71 @@ namespace yas {
 #if 0 //defined(YAS_HAS_BOOST_TUPLE)
 
 #define YAS_WRITE_BOOST_TUPLE_SIZE(count) \
-   const uint8_t size = count; \
-   ar.write(&size, sizeof(size))
+	const uint8_t size = count; \
+	ar.write(&size, sizeof(size))
 
 #define YAS_WRITE_BOOST_TUPLE_ITEM(unused, idx, type) \
-   if ( detail::is_pod<YAS_PP_CAT(type, idx)>::value ) \
-      ar.write(&boost::tuples::get<idx>(tuple), sizeof(YAS_PP_CAT(type, idx))); \
-   else \
-      ar & boost::tuples::get<idx>(tuple);
+	if ( detail::is_pod<YAS_PP_CAT(type, idx)>::value ) \
+		ar.write(&boost::tuples::get<idx>(tuple), sizeof(YAS_PP_CAT(type, idx))); \
+	else \
+		ar & boost::tuples::get<idx>(tuple);
 
 #define YAS_READ_AND_CHECK_BOOST_TUPLE_SIZE(count) \
-   uint8_t size = 0; \
-   ar.read(&size, sizeof(size)); \
-   BOOST_ASSERT_MSG(size == count, "size error on deserialize boost::tuple")
+	uint8_t size = 0; \
+	ar.read(&size, sizeof(size)); \
+	BOOST_ASSERT_MSG(size == count, "size error on deserialize boost::tuple")
 
 #define YAS_READ_BOOST_TUPLE_ITEM(unused, idx, type) \
-   if ( detail::is_pod<YAS_PP_CAT(type, idx)>::value ) \
-      ar.read(&boost::tuples::get<idx>(tuple), sizeof(YAS_PP_CAT(type, idx))); \
-   else \
-      ar & boost::tuples::get<idx>(tuple);
+	if ( detail::is_pod<YAS_PP_CAT(type, idx)>::value ) \
+		ar.read(&boost::tuples::get<idx>(tuple), sizeof(YAS_PP_CAT(type, idx))); \
+	else \
+		ar & boost::tuples::get<idx>(tuple);
 
 #define YAS_GENERATE_EMPTY_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC() \
-   template<typename Archive> \
-   void apply(Archive&, const boost::tuples::tuple<>&) {}
+	template<typename Archive> \
+	void apply(Archive&, const boost::tuples::tuple<>&) {}
 
 #define YAS_GENERATE_EMPTY_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC() \
-   template<typename Archive> \
-   void apply(Archive&, boost::tuples::tuple<>&) {}
+	template<typename Archive> \
+	void apply(Archive&, boost::tuples::tuple<>&) {}
 
 #define YAS_GENERATE_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC(unused, count, text) \
-   template<typename Archive, YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
-   void apply(Archive& ar, const boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
-      YAS_WRITE_BOOST_TUPLE_SIZE(YAS_PP_INC(count)); \
-      YAS_PP_REPEAT( \
-         YAS_PP_INC(count), \
-         YAS_WRITE_BOOST_TUPLE_ITEM, \
-         T \
-      ) \
-   }
+	template<typename Archive, YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
+	void apply(Archive& ar, const boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
+		YAS_WRITE_BOOST_TUPLE_SIZE(YAS_PP_INC(count)); \
+		YAS_PP_REPEAT( \
+			YAS_PP_INC(count), \
+			YAS_WRITE_BOOST_TUPLE_ITEM, \
+			T \
+		) \
+	}
 
 #define YAS_GENERATE_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTIONS_VARIADIC(count) \
-   YAS_GENERATE_EMPTY_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC(); \
-   YAS_PP_REPEAT( \
-      count, \
-      YAS_GENERATE_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC, \
-      ~ \
-   )
+	YAS_GENERATE_EMPTY_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC(); \
+	YAS_PP_REPEAT( \
+		count, \
+		YAS_GENERATE_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC, \
+		~ \
+	)
 
 #define YAS_GENERATE_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC(unused, count, text) \
-   template<typename Archive, YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
-   void apply(Archive& ar, boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
-      YAS_READ_AND_CHECK_BOOST_TUPLE_SIZE(YAS_PP_INC(count)); \
-      YAS_PP_REPEAT( \
-         YAS_PP_INC(count), \
-         YAS_READ_BOOST_TUPLE_ITEM, \
-         T \
-      ) \
-   }
+	template<typename Archive, YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
+	void apply(Archive& ar, boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
+		YAS_READ_AND_CHECK_BOOST_TUPLE_SIZE(YAS_PP_INC(count)); \
+		YAS_PP_REPEAT( \
+			YAS_PP_INC(count), \
+			YAS_READ_BOOST_TUPLE_ITEM, \
+			T \
+		) \
+	}
 
 #define YAS_GENERATE_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTIONS_VARIADIC(count) \
-   YAS_GENERATE_EMPTY_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC(); \
-   YAS_PP_REPEAT( \
-      count, \
-      YAS_GENERATE_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC, \
-      ~ \
-   )
+	YAS_GENERATE_EMPTY_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC(); \
+	YAS_PP_REPEAT( \
+		count, \
+		YAS_GENERATE_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC, \
+		~ \
+	)
 
 /***************************************************************************/
 

@@ -33,40 +33,41 @@
 #ifndef _yas__binary_oarchive_hpp__included_
 #define _yas__binary_oarchive_hpp__included_
 
-#include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/has_method_serialize.hpp>
-#include <yas/serializers/detail/has_function_serialize.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/has_method_serialize.hpp>
+#include <yas/detail/has_function_serialize.hpp>
 
-#include <yas/serializers/detail/selector.hpp>
-#include <yas/serializers/detail/memstream.hpp>
+#include <yas/detail/selector.hpp>
+#include <yas/detail/memstream.hpp>
 
 #include <yas/serializers/binary/utility/pod_serializers.hpp>
 #include <yas/serializers/binary/utility/usertype_serializers.hpp>
 #include <yas/serializers/binary/utility/autoarray_serializers.hpp>
 #include <yas/serializers/binary/utility/buffer_serializers.hpp>
 
-#include <yas/tools/buffer.hpp>
-#include <yas/tools/noncopyable.hpp>
+#include <yas/detail/tools/buffer.hpp>
+#include <yas/detail/tools/noncopyable.hpp>
+#include <yas/detail/tools/enum_cast.hpp>
 
 namespace yas {
 
 /***************************************************************************/
 
 struct binary_mem_oarchive:
-	 detail::omemstream
+	 detail::omemstream<binary_mem_oarchive>
 	,detail::archive_information<e_archive_type::binary, e_direction::out, binary_mem_oarchive>
 	,private detail::noncopyable
 {
 	binary_mem_oarchive(header_t::type op = header_t::with_header)
-		:detail::omemstream()
+		:detail::omemstream<binary_mem_oarchive>()
 		,detail::archive_information<e_archive_type::binary, e_direction::out, binary_mem_oarchive>(this, op)
 	{}
 	binary_mem_oarchive(size_t size, header_t::type op = header_t::with_header)
-		:detail::omemstream(size)
+		:detail::omemstream<binary_mem_oarchive>(size)
 		,detail::archive_information<e_archive_type::binary, e_direction::out, binary_mem_oarchive>(this, op)
 	{}
 	binary_mem_oarchive(char* ptr, size_t size, header_t::type op = header_t::with_header)
-		:detail::omemstream(ptr, size)
+		:detail::omemstream<binary_mem_oarchive>(ptr, size)
 		,detail::archive_information<e_archive_type::binary, e_direction::out, binary_mem_oarchive>(this, op)
 	{}
 

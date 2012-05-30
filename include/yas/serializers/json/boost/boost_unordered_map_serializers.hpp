@@ -33,12 +33,12 @@
 #ifndef _yas__json__boost_unordered_map_hpp__included_
 #define _yas__json__boost_unordered_map_hpp__included_
 
-#include <yas/config/config.hpp>
+#include <yas/detail/config/config.hpp>
 
 #if defined(YAS_HAS_BOOST_UNORDERED)
-#include <yas/mpl/type_traits.hpp>
-#include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/selector.hpp>
+#include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/selector.hpp>
 
 #include <boost/unordered_map.hpp>
 
@@ -49,35 +49,35 @@ namespace detail {
 
 template<typename K, typename V>
 struct serializer<
-   e_type_type::e_type_type::not_a_pod,
-   e_ser_method::has_split_functions,
-   e_archive_type::json,
-   e_direction::out,
-   boost::unordered_map<K, V>
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::has_split_functions,
+	e_archive_type::json,
+	e_direction::out,
+	boost::unordered_map<K, V>
 >
 {
-   template<typename Archive>
-   static void apply(Archive& ar, const boost::unordered_map<K, V>& map) {
-      ar << map.size();
-      typename boost::unordered_map<K, V>::const_iterator it = map.begin();
-      for ( ; it != map.end(); ++it ) {
-      }
-   }
+	template<typename Archive>
+	static void apply(Archive& ar, const boost::unordered_map<K, V>& map) {
+		ar << map.size();
+		typename boost::unordered_map<K, V>::const_iterator it = map.begin();
+		for ( ; it != map.end(); ++it ) {
+		}
+	}
 };
 
 template<typename K, typename V>
 struct serializer<
-   e_type_type::e_type_type::not_a_pod,
-   e_ser_method::has_split_functions,
-   e_archive_type::json,
-   e_direction::in,
-   boost::unordered_map<K, V>
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::has_split_functions,
+	e_archive_type::json,
+	e_direction::in,
+	boost::unordered_map<K, V>
 >
 {
-   template<typename Archive>
-   static void apply(Archive& ar, boost::unordered_map<K, V>& map) {
+	template<typename Archive>
+	static void apply(Archive& ar, boost::unordered_map<K, V>& map) {
 
-   }
+	}
 };
 
 /***************************************************************************/

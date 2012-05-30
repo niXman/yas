@@ -33,12 +33,12 @@
 #ifndef _yas__binary__std_forward_list_serializer_hpp__included_
 #define _yas__binary__std_forward_list_serializer_hpp__included_
 
-#include <yas/config/config.hpp>
+#include <yas/detail/config/config.hpp>
 
 #if defined(YAS_HAS_STD_FORWARD_LIST)
-#include <yas/mpl/type_traits.hpp>
-#include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/selector.hpp>
+#include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/selector.hpp>
 
 #include <forward_list>
 

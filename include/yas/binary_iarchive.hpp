@@ -33,44 +33,45 @@
 #ifndef _yas__binary_iarchive_hpp__included_
 #define _yas__binary_iarchive_hpp__included_
 
-#include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/has_method_serialize.hpp>
-#include <yas/serializers/detail/has_function_serialize.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/has_method_serialize.hpp>
+#include <yas/detail/has_function_serialize.hpp>
 
-#include <yas/serializers/detail/selector.hpp>
-#include <yas/serializers/detail/memstream.hpp>
+#include <yas/detail/selector.hpp>
+#include <yas/detail/memstream.hpp>
 
 #include <yas/serializers/binary/utility/pod_serializers.hpp>
 #include <yas/serializers/binary/utility/usertype_serializers.hpp>
 #include <yas/serializers/binary/utility/autoarray_serializers.hpp>
 #include <yas/serializers/binary/utility/buffer_serializers.hpp>
 
-#include <yas/tools/buffer.hpp>
-#include <yas/tools/noncopyable.hpp>
+#include <yas/detail/tools/buffer.hpp>
+#include <yas/detail/tools/noncopyable.hpp>
+#include <yas/detail/tools/enum_cast.hpp>
 
 namespace yas {
 
 /***************************************************************************/
 
 struct binary_mem_iarchive:
-	 detail::imemstream
+	 detail::imemstream<binary_mem_iarchive>
 	,detail::archive_information<e_archive_type::binary, e_direction::in, binary_mem_iarchive>
 	,private detail::noncopyable
 {
 	binary_mem_iarchive(const intrusive_buffer& o, header_t::type op = header_t::with_header)
-		:detail::imemstream(o),
+		:detail::imemstream<binary_mem_iarchive>(o),
 		detail::archive_information<e_archive_type::binary, e_direction::in, binary_mem_iarchive>(this, op)
 	{}
 	binary_mem_iarchive(const shared_buffer& o, header_t::type op = header_t::with_header)
-		:detail::imemstream(o),
+		:detail::imemstream<binary_mem_iarchive>(o),
 		detail::archive_information<e_archive_type::binary, e_direction::in, binary_mem_iarchive>(this, op)
 	{}
 	binary_mem_iarchive(const std::string& o, header_t::type op = header_t::with_header)
-		:detail::imemstream(o.c_str(), o.size()),
+		:detail::imemstream<binary_mem_iarchive>(o.c_str(), o.size()),
 		detail::archive_information<e_archive_type::binary, e_direction::in, binary_mem_iarchive>(this, op)
 	{}
 	binary_mem_iarchive(const char* ptr, size_t size, header_t::type op = header_t::with_header)
-		:detail::imemstream(ptr, size),
+		:detail::imemstream<binary_mem_iarchive>(ptr, size),
 		detail::archive_information<e_archive_type::binary, e_direction::in, binary_mem_iarchive>(this, op)
 	{}
 

@@ -33,13 +33,13 @@
 #ifndef _yas__text__boost_fusion_tuple_serializer_hpp__included_
 #define _yas__text__boost_fusion_tuple_serializer_hpp__included_
 
-#include <yas/config/config.hpp>
+#include <yas/detail/config/config.hpp>
 
 #if defined(YAS_HAS_BOOST_FUSION)
-#include <yas/mpl/type_traits.hpp>
-#include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/selector.hpp>
-#include <yas/tools/boost_preprocessor/preprocessor.hpp>
+#include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/selector.hpp>
+#include <yas/detail/boost_preprocessor/preprocessor.hpp>
 
 #include <boost/assert.hpp>
 #include <boost/fusion/tuple.hpp>
@@ -49,97 +49,86 @@ namespace detail {
 
 /***************************************************************************/
 
-#define YAS__TEXT__WRITE_BOOST_FUSION_TUPLE_SIZE(count) \
-   const boost::uint8_t size = count; \
-   ar.write(&size, sizeof(size))
-
 #define YAS__TEXT__WRITE_BOOST_FUSION_TUPLE_ITEM(unused, idx, type) \
-   if ( is_pod<YAS_PP_CAT(type, idx)>::value ) \
-      ar.write(&boost::fusion::at_c<idx>(tuple), sizeof(YAS_PP_CAT(type, idx))); \
-   else ar & boost::fusion::at_c<idx>(tuple);
-
-#define YAS__TEXT__READ_AND_CHECK_BOOST_FUSION_TUPLE_SIZE(count) \
-   boost::uint8_t size = 0; \
-   ar.read(&size, sizeof(size)); \
-   BOOST_ASSERT_MSG(size == count, "size error on deserialize fusion::tuple")
+	ar & boost::fusion::at_c<idx>(tuple);
 
 #define YAS__TEXT__READ_BOOST_FUSION_TUPLE_ITEM(unused, idx, type) \
-   if ( is_pod<YAS_PP_CAT(type, idx)>::value ) \
-      ar.read(&boost::fusion::at_c<idx>(tuple), sizeof(YAS_PP_CAT(type, idx))); \
-   else ar & boost::fusion::at_c<idx>(tuple);
+	ar & boost::fusion::at_c<idx>(tuple);
 
 #define YAS__TEXT__GENERATE_EMPTY_SAVE_SERIALIZE_BOOST_FUSION_TUPLE_SPEC() \
-   template<> \
-   struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
-      e_archive_type::text, e_direction::out, boost::fusion::tuple<> > \
-   { \
-      template<typename Archive> \
-      static void apply(Archive&, const boost::fusion::tuple<>&) {} \
-   };
+	template<> \
+	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
+		e_archive_type::text, e_direction::out, boost::fusion::tuple<> > \
+	{ \
+		template<typename Archive> \
+		static void apply(Archive&, const boost::fusion::tuple<>&) {} \
+	};
 
 #define YAS__TEXT__GENERATE_EMPTY_LOAD_SERIALIZE_BOOST_FUSION_TUPLE_SPEC() \
-   template<> \
-   struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
-      e_archive_type::text, e_direction::in, boost::fusion::tuple<> > \
-   { \
-      template<typename Archive> \
-      static void apply(Archive&, boost::fusion::tuple<>&) {} \
-   };
+	template<> \
+	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
+		e_archive_type::text, e_direction::in, boost::fusion::tuple<> > \
+	{ \
+		template<typename Archive> \
+		static void apply(Archive&, boost::fusion::tuple<>&) {} \
+	};
 
 #define YAS__TEXT__GENERATE_SAVE_SERIALIZE_BOOST_FUSION_TUPLE_FUNCTION_SPEC(unused, count, unused2) \
-   template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
-   struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
-      e_archive_type::text, e_direction::out, \
-      boost::fusion::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
-   { \
-      template<typename Archive> \
-      static void apply(Archive& ar, \
-         const boost::fusion::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) \
-      { \
-         YAS__TEXT__WRITE_BOOST_FUSION_TUPLE_SIZE(YAS_PP_INC(count)); \
-         YAS_PP_REPEAT( \
-            YAS_PP_INC(count), \
-            YAS__TEXT__WRITE_BOOST_FUSION_TUPLE_ITEM, \
-            T \
-         ) \
-      } \
-   };
+	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
+	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
+		e_archive_type::text, e_direction::out, \
+		boost::fusion::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
+	{ \
+		template<typename Archive> \
+		static void apply(Archive& ar, \
+			const boost::fusion::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) \
+		{ \
+			ar & YAS_PP_INC(count); \
+			YAS_PP_REPEAT( \
+				YAS_PP_INC(count), \
+				YAS__TEXT__WRITE_BOOST_FUSION_TUPLE_ITEM, \
+				T \
+			) \
+		} \
+	};
 
 #define YAS__TEXT__GENERATE_SAVE_SERIALIZE_BOOST_FUSION_TUPLE_FUNCTIONS_SPEC(count) \
-   YAS__TEXT__GENERATE_EMPTY_SAVE_SERIALIZE_BOOST_FUSION_TUPLE_SPEC(); \
-   YAS_PP_REPEAT( \
-      count, \
-      YAS__TEXT__GENERATE_SAVE_SERIALIZE_BOOST_FUSION_TUPLE_FUNCTION_SPEC, \
-      ~ \
-   )
+	YAS__TEXT__GENERATE_EMPTY_SAVE_SERIALIZE_BOOST_FUSION_TUPLE_SPEC(); \
+	YAS_PP_REPEAT( \
+		count, \
+		YAS__TEXT__GENERATE_SAVE_SERIALIZE_BOOST_FUSION_TUPLE_FUNCTION_SPEC, \
+		~ \
+	)
 
 #define YAS__TEXT__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_TUPLE_FUNCTION_SPEC(unused, count, unused2) \
-   template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
-   struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
-      e_archive_type::text, e_direction::in, \
-      boost::fusion::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
-   { \
-      template<typename Archive> \
-      static void apply(\
-         Archive& ar, \
-         boost::fusion::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) \
-      { \
-         YAS__TEXT__READ_AND_CHECK_BOOST_FUSION_TUPLE_SIZE(YAS_PP_INC(count)); \
-         YAS_PP_REPEAT( \
-            YAS_PP_INC(count), \
-            YAS__TEXT__READ_BOOST_FUSION_TUPLE_ITEM, \
-            T \
-         ) \
-      } \
-   };
+	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
+	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
+		e_archive_type::text, e_direction::in, \
+		boost::fusion::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
+	{ \
+		template<typename Archive> \
+		static void apply(\
+			Archive& ar, \
+			boost::fusion::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) \
+		{ \
+			yas::int32_t size = 0; \
+			ar & size; \
+			if ( size != YAS_PP_INC(count) ) throw std::runtime_error("size error on deserialize fusion::tuple"); \
+			YAS_PP_REPEAT( \
+				YAS_PP_INC(count), \
+				YAS__TEXT__READ_BOOST_FUSION_TUPLE_ITEM, \
+				T \
+			) \
+		} \
+	};
 
 #define YAS__TEXT__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_TUPLE_FUNCTIONS_SPEC(count) \
-   YAS__TEXT__GENERATE_EMPTY_LOAD_SERIALIZE_BOOST_FUSION_TUPLE_SPEC(); \
-   YAS_PP_REPEAT( \
-      count, \
-      YAS__TEXT__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_TUPLE_FUNCTION_SPEC, \
-      ~ \
-   )
+	YAS__TEXT__GENERATE_EMPTY_LOAD_SERIALIZE_BOOST_FUSION_TUPLE_SPEC(); \
+	YAS_PP_REPEAT( \
+		count, \
+		YAS__TEXT__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_TUPLE_FUNCTION_SPEC, \
+		~ \
+	)
 
 /***************************************************************************/
 

@@ -33,12 +33,12 @@
 #ifndef _yas__text__boost_fusion_pair_serializer_hpp__included_
 #define _yas__text__boost_fusion_pair_serializer_hpp__included_
 
-#include <yas/config/config.hpp>
+#include <yas/detail/config/config.hpp>
 
 #if defined(YAS_HAS_BOOST_FUSION)
-#include <yas/mpl/type_traits.hpp>
-#include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/selector.hpp>
+#include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/selector.hpp>
 
 #include <boost/fusion/support/pair.hpp>
 #include <boost/fusion/include/pair.hpp>
@@ -50,33 +50,30 @@ namespace detail {
 
 template<typename T1, typename T2>
 struct serializer<
-   e_type_type::e_type_type::not_a_pod,
-   e_ser_method::use_internal_serializer,
-   e_archive_type::text,
-   e_direction::out,
-   boost::fusion::pair<T1, T2>
->
-{
-   template<typename Archive>
-   static void apply(Archive& ar, const boost::fusion::pair<T1, T2>& pair) {
-   }
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::text,
+	e_direction::out,
+	boost::fusion::pair<T1, T2>
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, const boost::fusion::pair<T1, T2>& pair) {
+		ar & pair.second;
+	}
 };
 
 template<typename T1, typename T2>
 struct serializer<
-   e_type_type::e_type_type::not_a_pod,
-   e_ser_method::use_internal_serializer,
-   e_archive_type::text,
-   e_direction::in,
-   boost::fusion::pair<T1, T2>
->
-{
-   template<typename Archive>
-   static void apply(Archive& ar, boost::fusion::pair<T1, T2>& pair) {
-      if ( is_pod<T2>::value ) {
-      } else {
-      }
-   }
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::text,
+	e_direction::in,
+	boost::fusion::pair<T1, T2>
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, boost::fusion::pair<T1, T2>& pair) {
+		ar & pair.second;
+	}
 };
 
 /***************************************************************************/

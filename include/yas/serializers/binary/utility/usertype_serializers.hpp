@@ -33,9 +33,8 @@
 #ifndef _yas__binary__usertype_serializer_hpp_included_
 #define _yas__binary__usertype_serializer_hpp_included_
 
-#include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/has_function_serialize.hpp>
-#include <yas/serializers/detail/selector.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/selector.hpp>
 
 namespace yas {
 namespace detail {

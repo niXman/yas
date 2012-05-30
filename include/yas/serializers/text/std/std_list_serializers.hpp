@@ -33,50 +33,58 @@
 #ifndef _yas__text__std_list_serializer_hpp__included_
 #define _yas__text__std_list_serializer_hpp__included_
 
-#include <yas/mpl/type_traits.hpp>
+#include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/selector.hpp>
 
 #include <list>
 
 namespace yas {
+namespace detail {
 
 /***************************************************************************/
 
-template<typename Archive, typename T>
-void apply(Archive& ar, const std::list<T>& list) {
-   ar & list.size();
-   if ( detail::is_pod<T>::value ) {
-      typename std::list<T>::const_iterator it = list.begin();
-      for ( ; it != list.end(); ++it ) {
-         ar.write((*it), sizeof(T));
-      }
-   } else {
-      typename std::list<T>::const_iterator it = list.begin();
-      for ( ; it != list.end(); ++it ) {
-         ar & (*it);
-      }
-   }
-}
+template<typename T>
+struct serializer<
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::text,
+	e_direction::out,
+	std::list<T>
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, const std::list<T>& list) {
+		ar & static_cast<yas::uint32_t>(list.size());
+		typename std::list<T>::const_iterator it = list.begin();
+		for ( ; it != list.end(); ++it ) {
+			ar & (*it);
+		}
+	}
+};
 
-template<typename Archive, typename T>
-void apply(Archive& ar, std::list<T>& list) {
-   std::size_t size = 0;
-   ar & size;
-   list.resize(size);
-   if ( detail::is_pod<T>::value ) {
-      typename std::list<T>::iterator it = list.begin();
-      for ( ; it != list.end(); ++it ) {
-         ar.read((*it), sizeof(T));
-      }
-   } else {
-      typename std::list<T>::iterator it = list.begin();
-      for ( ; it != list.end(); ++it ) {
-         ar & (*it);
-      }
-   }
-}
+template<typename T>
+struct serializer<
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::text,
+	e_direction::in,
+	std::list<T>
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, std::list<T>& list) {
+		yas::uint32_t size = 0;
+		ar & size;
+		list.resize(size);
+		typename std::list<T>::iterator it = list.begin();
+		for ( ; it != list.end(); ++it ) {
+			ar & (*it);
+		}
+	}
+};
 
 /***************************************************************************/
 
+} // namespace detail
 } // namespace yas
 
 #endif // _yas__text__std_list_serializer_hpp__included_

@@ -33,9 +33,9 @@
 #ifndef _yas__text__std_pair_serializer_hpp__included_
 #define _yas__text__std_pair_serializer_hpp__included_
 
-#include <yas/mpl/type_traits.hpp>
-#include <yas/serializers/detail/selector.hpp>
-#include <yas/serializers/detail/properties.hpp>
+#include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/selector.hpp>
+#include <yas/detail/properties.hpp>
 
 #include <utility>
 
@@ -55,6 +55,8 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::pair<T1, T2>& pair) {
+		ar & pair.first
+			& pair.second;
 	}
 };
 
@@ -69,6 +71,8 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, std::pair<T1, T2>& pair) {
+		ar & pair.first
+			& pair.second;
 	}
 };
 

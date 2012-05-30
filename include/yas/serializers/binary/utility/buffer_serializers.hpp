@@ -35,10 +35,10 @@
 
 #include <stdexcept>
 
-#include <yas/config/config.hpp>
-#include <yas/tools/buffer.hpp>
-#include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/selector.hpp>
+#include <yas/detail/config/config.hpp>
+#include <yas/detail/tools/buffer.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/selector.hpp>
 
 namespace yas {
 namespace detail {
@@ -52,8 +52,7 @@ struct serializer<
 	e_archive_type::binary,
 	e_direction::out,
 	intrusive_buffer
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, const intrusive_buffer& buf) {
 		ar.write(&buf.size, sizeof(yas::uint32_t));
@@ -73,8 +72,7 @@ struct serializer<
 	e_archive_type::binary,
 	e_direction::out,
 	shared_buffer
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, const shared_buffer& buf) {
 		ar.write(&buf.size, sizeof(yas::uint32_t));
@@ -89,14 +87,13 @@ struct serializer<
 	e_archive_type::binary,
 	e_direction::in,
 	shared_buffer
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, shared_buffer& buf) {
 		yas::uint32_t size = 0;
 		ar & size;
 		buf.data.reset(new char[size+1], &shared_buffer::deleter);
-		ar.read(buf.data.get(), size);
+		assert(ar.read(buf.data.get(), size) == size);
 		buf.size = size;
 		buf.data.get()[size] = 0;
 	}

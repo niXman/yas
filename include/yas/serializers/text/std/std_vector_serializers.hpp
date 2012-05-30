@@ -33,9 +33,9 @@
 #ifndef _yas__text__std_vector_serializer_hpp__included_
 #define _yas__text__std_vector_serializer_hpp__included_
 
-#include <yas/mpl/type_traits.hpp>
-#include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/selector.hpp>
+#include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/selector.hpp>
 
 #include <vector>
 
@@ -55,6 +55,11 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::vector<T>& vector) {
+		ar & vector.size();
+		typename std::vector<T>::const_iterator it = vector.begin();
+		for ( ; it != vector.end(); ++it ) {
+			ar & (*it);
+		}
 	}
 };
 
@@ -69,6 +74,13 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, std::vector<T>& vector) {
+		yas::uint32_t size = 0;
+		ar & size;
+		vector.resize(size);
+		typename std::vector<T>::iterator it = vector.begin();
+		for ( ; it != vector.end(); ++it ) {
+			ar & (*it);
+		}
 	}
 };
 

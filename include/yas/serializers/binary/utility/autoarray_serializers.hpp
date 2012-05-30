@@ -35,13 +35,13 @@
 
 #include <stdexcept>
 
-#include <yas/config/config.hpp>
-#include <yas/tools/utf8conv.hpp>
-#include <yas/tools/static_assert.hpp>
-#include <yas/mpl/type_traits.hpp>
-#include <yas/mpl/metafunctions.hpp>
-#include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/selector.hpp>
+#include <yas/detail/config/config.hpp>
+#include <yas/detail/tools/utf8conv.hpp>
+#include <yas/detail/tools/static_assert.hpp>
+#include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/mpl/metafunctions.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/selector.hpp>
 
 namespace yas {
 namespace detail {

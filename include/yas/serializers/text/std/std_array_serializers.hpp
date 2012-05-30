@@ -33,12 +33,12 @@
 #ifndef _yas__text__std_array_serializer_hpp__included_
 #define _yas__text__std_array_serializer_hpp__included_
 
-#include <yas/config/config.hpp>
+#include <yas/detail/config/config.hpp>
 
 #if defined(YAS_HAS_STD_ARRAY)
-#include <yas/mpl/type_traits.hpp>
-#include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/selector.hpp>
+#include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/selector.hpp>
 
 #include <array>
 
@@ -58,6 +58,11 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::array<T, N>& array) {
+		typename std::array<T, N>::const_iterator it = array.begin();
+		ar & static_cast<yas::uint32_t>(N);
+		for ( ; it != array.end(); ++it ) {
+			ar & (*it);
+		}
 	}
 };
 
@@ -72,6 +77,13 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, std::array<T, N>& array) {
+		yas::uint32_t size = 0;
+		ar & size;
+		if ( size != N ) throw std::runtime_error("array size is not equal");
+		typename std::array<T, N>::iterator it = array.begin();
+		for ( ; it != array.end(); ++it ) {
+			ar & (*it);
+		}
 	}
 };
 

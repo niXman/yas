@@ -33,12 +33,12 @@
 #ifndef _yas__binary__boost_unordered_map_hpp__included_
 #define _yas__binary__boost_unordered_map_hpp__included_
 
-#include <yas/config/config.hpp>
+#include <yas/detail/config/config.hpp>
 
 #if defined(YAS_HAS_BOOST_UNORDERED)
-#include <yas/mpl/type_traits.hpp>
-#include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/selector.hpp>
+#include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/selector.hpp>
 
 #include <boost/unordered_map.hpp>
 
@@ -49,89 +49,89 @@ namespace detail {
 
 template<typename K, typename V>
 struct serializer<
-   e_type_type::e_type_type::not_a_pod,
-   e_ser_method::use_internal_serializer,
-   e_archive_type::binary,
-   e_direction::out,
-   boost::unordered_map<K, V>
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::binary,
+	e_direction::out,
+	boost::unordered_map<K, V>
 >
 {
-   template<typename Archive>
-   static void apply(Archive& ar, const boost::unordered_map<K, V>& map) {
-      const std::size_t size = map.size();
-      ar.write(&size, sizeof(size));
-      typename boost::unordered_map<K, V>::const_iterator it = map.begin();
-      if ( detail::is_pod<K>::value && detail::is_pod<V>::value ) {
-         for ( ; it != map.end(); ++it ) {
-            ar.write(&it->first, sizeof(K));
-            ar.write(&it->second, sizeof(V));
-         }
-      } else if ( detail::is_pod<K>::value ) {
-         for ( ; it != map.end(); ++it ) {
-            ar.write(&it->first, sizeof(K));
-            ar & it->second;
-         }
-      } else if ( detail::is_pod<V>::value ) {
-         for ( ; it != map.end(); ++it ) {
-            ar & it->first;
-            ar.write(&it->second, sizeof(V));
-         }
-      } else {
-         for ( ; it != map.end(); ++it ) {
-            ar & it->first
-               & it->second;
-         }
-      }
-   }
+	template<typename Archive>
+	static void apply(Archive& ar, const boost::unordered_map<K, V>& map) {
+		const std::size_t size = map.size();
+		ar.write(&size, sizeof(size));
+		typename boost::unordered_map<K, V>::const_iterator it = map.begin();
+		if ( detail::is_pod<K>::value && detail::is_pod<V>::value ) {
+			for ( ; it != map.end(); ++it ) {
+				ar.write(&it->first, sizeof(K));
+				ar.write(&it->second, sizeof(V));
+			}
+		} else if ( detail::is_pod<K>::value ) {
+			for ( ; it != map.end(); ++it ) {
+				ar.write(&it->first, sizeof(K));
+				ar & it->second;
+			}
+		} else if ( detail::is_pod<V>::value ) {
+			for ( ; it != map.end(); ++it ) {
+				ar & it->first;
+				ar.write(&it->second, sizeof(V));
+			}
+		} else {
+			for ( ; it != map.end(); ++it ) {
+				ar & it->first
+					& it->second;
+			}
+		}
+	}
 };
 
 template<typename K, typename V>
 struct serializer<
-   e_type_type::e_type_type::not_a_pod,
-   e_ser_method::use_internal_serializer,
-   e_archive_type::binary,
-   e_direction::in,
-   boost::unordered_map<K, V>
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::binary,
+	e_direction::in,
+	boost::unordered_map<K, V>
 >
 {
-   template<typename Archive>
-   static void apply(Archive& ar, boost::unordered_map<K, V>& map) {
-      std::size_t size = 0;
-      ar & size;
-      if ( detail::is_pod<K>::value && detail::is_pod<V>::value ) {
-         K key;
-         V val;
-         for ( std::size_t idx = 0; idx < size; ++idx ) {
-            ar.read(&key, sizeof(K));
-            ar.read(&val, sizeof(V));
-            map[key] = val;
-         }
-      } else if ( detail::is_pod<K>::value ) {
-         K key;
-         V val = V();
-         for ( std::size_t idx = 0; idx < size; ++idx ) {
-            ar.read(&key, sizeof(K));
-            ar & val;
-            map[key] = val;
-         }
-      } else if ( detail::is_pod<V>::value ) {
-         K key = K();
-         V val;
-         for ( std::size_t idx = 0; idx < size; ++idx ) {
-            ar & key;
-            ar.read(&val, sizeof(V));
-            map[key] = val;
-         }
-      } else {
-         K key = K();
-         V val = V();
-         for ( std::size_t idx = 0; idx < size; ++idx ) {
-            ar & key
-               & val;
-            map[key] = val;
-         }
-      }
-   }
+	template<typename Archive>
+	static void apply(Archive& ar, boost::unordered_map<K, V>& map) {
+		std::size_t size = 0;
+		ar & size;
+		if ( detail::is_pod<K>::value && detail::is_pod<V>::value ) {
+			K key;
+			V val;
+			for ( std::size_t idx = 0; idx < size; ++idx ) {
+				ar.read(&key, sizeof(K));
+				ar.read(&val, sizeof(V));
+				map[key] = val;
+			}
+		} else if ( detail::is_pod<K>::value ) {
+			K key;
+			V val = V();
+			for ( std::size_t idx = 0; idx < size; ++idx ) {
+				ar.read(&key, sizeof(K));
+				ar & val;
+				map[key] = val;
+			}
+		} else if ( detail::is_pod<V>::value ) {
+			K key = K();
+			V val;
+			for ( std::size_t idx = 0; idx < size; ++idx ) {
+				ar & key;
+				ar.read(&val, sizeof(V));
+				map[key] = val;
+			}
+		} else {
+			K key = K();
+			V val = V();
+			for ( std::size_t idx = 0; idx < size; ++idx ) {
+				ar & key
+					& val;
+				map[key] = val;
+			}
+		}
+	}
 };
 
 /***************************************************************************/

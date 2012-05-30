@@ -33,13 +33,13 @@
 #ifndef _yas__text__boost_fusion_list_serializer_hpp__included_
 #define _yas__text__boost_fusion_list_serializer_hpp__included_
 
-#include <yas/config/config.hpp>
+#include <yas/detail/config/config.hpp>
 
 #if defined(YAS_HAS_BOOST_FUSION)
-#include <yas/mpl/type_traits.hpp>
-#include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/selector.hpp>
-#include <yas/tools/boost_preprocessor/preprocessor.hpp>
+#include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/selector.hpp>
+#include <yas/detail/boost_preprocessor/preprocessor.hpp>
 
 #include <boost/fusion/container/list.hpp>
 #include <boost/fusion/include/list.hpp>
@@ -57,104 +57,97 @@ namespace detail {
 
 template<typename Archive>
 struct text_list_serializer {
-   text_list_serializer(Archive& ar)
-      :ar(ar)
-   {}
+	text_list_serializer(Archive& ar)
+		:ar(ar)
+	{}
 
-   template<typename T>
-   void operator()(const T& v) const {
-      ar & v;
-   }
+	template<typename T>
+	void operator()(const T& v) const {
+		ar & v;
+	}
 
-   Archive& ar;
+	Archive& ar;
 };
 
 template<typename Archive>
 struct text_list_deserializer {
-   text_list_deserializer(Archive& ar)
-      :ar(ar)
-   {}
+	text_list_deserializer(Archive& ar)
+		:ar(ar)
+	{}
 
-   template<typename T>
-   void operator()(T& v) const {
-      ar & v;
-   }
+	template<typename T>
+	void operator()(T& v) const {
+		ar & v;
+	}
 
-   Archive& ar;
+	Archive& ar;
 };
 
 /***************************************************************************/
 
-#define YAS__TEXT__WRITE_FUSION_LIST_SIZE(count) \
-   const boost::uint8_t size = count; \
-   ar.write(&size, sizeof(size))
-
-#define YAS__TEXT__READ_AND_CHECK_FUSION_LIST_SIZE(count) \
-   boost::uint8_t size = 0; \
-   ar.read(&size, sizeof(size)); \
-   BOOST_ASSERT_MSG(size == count, "size error on deserialize fusion::list")
-
 #define YAS__TEXT__GENERATE_EMPTY_SAVE_SERIALIZE_LIST_SPEC_VARIADIC() \
-   template<> \
-   struct serializer<e_type_type::e_type_type::not_a_pod, e_ser_method::use_internal_serializer, \
-      e_archive_type::text, e_direction::out, boost::fusion::list<> > \
-   { \
-      template<typename Archive> \
-      static void apply(Archive&, const boost::fusion::list<>&) {} \
-   };
+	template<> \
+	struct serializer<e_type_type::e_type_type::not_a_pod, e_ser_method::use_internal_serializer, \
+		e_archive_type::text, e_direction::out, boost::fusion::list<> > \
+	{ \
+		template<typename Archive> \
+		static void apply(Archive&, const boost::fusion::list<>&) {} \
+	};
 
 #define YAS__TEXT__GENERATE_EMPTY_LOAD_SERIALIZE_LIST_SPEC_VARIADIC() \
-   template<> \
-   struct serializer<e_type_type::e_type_type::not_a_pod, e_ser_method::use_internal_serializer, \
-      e_archive_type::text, e_direction::in, boost::fusion::list<> > \
-   { \
-      template<typename Archive> \
-      static void apply(Archive&, boost::fusion::list<>&) {} \
-   };
+	template<> \
+	struct serializer<e_type_type::e_type_type::not_a_pod, e_ser_method::use_internal_serializer, \
+		e_archive_type::text, e_direction::in, boost::fusion::list<> > \
+	{ \
+		template<typename Archive> \
+		static void apply(Archive&, boost::fusion::list<>&) {} \
+	};
 
 #define YAS__TEXT__GENERATE_SAVE_SERIALIZE_LIST_SPEC_VARIADIC(unused, count, unused2) \
-   template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
-   struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
-      e_archive_type::text, e_direction::out, boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
-   { \
-      template<typename Archive> \
-      static void apply(Archive& ar, \
-         const boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& list) \
-      { \
-         YAS__TEXT__WRITE_FUSION_LIST_SIZE(YAS_PP_INC(count)); \
-         boost::fusion::for_each(list, detail::text_list_serializer<Archive>(ar)); \
-      } \
-   };
+	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
+	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
+		e_archive_type::text, e_direction::out, boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
+	{ \
+		template<typename Archive> \
+		static void apply(Archive& ar, \
+			const boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& list) \
+		{ \
+			ar & YAS_PP_INC(count); \
+			boost::fusion::for_each(list, detail::text_list_serializer<Archive>(ar)); \
+		} \
+	};
 
 #define YAS__TEXT__GENERATE_SAVE_SERIALIZE_LIST_SPEC_VARIADICS(count) \
-   YAS__TEXT__GENERATE_EMPTY_SAVE_SERIALIZE_LIST_SPEC_VARIADIC(); \
-   YAS_PP_REPEAT( \
-      count, \
-      YAS__TEXT__GENERATE_SAVE_SERIALIZE_LIST_SPEC_VARIADIC, \
-      ~ \
-   )
+	YAS__TEXT__GENERATE_EMPTY_SAVE_SERIALIZE_LIST_SPEC_VARIADIC(); \
+	YAS_PP_REPEAT( \
+		count, \
+		YAS__TEXT__GENERATE_SAVE_SERIALIZE_LIST_SPEC_VARIADIC, \
+		~ \
+	)
 
 #define YAS__TEXT__GENERATE_LOAD_SERIALIZE_LIST_SPEC_VARIADIC(unused, count, unused2) \
-   template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
-   struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
-      e_archive_type::text, e_direction::in, boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
-   { \
-      template<typename Archive> \
-      static void apply(Archive& ar, \
-         boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& list) \
-      { \
-         YAS__TEXT__READ_AND_CHECK_FUSION_LIST_SIZE(YAS_PP_INC(count)); \
-         boost::fusion::for_each(list, detail::text_list_deserializer<Archive>(ar)); \
-      } \
-   };
+	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
+	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
+		e_archive_type::text, e_direction::in, boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
+	{ \
+		template<typename Archive> \
+		static void apply(Archive& ar, \
+			boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& list) \
+		{ \
+			yas::int32_t size = 0; \
+			ar & size; \
+			if ( size != YAS_PP_INC(count) ) throw std::runtime_error("size error on deserialize fusion::list"); \
+			boost::fusion::for_each(list, detail::text_list_deserializer<Archive>(ar)); \
+		} \
+	};
 
 #define YAS__TEXT__GENERATE_LOAD_SERIALIZE_LIST_SPEC_VARIADICS(count) \
-   YAS__TEXT__GENERATE_EMPTY_LOAD_SERIALIZE_LIST_SPEC_VARIADIC(); \
-   YAS_PP_REPEAT( \
-      count, \
-      YAS__TEXT__GENERATE_LOAD_SERIALIZE_LIST_SPEC_VARIADIC, \
-      ~ \
-   )
+	YAS__TEXT__GENERATE_EMPTY_LOAD_SERIALIZE_LIST_SPEC_VARIADIC(); \
+	YAS_PP_REPEAT( \
+		count, \
+		YAS__TEXT__GENERATE_LOAD_SERIALIZE_LIST_SPEC_VARIADIC, \
+		~ \
+	)
 
 /***************************************************************************/
 
@@ -164,70 +157,70 @@ YAS__TEXT__GENERATE_LOAD_SERIALIZE_LIST_SPEC_VARIADICS(FUSION_MAX_LIST_SIZE);
 /***************************************************************************/
 #if 0
 #define YAS__BINARY__GENERATE_EMPTY_SAVE_SERIALIZE_LIST_SPEC() \
-   template<> \
-   struct serializer<false, false, false, false, false, \
-      e_archive_type::binary, e_direction::out, boost::fusion::list0<> > \
-   { \
-      template<typename Archive> \
-      static void apply(Archive&, const boost::fusion::list0<>&) {} \
-   };
+	template<> \
+	struct serializer<false, false, false, false, false, \
+		e_archive_type::binary, e_direction::out, boost::fusion::list0<> > \
+	{ \
+		template<typename Archive> \
+		static void apply(Archive&, const boost::fusion::list0<>&) {} \
+	};
 
 #define YAS__BINARY__GENERATE_EMPTY_LOAD_SERIALIZE_LIST_SPEC() \
-   template<> \
-   struct serializer<false, false, false, false, false, \
-      e_archive_type::binary, e_direction::in, boost::fusion::list0<> > \
-   { \
-      template<typename Archive> \
-      static void apply(Archive&, boost::fusion::list0<>&) {} \
-   };
+	template<> \
+	struct serializer<false, false, false, false, false, \
+		e_archive_type::binary, e_direction::in, boost::fusion::list0<> > \
+	{ \
+		template<typename Archive> \
+		static void apply(Archive&, boost::fusion::list0<>&) {} \
+	};
 
 #define YAS__BINARY__GENERATE_SAVE_SERIALIZE_LIST_SPEC(unused, count, text) \
-   template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
-   struct serializer<false, false, false, false, false, \
-      e_archive_type::binary, e_direction::out, \
-      YAS_PP_CAT(boost::fusion::list, YAS_PP_INC(count)) \
-         <YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
-   { \
-      template<typename Archive> \
-      static void apply(Archive& ar, \
-         const YAS_PP_CAT(boost::fusion::list, YAS_PP_INC(count))<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& list) \
-      { \
-         YAS__BINARY__WRITE_FUSION_LIST_SIZE(YAS_PP_INC(count)); \
-         boost::fusion::for_each(list, detail::list_serializer<Archive>(ar)); \
-      } \
-   };
+	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
+	struct serializer<false, false, false, false, false, \
+		e_archive_type::binary, e_direction::out, \
+		YAS_PP_CAT(boost::fusion::list, YAS_PP_INC(count)) \
+			<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
+	{ \
+		template<typename Archive> \
+		static void apply(Archive& ar, \
+			const YAS_PP_CAT(boost::fusion::list, YAS_PP_INC(count))<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& list) \
+		{ \
+			YAS__BINARY__WRITE_FUSION_LIST_SIZE(YAS_PP_INC(count)); \
+			boost::fusion::for_each(list, detail::list_serializer<Archive>(ar)); \
+		} \
+	};
 
 #define YAS__BINARY__GENERATE_SAVE_SERIALIZE_LIST_SPECS(count) \
-   YAS__BINARY__GENERATE_EMPTY_SAVE_SERIALIZE_LIST_SPEC(); \
-   YAS_PP_REPEAT( \
-      count, \
-      YAS__BINARY__GENERATE_SAVE_SERIALIZE_LIST_SPEC, \
-      ~ \
-   )
+	YAS__BINARY__GENERATE_EMPTY_SAVE_SERIALIZE_LIST_SPEC(); \
+	YAS_PP_REPEAT( \
+		count, \
+		YAS__BINARY__GENERATE_SAVE_SERIALIZE_LIST_SPEC, \
+		~ \
+	)
 
 #define YAS__BINARY__GENERATE_LOAD_SERIALIZE_LIST_SPEC(unused, count, text) \
-   template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
-   struct serializer<false, false, false, false, false, \
-      e_archive_type::binary, e_direction::in, \
-      YAS_PP_CAT(boost::fusion::list, YAS_PP_INC(count)) \
-         <YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
-   { \
-      template<typename Archive> \
-      static void apply(Archive& ar, \
-         YAS_PP_CAT(boost::fusion::list, YAS_PP_INC(count))<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& list) \
-      { \
-         YAS__BINARY__WRITE_FUSION_LIST_SIZE(YAS_PP_INC(count)); \
-         boost::fusion::for_each(list, detail::list_deserializer<Archive>(ar)); \
-      } \
-   };
+	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
+	struct serializer<false, false, false, false, false, \
+		e_archive_type::binary, e_direction::in, \
+		YAS_PP_CAT(boost::fusion::list, YAS_PP_INC(count)) \
+			<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
+	{ \
+		template<typename Archive> \
+		static void apply(Archive& ar, \
+			YAS_PP_CAT(boost::fusion::list, YAS_PP_INC(count))<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& list) \
+		{ \
+			YAS__BINARY__WRITE_FUSION_LIST_SIZE(YAS_PP_INC(count)); \
+			boost::fusion::for_each(list, detail::list_deserializer<Archive>(ar)); \
+		} \
+	};
 
 #define YAS__BINARY__GENERATE_LOAD_SERIALIZE_LIST_SPECS(count) \
-   YAS__BINARY__GENERATE_EMPTY_LOAD_SERIALIZE_LIST_SPEC(); \
-   YAS_PP_REPEAT( \
-      count, \
-      YAS__BINARY__GENERATE_LOAD_SERIALIZE_LIST_SPEC, \
-      ~ \
-   )
+	YAS__BINARY__GENERATE_EMPTY_LOAD_SERIALIZE_LIST_SPEC(); \
+	YAS_PP_REPEAT( \
+		count, \
+		YAS__BINARY__GENERATE_LOAD_SERIALIZE_LIST_SPEC, \
+		~ \
+	)
 
 /***************************************************************************/
 

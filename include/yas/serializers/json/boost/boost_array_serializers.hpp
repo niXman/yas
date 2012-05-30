@@ -33,11 +33,11 @@
 #ifndef _yas__json__boost_array_serializers_hpp__included_
 #define _yas__json__boost_array_serializers_hpp__included_
 
-#include <yas/config/config.hpp>
+#include <yas/detail/config/config.hpp>
 
 #if defined(YAS_HAS_BOOST_ARRAY)
-#include <yas/mpl/type_traits.hpp>
-#include <yas/serializers/detail/selector.hpp>
+#include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/selector.hpp>
 
 #include <boost/array.hpp>
 #include <boost/assert.hpp>
@@ -49,51 +49,51 @@ namespace detail {
 
 template<typename T, size_t N>
 struct serializer<
-   e_type_type::e_type_type::not_a_pod,
-   e_ser_method::has_split_functions,
-   e_archive_type::json,
-   e_direction::out,
-   boost::array<T, N>
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::has_split_functions,
+	e_archive_type::json,
+	e_direction::out,
+	boost::array<T, N>
 >
 {
-   template<typename Archive>
-   static void apply(Archive& ar, const boost::array<T, N>& array) {
-      const size_t size = N;
-      ar.write(&size, sizeof(size));
-      if ( is_pod<T>::value ) {
-         ar.write(array.data(), sizeof(T)*N);
-      } else {
-         typename boost::array<T, N>::const_iterator it = array.begin();
-         for ( ; it != array.end(); ++it ) {
-            ar & (*it);
-         }
-      }
-   }
+	template<typename Archive>
+	static void apply(Archive& ar, const boost::array<T, N>& array) {
+		const size_t size = N;
+		ar.write(&size, sizeof(size));
+		if ( is_pod<T>::value ) {
+			ar.write(array.data(), sizeof(T)*N);
+		} else {
+			typename boost::array<T, N>::const_iterator it = array.begin();
+			for ( ; it != array.end(); ++it ) {
+				ar & (*it);
+			}
+		}
+	}
 };
 
 template<typename T, size_t N>
 struct serializer<
-   e_type_type::e_type_type::not_a_pod,
-   e_ser_method::has_split_functions,
-   e_archive_type::json,
-   e_direction::in,
-   boost::array<T, N>
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::has_split_functions,
+	e_archive_type::json,
+	e_direction::in,
+	boost::array<T, N>
 >
 {
-   template<typename Archive>
-   static void apply(Archive& ar, boost::array<T, N>& array) {
-      std::size_t size = 0;
-      ar.read(&size, sizeof(size));
-      BOOST_ASSERT(size == N);
-      if ( is_pod<T>::value ) {
-         ar.read(array.data(), sizeof(T)*N);
-      } else {
-         typename boost::array<T, N>::iterator it = array.begin();
-         for ( ; it != array.end(); ++it ) {
-            ar & (*it);
-         }
-      }
-   }
+	template<typename Archive>
+	static void apply(Archive& ar, boost::array<T, N>& array) {
+		std::size_t size = 0;
+		ar.read(&size, sizeof(size));
+		BOOST_ASSERT(size == N);
+		if ( is_pod<T>::value ) {
+			ar.read(array.data(), sizeof(T)*N);
+		} else {
+			typename boost::array<T, N>::iterator it = array.begin();
+			for ( ; it != array.end(); ++it ) {
+				ar & (*it);
+			}
+		}
+	}
 };
 
 /***************************************************************************/

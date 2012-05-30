@@ -33,8 +33,8 @@
 #ifndef _yas__text__usertype_serializer_hpp_included_
 #define _yas__text__usertype_serializer_hpp_included_
 
-#include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/selector.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/selector.hpp>
 
 namespace yas {
 namespace detail {
@@ -42,112 +42,138 @@ namespace detail {
 /***************************************************************************/
 
 template<typename T>
-struct serializer<
-   e_type_type::e_type_type::not_a_pod,
-   e_ser_method::has_split_functions,
-   e_archive_type::text,
-   e_direction::out,
-   T
->
-{
-   template<typename Archive>
-   static void apply(Archive& ar, const T& v) {
-      serialize(ar, v);
-   }
-   template<typename Archive>
-   static void apply(Archive& ar, T& v) {
-      serialize(ar, v);
-   }
-};
-template<typename T>
-struct serializer<
-   e_type_type::e_type_type::not_a_pod,
-   e_ser_method::has_one_function,
-   e_archive_type::text,
-   e_direction::out,
-   T
->
-{
-   template<typename Archive>
-   static void apply(Archive& ar, const T& v) {
-      serialize(ar, const_cast<T&>(v));
-   }
+struct serializer
+<
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::has_split_functions,
+	e_archive_type::text,
+	e_direction::out,
+	T
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, const T& v) {
+		serialize(ar, v);
+	}
 };
 
-template<typename T>
-struct serializer<
-   e_type_type::e_type_type::not_a_pod,
-   e_ser_method::has_one_function,
-   e_archive_type::text,
-   e_direction::in,
-   T
->
-{
-   template<typename Archive>
-   static void apply(Archive& ar, T& v) {
-      serialize(ar, v);
-   }
-};
+/***************************************************************************/
 
 template<typename T>
-struct serializer<
-   e_type_type::e_type_type::not_a_pod,
-   e_ser_method::has_split_functions,
-   e_archive_type::text,
-   e_direction::in,
-   T
->
-{
-   template<typename Archive>
-   static void apply(Archive& ar, T& v) {
-      serialize(ar, v);
-   }
+struct serializer
+<
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::has_one_function,
+	e_archive_type::text,
+	e_direction::out,
+	T
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, const T& v) {
+		serialize(ar, const_cast<T&>(v));
+	}
+};
+
+/***************************************************************************/
+
+template<typename T>
+struct serializer
+<
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::has_one_function,
+	e_archive_type::text,
+	e_direction::in,
+	T
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, T& v) {
+		serialize(ar, v);
+	}
+};
+
+/***************************************************************************/
+
+template<typename T>
+struct serializer
+<
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::has_split_functions,
+	e_archive_type::text,
+	e_direction::in,
+	T
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, T& v) {
+		serialize(ar, v);
+	}
+};
+
+/***************************************************************************/
+/***************************************************************************/
+/***************************************************************************/
+
+template<typename T>
+struct serializer
+<
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::has_one_method,
+	e_archive_type::text,
+	e_direction::out,
+	T
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, const T& v) {
+		const_cast<T&>(v).serialize(ar);
+	}
 };
 
 /***************************************************************************/
 
 template<typename T>
 struct serializer<
-   e_type_type::e_type_type::not_a_pod,
-   e_ser_method::has_one_method,
-   e_archive_type::text,
-   e_direction::out,
-   T
->
-{
-   template<typename Archive>
-   static void apply(Archive& ar, const T& v) {
-      const_cast<T&>(v).serialize(ar);
-   }
-};
-template<typename T>
-struct serializer<
-   e_type_type::e_type_type::not_a_pod,
-   e_ser_method::has_split_methods,
-   e_archive_type::text,
-   e_direction::out,
-   T
->
-{
-   template<typename Archive>
-   static void apply(Archive& ar, const T& v) {
-      v.serialize(ar);
-   }
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::has_split_methods,
+	e_archive_type::text,
+	e_direction::out,
+	T
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, const T& v) {
+		v.serialize(ar);
+	}
 };
 
+/***************************************************************************/
+
 template<typename T>
-struct serializer<
-   e_type_type::e_type_type::not_a_pod,
-   e_ser_method::has_one_method,
-   e_archive_type::text,
-   e_direction::in,
-   T
->
-{
-   template<typename Archive>
-   static void apply(Archive& ar, T& v) {
-      v.serialize(ar);
-   }
+struct serializer
+<
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::has_one_method,
+	e_archive_type::text,
+	e_direction::in,
+	T
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, T& v) {
+		v.serialize(ar);
+	}
+};
+
+/***************************************************************************/
+
+template<typename T>
+struct serializer
+<
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::has_split_methods,
+	e_archive_type::text,
+	e_direction::in,
+	T
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, T& v) {
+		v.serialize(ar);
+	}
 };
 
 /***************************************************************************/

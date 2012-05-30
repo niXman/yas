@@ -33,10 +33,12 @@
 #ifndef _yas__text__std_unordered_multiset_serializer_hpp__included_
 #define _yas__text__std_unordered_multiset_serializer_hpp__included_
 
+#include <yas/detail/config/config.hpp>
+
 #if defined(YAS_HAS_STD_UNORDERED)
-#include <yas/mpl/type_traits.hpp>
-#include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/selector.hpp>
+#include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/selector.hpp>
 
 #include <unordered_set>
 
@@ -47,58 +49,43 @@ namespace detail {
 
 template<typename K>
 struct serializer<
-   e_type_type::e_type_type::not_a_pod,
-   e_ser_method::use_internal_serializer,
-   e_archive_type::text,
-   e_direction::out,
-   std::unordered_multiset<K>
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::text,
+	e_direction::out,
+	std::unordered_multiset<K>
 >
 {
-   template<typename Archive>
-   static void apply(Archive& ar, const std::unordered_multiset<K>& set) {
-      std::size_t size = set.size();
-      ar.write(&size, sizeof(size));
-      typename std::unordered_multiset<K>::const_iterator it = set.begin();
-      if ( is_pod<K>::value ) {
-         for ( ; it != set.end(); ++it ) {
-            ar.write(&*it, sizeof(K));
-         }
-      } else {
-         for ( ; it != set.end(); ++it ) {
-            ar & (*it);
-         }
-      }
-   }
+	template<typename Archive>
+	static void apply(Archive& ar, const std::unordered_multiset<K>& set) {
+		ar & set.size();
+		typename std::unordered_multiset<K>::const_iterator it = set.begin();
+		for ( ; it != set.end(); ++it ) {
+			ar & (*it);
+		}
+	}
 };
 
 
 template<typename K>
 struct serializer<
-   e_type_type::e_type_type::not_a_pod,
-   e_ser_method::use_internal_serializer,
-   e_archive_type::text,
-   e_direction::in,
-   std::unordered_multiset<K>
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::text,
+	e_direction::in,
+	std::unordered_multiset<K>
 >
 {
-   template<typename Archive>
-   static void apply(Archive& ar, std::unordered_multiset<K>& set) {
-      std::size_t size = 0;
-      ar.read(&size, sizeof(size));
-      if ( is_pod<K>::value ) {
-         K key;
-         for ( std::size_t idx = 0; idx < size; ++idx ) {
-            ar.read(&key, sizeof(K));
-            set.insert(key);
-         }
-      } else {
-         K key = K();
-         for ( std::size_t idx = 0; idx < size; ++idx ) {
-            ar & key;
-            set.insert(key);
-         }
-      }
-   }
+	template<typename Archive>
+	static void apply(Archive& ar, std::unordered_multiset<K>& set) {
+		std::size_t size = 0;
+		ar & size;
+		K key = K();
+		for ( std::size_t idx = 0; idx < size; ++idx ) {
+			ar & key;
+			set.insert(key);
+		}
+	}
 };
 
 /***************************************************************************/

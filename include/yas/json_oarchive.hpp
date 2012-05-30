@@ -33,36 +33,37 @@
 #ifndef _yas__json_oarchive_hpp__included_
 #define _yas__json_oarchive_hpp__included_
 
-#include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/has_method_serialize.hpp>
-#include <yas/serializers/detail/has_function_serialize.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/has_method_serialize.hpp>
+#include <yas/detail/has_function_serialize.hpp>
 
-#include <yas/serializers/detail/selector.hpp>
-#include <yas/serializers/detail/memstream.hpp>
+#include <yas/detail/selector.hpp>
+#include <yas/detail/memstream.hpp>
 
 //#include <yas/serializers/json/utility/pod_serializers.hpp>
 //#include <yas/serializers/json/utility/usertype_serializers.hpp>
 //#include <yas/serializers/json/utility/autoarray_serializers.hpp>
 //#include <yas/serializers/json/utility/buffer_serializers.hpp>
 
-#include <yas/tools/buffer.hpp>
-#include <yas/tools/noncopyable.hpp>
+#include <yas/detail/tools/buffer.hpp>
+#include <yas/detail/tools/noncopyable.hpp>
+#include <yas/detail/tools/enum_cast.hpp>
 
 namespace yas {
 
 /***************************************************************************/
 
 struct json_mem_oarchive
-	:detail::omemstream
+	:detail::omemstream<json_mem_oarchive>
 	,detail::archive_information<e_archive_type::json, e_direction::out, json_mem_oarchive>
 	,private detail::noncopyable
 {
 	json_mem_oarchive(header_t::type op = header_t::with_header)
-		:detail::omemstream()
+		:detail::omemstream<json_mem_oarchive>()
 		,detail::archive_information<e_archive_type::json, e_direction::out, json_mem_oarchive>(this, op)
 	{}
 	json_mem_oarchive(char* ptr, size_t size, header_t::type op = header_t::with_header)
-		:detail::omemstream(ptr, size)
+		:detail::omemstream<json_mem_oarchive>(ptr, size)
 		,detail::archive_information<e_archive_type::json, e_direction::out, json_mem_oarchive>(this, op)
 	{}
 

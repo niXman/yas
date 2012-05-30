@@ -33,16 +33,16 @@
 #ifndef _yas__binary__fusion_tuple_serializer_hpp__included_
 #define _yas__binary__fusion_tuple_serializer_hpp__included_
 
-#include <yas/config/config.hpp>
+#include <yas/detail/config/config.hpp>
 
 #if defined(YAS_HAS_BOOST_FUSION)
 
 #include <stdexcept>
 
-#include <yas/mpl/type_traits.hpp>
-#include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/selector.hpp>
-#include <yas/tools/boost_preprocessor/preprocessor.hpp>
+#include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/selector.hpp>
+#include <yas/detail/boost_preprocessor/preprocessor.hpp>
 
 #include <boost/assert.hpp>
 #include <boost/fusion/tuple.hpp>

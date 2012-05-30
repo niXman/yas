@@ -35,13 +35,11 @@
 
 #include <stdexcept>
 
-#include <yas/config/config.hpp>
-#include <yas/tools/utf8conv.hpp>
-#include <yas/tools/static_assert.hpp>
-#include <yas/mpl/type_traits.hpp>
-#include <yas/mpl/metafunctions.hpp>
-#include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/selector.hpp>
+#include <yas/detail/config/config.hpp>
+#include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/mpl/metafunctions.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/selector.hpp>
 
 namespace yas {
 namespace detail {
@@ -61,7 +59,9 @@ struct serializer<
 		,typename U
 	>
 	static void apply(Archive& ar, const U(&v)[N], typename enable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
-		(ar & (N-1)).write(v, N-1) & ' ';
+		ar & (N-1);
+		ar.write(v, N-1);
+		ar & ' ';
 	}
 
 	template<

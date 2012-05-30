@@ -33,11 +33,11 @@
 #ifndef _yas__text__boost_array_serializers_hpp__included_
 #define _yas__text__boost_array_serializers_hpp__included_
 
-#include <yas/config/config.hpp>
+#include <yas/detail/config/config.hpp>
 
 #if defined(YAS_HAS_BOOST_ARRAY)
-#include <yas/mpl/type_traits.hpp>
-#include <yas/serializers/detail/selector.hpp>
+#include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/selector.hpp>
 
 #include <boost/array.hpp>
 #include <boost/assert.hpp>
@@ -49,30 +49,42 @@ namespace detail {
 
 template<typename T, size_t N>
 struct serializer<
-   e_type_type::e_type_type::not_a_pod,
-   e_ser_method::use_internal_serializer,
-   e_archive_type::text,
-   e_direction::out,
-   boost::array<T, N>
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::text,
+	e_direction::out,
+	boost::array<T, N>
 >
 {
-   template<typename Archive>
-   static void apply(Archive& ar, const boost::array<T, N>& array) {
-   }
+	template<typename Archive>
+	static void apply(Archive& ar, const boost::array<T, N>& array) {
+		ar & static_cast<yas::uint32_t>(N);
+		typename boost::array<T, N>::const_iterator it = array.begin();
+		for ( ; it != array.end(); ++it ) {
+			ar & (*it);
+		}
+	}
 };
 
 template<typename T, size_t N>
 struct serializer<
-   e_type_type::e_type_type::not_a_pod,
-   e_ser_method::use_internal_serializer,
-   e_archive_type::text,
-   e_direction::in,
-   boost::array<T, N>
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::text,
+	e_direction::in,
+	boost::array<T, N>
 >
 {
-   template<typename Archive>
-   static void apply(Archive& ar, boost::array<T, N>& array) {
-   }
+	template<typename Archive>
+	static void apply(Archive& ar, boost::array<T, N>& array) {
+		yas::uint32_t size = 0;
+		ar & size;
+		if ( size != N ) throw std::runtime_error("array size is not equal");
+		typename boost::array<T, N>::iterator it = array.begin();
+		for ( ; it != array.end(); ++it ) {
+			ar & (*it);
+		}
+	}
 };
 
 /***************************************************************************/

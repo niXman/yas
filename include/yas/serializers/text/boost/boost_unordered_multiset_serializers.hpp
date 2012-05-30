@@ -33,12 +33,12 @@
 #ifndef _yas__text__boost_unordered_multiset_hpp__included_
 #define _yas__text__boost_unordered_multiset_hpp__included_
 
-#include <yas/config/config.hpp>
+#include <yas/detail/config/config.hpp>
 
 #if defined(YAS_HAS_BOOST_UNORDERED)
-#include <yas/mpl/type_traits.hpp>
-#include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/selector.hpp>
+#include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/selector.hpp>
 
 #include <boost/unordered_set.hpp>
 
@@ -49,30 +49,42 @@ namespace detail {
 
 template<typename K>
 struct serializer<
-   e_type_type::e_type_type::not_a_pod,
-   e_ser_method::use_internal_serializer,
-   e_archive_type::text,
-   e_direction::out,
-   boost::unordered_multiset<K>
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::text,
+	e_direction::out,
+	boost::unordered_multiset<K>
 >
 {
-   template<typename Archive>
-   static void apply(Archive& ar, const boost::unordered_multiset<K>& set) {
-   }
+	template<typename Archive>
+	static void apply(Archive& ar, const boost::unordered_multiset<K>& set) {
+		ar & set.size();
+		typename boost::unordered_multiset<K>::const_iterator it = set.begin();
+		for ( ; it != set.end(); ++it ) {
+			ar & (*it);
+		}
+	}
 };
 
 template<typename K>
 struct serializer<
-   e_type_type::e_type_type::not_a_pod,
-   e_ser_method::use_internal_serializer,
-   e_archive_type::text,
-   e_direction::in,
-   boost::unordered_multiset<K>
+	e_type_type::e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::text,
+	e_direction::in,
+	boost::unordered_multiset<K>
 >
 {
-   template<typename Archive>
-   static void apply(Archive& ar, boost::unordered_multiset<K>& set) {
-   }
+	template<typename Archive>
+	static void apply(Archive& ar, boost::unordered_multiset<K>& set) {
+		yas::uint32_t size = 0;
+		ar & size;
+		K key = K();
+		for ( ; size; --size ) {
+			ar & key;
+			set.insert(key);
+		}
+	}
 };
 
 /***************************************************************************/

@@ -35,10 +35,10 @@
 
 #include <stdexcept>
 
-#include <yas/config/config.hpp>
-#include <yas/mpl/type_traits.hpp>
-#include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/selector.hpp>
+#include <yas/detail/config/config.hpp>
+#include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/selector.hpp>
 
 #include <bitset>
 
@@ -59,6 +59,9 @@ struct serializer<
 	template<typename Archive>
 	static void apply(Archive& ar, const std::bitset<N>& bits) {
 		ar & static_cast<yas::uint32_t>(N);
+		for ( std::size_t idx = 0; idx < N; ++idx ) {
+			ar & (int)bits[idx];
+		}
 	}
 };
 
@@ -75,6 +78,12 @@ struct serializer<
 	static void apply(Archive& ar, std::bitset<N>& bits) {
 		yas::uint32_t size = 0;
 		ar & size;
+		if ( size != N ) throw std::runtime_error("bitsets size is not equal");
+		for ( std::size_t idx = 0; idx < N; ++idx ) {
+			int v;
+			ar & v;
+			bits[idx] = v;
+		}
 	}
 };
 

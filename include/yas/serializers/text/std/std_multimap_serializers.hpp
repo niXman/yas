@@ -33,9 +33,9 @@
 #ifndef _yas__text__std_multimap_serializer_hpp__included_
 #define _yas__text__std_multimap_serializer_hpp__included_
 
-#include <yas/mpl/type_traits.hpp>
-#include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/selector.hpp>
+#include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/selector.hpp>
 
 #include <map>
 
@@ -55,6 +55,12 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::multimap<K, V>& multimap) {
+		ar & multimap.size();
+		typename std::multimap<K, V>::const_iterator it = multimap.begin();
+		for ( ; it != multimap.end(); ++it ) {
+			ar & it->first
+				& it->second;
+		}
 	}
 };
 
@@ -69,6 +75,15 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, std::multimap<K, V>& multimap) {
+		yas::uint32_t size = 0;
+		ar & size;
+		K key = K();
+		V val = V();
+		for ( ; size; --size ) {
+			ar & key
+				& val;
+			multimap.insert(typename std::multimap<K, V>::value_type(key, val));
+		}
 	}
 };
 

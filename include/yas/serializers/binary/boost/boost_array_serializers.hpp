@@ -33,11 +33,11 @@
 #ifndef _yas__binary__boost_array_serializers_hpp__included_
 #define _yas__binary__boost_array_serializers_hpp__included_
 
-#include <yas/config/config.hpp>
+#include <yas/detail/config/config.hpp>
 
 #if defined(YAS_HAS_BOOST_ARRAY)
-#include <yas/mpl/type_traits.hpp>
-#include <yas/serializers/detail/selector.hpp>
+#include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/selector.hpp>
 
 #include <boost/array.hpp>
 

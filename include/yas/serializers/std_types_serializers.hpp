@@ -33,7 +33,7 @@
 #ifndef _yas__std_types_serializers_hpp__included_
 #define _yas__std_types_serializers_hpp__included_
 
-#include <yas/config/config.hpp>
+#include <yas/detail/config/config.hpp>
 
 #include <yas/serializers/binary/std/std_pair_serializers.hpp>
 #include <yas/serializers/text/std/std_pair_serializers.hpp>

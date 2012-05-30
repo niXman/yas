@@ -33,9 +33,9 @@
 #ifndef _yas__text__std_multiset_serializer_hpp__included_
 #define _yas__text__std_multiset_serializer_hpp__included_
 
-#include <yas/mpl/type_traits.hpp>
-#include <yas/serializers/detail/properties.hpp>
-#include <yas/serializers/detail/selector.hpp>
+#include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/selector.hpp>
 
 #include <set>
 
@@ -54,7 +54,12 @@ struct serializer<
 >
 {
 	template<typename Archive>
-	static void apply(Archive& ar, const std::multiset<K>& set) {
+	static void apply(Archive& ar, const std::multiset<K>& multiset) {
+		ar & multiset.size();
+		typename std::multiset<K>::const_iterator it = multiset.begin();
+		for ( ; it != multiset.end(); ++it ) {
+			ar & (*it);
+		}
 	}
 };
 
@@ -68,7 +73,14 @@ struct serializer<
 >
 {
 	template<typename Archive>
-	static void apply(Archive& ar, std::multiset<K>& set) {
+	static void apply(Archive& ar, std::multiset<K>& multiset) {
+		yas::uint32_t size = 0;
+		ar & size;
+		K key = K();
+		for ( ; size; --size ) {
+			ar & key;
+			multiset.insert(key);
+		}
 	}
 };
 
