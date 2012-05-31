@@ -66,162 +66,10 @@
 #include "speed_split_methods.hpp"
 
 /***************************************************************************/
-/***************************************************************************/
-/***************************************************************************/
-
-
-/***************************************************************************/
-
-
-/***************************************************************************/
-
-
-/***************************************************************************/
-
-
-/***************************************************************************/
-
-
-/***************************************************************************/
-
-
-/***************************************************************************/
-
-
-/***************************************************************************/
-
-
-/***************************************************************************/
-
-
-/***************************************************************************/
-
-
-/***************************************************************************/
-
-
-/***************************************************************************/
-
-
-/***************************************************************************/
-
-
-/***************************************************************************/
-
-
-/***************************************************************************/
-
-
-/***************************************************************************/
-
-
-/***************************************************************************/
-
-
-/***************************************************************************/
-
-
-/***************************************************************************/
-
-
-/***************************************************************************/
-
-
-/***************************************************************************/
-
-
-/***************************************************************************/
-
-
-/***************************************************************************/
-
-
-/***************************************************************************/
-
-
-/***************************************************************************/
-
-
-/***************************************************************************/
-
-
-/***************************************************************************/
-
-namespace _binary_size_test {
-
-struct _binary_size_test_pod_type {
-	_binary_size_test_pod_type() {}
-
-	size_t x;
-	size_t y;
-
-	template<typename Archive>
-	void serialize(Archive& ar, const unsigned) {
-		ar & x
-			& y;
-	}
-	template<typename Archive>
-	void serialize(Archive& ar) {
-		ar & x
-			& y;
-	}
-};
-
-} // namespace size_test
-
-#if defined(YAS_SERIALIZE_BOOST_TYPES)
-#include <sstream>
-
-#include <boost/archive/binary_iarchive.hpp>
-#include <boost/archive/binary_oarchive.hpp>
-
-void _binary_boost_archive(const size_t iteration) {
-	_binary_size_test::_binary_size_test_pod_type t;
-	std::ostringstream os;
-	boost::archive::binary_oarchive oa(os);
-	for ( size_t idx = 0; idx < iteration; ++idx ) {
-		t.x = t.y = idx;
-		oa & t;
-	}
-}
-#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 
 template<typename OA, typename IA>
-void _binary_yas_archive(const size_t iteration) {
-	_binary_size_test::_binary_size_test_pod_type t;
-	OA oa/*(new char[1024*1024*200], 1024*1024*200)*/;
-	for ( size_t idx = 0; idx < iteration; ++idx ) {
-		t.x = t.y = idx;
-		oa & t;
-	}
-}
-
-template<typename OA, typename IA>
-bool speed_test() {
-	const size_t count = 1024*1024*10;
-	clock_t start = clock();
-	clock_t boost_time=0, yas_time;
-
-#if defined(YAS_SERIALIZE_BOOST_TYPES)
-	_binary_boost_archive(count);
-	std::cout << "boost time: " << (boost_time=(clock()-start)/(CLOCKS_PER_SEC/1000)) << " ms." << std::endl;
-#endif
-	start = clock();
-	_binary_yas_archive<OA, IA>(count);
-	std::cout << "yas time  : " << (yas_time=(clock()-start)/(CLOCKS_PER_SEC/1000)) << " ms." << std::endl;
-
-	std::cout << "speed up  : " << (((double)boost_time)/((double)yas_time)) << std::endl;
-
-	return true;
-}
-
-/***************************************************************************/
-/***************************************************************************/
-/***************************************************************************/
-
-template<typename OA, typename IA>
-bool tests() {
-	static const char* test_type =
+bool tests(yas::uint32_t& p, yas::uint32_t& e, yas::uint32_t iterations, std::vector<std::string>& reports) {
+	static const char* archive_type =
 	yas::is_binary_archive<OA>::value ? "binary:"
 		: yas::is_text_archive<OA>::value ? "text  :"
 			: yas::is_json_archive<OA>::value ? "json  :"
@@ -230,55 +78,55 @@ bool tests() {
 	static const char* passed = "passed";
 	static const char* failed = "failed!";
 
-	printf("%s VERSION            test %s\n", test_type, (version_test<OA, IA>()?passed:failed));
-	printf("%s POD                test %s\n", test_type, (pod_test<OA, IA>()?passed:failed));
-	printf("%s ENUM               test %s\n", test_type, (enum_test<OA, IA>()?passed:failed));
-	printf("%s AUTO_ARRAY         test %s\n", test_type, (auto_array_test<OA, IA>()?passed:failed));
+	printf("%s VERSION            test %s\n", archive_type, (version_test<OA, IA>()?(++p,passed):(++e,failed)));
+	printf("%s POD                test %s\n", archive_type, (pod_test<OA, IA>()?(++p,passed):(++e,failed)));
+	printf("%s ENUM               test %s\n", archive_type, (enum_test<OA, IA>()?(++p,passed):(++e,failed)));
+	printf("%s AUTO_ARRAY         test %s\n", archive_type, (auto_array_test<OA, IA>()?(++p,passed):(++e,failed)));
 #if defined(YAS_HAS_BOOST_ARRAY) || defined(YAS_HAS_STD_ARRAY)
-	printf("%s ARRAY              test %s\n", test_type, (array_test<OA, IA>()?passed:failed));
+	printf("%s ARRAY              test %s\n", archive_type, (array_test<OA, IA>()?(++p,passed):(++e,failed)));
 #endif
-	printf("%s BITSET             test %s\n", test_type, (bitset_test<OA, IA>()?passed:failed));
+	printf("%s BITSET             test %s\n", archive_type, (bitset_test<OA, IA>()?(++p,passed):(++e,failed)));
 #if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
-	printf("%s BUFFER             test %s\n", test_type, (buffer_test<OA, IA>()?passed:failed));
+	printf("%s BUFFER             test %s\n", archive_type, (buffer_test<OA, IA>()?(++p,passed):(++e,failed)));
 #endif
-	printf("%s STRING             test %s\n", test_type, (string_test<OA, IA>()?passed:failed));
-	printf("%s WSTRING            test %s\n", test_type, (wstring_test<OA, IA>()?passed:failed));
-	printf("%s PAIR               test %s\n", test_type, (pair_test<OA, IA>()?passed:failed));
+	printf("%s STRING             test %s\n", archive_type, (string_test<OA, IA>()?(++p,passed):(++e,failed)));
+	printf("%s WSTRING            test %s\n", archive_type, (wstring_test<OA, IA>()?(++p,passed):(++e,failed)));
+	printf("%s PAIR               test %s\n", archive_type, (pair_test<OA, IA>()?(++p,passed):(++e,failed)));
 #if defined(YAS_HAS_BOOST_TUPLE) || defined(YAS_HAS_STD_TUPLE)
-	printf("%s TUPLE              test %s\n", test_type, (tuple_test<OA, IA>()?passed:failed));
+	printf("%s TUPLE              test %s\n", archive_type, (tuple_test<OA, IA>()?(++p,passed):(++e,failed)));
 #endif
-	printf("%s VECTOR             test %s\n", test_type, (vector_test<OA, IA>()?passed:failed));
-	printf("%s LIST               test %s\n", test_type, (list_test<OA, IA>()?passed:failed));
+	printf("%s VECTOR             test %s\n", archive_type, (vector_test<OA, IA>()?(++p,passed):(++e,failed)));
+	printf("%s LIST               test %s\n", archive_type, (list_test<OA, IA>()?(++p,passed):(++e,failed)));
 #if defined(YAS_HAS_STD_FORWARD_LIST)
-	printf("%s FORWARD_LIST       test %s\n", test_type, (forward_list_test<OA, IA>()?passed:failed));
+	printf("%s FORWARD_LIST       test %s\n", archive_type, (forward_list_test<OA, IA>()?(++p,passed):(++e,failed)));
 #endif
-	printf("%s MAP                test %s\n", test_type, (map_test<OA, IA>()?passed:failed));
-	printf("%s SET                test %s\n", test_type, (set_test<OA, IA>()?passed:failed));
-	printf("%s MULTIMAP           test %s\n", test_type, (multimap_test<OA, IA>()?passed:failed));
-	printf("%s MULTISET           test %s\n", test_type, (multiset_test<OA, IA>()?passed:failed));
+	printf("%s MAP                test %s\n", archive_type, (map_test<OA, IA>()?(++p,passed):(++e,failed)));
+	printf("%s SET                test %s\n", archive_type, (set_test<OA, IA>()?(++p,passed):(++e,failed)));
+	printf("%s MULTIMAP           test %s\n", archive_type, (multimap_test<OA, IA>()?(++p,passed):(++e,failed)));
+	printf("%s MULTISET           test %s\n", archive_type, (multiset_test<OA, IA>()?(++p,passed):(++e,failed)));
 #if defined(YAS_HAS_BOOST_UNORDERED) || defined(YAS_HAS_STD_UNORDERED)
-	printf("%s UNORDERED_MAP      test %s\n", test_type, (unordered_map_test<OA, IA>()?passed:failed));
-	printf("%s UNORDERED_SET      test %s\n", test_type, (unordered_set_test<OA, IA>()?passed:failed));
-	printf("%s UNORDERED_MULTIMAP test %s\n", test_type, (unordered_multimap_test<OA, IA>()?passed:failed));
-	printf("%s UNORDERED_MULTISET test %s\n", test_type, (unordered_multiset_test<OA, IA>()?passed:failed));
+	printf("%s UNORDERED_MAP      test %s\n", archive_type, (unordered_map_test<OA, IA>()?(++p,passed):(++e,failed)));
+	printf("%s UNORDERED_SET      test %s\n", archive_type, (unordered_set_test<OA, IA>()?(++p,passed):(++e,failed)));
+	printf("%s UNORDERED_MULTIMAP test %s\n", archive_type, (unordered_multimap_test<OA, IA>()?(++p,passed):(++e,failed)));
+	printf("%s UNORDERED_MULTISET test %s\n", archive_type, (unordered_multiset_test<OA, IA>()?(++p,passed):(++e,failed)));
 #endif
 #if defined(YAS_HAS_BOOST_FUSION)
-	printf("%s FUSION_PAIR        test %s\n", test_type, (fusion_pair_test<OA, IA>()?passed:failed));
-	printf("%s FUSION_TUPLE       test %s\n", test_type, (fusion_tuple_test<OA, IA>()?passed:failed));
-	printf("%s FUSION_VECTOR      test %s\n", test_type, (fusion_vector_test<OA, IA>()?passed:failed));
-	printf("%s FUSION_LIST        test %s\n", test_type, (fusion_list_test<OA, IA>()?passed:failed));
-//   printf("%s FUSION_SET         test %s\n", test_type, (fusion_set_test<OA, IA>()?passed:failed));
-//   printf("%s FUSION_MAP         test %s\n", test_type, (fusion_map_test<OA, IA>()?passed:failed));
+	printf("%s FUSION_PAIR        test %s\n", archive_type, (fusion_pair_test<OA, IA>()?(++p,passed):(++e,failed)));
+	printf("%s FUSION_TUPLE       test %s\n", archive_type, (fusion_tuple_test<OA, IA>()?(++p,passed):(++e,failed)));
+	printf("%s FUSION_VECTOR      test %s\n", archive_type, (fusion_vector_test<OA, IA>()?(++p,passed):(++e,failed)));
+	printf("%s FUSION_LIST        test %s\n", archive_type, (fusion_list_test<OA, IA>()?(++p,passed):(++e,failed)));
+//   printf("%s FUSION_SET         test %s\n", archive_type, (fusion_set_test<OA, IA>()?(++p,passed):(++e,failed)));
+//   printf("%s FUSION_MAP         test %s\n", archive_type, (fusion_map_test<OA, IA>()?(++p,passed):(++e,failed)));
 #endif
-	printf("%s ONE_FUNCTION       test %s\n", test_type, (one_function_serializer_test<OA, IA>()?passed:failed));
-	printf("%s SPLIT_FUNCTIONS    test %s\n", test_type, (split_functions_serializer_test<OA, IA>()?passed:failed));
-	printf("%s ONE_METHOD         test %s\n", test_type, (one_method_serializer_test<OA, IA>()?passed:failed));
-	printf("%s SPLIT_METHODS      test %s\n", test_type, (split_methods_serializer_test<OA, IA>()?passed:failed));
+	printf("%s ONE_FUNCTION       test %s\n", archive_type, (one_function_serializer_test<OA, IA>()?(++p,passed):(++e,failed)));
+	printf("%s SPLIT_FUNCTIONS    test %s\n", archive_type, (split_functions_serializer_test<OA, IA>()?(++p,passed):(++e,failed)));
+	printf("%s ONE_METHOD         test %s\n", archive_type, (one_method_serializer_test<OA, IA>()?(++p,passed):(++e,failed)));
+	printf("%s SPLIT_METHODS      test %s\n", archive_type, (split_methods_serializer_test<OA, IA>()?(++p,passed):(++e,failed)));
 
-	one_function_speed_test<OA, IA>();
-	split_functions_speed_test<OA, IA>();
-	one_method_speed_test<OA, IA>();
-	split_methods_speed_test<OA, IA>();
+	reports.push_back(one_function_speed_test<OA, IA>(iterations, archive_type));
+	reports.push_back(split_functions_speed_test<OA, IA>(iterations, archive_type));
+	reports.push_back(one_method_speed_test<OA, IA>(iterations, archive_type));
+	reports.push_back(split_methods_speed_test<OA, IA>(iterations, archive_type));
 
 	return true;
 }
@@ -290,9 +138,26 @@ int main() {
 
 	types_test();
 
-	tests<yas::binary_mem_oarchive, yas::binary_mem_iarchive>();
-	tests<yas::text_mem_oarchive, yas::text_mem_iarchive>();
-	//tests<yas::json_mem_oarchive, yas::json_mem_iarchive>();
+	yas::uint32_t passed = 0;
+	yas::uint32_t failed = 0;
+
+	yas::uint32_t iterations = 1024*1024*10;
+	std::vector<std::string> reports;
+
+	tests<yas::binary_mem_oarchive, yas::binary_mem_iarchive>(passed, failed, iterations, reports);
+	tests<yas::text_mem_oarchive, yas::text_mem_iarchive>(passed, failed, iterations, reports);
+	//tests<yas::json_mem_oarchive, yas::json_mem_iarchive>(passed, failed, iterations, reports);
+
+	std::cout << std::endl
+	<< "/***************************************************/" << std::endl
+	<< "> passed tests: " << passed << std::endl
+	<< "> failed tests: " << failed << std::endl
+	<< "/***************************************************/" << std::endl;
+
+	std::vector<std::string>::const_iterator it = reports.begin();
+	for ( ; it != reports.end(); ++it ) {
+		std::cout << *it << std::endl;
+	}
 }
 
 /***************************************************************************/

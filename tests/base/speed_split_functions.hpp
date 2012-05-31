@@ -34,8 +34,10 @@
 #define _yas_test__speed_split_functions_hpp__included_
 
 template<typename OA, typename IA>
-bool split_functions_speed_test() {
-	return true;
+std::string split_functions_speed_test(yas::uint32_t iterations, const char* archive_type) {
+	(void)iterations;
+	(void)archive_type;
+	return std::string();
 }
 
 #endif // _yas_test__speed_split_functions_hpp__included_

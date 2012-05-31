@@ -33,9 +33,126 @@
 #ifndef _yas_test__speed_split_methods_hpp__included_
 #define _yas_test__speed_split_methods_hpp__included_
 
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
+#include <sstream>
+
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/serialization/split_member.hpp>
+#endif
+
+/***************************************************************************/
+
+struct split_methods_test_pod_type {
+	size_t x;
+	size_t y;
+
+	BOOST_SERIALIZATION_SPLIT_MEMBER()
+
+	template<typename Archive>
+	void save(Archive & ar, const unsigned int) const {
+		ar & x
+			& y;
+	}
+
+	template<class Archive>
+	void load(Archive & ar, const unsigned int) {
+		ar & x
+			& y;
+	}
+
+	template<typename Archive>
+	void serialize(Archive& ar) const {
+		ar & x
+			& y;
+	}
+	template<typename Archive>
+	void serialize(Archive& ar) {
+		ar & x
+			& y;
+	}
+};
+
+/***************************************************************************/
+
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
+
+template<typename T>
+struct test_split_methods_selector;
+
+template<>
+struct test_split_methods_selector<yas::binary_mem_oarchive> {
+	static void test(const size_t iterations, size_t& archive_size) {
+		split_methods_test_pod_type _split_methods_test_pod_type;
+		std::ostringstream os;
+		boost::archive::binary_oarchive oa(os);
+		for ( size_t idx = 0; idx < iterations; ++idx ) {
+			_split_methods_test_pod_type.x = _split_methods_test_pod_type.y = idx;
+			oa & _split_methods_test_pod_type;
+		}
+		archive_size = os.str().length();
+	}
+};
+
+template<>
+struct test_split_methods_selector<yas::text_mem_oarchive> {
+	static void test(const size_t iterations, size_t& archive_size) {
+		split_methods_test_pod_type _split_methods_test_pod_type;
+		std::ostringstream os;
+		boost::archive::text_oarchive oa(os);
+		for ( size_t idx = 0; idx < iterations; ++idx ) {
+			_split_methods_test_pod_type.x = _split_methods_test_pod_type.y = idx;
+			oa & _split_methods_test_pod_type;
+		}
+		archive_size = os.str().length();
+	}
+};
+
+#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
+
+/***************************************************************************/
+
 template<typename OA, typename IA>
-bool split_methods_speed_test() {
-	return true;
+std::string split_methods_speed_test(yas::uint32_t iterations, const char* archive_type) {
+	std::ostringstream os;
+	os
+	<< "split methods" << std::endl
+	<< "   " << archive_type << std::endl;
+
+	clock_t start = clock();
+	clock_t boost_time=0, yas_time;
+
+	size_t boost_size = 0;
+
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
+	test_split_methods_selector<OA>::test(iterations, boost_size);
+	boost_time=clock()-start;
+
+	os
+	<< "      boost time: " << (boost_time/(CLOCKS_PER_SEC/1000)) << " ms." << std::endl
+	<< "      boost size: " << boost_size << std::endl;
+#endif
+
+	start = clock();
+
+	split_methods_test_pod_type _split_methods_test_pod_type;
+	OA oa;
+	for ( size_t idx = 0; idx < iterations; ++idx ) {
+		_split_methods_test_pod_type.x = _split_methods_test_pod_type.y = idx;
+		oa & _split_methods_test_pod_type;
+	}
+	yas_time=clock()-start;
+
+	os
+	<< "      yas time  : " << (yas_time/(CLOCKS_PER_SEC/1000)) << " ms." << std::endl
+	<< "      yas size  : " << oa.get_intrusive_buffer().size << std::endl
+	<< "      speed up  : " << (((double)boost_time)/((double)yas_time)) << std::endl;
+
+	return os.str();
 }
+
+/***************************************************************************/
 
 #endif // _yas_test__speed_split_methods_hpp__included_
