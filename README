@@ -15,7 +15,7 @@ Yas is header only library. You do not need to link it with your code.
 Supported the following types of archives:
  - binary
  - text
- - json (uncomplete)
+ - json (uncompleted)
 
 ===
 Supported the following compilers:
