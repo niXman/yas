@@ -35,13 +35,13 @@
 
 void types_test() {
 	YAS_STATIC_ASSERT(sizeof(yas::int8_t)==1, BAD_YAS_INT8_T_SIZEOF);
-	YAS_STATIC_ASSERT(sizeof(yas::int8_t)==1, BAD_YAS_UINT8_T_SIZEOF);
+	YAS_STATIC_ASSERT(sizeof(yas::uint8_t)==1, BAD_YAS_UINT8_T_SIZEOF);
 	YAS_STATIC_ASSERT(sizeof(yas::int16_t)==2, BAD_YAS_INT16_T_SIZEOF);
-	YAS_STATIC_ASSERT(sizeof(yas::int16_t)==2, BAD_YAS_UINT16_T_SIZEOF);
+	YAS_STATIC_ASSERT(sizeof(yas::uint16_t)==2, BAD_YAS_UINT16_T_SIZEOF);
 	YAS_STATIC_ASSERT(sizeof(yas::int32_t)==4, BAD_YAS_INT32_T_SIZEOF);
-	YAS_STATIC_ASSERT(sizeof(yas::int32_t)==4, BAD_YAS_UINT32_T_SIZEOF);
+	YAS_STATIC_ASSERT(sizeof(yas::uint32_t)==4, BAD_YAS_UINT32_T_SIZEOF);
 	YAS_STATIC_ASSERT(sizeof(yas::int64_t)==8, BAD_YAS_INT64_T_SIZEOF);
-	YAS_STATIC_ASSERT(sizeof(yas::int64_t)==8, BAD_YAS_UINT64_T_SIZEOF);
+	YAS_STATIC_ASSERT(sizeof(yas::uint64_t)==8, BAD_YAS_UINT64_T_SIZEOF);
 }
 
 #endif // _yas_test__types_hpp__included_

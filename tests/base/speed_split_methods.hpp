@@ -49,6 +49,7 @@ struct split_methods_test_pod_type {
 	size_t x;
 	size_t y;
 
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
 	BOOST_SERIALIZATION_SPLIT_MEMBER()
 
 	template<typename Archive>
@@ -62,6 +63,7 @@ struct split_methods_test_pod_type {
 		ar & x
 			& y;
 	}
+#endif
 
 	template<typename Archive>
 	void serialize(Archive& ar) const {

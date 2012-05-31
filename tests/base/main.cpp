@@ -150,8 +150,9 @@ int main() {
 
 	std::cout << std::endl
 	<< "/***************************************************/" << std::endl
-	<< "> passed tests: " << passed << std::endl
-	<< "> failed tests: " << failed << std::endl
+	<< "> platform bits: " << (YAS_PLATFORM_BITS_IS_64()?64:32) << std::endl
+	<< "> passed tests : " << passed << std::endl
+	<< "> failed tests : " << failed << std::endl
 	<< "/***************************************************/" << std::endl;
 
 	std::vector<std::string>::const_iterator it = reports.begin();

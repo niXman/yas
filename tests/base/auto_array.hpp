@@ -33,6 +33,9 @@
 #ifndef _yas_test__auto_array_hpp__included_
 #define _yas_test__auto_array_hpp__included_
 
+#include <yas/detail/tools/hexdumper.hpp>
+#include <iterator>
+
 template<typename OA, typename IA>
 bool auto_array_test() {
 	static const size_t array_size = 6;
@@ -47,7 +50,6 @@ bool auto_array_test() {
 	unsigned long ula1[array_size] = {1,2,3,4,5,6}, ula2[array_size];
 	long long lla1[array_size] = {1,2,3,4,5,6}, lla2[array_size];
 	unsigned long long ulla1[array_size] = {1,2,3,4,5,6}, ulla2[array_size];
-	long double lda1[array_size] = {1,2,3,4,5,6}, lda2[array_size];
 	double da1[array_size] = {1,2,3,4,5,6}, da2[array_size];
 	float fa1[array_size] = {1,2,3,4,5,6}, fa2[array_size];
 
@@ -139,22 +141,6 @@ bool auto_array_test() {
 		if ( memcmp(ulla1, ulla2, array_size*sizeof(ulla1[0])) ) {
 			std::cout << "AUTO_ARRAY deserialization error! [10]" << std::endl;
 			return false;
-		}
-	}
-	{  OA oa;
-		oa & lda1;
-		IA ia(oa.get_intrusive_buffer());
-		ia & lda2;
-		if ( yas::is_binary_archive<OA>::value ) {
-			if ( memcmp(lda1, lda2, array_size*sizeof(lda1[0])) ) {
-				std::cout << "AUTO_ARRAY deserialization error! [11]" << std::endl;
-				return false;
-			}
-		} else {
-			if ( !std::equal(lda1, lda1+array_size, lda2) ) {
-				std::cout << "AUTO_ARRAY deserialization error! [11]" << std::endl;
-				return false;
-			}
 		}
 	}
 	{  OA oa;
