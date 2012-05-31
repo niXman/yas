@@ -33,9 +33,6 @@
 #ifndef _yas_test__auto_array_hpp__included_
 #define _yas_test__auto_array_hpp__included_
 
-#include <yas/detail/tools/hexdumper.hpp>
-#include <iterator>
-
 template<typename OA, typename IA>
 bool auto_array_test() {
 	static const size_t array_size = 6;
