@@ -12,9 +12,6 @@ Increase speed of the YAS serialization compared with boost.serialization is:
 Yas is header only library. You do not need to link it with your code.
 
 ===
-Currently only a binary serialization implemented.
-
-===
 Planned the support for the following types of archives:
  - binary
  - text
@@ -23,6 +20,7 @@ Planned the support for the following types of archives:
 ===
 Planned the support for the following compilers:
  - GCC
+ - MinGW
  - Clang
  - Intel
  - MSVC
