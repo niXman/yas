@@ -33,17 +33,41 @@
 #ifndef _yas__binary__qbitarray_serializer_hpp__included_
 #define _yas__binary__qbitarray_serializer_hpp__included_
 
+#include <yas/detail/config/config.hpp>
+
 #if defined(YAS_SERIALIZE_QT_TYPES)
-
-#include <yas/config/config.hpp>
-
-#include <QtCore/QBitArray>
+#include <QtCore/specialization_type>
 
 namespace yas {
 namespace detail {
 
 /***************************************************************************/
 
+template<>
+struct serializer<
+	e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::binary,
+	e_direction::out,
+	specialization_type
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, const specialization_type&) {
+	}
+};
+
+template<>
+struct serializer<
+	e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::binary,
+	e_direction::in,
+	specialization_type
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, specialization_type&) {
+	}
+};
 
 
 /***************************************************************************/

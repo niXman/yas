@@ -33,24 +33,48 @@
 #ifndef _yas__text__qmultihash_serializer_hpp__included_
 #define _yas__text__qmultihash_serializer_hpp__included_
 
-#include <yas/config/config.hpp>
+#include <yas/detail/config/config.hpp>
 
 #if defined(YAS_SERIALIZE_QT_TYPES)
-#include <QtCore/QMultiHash>
-#endif
+#include <QtCore/specialization_type>
 
 namespace yas {
+namespace detail {
 
 /***************************************************************************/
 
-#if defined(YAS_SERIALIZE_QT_TYPES)
+template<>
+struct serializer<
+	e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::text,
+	e_direction::out,
+	specialization_type
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, const specialization_type&) {
+	}
+};
 
+template<>
+struct serializer<
+	e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::text,
+	e_direction::in,
+	specialization_type
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, specialization_type&) {
+	}
+};
 
-
-#endif
 
 /***************************************************************************/
 
+} // namespace detail
 } // namespace yas
+
+#endif // defined(YAS_SERIALIZE_QT_TYPES)
 
 #endif // _yas__text__qmultihash_serializer_hpp__included_
