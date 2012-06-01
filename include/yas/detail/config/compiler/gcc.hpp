@@ -58,7 +58,7 @@
 
 namespace yas {
 
-#if __x86_64__
+#if defined(__x86_64__)
 #define YAS_PLATFORM_BITS_IS_32() (0)
 #define YAS_PLATFORM_BITS_IS_64() (1)
 

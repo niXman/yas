@@ -42,6 +42,15 @@ namespace detail {
 
 extern void serialize(int&);
 
+#if defined(_MSC_VER)
+
+template<typename T1, typename T2>
+struct msvc_type_deduct {
+	typedef void (*type) (T1&, const T2&);
+};
+
+#endif // #if defined(_MSC_VER)
+
 template<bool is_pod, typename T, typename T2>
 struct has_function_const_serialize {
 	static const bool value = false;
@@ -62,6 +71,11 @@ struct has_function_const_serialize<false, T, T2> {
 
 	template<typename U, typename U2>
 	static yes check(__typeof__(serialize((*(U*)0),(*(const U2*)0)))*);
+
+#elif defined(_MSC_VER)
+
+	template<typename U, typename U2>
+	static yes check(typename msvc_type_deduct<U, U2>::type*);
 
 #else
 #  error "Please configure!"
@@ -97,6 +111,11 @@ struct has_function_serialize<false, T, T2> {
 
 	template<typename U, typename U2>
 	static yes check(__typeof__(serialize((*(U*)0),(*(U2*)0)))*);
+
+#elif defined(_MSC_VER)
+
+	template<typename U, typename U2>
+	static yes check(typename msvc_type_deduct<U, U2>::type*);
 
 #else
 #  error "Please configure!"
