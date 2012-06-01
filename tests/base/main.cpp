@@ -30,6 +30,7 @@
 #include "bitset.hpp"
 #include "buffer.hpp"
 #include "enum.hpp"
+#include "base_object.hpp"
 #include "forward_list.hpp"
 #include "fusion_list.hpp"
 #include "fusion_map.hpp"
@@ -81,6 +82,7 @@ bool tests(yas::uint32_t& p, yas::uint32_t& e, yas::uint32_t iterations, std::ve
 	printf("%s VERSION            test %s\n", archive_type, (version_test<OA, IA>()?(++p,passed):(++e,failed)));
 	printf("%s POD                test %s\n", archive_type, (pod_test<OA, IA>()?(++p,passed):(++e,failed)));
 	printf("%s ENUM               test %s\n", archive_type, (enum_test<OA, IA>()?(++p,passed):(++e,failed)));
+	printf("%s BASE_OBJECT        test %s\n", archive_type, (base_object_test<OA, IA>()?(++p,passed):(++e,failed)));
 	printf("%s AUTO_ARRAY         test %s\n", archive_type, (auto_array_test<OA, IA>()?(++p,passed):(++e,failed)));
 #if defined(YAS_HAS_BOOST_ARRAY) || defined(YAS_HAS_STD_ARRAY)
 	printf("%s ARRAY              test %s\n", archive_type, (array_test<OA, IA>()?(++p,passed):(++e,failed)));

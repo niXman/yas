@@ -251,4 +251,6 @@ HEADERS += \
 	 ../../include/yas/detail/tools/static_assert.hpp \
 	 ../../include/yas/detail/tools/noncopyable.hpp \
 	 ../../include/yas/detail/tools/hexdumper.hpp \
-	 ../../include/yas/detail/tools/buffer.hpp
+	 ../../include/yas/detail/tools/buffer.hpp \
+    base_object.hpp \
+    ../../include/yas/detail/base_object.hpp
