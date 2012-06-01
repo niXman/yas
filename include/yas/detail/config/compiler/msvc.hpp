@@ -44,6 +44,7 @@
 #  define YAS_HAS_STATIC_ASSERT 1
 #  define YAS_HAS_ENUM_CLASS 1
 #	define YAS_SHARED_BUFFER_USE_STD_SHARED_PTR 1
+#	define YAS_TYPE_OF(T) decltype(T)
 #endif
 
 #ifdef YAS_SERIALIZE_BOOST_TYPES
