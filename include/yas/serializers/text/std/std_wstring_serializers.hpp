@@ -35,8 +35,8 @@
 
 #include <yas/detail/tools/utf8conv.hpp>
 
-#include <yas/detail/selector.hpp>
-#include <yas/detail/properties.hpp>
+#include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/type_traits/properties.hpp>
 
 namespace yas {
 namespace detail {

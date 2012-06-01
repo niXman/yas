@@ -33,12 +33,12 @@
 #ifndef _yas__text_iarchive_hpp__included_
 #define _yas__text_iarchive_hpp__included_
 
-#include <yas/detail/properties.hpp>
-#include <yas/detail/has_method_serialize.hpp>
-#include <yas/detail/has_function_serialize.hpp>
+#include <yas/detail/type_traits/properties.hpp>
+#include <yas/detail/type_traits/has_method_serialize.hpp>
+#include <yas/detail/type_traits/has_function_serialize.hpp>
+#include <yas/detail/type_traits/selector.hpp>
 
-#include <yas/detail/selector.hpp>
-#include <yas/detail/memstream.hpp>
+#include <yas/detail/io/memstream.hpp>
 #include <yas/detail/base_object.hpp>
 
 #include <yas/serializers/text/utility/pod_serializers.hpp>

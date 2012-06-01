@@ -14,7 +14,7 @@
 # ifndef YAS_PREPROCESSOR_ARITHMETIC_DEC_HPP
 # define YAS_PREPROCESSOR_ARITHMETIC_DEC_HPP
 #
-# include <yas/detail/boost_preprocessor/config.hpp>
+# include <yas/detail/preprocessor/config.hpp>
 #
 # /* YAS_PP_DEC */
 #

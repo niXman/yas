@@ -35,7 +35,7 @@
 
 #if defined(YAS_HAS_BOOST_FUSION)
 
-#include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/type_traits/type_traits.hpp>
 
 namespace yas {
 

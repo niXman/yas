@@ -14,9 +14,9 @@
 # ifndef YAS_PREPROCESSOR_CONTROL_IF_HPP
 # define YAS_PREPROCESSOR_CONTROL_IF_HPP
 #
-# include <yas/detail/boost_preprocessor/config.hpp>
-# include <yas/detail/boost_preprocessor/iif.hpp>
-# include <yas/detail/boost_preprocessor/bool.hpp>
+# include <yas/detail/preprocessor/config.hpp>
+# include <yas/detail/preprocessor/iif.hpp>
+# include <yas/detail/preprocessor/bool.hpp>
 #
 # /* YAS_PP_IF */
 #

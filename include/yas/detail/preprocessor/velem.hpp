@@ -13,8 +13,8 @@
 # ifndef YAS_PREPROCESSOR_VARIADIC_ELEM_HPP
 # define YAS_PREPROCESSOR_VARIADIC_ELEM_HPP
 #
-# include <yas/detail/boost_preprocessor/cat.hpp>
-# include <yas/detail/boost_preprocessor/config.hpp>
+# include <yas/detail/preprocessor/cat.hpp>
+# include <yas/detail/preprocessor/config.hpp>
 #
 # /* YAS_PP_VARIADIC_ELEM */
 #

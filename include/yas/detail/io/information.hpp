@@ -41,8 +41,8 @@
 #include <yas/detail/config/config.hpp>
 #include <yas/detail/version.hpp>
 #include <yas/detail/tools/static_assert.hpp>
-#include <yas/detail/properties.hpp>
-#include <yas/detail/boost_preprocessor/preprocessor.hpp>
+#include <yas/detail/type_traits/properties.hpp>
+#include <yas/detail/preprocessor/preprocessor.hpp>
 
 namespace yas {
 

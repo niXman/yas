@@ -37,8 +37,8 @@
 
 #include <yas/detail/config/config.hpp>
 #include <yas/detail/tools/buffer.hpp>
-#include <yas/detail/properties.hpp>
-#include <yas/detail/selector.hpp>
+#include <yas/detail/type_traits/properties.hpp>
+#include <yas/detail/type_traits/selector.hpp>
 
 namespace yas {
 namespace detail {

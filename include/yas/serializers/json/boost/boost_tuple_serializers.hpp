@@ -36,10 +36,10 @@
 #include <yas/detail/config/config.hpp>
 
 #if defined(YAS_HAS_BOOST_TUPLE)
-#include <yas/detail/mpl/type_traits.hpp>
-#include <yas/detail/properties.hpp>
-#include <yas/detail/selector.hpp>
-#include <yas/detail/boost_preprocessor/preprocessor.hpp>
+#include <yas/detail/type_traits/type_traits.hpp>
+#include <yas/detail/type_traits/properties.hpp>
+#include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/preprocessor/preprocessor.hpp>
 
 #include <stdint.h>
 #include <boost/tuple/tuple.hpp>
@@ -50,13 +50,13 @@ namespace detail {
 
 /***************************************************************************/
 
-#define YAS__TEXT__WRITE_BOOST_TUPLE_ITEM(unused, idx, type) \
+#define YAS__JSON__WRITE_BOOST_TUPLE_ITEM(unused, idx, type) \
 		ar & boost::tuples::get<idx>(tuple);
 
-#define YAS__TEXT__READ_BOOST_TUPLE_ITEM(unused, idx, type) \
+#define YAS__JSON__READ_BOOST_TUPLE_ITEM(unused, idx, type) \
 		ar & boost::tuples::get<idx>(tuple);
 
-#define YAS__TEXT__GENERATE_EMPTY_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC() \
+#define YAS__JSON__GENERATE_EMPTY_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC() \
 	template<> \
 	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
 		e_archive_type::json, e_direction::out, boost::tuples::tuple<> \
@@ -65,7 +65,7 @@ namespace detail {
 		static void apply(Archive&, const boost::tuples::tuple<>&) {} \
 	};
 
-#define YAS__TEXT__GENERATE_EMPTY_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC() \
+#define YAS__JSON__GENERATE_EMPTY_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC() \
 	template<> \
 	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
 		e_archive_type::json, e_direction::in, boost::tuples::tuple<> \
@@ -74,7 +74,7 @@ namespace detail {
 		static void apply(Archive&, boost::tuples::tuple<>&) {} \
 	};
 
-#define YAS__TEXT__GENERATE_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC(unused, count, unused2) \
+#define YAS__JSON__GENERATE_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC(unused, count, unused2) \
 	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
 	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
 		e_archive_type::json, e_direction::out, \
@@ -85,21 +85,21 @@ namespace detail {
 			ar & YAS_PP_INC(count); \
 			YAS_PP_REPEAT( \
 				YAS_PP_INC(count), \
-				YAS__TEXT__WRITE_BOOST_TUPLE_ITEM, \
+				YAS__JSON__WRITE_BOOST_TUPLE_ITEM, \
 				T \
 			) \
 		} \
 	};
 
-#define YAS__TEXT__GENERATE_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTIONS_VARIADIC(count) \
-	YAS__TEXT__GENERATE_EMPTY_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC(); \
+#define YAS__JSON__GENERATE_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTIONS_VARIADIC(count) \
+	YAS__JSON__GENERATE_EMPTY_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC(); \
 	YAS_PP_REPEAT( \
 		count, \
-		YAS__TEXT__GENERATE_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC, \
+		YAS__JSON__GENERATE_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC, \
 		~ \
 	)
 
-#define YAS__TEXT__GENERATE_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC(unused, count, unused2) \
+#define YAS__JSON__GENERATE_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC(unused, count, unused2) \
 	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
 	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
 		e_archive_type::json, e_direction::in, \
@@ -112,24 +112,24 @@ namespace detail {
 			if ( size != YAS_PP_INC(count) ) throw std::runtime_error("size error on deserialize boost::tuple"); \
 			YAS_PP_REPEAT( \
 				YAS_PP_INC(count), \
-				YAS__TEXT__READ_BOOST_TUPLE_ITEM, \
+				YAS__JSON__READ_BOOST_TUPLE_ITEM, \
 				T \
 			) \
 		} \
 	};
 
-#define YAS__TEXT__GENERATE_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTIONS_VARIADIC(count) \
-	YAS__TEXT__GENERATE_EMPTY_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC(); \
+#define YAS__JSON__GENERATE_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTIONS_VARIADIC(count) \
+	YAS__JSON__GENERATE_EMPTY_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC(); \
 	YAS_PP_REPEAT( \
 		count, \
-		YAS__TEXT__GENERATE_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC, \
+		YAS__JSON__GENERATE_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC, \
 		~ \
 	)
 
 /***************************************************************************/
 
-YAS__TEXT__GENERATE_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTIONS_VARIADIC(10);
-YAS__TEXT__GENERATE_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTIONS_VARIADIC(10);
+YAS__JSON__GENERATE_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTIONS_VARIADIC(10);
+YAS__JSON__GENERATE_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTIONS_VARIADIC(10);
 
 /***************************************************************************/
 

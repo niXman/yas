@@ -34,8 +34,8 @@
 #define _yas__memstream_hpp__included_
 
 #include <yas/detail/tools/buffer.hpp>
-#include <yas/detail/information.hpp>
-#include <yas/detail/properties.hpp>
+#include <yas/detail/io/information.hpp>
+#include <yas/detail/type_traits/properties.hpp>
 
 #include <sstream>
 

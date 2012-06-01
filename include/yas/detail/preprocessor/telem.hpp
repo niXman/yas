@@ -15,11 +15,11 @@
 # ifndef YAS_PREPROCESSOR_TUPLE_ELEM_HPP
 # define YAS_PREPROCESSOR_TUPLE_ELEM_HPP
 #
-# include <yas/detail/boost_preprocessor/cat.hpp>
-# include <yas/detail/boost_preprocessor/config.hpp>
-# include <yas/detail/boost_preprocessor/overload.hpp>
-# include <yas/detail/boost_preprocessor/rem.hpp>
-# include <yas/detail/boost_preprocessor/velem.hpp>
+# include <yas/detail/preprocessor/cat.hpp>
+# include <yas/detail/preprocessor/config.hpp>
+# include <yas/detail/preprocessor/overload.hpp>
+# include <yas/detail/preprocessor/rem.hpp>
+# include <yas/detail/preprocessor/velem.hpp>
 #
 # if YAS_PP_VARIADICS
 #    if YAS_PP_VARIADICS_MSVC

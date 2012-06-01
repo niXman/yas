@@ -34,7 +34,7 @@
 #define _yas__type_traits_hpp__included_
 
 #include <yas/detail/mpl/bool.hpp>
-#include <yas/detail/boost_preprocessor/preprocessor.hpp>
+#include <yas/detail/preprocessor/preprocessor.hpp>
 
 #include <cstddef>
 

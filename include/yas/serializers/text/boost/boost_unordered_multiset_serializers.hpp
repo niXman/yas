@@ -36,9 +36,9 @@
 #include <yas/detail/config/config.hpp>
 
 #if defined(YAS_HAS_BOOST_UNORDERED)
-#include <yas/detail/mpl/type_traits.hpp>
-#include <yas/detail/properties.hpp>
-#include <yas/detail/selector.hpp>
+#include <yas/detail/type_traits/type_traits.hpp>
+#include <yas/detail/type_traits/properties.hpp>
+#include <yas/detail/type_traits/selector.hpp>
 
 #include <boost/unordered_set.hpp>
 

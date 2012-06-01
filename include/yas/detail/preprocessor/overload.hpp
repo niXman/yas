@@ -13,9 +13,9 @@
 # ifndef YAS_PREPROCESSOR_FACILITIES_OVERLOAD_HPP
 # define YAS_PREPROCESSOR_FACILITIES_OVERLOAD_HPP
 #
-# include <yas/detail/boost_preprocessor/config.hpp>
-# include <yas/detail/boost_preprocessor/cat.hpp>
-# include <yas/detail/boost_preprocessor/vsize.hpp>
+# include <yas/detail/preprocessor/config.hpp>
+# include <yas/detail/preprocessor/cat.hpp>
+# include <yas/detail/preprocessor/vsize.hpp>
 #
 # /* BOOST_PP_OVERLOAD */
 #

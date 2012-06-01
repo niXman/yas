@@ -13,9 +13,9 @@
 # ifndef YAS_PREPROCESSOR_TUPLE_REM_HPP
 # define YAS_PREPROCESSOR_TUPLE_REM_HPP
 #
-# include <yas/detail/boost_preprocessor/cat.hpp>
-# include <yas/detail/boost_preprocessor/config.hpp>
-# include <yas/detail/boost_preprocessor/overload.hpp>
+# include <yas/detail/preprocessor/cat.hpp>
+# include <yas/detail/preprocessor/config.hpp>
+# include <yas/detail/preprocessor/overload.hpp>
 #
 # /* YAS_PP_REM */
 #

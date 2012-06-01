@@ -33,23 +33,23 @@
 #ifndef _yas__preprocessor_hpp__included_
 #define _yas__preprocessor_hpp__included_
 
-#include <yas/detail/boost_preprocessor/auto_rec.hpp>
-#include <yas/detail/boost_preprocessor/bool.hpp>
-#include <yas/detail/boost_preprocessor/cat.hpp>
-#include <yas/detail/boost_preprocessor/comma.hpp>
-#include <yas/detail/boost_preprocessor/comma_if.hpp>
-#include <yas/detail/boost_preprocessor/config.hpp>
-#include <yas/detail/boost_preprocessor/eat.hpp>
-#include <yas/detail/boost_preprocessor/empty.hpp>
-#include <yas/detail/boost_preprocessor/enum_params.hpp>
-#include <yas/detail/boost_preprocessor/error.hpp>
-#include <yas/detail/boost_preprocessor/if.hpp>
-#include <yas/detail/boost_preprocessor/iif.hpp>
-#include <yas/detail/boost_preprocessor/repeat.hpp>
-#include <yas/detail/boost_preprocessor/size.hpp>
-#include <yas/detail/boost_preprocessor/dec.hpp>
-#include <yas/detail/boost_preprocessor/inc.hpp>
-#include <yas/detail/boost_preprocessor/elem.hpp>
-#include <yas/detail/boost_preprocessor/telem.hpp>
+#include <yas/detail/preprocessor/auto_rec.hpp>
+#include <yas/detail/preprocessor/bool.hpp>
+#include <yas/detail/preprocessor/cat.hpp>
+#include <yas/detail/preprocessor/comma.hpp>
+#include <yas/detail/preprocessor/comma_if.hpp>
+#include <yas/detail/preprocessor/config.hpp>
+#include <yas/detail/preprocessor/eat.hpp>
+#include <yas/detail/preprocessor/empty.hpp>
+#include <yas/detail/preprocessor/enum_params.hpp>
+#include <yas/detail/preprocessor/error.hpp>
+#include <yas/detail/preprocessor/if.hpp>
+#include <yas/detail/preprocessor/iif.hpp>
+#include <yas/detail/preprocessor/repeat.hpp>
+#include <yas/detail/preprocessor/size.hpp>
+#include <yas/detail/preprocessor/dec.hpp>
+#include <yas/detail/preprocessor/inc.hpp>
+#include <yas/detail/preprocessor/elem.hpp>
+#include <yas/detail/preprocessor/telem.hpp>
 
 #endif // _yas__preprocessor_hpp__included_

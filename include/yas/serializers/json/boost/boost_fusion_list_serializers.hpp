@@ -36,10 +36,10 @@
 #include <yas/detail/config/config.hpp>
 
 #if defined(YAS_HAS_BOOST_FUSION)
-#include <yas/detail/mpl/type_traits.hpp>
-#include <yas/detail/properties.hpp>
-#include <yas/detail/selector.hpp>
-#include <yas/detail/boost_preprocessor/preprocessor.hpp>
+#include <yas/detail/type_traits/type_traits.hpp>
+#include <yas/detail/type_traits/properties.hpp>
+#include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/preprocessor/preprocessor.hpp>
 
 #include <boost/fusion/container/list.hpp>
 #include <boost/fusion/include/list.hpp>
@@ -56,8 +56,8 @@ namespace detail {
 /***************************************************************************/
 
 template<typename Archive>
-struct text_list_serializer {
-	text_list_serializer(Archive& ar)
+struct json_list_serializer {
+	json_list_serializer(Archive& ar)
 		:ar(ar)
 	{}
 
@@ -70,8 +70,8 @@ struct text_list_serializer {
 };
 
 template<typename Archive>
-struct text_list_deserializer {
-	text_list_deserializer(Archive& ar)
+struct json_list_deserializer {
+	json_list_deserializer(Archive& ar)
 		:ar(ar)
 	{}
 
@@ -85,7 +85,7 @@ struct text_list_deserializer {
 
 /***************************************************************************/
 
-#define YAS__TEXT__GENERATE_EMPTY_SAVE_SERIALIZE_LIST_SPEC_VARIADIC() \
+#define YAS__JSON__GENERATE_EMPTY_SAVE_SERIALIZE_LIST_SPEC_VARIADIC() \
 	template<> \
 	struct serializer<e_type_type::not_a_pod, e_ser_method::use_internal_serializer, \
 		e_archive_type::json, e_direction::out, boost::fusion::list<> > \
@@ -94,7 +94,7 @@ struct text_list_deserializer {
 		static void apply(Archive&, const boost::fusion::list<>&) {} \
 	};
 
-#define YAS__TEXT__GENERATE_EMPTY_LOAD_SERIALIZE_LIST_SPEC_VARIADIC() \
+#define YAS__JSON__GENERATE_EMPTY_LOAD_SERIALIZE_LIST_SPEC_VARIADIC() \
 	template<> \
 	struct serializer<e_type_type::not_a_pod, e_ser_method::use_internal_serializer, \
 		e_archive_type::json, e_direction::in, boost::fusion::list<> > \
@@ -103,7 +103,7 @@ struct text_list_deserializer {
 		static void apply(Archive&, boost::fusion::list<>&) {} \
 	};
 
-#define YAS__TEXT__GENERATE_SAVE_SERIALIZE_LIST_SPEC_VARIADIC(unused, count, unused2) \
+#define YAS__JSON__GENERATE_SAVE_SERIALIZE_LIST_SPEC_VARIADIC(unused, count, unused2) \
 	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
 	struct serializer<e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
 		e_archive_type::json, e_direction::out, boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
@@ -113,19 +113,19 @@ struct text_list_deserializer {
 			const boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& list) \
 		{ \
 			ar & YAS_PP_INC(count); \
-			boost::fusion::for_each(list, detail::text_list_serializer<Archive>(ar)); \
+			boost::fusion::for_each(list, detail::json_list_serializer<Archive>(ar)); \
 		} \
 	};
 
-#define YAS__TEXT__GENERATE_SAVE_SERIALIZE_LIST_SPEC_VARIADICS(count) \
-	YAS__TEXT__GENERATE_EMPTY_SAVE_SERIALIZE_LIST_SPEC_VARIADIC(); \
+#define YAS__JSON__GENERATE_SAVE_SERIALIZE_LIST_SPEC_VARIADICS(count) \
+	YAS__JSON__GENERATE_EMPTY_SAVE_SERIALIZE_LIST_SPEC_VARIADIC(); \
 	YAS_PP_REPEAT( \
 		count, \
-		YAS__TEXT__GENERATE_SAVE_SERIALIZE_LIST_SPEC_VARIADIC, \
+		YAS__JSON__GENERATE_SAVE_SERIALIZE_LIST_SPEC_VARIADIC, \
 		~ \
 	)
 
-#define YAS__TEXT__GENERATE_LOAD_SERIALIZE_LIST_SPEC_VARIADIC(unused, count, unused2) \
+#define YAS__JSON__GENERATE_LOAD_SERIALIZE_LIST_SPEC_VARIADIC(unused, count, unused2) \
 	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
 	struct serializer<e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
 		e_archive_type::json, e_direction::in, boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
@@ -137,22 +137,22 @@ struct text_list_deserializer {
 			yas::int32_t size = 0; \
 			ar & size; \
 			if ( size != YAS_PP_INC(count) ) throw std::runtime_error("size error on deserialize fusion::list"); \
-			boost::fusion::for_each(list, detail::text_list_deserializer<Archive>(ar)); \
+			boost::fusion::for_each(list, detail::json_list_deserializer<Archive>(ar)); \
 		} \
 	};
 
-#define YAS__TEXT__GENERATE_LOAD_SERIALIZE_LIST_SPEC_VARIADICS(count) \
-	YAS__TEXT__GENERATE_EMPTY_LOAD_SERIALIZE_LIST_SPEC_VARIADIC(); \
+#define YAS__JSON__GENERATE_LOAD_SERIALIZE_LIST_SPEC_VARIADICS(count) \
+	YAS__JSON__GENERATE_EMPTY_LOAD_SERIALIZE_LIST_SPEC_VARIADIC(); \
 	YAS_PP_REPEAT( \
 		count, \
-		YAS__TEXT__GENERATE_LOAD_SERIALIZE_LIST_SPEC_VARIADIC, \
+		YAS__JSON__GENERATE_LOAD_SERIALIZE_LIST_SPEC_VARIADIC, \
 		~ \
 	)
 
 /***************************************************************************/
 
-YAS__TEXT__GENERATE_SAVE_SERIALIZE_LIST_SPEC_VARIADICS(FUSION_MAX_LIST_SIZE);
-YAS__TEXT__GENERATE_LOAD_SERIALIZE_LIST_SPEC_VARIADICS(FUSION_MAX_LIST_SIZE);
+YAS__JSON__GENERATE_SAVE_SERIALIZE_LIST_SPEC_VARIADICS(FUSION_MAX_LIST_SIZE);
+YAS__JSON__GENERATE_LOAD_SERIALIZE_LIST_SPEC_VARIADICS(FUSION_MAX_LIST_SIZE);
 
 /***************************************************************************/
 

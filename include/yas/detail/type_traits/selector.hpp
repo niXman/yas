@@ -33,12 +33,12 @@
 #ifndef _yas__selector_hpp__included_
 #define _yas__selector_hpp__included_
 
-#include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/mpl/metafunctions.hpp>
 
-#include <yas/detail/properties.hpp>
-#include <yas/detail/has_method_serialize.hpp>
-#include <yas/detail/has_function_serialize.hpp>
+#include <yas/detail/type_traits/properties.hpp>
+#include <yas/detail/type_traits/has_method_serialize.hpp>
+#include <yas/detail/type_traits/has_function_serialize.hpp>
 
 namespace yas {
 namespace detail {

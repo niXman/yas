@@ -33,8 +33,8 @@
 #ifndef _yas__text__std_string_serializer_hpp__included_
 #define _yas__text__std_string_serializer_hpp__included_
 
-#include <yas/detail/selector.hpp>
-#include <yas/detail/properties.hpp>
+#include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/type_traits/properties.hpp>
 
 #include <string>
 

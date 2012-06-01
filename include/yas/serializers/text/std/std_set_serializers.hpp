@@ -33,9 +33,9 @@
 #ifndef _yas__text__std_set_serializer_hpp__included_
 #define _yas__text__std_set_serializer_hpp__included_
 
-#include <yas/detail/mpl/type_traits.hpp>
-#include <yas/detail/properties.hpp>
-#include <yas/detail/selector.hpp>
+#include <yas/detail/type_traits/type_traits.hpp>
+#include <yas/detail/type_traits/properties.hpp>
+#include <yas/detail/type_traits/selector.hpp>
 
 #include <set>
 

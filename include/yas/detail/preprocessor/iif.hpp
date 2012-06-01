@@ -12,7 +12,7 @@
 # ifndef YAS_PREPROCESSOR_CONTROL_IIF_HPP
 # define YAS_PREPROCESSOR_CONTROL_IIF_HPP
 #
-# include <yas/detail/boost_preprocessor/config.hpp>
+# include <yas/detail/preprocessor/config.hpp>
 #
 # if ~YAS_PP_CONFIG_FLAGS() & YAS_PP_CONFIG_MWCC()
 #    define YAS_PP_IIF(bit, t, f) YAS_PP_IIF_I(bit, t, f)

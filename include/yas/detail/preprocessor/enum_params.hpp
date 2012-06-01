@@ -14,9 +14,9 @@
 # ifndef YAS_PREPROCESSOR_REPETITION_ENUM_PARAMS_HPP
 # define YAS_PREPROCESSOR_REPETITION_ENUM_PARAMS_HPP
 #
-# include <yas/detail/boost_preprocessor/config.hpp>
-# include <yas/detail/boost_preprocessor/comma_if.hpp>
-# include <yas/detail/boost_preprocessor/repeat.hpp>
+# include <yas/detail/preprocessor/config.hpp>
+# include <yas/detail/preprocessor/comma_if.hpp>
+# include <yas/detail/preprocessor/repeat.hpp>
 #
 # /* YAS_PP_ENUM_PARAMS */
 #

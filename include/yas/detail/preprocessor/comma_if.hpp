@@ -14,10 +14,10 @@
 # ifndef YAS_PREPROCESSOR_PUNCTUATION_COMMA_IF_HPP
 # define YAS_PREPROCESSOR_PUNCTUATION_COMMA_IF_HPP
 #
-# include <yas/detail/boost_preprocessor/config.hpp>
-# include <yas/detail/boost_preprocessor/if.hpp>
-# include <yas/detail/boost_preprocessor/empty.hpp>
-# include <yas/detail/boost_preprocessor/comma.hpp>
+# include <yas/detail/preprocessor/config.hpp>
+# include <yas/detail/preprocessor/if.hpp>
+# include <yas/detail/preprocessor/empty.hpp>
+# include <yas/detail/preprocessor/comma.hpp>
 #
 # /* YAS_PP_COMMA_IF */
 #

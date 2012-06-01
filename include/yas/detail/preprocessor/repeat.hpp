@@ -14,11 +14,11 @@
 # ifndef YAS_PREPROCESSOR_REPETITION_REPEAT_HPP
 # define YAS_PREPROCESSOR_REPETITION_REPEAT_HPP
 #
-# include <yas/detail/boost_preprocessor/cat.hpp>
-# include <yas/detail/boost_preprocessor/config.hpp>
-# include <yas/detail/boost_preprocessor/error.hpp>
-# include <yas/detail/boost_preprocessor/auto_rec.hpp>
-# include <yas/detail/boost_preprocessor/eat.hpp>
+# include <yas/detail/preprocessor/cat.hpp>
+# include <yas/detail/preprocessor/config.hpp>
+# include <yas/detail/preprocessor/error.hpp>
+# include <yas/detail/preprocessor/auto_rec.hpp>
+# include <yas/detail/preprocessor/eat.hpp>
 #
 # /* YAS_PP_REPEAT */
 #

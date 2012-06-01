@@ -9,7 +9,7 @@
 #
 # /* See http://www.boost.org for most recent version. */
 #
-# include <yas/detail/boost_preprocessor/config.hpp>
+# include <yas/detail/preprocessor/config.hpp>
 #
 # if YAS_PP_CONFIG_FLAGS() & YAS_PP_CONFIG_DMC()
 #     include <boost/preprocessor/detail/dmc/auto_rec.hpp>
@@ -18,7 +18,7 @@
 # ifndef YAS_PREPROCESSOR_DETAIL_AUTO_REC_HPP
 # define YAS_PREPROCESSOR_DETAIL_AUTO_REC_HPP
 #
-# include <yas/detail/boost_preprocessor/iif.hpp>
+# include <yas/detail/preprocessor/iif.hpp>
 #
 # /* YAS_PP_AUTO_REC */
 #

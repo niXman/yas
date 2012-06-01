@@ -39,10 +39,10 @@
 
 #include <stdexcept>
 
-#include <yas/detail/mpl/type_traits.hpp>
-#include <yas/detail/properties.hpp>
-#include <yas/detail/selector.hpp>
-#include <yas/detail/boost_preprocessor/preprocessor.hpp>
+#include <yas/detail/type_traits/type_traits.hpp>
+#include <yas/detail/type_traits/properties.hpp>
+#include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/preprocessor/preprocessor.hpp>
 
 #include <stdint.h>
 #include <cassert>

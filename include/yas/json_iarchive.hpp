@@ -33,18 +33,18 @@
 #ifndef _yas__json_iarchive_hpp__included_
 #define _yas__json_iarchive_hpp__included_
 
-#include <yas/detail/properties.hpp>
-#include <yas/detail/has_method_serialize.hpp>
-#include <yas/detail/has_function_serialize.hpp>
+#include <yas/detail/type_traits/properties.hpp>
+#include <yas/detail/type_traits/has_method_serialize.hpp>
+#include <yas/detail/type_traits/has_function_serialize.hpp>
+#include <yas/detail/type_traits/selector.hpp>
 
-#include <yas/detail/selector.hpp>
-#include <yas/detail/memstream.hpp>
+#include <yas/detail/io/memstream.hpp>
 #include <yas/detail/base_object.hpp>
 
-//#include <yas/serializers/json/utility/pod_serializers.hpp>
-//#include <yas/serializers/json/utility/usertype_serializers.hpp>
-//#include <yas/serializers/json/utility/autoarray_serializers.hpp>
-//#include <yas/serializers/json/utility/buffer_serializers.hpp>
+#include <yas/serializers/json/utility/pod_serializers.hpp>
+#include <yas/serializers/json/utility/usertype_serializers.hpp>
+#include <yas/serializers/json/utility/autoarray_serializers.hpp>
+#include <yas/serializers/json/utility/buffer_serializers.hpp>
 
 #include <yas/detail/tools/buffer.hpp>
 #include <yas/detail/tools/noncopyable.hpp>

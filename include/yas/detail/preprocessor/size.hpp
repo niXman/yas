@@ -12,8 +12,8 @@
 # ifndef YAS_PREPROCESSOR_SEQ_SIZE_HPP
 # define YAS_PREPROCESSOR_SEQ_SIZE_HPP
 #
-# include <yas/detail/boost_preprocessor/cat.hpp>
-# include <yas/detail/boost_preprocessor/config.hpp>
+# include <yas/detail/preprocessor/cat.hpp>
+# include <yas/detail/preprocessor/config.hpp>
 #
 # if YAS_PP_CONFIG_FLAGS() & YAS_PP_CONFIG_MWCC()
 #    define YAS_PP_SEQ_SIZE(seq) YAS_PP_SEQ_SIZE_I((seq))

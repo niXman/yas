@@ -12,9 +12,9 @@
 # ifndef YAS_PREPROCESSOR_SEQ_ELEM_HPP
 # define YAS_PREPROCESSOR_SEQ_ELEM_HPP
 #
-# include <yas/detail/boost_preprocessor/cat.hpp>
-# include <yas/detail/boost_preprocessor/config.hpp>
-# include <yas/detail/boost_preprocessor/empty.hpp>
+# include <yas/detail/preprocessor/cat.hpp>
+# include <yas/detail/preprocessor/config.hpp>
+# include <yas/detail/preprocessor/empty.hpp>
 #
 # /* YAS_PP_SEQ_ELEM */
 #
