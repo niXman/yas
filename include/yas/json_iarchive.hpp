@@ -60,20 +60,21 @@ struct json_mem_iarchive
 {
 	json_mem_iarchive(const intrusive_buffer& o, header_t::type op = header_t::with_header)
 		:detail::imemstream<json_mem_iarchive>(o)
-		,detail::archive_information<e_archive_type::json, e_direction::in, json_mem_iarchive>(this, op)
-	{}
+	{ init_header(this, op); }
+
+#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || \
+	defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
 	json_mem_iarchive(const shared_buffer& o, header_t::type op = header_t::with_header)
 		:detail::imemstream<json_mem_iarchive>(o)
-		,detail::archive_information<e_archive_type::json, e_direction::in, json_mem_iarchive>(this, op)
-	{}
+	{ init_header(this, op); }
+#endif
+
 	json_mem_iarchive(const std::string& o, header_t::type op = header_t::with_header)
 		:detail::imemstream<json_mem_iarchive>(o.c_str(), o.size())
-		,detail::archive_information<e_archive_type::json, e_direction::in, json_mem_iarchive>(this, op)
-	{}
+	{ init_header(this, op); }
 	json_mem_iarchive(const char* ptr, size_t size, header_t::type op = header_t::with_header)
 		:detail::imemstream<json_mem_iarchive>(ptr, size)
-		,detail::archive_information<e_archive_type::json, e_direction::in, json_mem_iarchive>(this, op)
-	{}
+	{ init_header(this, op); }
 
 	template<typename T>
 	json_mem_iarchive& operator& (T& v) {

@@ -66,10 +66,10 @@ bool pod_test() {
 			sizeof(f)+
 			sizeof(d)
 		;
-		if ( oa.size() != expected ) {
+		if ( oa.get_intrusive_buffer().size != expected ) {
 			std::cout
 			<< "POD test failed! bad size of serialized archive! expected = " << expected
-			<< ", current = " << oa.size() << std::endl;
+			<< ", current = " << oa.get_intrusive_buffer().size << std::endl;
 			return false;
 		}
 	} else {

@@ -145,10 +145,9 @@ struct header_reader_writer<e_archive_type::text> {
 		}
 
 		char a = raw_header[3];
+		char b = raw_header[4];
 		const char* p = std::lower_bound(hex_alpha, hex_alpha + 16, a);
 		if (*p != a) throw std::invalid_argument("not a hex digit");
-
-		char b = raw_header[4];
 		const char* q = std::lower_bound(hex_alpha, hex_alpha + 16, b);
 		if (*q != b) throw std::invalid_argument("not a hex digit");
 
@@ -170,16 +169,6 @@ struct header_reader_writer<e_archive_type::text> {
 			,hex_alpha[((yas::uint8_t)header.as_char) & 15]
 			,' '
 		};
-//		static const typename Archive::char_type raw_header[full_header_size] = {
-//			 hex_alpha[(yas_id[0] >> 4) & 0xff]
-//			,hex_alpha[yas_id[0] & 15]
-//			,hex_alpha[(yas_id[1] >> 4) & 0xff]
-//			,hex_alpha[yas_id[1] & 15]
-//			,hex_alpha[(yas_id[2] >> 4) & 0xff]
-//			,hex_alpha[yas_id[2] & 15]
-//			,hex_alpha[(((yas::uint8_t)header.as_char) >> 4) & 0xff]
-//			,hex_alpha[((yas::uint8_t)header.as_char) & 15]
-//		};
 		ar->sputn(raw_header, full_header_size+1);
 	}
 };
@@ -208,11 +197,9 @@ struct header_reader_writer<e_archive_type::json> {
 #define YAS_WRITE_ARCHIVE_INFORMATION_SPECIALIZATION_IMPL(unused, idx, seq) \
 	template<typename Archive> \
 	struct archive_information<YAS_PP_SEQ_ELEM(idx, seq), e_direction::in, Archive> { \
-		archive_information(Archive* ar, header_t::type op) \
+		archive_information() \
 			:header() \
-		{ \
-			header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::read(ar, op, header); \
-		} \
+		{} \
 		\
 		static yas::uint32_t	header_size() {return header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::full_header_size;} \
 		e_archive_type::type archive_type() const {return YAS_PP_SEQ_ELEM(idx, seq);} \
@@ -226,16 +213,19 @@ struct header_reader_writer<e_archive_type::json> {
 		static const bool							_is_readable	= true; \
 		static const bool							_is_writable	= false; \
 		\
+	protected: \
+		void init_header(Archive* ar, header_t::type op) { \
+			header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::read(ar, op, header); \
+		}\
+		\
 	private: \
 		archive_header header; \
 	}; \
 	\
 	template<typename Archive> \
 	struct archive_information<YAS_PP_SEQ_ELEM(idx, seq), e_direction::out, Archive> { \
-		archive_information(Archive* ar, header_t::type op) \
-		{ \
-			header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::write(ar, op, YAS_PP_SEQ_ELEM(idx, seq)); \
-		} \
+		archive_information() \
+		{} \
 		\
 		static yas::uint32_t header_size() {return header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::full_header_size;} \
 		e_archive_type::type archive_type() const {return YAS_PP_SEQ_ELEM(idx, seq);} \
@@ -248,6 +238,11 @@ struct header_reader_writer<e_archive_type::json> {
 		static const e_direction::type		_direction		= e_direction::in; \
 		static const bool							_is_readable	= false; \
 		static const bool							_is_writable	= true; \
+		\
+	protected: \
+		void init_header(Archive* ar, header_t::type op) { \
+			header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::write(ar, op, YAS_PP_SEQ_ELEM(idx, seq)); \
+		} \
 	};
 
 #define YAS_WRITE_ARCHIVE_INFORMATION_SPECIALIZATIONS(seq) \

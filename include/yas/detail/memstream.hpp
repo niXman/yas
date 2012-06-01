@@ -65,13 +65,6 @@ struct omemstream: std::stringbuf {
 		,stream(this)
 	{setp(ptr, ptr+size);}
 
-	char_type* beg() const {return pbase();}
-	char_type* cur() const {return pptr();}
-	char_type* end() const {return epptr();}
-
-	size_t size() const {return pptr()-pbase();}
-	size_t avail()const {return epptr()-pptr();}
-
 	size_t write(const void* ptr, size_t size) {
 		return sputn(static_cast<const char_type*>(ptr), size);
 	}
@@ -88,6 +81,9 @@ struct omemstream: std::stringbuf {
 			return intrusive_buffer(pbase(), pptr()-pbase()-1);
 		}
 	}
+
+#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || \
+	defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
 	shared_buffer get_shared_buffer() const {
 		if ( yas::is_binary_archive<Archive>::value ) {
 			return shared_buffer(pbase(), pptr()-pbase());
@@ -95,6 +91,8 @@ struct omemstream: std::stringbuf {
 			return shared_buffer(pbase(), pptr()-pbase()-1);
 		}
 	}
+#endif
+
 	std::string str() const {return std::string(pbase(), pptr());}
 
 private:
@@ -140,6 +138,9 @@ struct imemstream: std::stringbuf {
 			  const_cast<char_type*>(static_cast<const char_type*>(buf.data))+buf.size
 		);
 	}
+
+#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || \
+	defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
 	imemstream(const shared_buffer& buf)
 		:std::stringbuf()
 		,stream(this)
@@ -149,13 +150,7 @@ struct imemstream: std::stringbuf {
 			  const_cast<char_type*>(static_cast<const char_type*>(buf.data.get()))+buf.size
 		);
 	}
-
-	char_type* beg() const {return eback();}
-	char_type* cur() const {return gptr();}
-	char_type* end() const {return egptr();}
-
-	size_t size() const {return egptr()-eback();}
-	size_t avail()const {return egptr()-gptr();}
+#endif
 
 	size_t read(void* ptr, size_t size) {return sgetn(static_cast<char_type*>(ptr), size);}
 

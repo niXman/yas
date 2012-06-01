@@ -60,20 +60,21 @@ struct text_mem_iarchive
 {
 	text_mem_iarchive(const intrusive_buffer& o, header_t::type op = header_t::with_header)
 		:detail::imemstream<text_mem_iarchive>(o)
-		,detail::archive_information<e_archive_type::text, e_direction::in, text_mem_iarchive>(this, op)
-	{}
+	{ init_header(this, op); }
+
+#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || \
+	defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
 	text_mem_iarchive(const shared_buffer& o, header_t::type op = header_t::with_header)
 		:detail::imemstream<text_mem_iarchive>(o)
-		,detail::archive_information<e_archive_type::text, e_direction::in, text_mem_iarchive>(this, op)
-	{}
+	{ init_header(this, op); }
+#endif
+
 	text_mem_iarchive(const std::string& o, header_t::type op = header_t::with_header)
 		:detail::imemstream<text_mem_iarchive>(o.c_str(), o.size())
-		,detail::archive_information<e_archive_type::text, e_direction::in, text_mem_iarchive>(this, op)
-	{}
+	{ init_header(this, op); }
 	text_mem_iarchive(const char* ptr, size_t size, header_t::type op = header_t::with_header)
 		:detail::imemstream<text_mem_iarchive>(ptr, size)
-		,detail::archive_information<e_archive_type::text, e_direction::in, text_mem_iarchive>(this, op)
-	{}
+	{ init_header(this, op); }
 
 	template<typename T>
 	text_mem_iarchive& operator& (T& v) {

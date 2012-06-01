@@ -60,12 +60,10 @@ struct text_mem_oarchive
 {
 	text_mem_oarchive(header_t::type op = header_t::with_header)
 		:detail::omemstream<text_mem_oarchive>()
-		,detail::archive_information<e_archive_type::text, e_direction::out, text_mem_oarchive>(this, op)
-	{}
+	{ init_header(this, op); }
 	text_mem_oarchive(char* ptr, size_t size, header_t::type op = header_t::with_header)
 		:detail::omemstream<text_mem_oarchive>(ptr, size)
-		,detail::archive_information<e_archive_type::text, e_direction::out, text_mem_oarchive>(this, op)
-	{}
+	{ init_header(this, op); }
 
 	template<typename T>
 	text_mem_oarchive& operator& (const T& v) {

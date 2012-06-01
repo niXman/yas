@@ -43,7 +43,7 @@ namespace detail {
 
 template<typename T>
 struct serializer<
-	e_type_type::e_type_type::is_enum,
+	e_type_type::is_enum,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::binary,
 	e_direction::out,
@@ -57,7 +57,7 @@ struct serializer<
 
 template<typename T>
 struct serializer<
-	e_type_type::e_type_type::is_enum,
+	e_type_type::is_enum,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::binary,
 	e_direction::in,
@@ -73,7 +73,7 @@ struct serializer<
 
 template<typename T>
 struct serializer<
-	e_type_type::e_type_type::is_pod,
+	e_type_type::is_pod,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::binary,
 	e_direction::out,
@@ -87,7 +87,7 @@ struct serializer<
 
 template<typename T>
 struct serializer<
-	e_type_type::e_type_type::is_pod,
+	e_type_type::is_pod,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::binary,
 	e_direction::in,

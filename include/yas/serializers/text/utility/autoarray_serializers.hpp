@@ -48,7 +48,7 @@ namespace detail {
 
 template<typename T, size_t N>
 struct serializer<
-	e_type_type::e_type_type::is_array_of_pods,
+	e_type_type::is_array_of_pods,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::text,
 	e_direction::out,
@@ -78,7 +78,7 @@ struct serializer<
 
 template<typename T, size_t N>
 struct serializer<
-	e_type_type::e_type_type::is_array_of_pods,
+	e_type_type::is_array_of_pods,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::text,
 	e_direction::in,
@@ -114,7 +114,7 @@ struct serializer<
 
 template<typename T, size_t N>
 struct serializer<
-	e_type_type::e_type_type::is_array,
+	e_type_type::is_array,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::text,
 	e_direction::out,
@@ -133,7 +133,7 @@ struct serializer<
 
 template<typename T, size_t N>
 struct serializer<
-	e_type_type::e_type_type::is_array,
+	e_type_type::is_array,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::text,
 	e_direction::in,

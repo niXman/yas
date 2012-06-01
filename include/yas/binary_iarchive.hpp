@@ -59,21 +59,22 @@ struct binary_mem_iarchive:
 	,private detail::noncopyable
 {
 	binary_mem_iarchive(const intrusive_buffer& o, header_t::type op = header_t::with_header)
-		:detail::imemstream<binary_mem_iarchive>(o),
-		detail::archive_information<e_archive_type::binary, e_direction::in, binary_mem_iarchive>(this, op)
-	{}
+		:detail::imemstream<binary_mem_iarchive>(o)
+	{ init_header(this, op); }
+
+#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || \
+	defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
 	binary_mem_iarchive(const shared_buffer& o, header_t::type op = header_t::with_header)
-		:detail::imemstream<binary_mem_iarchive>(o),
-		detail::archive_information<e_archive_type::binary, e_direction::in, binary_mem_iarchive>(this, op)
-	{}
+		:detail::imemstream<binary_mem_iarchive>(o)
+	{ init_header(this, op); }
+#endif
+
 	binary_mem_iarchive(const std::string& o, header_t::type op = header_t::with_header)
-		:detail::imemstream<binary_mem_iarchive>(o.c_str(), o.size()),
-		detail::archive_information<e_archive_type::binary, e_direction::in, binary_mem_iarchive>(this, op)
-	{}
+		:detail::imemstream<binary_mem_iarchive>(o.c_str(), o.size())
+	{ init_header(this, op); }
 	binary_mem_iarchive(const char* ptr, size_t size, header_t::type op = header_t::with_header)
-		:detail::imemstream<binary_mem_iarchive>(ptr, size),
-		detail::archive_information<e_archive_type::binary, e_direction::in, binary_mem_iarchive>(this, op)
-	{}
+		:detail::imemstream<binary_mem_iarchive>(ptr, size)
+	{ init_header(this, op); }
 
 	template<typename T>
 	binary_mem_iarchive& operator& (T& v) {

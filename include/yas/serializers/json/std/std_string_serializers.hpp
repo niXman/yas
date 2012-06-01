@@ -45,7 +45,7 @@ namespace detail {
 
 template<>
 struct serializer<
-	e_type_type::e_type_type::not_a_pod,
+	e_type_type::not_a_pod,
 	e_ser_method::has_split_functions,
 	e_archive_type::json,
 	e_direction::out,
@@ -59,7 +59,7 @@ struct serializer<
 
 template<>
 struct serializer<
-	e_type_type::e_type_type::not_a_pod,
+	e_type_type::not_a_pod,
 	e_ser_method::has_split_functions,
 	e_archive_type::json,
 	e_direction::in,

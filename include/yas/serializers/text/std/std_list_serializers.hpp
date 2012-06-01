@@ -46,7 +46,7 @@ namespace detail {
 
 template<typename T>
 struct serializer<
-	e_type_type::e_type_type::not_a_pod,
+	e_type_type::not_a_pod,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::text,
 	e_direction::out,
@@ -64,7 +64,7 @@ struct serializer<
 
 template<typename T>
 struct serializer<
-	e_type_type::e_type_type::not_a_pod,
+	e_type_type::not_a_pod,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::text,
 	e_direction::in,

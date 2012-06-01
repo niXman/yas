@@ -2,6 +2,7 @@
 #include <iostream>
 #include <algorithm>
 #include <cstdio>
+#include <ctime>
 
 #include <yas/serializers/std_types_serializers.hpp>
 
@@ -25,46 +26,60 @@
 #include <yas/serializers/qt_types_serializers.hpp>
 #endif
 
-#include "array.hpp"
-#include "auto_array.hpp"
-#include "bitset.hpp"
-#include "buffer.hpp"
-#include "enum.hpp"
-#include "base_object.hpp"
-#include "forward_list.hpp"
-#include "fusion_list.hpp"
-#include "fusion_map.hpp"
-#include "fusion_pair.hpp"
-#include "fusion_set.hpp"
-#include "fusion_tuple.hpp"
-#include "fusion_vector.hpp"
-#include "list.hpp"
-#include "map.hpp"
-#include "multimap.hpp"
-#include "multiset.hpp"
-#include "pair.hpp"
-#include "pod.hpp"
-#include "set.hpp"
-#include "string.hpp"
-#include "tuple.hpp"
-#include "types.hpp"
-#include "unordered_map.hpp"
-#include "unordered_multimap.hpp"
-#include "unordered_multiset.hpp"
-#include "unordered_set.hpp"
-#include "vector.hpp"
-#include "version.hpp"
-#include "wstring.hpp"
+#if 0
+namespace ns {
+enum enum1 {e11, e12};
+}
 
-#include "one_function.hpp"
-#include "one_method.hpp"
-#include "split_functions.hpp"
-#include "split_methods.hpp"
+template<ns::enum1>
+struct type;
 
-#include "speed_one_function.hpp"
-#include "speed_one_method.hpp"
-#include "speed_split_functions.hpp"
-#include "speed_split_methods.hpp"
+template<>
+struct type<ns::e11> {};
+template<>
+struct type<ns::e12> {};
+#endif
+
+#include "include/array.hpp"
+#include "include/auto_array.hpp"
+#include "include/bitset.hpp"
+#include "include/buffer.hpp"
+#include "include/enum.hpp"
+#include "include/base_object.hpp"
+#include "include/forward_list.hpp"
+#include "include/fusion_list.hpp"
+#include "include/fusion_map.hpp"
+#include "include/fusion_pair.hpp"
+#include "include/fusion_set.hpp"
+#include "include/fusion_tuple.hpp"
+#include "include/fusion_vector.hpp"
+#include "include/list.hpp"
+#include "include/map.hpp"
+#include "include/multimap.hpp"
+#include "include/multiset.hpp"
+#include "include/pair.hpp"
+#include "include/pod.hpp"
+#include "include/set.hpp"
+#include "include/string.hpp"
+#include "include/tuple.hpp"
+#include "include/types.hpp"
+#include "include/unordered_map.hpp"
+#include "include/unordered_multimap.hpp"
+#include "include/unordered_multiset.hpp"
+#include "include/unordered_set.hpp"
+#include "include/vector.hpp"
+#include "include/version.hpp"
+#include "include/wstring.hpp"
+
+#include "include/one_function.hpp"
+#include "include/one_method.hpp"
+#include "include/split_functions.hpp"
+#include "include/split_methods.hpp"
+
+#include "include/speed_one_function.hpp"
+#include "include/speed_one_method.hpp"
+#include "include/speed_split_functions.hpp"
+#include "include/speed_split_methods.hpp"
 
 /***************************************************************************/
 

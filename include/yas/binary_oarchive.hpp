@@ -59,17 +59,13 @@ struct binary_mem_oarchive:
 	,private detail::noncopyable
 {
 	binary_mem_oarchive(header_t::type op = header_t::with_header)
-		:detail::omemstream<binary_mem_oarchive>()
-		,detail::archive_information<e_archive_type::binary, e_direction::out, binary_mem_oarchive>(this, op)
-	{}
+	{ init_header(this, op); }
 	binary_mem_oarchive(size_t size, header_t::type op = header_t::with_header)
 		:detail::omemstream<binary_mem_oarchive>(size)
-		,detail::archive_information<e_archive_type::binary, e_direction::out, binary_mem_oarchive>(this, op)
-	{}
+	{ init_header(this, op); }
 	binary_mem_oarchive(char* ptr, size_t size, header_t::type op = header_t::with_header)
 		:detail::omemstream<binary_mem_oarchive>(ptr, size)
-		,detail::archive_information<e_archive_type::binary, e_direction::out, binary_mem_oarchive>(this, op)
-	{}
+	{ init_header(this, op); }
 
 	template<typename T>
 	binary_mem_oarchive& operator& (const T& v) {
