@@ -55,6 +55,12 @@ struct serializer<
 > {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::unordered_multimap<K, V>& map) {
+		ar & map.size();
+		typename std::unordered_multimap<K, V>::const_iterator it = map.begin();
+		for ( ; it != map.end(); ++it ) {
+			ar & it->first
+				& it->second;
+		}
 	}
 };
 
@@ -69,6 +75,15 @@ struct serializer<
 > {
 	template<typename Archive>
 	static void apply(Archive& ar, std::unordered_multimap<K, V>& map) {
+		yas::uint32_t size = 0;
+		ar & size;
+		K key = K();
+		V val = V();
+		for ( ; size; --size ) {
+			ar & key
+				& val;
+			map.insert(typename std::unordered_multimap<K, V>::value_type(key, val));
+		}
 	}
 };
 

@@ -49,32 +49,26 @@ namespace detail {
 
 template<typename T, size_t N>
 struct serializer<
-	e_type_type::e_type_type::not_a_pod,
-	e_ser_method::has_split_functions,
+	e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
 	e_archive_type::json,
 	e_direction::out,
 	boost::array<T, N>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, const boost::array<T, N>& array) {
-		const size_t size = N;
-		ar.write(&size, sizeof(size));
-		if ( is_pod<T>::value ) {
-			ar.write(array.data(), sizeof(T)*N);
-		} else {
-			typename boost::array<T, N>::const_iterator it = array.begin();
-			for ( ; it != array.end(); ++it ) {
-				ar & (*it);
-			}
+		ar & static_cast<yas::uint32_t>(N);
+		typename boost::array<T, N>::const_iterator it = array.begin();
+		for ( ; it != array.end(); ++it ) {
+			ar & (*it);
 		}
 	}
 };
 
 template<typename T, size_t N>
 struct serializer<
-	e_type_type::e_type_type::not_a_pod,
-	e_ser_method::has_split_functions,
+	e_type_type::not_a_pod,
+	e_ser_method::use_internal_serializer,
 	e_archive_type::json,
 	e_direction::in,
 	boost::array<T, N>
@@ -82,16 +76,12 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, boost::array<T, N>& array) {
-		std::size_t size = 0;
-		ar.read(&size, sizeof(size));
-		BOOST_ASSERT(size == N);
-		if ( is_pod<T>::value ) {
-			ar.read(array.data(), sizeof(T)*N);
-		} else {
-			typename boost::array<T, N>::iterator it = array.begin();
-			for ( ; it != array.end(); ++it ) {
-				ar & (*it);
-			}
+		yas::uint32_t size = 0;
+		ar & size;
+		if ( size != N ) throw std::runtime_error("array size is not equal");
+		typename boost::array<T, N>::iterator it = array.begin();
+		for ( ; it != array.end(); ++it ) {
+			ar & (*it);
 		}
 	}
 };

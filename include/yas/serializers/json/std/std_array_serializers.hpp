@@ -30,8 +30,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__json__array_serializer_hpp__included_
-#define _yas__json__array_serializer_hpp__included_
+#ifndef _yas__json__std_array_serializer_hpp__included_
+#define _yas__json__std_array_serializer_hpp__included_
 
 #include <yas/detail/config/config.hpp>
 
@@ -58,6 +58,11 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::array<T, N>& array) {
+		typename std::array<T, N>::const_iterator it = array.begin();
+		ar & static_cast<yas::uint32_t>(N);
+		for ( ; it != array.end(); ++it ) {
+			ar & (*it);
+		}
 	}
 };
 
@@ -72,6 +77,13 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, std::array<T, N>& array) {
+		yas::uint32_t size = 0;
+		ar & size;
+		if ( size != N ) throw std::runtime_error("array size is not equal");
+		typename std::array<T, N>::iterator it = array.begin();
+		for ( ; it != array.end(); ++it ) {
+			ar & (*it);
+		}
 	}
 };
 
@@ -82,4 +94,4 @@ struct serializer<
 
 #endif // defined(YAS_HAS_STD_ARRAY)
 
-#endif // _yas__json__array_serializer_hpp__included_
+#endif // _yas__json__std_array_serializer_hpp__included_

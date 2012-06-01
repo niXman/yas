@@ -51,34 +51,28 @@ namespace detail {
 template<typename T1, typename T2>
 struct serializer<
 	e_type_type::e_type_type::not_a_pod,
-	e_ser_method::has_split_functions,
+	e_ser_method::use_internal_serializer,
 	e_archive_type::json,
 	e_direction::out,
 	boost::fusion::pair<T1, T2>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, const boost::fusion::pair<T1, T2>& pair) {
-		if ( is_pod<T2>::value ) {
-		} else {
-		}
+		ar & pair.second;
 	}
 };
 
 template<typename T1, typename T2>
 struct serializer<
 	e_type_type::e_type_type::not_a_pod,
-	e_ser_method::has_split_functions,
+	e_ser_method::use_internal_serializer,
 	e_archive_type::json,
 	e_direction::in,
 	boost::fusion::pair<T1, T2>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, boost::fusion::pair<T1, T2>& pair) {
-		if ( is_pod<T2>::value ) {
-		} else {
-		}
+		ar & pair.second;
 	}
 };
 

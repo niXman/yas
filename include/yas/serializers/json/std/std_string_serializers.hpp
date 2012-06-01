@@ -46,7 +46,7 @@ namespace detail {
 template<>
 struct serializer<
 	e_type_type::not_a_pod,
-	e_ser_method::has_split_functions,
+	e_ser_method::use_internal_serializer,
 	e_archive_type::json,
 	e_direction::out,
 	std::string
@@ -54,13 +54,16 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::string& string) {
+		ar & static_cast<yas::uint32_t>(string.length());
+		ar.write(&string[0], string.length());
+		ar & ' ';
 	}
 };
 
 template<>
 struct serializer<
 	e_type_type::not_a_pod,
-	e_ser_method::has_split_functions,
+	e_ser_method::use_internal_serializer,
 	e_archive_type::json,
 	e_direction::in,
 	std::string
@@ -68,6 +71,11 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, std::string& string) {
+		yas::uint32_t size = 0;
+		ar & size;
+		string.resize(size);
+		ar.read(&string[0], size);
+		ar.snextc();
 	}
 };
 

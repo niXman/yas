@@ -47,7 +47,7 @@ namespace detail {
 template<typename K, typename V>
 struct serializer<
 	e_type_type::not_a_pod,
-	e_ser_method::has_split_functions,
+	e_ser_method::use_internal_serializer,
 	e_archive_type::json,
 	e_direction::out,
 	std::multimap<K, V>
@@ -55,13 +55,19 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::multimap<K, V>& multimap) {
+		ar & multimap.size();
+		typename std::multimap<K, V>::const_iterator it = multimap.begin();
+		for ( ; it != multimap.end(); ++it ) {
+			ar & it->first
+				& it->second;
+		}
 	}
 };
 
 template<typename K, typename V>
 struct serializer<
 	e_type_type::not_a_pod,
-	e_ser_method::has_split_functions,
+	e_ser_method::use_internal_serializer,
 	e_archive_type::json,
 	e_direction::in,
 	std::multimap<K, V>
@@ -69,6 +75,15 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, std::multimap<K, V>& multimap) {
+		yas::uint32_t size = 0;
+		ar & size;
+		K key = K();
+		V val = V();
+		for ( ; size; --size ) {
+			ar & key
+				& val;
+			multimap.insert(typename std::multimap<K, V>::value_type(key, val));
+		}
 	}
 };
 

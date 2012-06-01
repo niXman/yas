@@ -50,7 +50,7 @@ namespace detail {
 template<typename K>
 struct serializer<
 	e_type_type::e_type_type::not_a_pod,
-	e_ser_method::has_split_functions,
+	e_ser_method::use_internal_serializer,
 	e_archive_type::json,
 	e_direction::out,
 	boost::unordered_multiset<K>
@@ -58,13 +58,18 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, const boost::unordered_multiset<K>& set) {
+		ar & set.size();
+		typename boost::unordered_multiset<K>::const_iterator it = set.begin();
+		for ( ; it != set.end(); ++it ) {
+			ar & (*it);
+		}
 	}
 };
 
 template<typename K>
 struct serializer<
 	e_type_type::e_type_type::not_a_pod,
-	e_ser_method::has_split_functions,
+	e_ser_method::use_internal_serializer,
 	e_archive_type::json,
 	e_direction::in,
 	boost::unordered_multiset<K>
@@ -72,6 +77,13 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, boost::unordered_multiset<K>& set) {
+		yas::uint32_t size = 0;
+		ar & size;
+		K key = K();
+		for ( ; size; --size ) {
+			ar & key;
+			set.insert(key);
+		}
 	}
 };
 

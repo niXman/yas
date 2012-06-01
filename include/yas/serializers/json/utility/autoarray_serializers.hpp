@@ -30,59 +30,122 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__json__std_bitset_serializer_hpp__included_
-#define _yas__json__std_bitset_serializer_hpp__included_
+#ifndef _yas__json__autoarray_serializer_hpp__included_
+#define _yas__json__autoarray_serializer_hpp__included_
 
 #include <stdexcept>
 
 #include <yas/detail/config/config.hpp>
 #include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/mpl/metafunctions.hpp>
 #include <yas/detail/properties.hpp>
 #include <yas/detail/selector.hpp>
-
-#include <bitset>
 
 namespace yas {
 namespace detail {
 
 /***************************************************************************/
 
-template<std::size_t N>
+template<typename T, size_t N>
 struct serializer<
-	e_type_type::not_a_pod,
+	e_type_type::is_array_of_pods,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::json,
 	e_direction::out,
-	std::bitset<N>
->
-{
-	template<typename Archive>
-	static void apply(Archive& ar, const std::bitset<N>& bits) {
-		ar & static_cast<yas::uint32_t>(N);
-		for ( std::size_t idx = 0; idx < N; ++idx ) {
-			ar & (int)bits[idx];
+	T[N]
+> {
+	template<
+		 typename Archive
+		,typename U
+	>
+	static void apply(Archive& ar, const U(&v)[N], typename enable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
+		ar & (N-1);
+		ar.write(v, N-1);
+		ar & ' ';
+	}
+
+	template<
+		 typename Archive
+		,typename U
+	>
+	static void apply(Archive& ar, const U(&v)[N], typename disable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
+		ar & N & ' ';
+		for ( size_t idx = 0; idx < N; ++idx ) {
+			ar & v[idx] & ' ';
 		}
 	}
 };
 
-template<std::size_t N>
+template<typename T, size_t N>
 struct serializer<
-	e_type_type::not_a_pod,
+	e_type_type::is_array_of_pods,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::json,
 	e_direction::in,
-	std::bitset<N>
->
-{
-	template<typename Archive>
-	static void apply(Archive& ar, std::bitset<N>& bits) {
+	T[N]
+> {
+	template<
+		 typename Archive
+		,typename U
+	>
+	static void apply(Archive& ar, U(&v)[N], typename enable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
 		yas::uint32_t size = 0;
 		ar & size;
-		if ( size != N ) throw std::runtime_error("bitsets size is not equal");
-		for ( std::size_t idx = 0; idx < N; ++idx ) {
-			int v;
-			ar & v;
-			bits[idx] = v;
+		if ( size != N-1 ) throw std::runtime_error("bad array size");
+		ar.read(v, size);
+		v[size] = 0;
+	}
+
+	template<
+		 typename Archive
+		,typename U
+	>
+	static void apply(Archive& ar, U(&v)[N], typename disable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
+		yas::uint32_t size = 0;
+		ar & size;
+		if ( size != N ) throw std::runtime_error("bad array size");
+		for ( size_t idx = 0; idx < N; ++idx ) {
+			ar & v[idx];
+		}
+	}
+};
+
+/***************************************************************************/
+
+template<typename T, size_t N>
+struct serializer<
+	e_type_type::is_array,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::json,
+	e_direction::out,
+	T[N]
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, const T(&v)[N]) {
+		ar & N & ' ';
+		for ( size_t idx = 0; idx < N; ++idx ) {
+			ar & v[idx] & ' ';
+		}
+	}
+};
+
+/***************************************************************************/
+
+template<typename T, size_t N>
+struct serializer<
+	e_type_type::is_array,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::json,
+	e_direction::in,
+	T[N]
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, T(&v)[N]) {
+		yas::uint32_t size = 0;
+		(ar & size).snextc();
+		if ( size != N ) throw std::runtime_error("bad array size");
+		for ( size_t idx = 0; idx < N; ++idx ) {
+			(ar & v[idx]).snextc();
 		}
 	}
 };
@@ -92,4 +155,4 @@ struct serializer<
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__json__std_bitset_serializer_hpp__included_
+#endif // _yas__json__autoarray_serializer_hpp__included_

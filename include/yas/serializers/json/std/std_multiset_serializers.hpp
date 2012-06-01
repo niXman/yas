@@ -47,28 +47,40 @@ namespace detail {
 template<typename K>
 struct serializer<
 	e_type_type::not_a_pod,
-	e_ser_method::has_split_functions,
+	e_ser_method::use_internal_serializer,
 	e_archive_type::json,
 	e_direction::out,
 	std::multiset<K>
 >
 {
 	template<typename Archive>
-	static void apply(Archive& ar, const std::multiset<K>& set) {
+	static void apply(Archive& ar, const std::multiset<K>& multiset) {
+		ar & multiset.size();
+		typename std::multiset<K>::const_iterator it = multiset.begin();
+		for ( ; it != multiset.end(); ++it ) {
+			ar & (*it);
+		}
 	}
 };
 
 template<typename K>
 struct serializer<
 	e_type_type::not_a_pod,
-	e_ser_method::has_split_functions,
+	e_ser_method::use_internal_serializer,
 	e_archive_type::json,
 	e_direction::in,
 	std::multiset<K>
 >
 {
 	template<typename Archive>
-	static void apply(Archive& ar, std::multiset<K>& set) {
+	static void apply(Archive& ar, std::multiset<K>& multiset) {
+		yas::uint32_t size = 0;
+		ar & size;
+		K key = K();
+		for ( ; size; --size ) {
+			ar & key;
+			multiset.insert(key);
+		}
 	}
 };
 

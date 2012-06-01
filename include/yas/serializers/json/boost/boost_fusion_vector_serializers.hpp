@@ -35,11 +35,11 @@
 
 #include <yas/detail/config/config.hpp>
 
-#if 0
 #if defined(YAS_HAS_BOOST_FUSION)
-
-#include <yas/mpl/type_traits.hpp>
-#include <yas/tools/boost_preprocessor/preprocessor.hpp>
+#include <yas/detail/mpl/type_traits.hpp>
+#include <yas/detail/properties.hpp>
+#include <yas/detail/selector.hpp>
+#include <yas/detail/boost_preprocessor/preprocessor.hpp>
 
 #include <boost/assert.hpp>
 
@@ -53,141 +53,188 @@
 #include <boost/fusion/include/at_c.hpp>
 
 namespace yas {
+namespace detail {
 
 /***************************************************************************/
 
-#define YAS_WRITE_FUSION_VECTOR_SIZE(count) \
-	const boost::uint8_t size = count; \
-	ar.write(&size, sizeof(size))
+#define YAS__TEXT__WRITE_BOOST_FUSION_VECTOR_ITEM(unused, idx, type) \
+	ar & boost::fusion::at_c<idx>(vector);
 
-#define YAS_WRITE_FUSION_VECTOR_ITEM(unused, idx, type) \
-	if ( detail::is_pod<YAS_PP_CAT(type, idx)>::value ) \
-		ar.write(&boost::fusion::at_c<idx>(vector), sizeof(YAS_PP_CAT(type, idx))); \
-	else \
-		ar & boost::fusion::at_c<idx>(vector);
+#define YAS__TEXT__READ_BOOST_FUSION_VECTOR_ITEM(unused, idx, type) \
+	ar & boost::fusion::at_c<idx>(vector);
 
-#define YAS_READ_AND_CHECK_FUSION_VECTOR_SIZE(count) \
-	boost::uint8_t size = 0; \
-	ar.read(&size, sizeof(size)); \
-	BOOST_ASSERT_MSG(size == count, "size error on deserialize fusion::vector")
+#define YAS__TEXT__GENERATE_EMPTY_SAVE_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTION() \
+	template<> \
+	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
+		e_archive_type::json, e_direction::out, boost::fusion::vector0<> > \
+	{ \
+		template<typename Archive> \
+		static void apply(Archive&, const boost::fusion::vector0<>&) {} \
+	};
 
-#define YAS_READ_FUSION_VECTOR_ITEM(unused, idx, type) \
-	if ( detail::is_pod<YAS_PP_CAT(type, idx)>::value ) \
-		ar.read(&boost::fusion::at_c<idx>(vector), sizeof(YAS_PP_CAT(type, idx))); \
-	else \
-		ar & boost::fusion::at_c<idx>(vector);
+#define YAS__TEXT__GENERATE_EMPTY_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTION() \
+	template<> \
+	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
+		e_archive_type::json, e_direction::in, boost::fusion::vector0<> > \
+	{ \
+		template<typename Archive> \
+		static void apply(Archive&, boost::fusion::vector0<>&) {} \
+	};
 
-#define YAS_GENERATE_EMPTY_SAVE_SERIALIZE_VECTOR_FUNCTION() \
-	template<typename Archive> \
-	void apply(Archive&, const boost::fusion::vector0<>&) {}
+#define YAS__TEXT__GENERATE_SAVE_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTION(unused, count, unused2) \
+	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
+	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
+		e_archive_type::json, e_direction::out, \
+		YAS_PP_CAT(boost::fusion::vector, YAS_PP_INC(count)) \
+			<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
+	{ \
+		template<typename Archive> \
+		static void apply(\
+			Archive& ar, \
+			const YAS_PP_CAT(boost::fusion::vector, YAS_PP_INC(count)) \
+				<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& vector) \
+		{ \
+			ar & YAS_PP_INC(count); \
+			YAS_PP_REPEAT( \
+				YAS_PP_INC(count), \
+				YAS__TEXT__WRITE_BOOST_FUSION_VECTOR_ITEM, \
+				T \
+			) \
+		} \
+	};
 
-#define YAS_GENERATE_EMPTY_LOAD_SERIALIZE_VECTOR_FUNCTION() \
-	template<typename Archive> \
-	void apply(Archive&, boost::fusion::vector0<>&) {}
-
-#define YAS_GENERATE_SAVE_SERIALIZE_VECTOR_FUNCTION(unused, count, text) \
-	template<typename Archive, YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
-	void apply(Archive& ar, const YAS_PP_CAT(boost::fusion::vector, YAS_PP_INC(count)) \
-			<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& vector) { \
-		YAS_WRITE_FUSION_VECTOR_SIZE(YAS_PP_INC(count)); \
-		YAS_PP_REPEAT( \
-			YAS_PP_INC(count), \
-			YAS_WRITE_FUSION_VECTOR_ITEM, \
-			T \
-		) \
-	}
-
-#define YAS_GENERATE_SAVE_SERIALIZE_VECTOR_FUNCTIONS(count) \
-	YAS_GENERATE_EMPTY_SAVE_SERIALIZE_VECTOR_FUNCTION(); \
+#define YAS__TEXT__GENERATE_SAVE_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS(count) \
+	YAS__TEXT__GENERATE_EMPTY_SAVE_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTION(); \
 	YAS_PP_REPEAT( \
 		count, \
-		YAS_GENERATE_SAVE_SERIALIZE_VECTOR_FUNCTION, \
+		YAS__TEXT__GENERATE_SAVE_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTION, \
 		~ \
 	)
 
-#define YAS_GENERATE_LOAD_SERIALIZE_VECTOR_FUNCTION(unused, count, text) \
-	template<typename Archive, YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
-	void apply(Archive& ar, YAS_PP_CAT(boost::fusion::vector, YAS_PP_INC(count)) \
-			<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& vector) { \
-		YAS_READ_AND_CHECK_FUSION_VECTOR_SIZE(YAS_PP_INC(count)); \
-		YAS_PP_REPEAT( \
-			YAS_PP_INC(count), \
-			YAS_READ_FUSION_VECTOR_ITEM, \
-			T \
-		) \
-	}
+#define YAS__TEXT__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTION(unused, count, unused2) \
+	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
+	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
+		e_archive_type::json, e_direction::in, \
+		YAS_PP_CAT(boost::fusion::vector, YAS_PP_INC(count)) \
+			<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
+	{ \
+		template<typename Archive> \
+		static void apply(\
+			Archive& ar, \
+			YAS_PP_CAT(boost::fusion::vector, YAS_PP_INC(count)) \
+				<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& vector) \
+		{ \
+			yas::int32_t size = 0; \
+			ar & size; \
+			if ( size != YAS_PP_INC(count) ) throw std::runtime_error("size error on deserialize fusion::vector"); \
+			YAS_PP_REPEAT( \
+				YAS_PP_INC(count), \
+				YAS__TEXT__READ_BOOST_FUSION_VECTOR_ITEM, \
+				T \
+			) \
+		} \
+	};
 
-#define YAS_GENERATE_LOAD_SERIALIZE_VECTOR_FUNCTIONS(count) \
-	YAS_GENERATE_EMPTY_LOAD_SERIALIZE_VECTOR_FUNCTION(); \
+#define YAS__TEXT__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS(count) \
+	YAS__TEXT__GENERATE_EMPTY_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTION(); \
 	YAS_PP_REPEAT( \
 		count, \
-		YAS_GENERATE_LOAD_SERIALIZE_VECTOR_FUNCTION, \
-		~ \
-	)
-
-/***************************************************************************/
-
-YAS_GENERATE_SAVE_SERIALIZE_VECTOR_FUNCTIONS(FUSION_MAX_VECTOR_SIZE);
-YAS_GENERATE_LOAD_SERIALIZE_VECTOR_FUNCTIONS(FUSION_MAX_VECTOR_SIZE);
-
-/***************************************************************************/
-
-#define YAS_GENERATE_EMPTY_SAVE_SERIALIZE_VECTOR_FUNCTION_VARIADIC() \
-	template<typename Archive> \
-	void apply(Archive&, const boost::fusion::vector<>&) {}
-
-#define YAS_GENERATE_EMPTY_LOAD_SERIALIZE_VECTOR_FUNCTION_VARIADIC() \
-	template<typename Archive> \
-	void apply(Archive&, boost::fusion::vector<>&) {}
-
-#define YAS_GENERATE_SAVE_SERIALIZE_VECTOR_FUNCTION_VARIADIC(unused, count, text) \
-	template<typename Archive, YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
-	void apply(Archive& ar, const boost::fusion::vector<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& vector) { \
-		YAS_WRITE_FUSION_VECTOR_SIZE(YAS_PP_INC(count)); \
-		YAS_PP_REPEAT( \
-			YAS_PP_INC(count), \
-			YAS_WRITE_FUSION_VECTOR_ITEM, \
-			T \
-		) \
-	}
-
-#define YAS_GENERATE_SAVE_SERIALIZE_VECTOR_FUNCTIONS_VARIADIC(count) \
-	YAS_GENERATE_EMPTY_SAVE_SERIALIZE_VECTOR_FUNCTION_VARIADIC(); \
-	YAS_PP_REPEAT( \
-		count, \
-		YAS_GENERATE_SAVE_SERIALIZE_VECTOR_FUNCTION_VARIADIC, \
-		~ \
-	)
-
-#define YAS_GENERATE_LOAD_SERIALIZE_VECTOR_FUNCTION_VARIADIC(unused, count, text) \
-	template<typename Archive, YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
-	void apply(Archive& ar, boost::fusion::vector<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& vector) { \
-		YAS_READ_AND_CHECK_FUSION_VECTOR_SIZE(YAS_PP_INC(count)); \
-		YAS_PP_REPEAT( \
-			YAS_PP_INC(count), \
-			YAS_READ_FUSION_VECTOR_ITEM, \
-			T \
-		) \
-	}
-
-#define YAS_GENERATE_LOAD_SERIALIZE_VECTOR_FUNCTIONS_VARIADIC(count) \
-	YAS_GENERATE_EMPTY_LOAD_SERIALIZE_VECTOR_FUNCTION_VARIADIC(); \
-	YAS_PP_REPEAT( \
-		count, \
-		YAS_GENERATE_LOAD_SERIALIZE_VECTOR_FUNCTION_VARIADIC, \
+		YAS__TEXT__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTION, \
 		~ \
 	)
 
 /***************************************************************************/
 
-YAS_GENERATE_SAVE_SERIALIZE_VECTOR_FUNCTIONS_VARIADIC(FUSION_MAX_VECTOR_SIZE);
-YAS_GENERATE_LOAD_SERIALIZE_VECTOR_FUNCTIONS_VARIADIC(FUSION_MAX_VECTOR_SIZE);
+YAS__TEXT__GENERATE_SAVE_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS(FUSION_MAX_VECTOR_SIZE);
+YAS__TEXT__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS(FUSION_MAX_VECTOR_SIZE);
 
 /***************************************************************************/
 
+#define YAS__TEXT__GENERATE_EMPTY_SAVE_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTION_VARIADIC() \
+	template<> \
+	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
+		e_archive_type::json, e_direction::out, boost::fusion::vector<> > \
+	{ \
+		template<typename Archive> \
+		static void apply(Archive&, const boost::fusion::vector<>&) {} \
+	};
+
+#define YAS__TEXT__GENERATE_EMPTY_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTION_VARIADIC() \
+	template<> \
+	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
+		e_archive_type::json, e_direction::in, boost::fusion::vector<> > \
+	{ \
+		template<typename Archive> \
+		static void apply(Archive&, boost::fusion::vector<>&) {} \
+	};
+
+#define YAS__TEXT__GENERATE_SAVE_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTION_VARIADIC(unused, count, unused2) \
+	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
+	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
+		e_archive_type::json, e_direction::out, \
+		boost::fusion::vector<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
+	{ \
+		template<typename Archive> \
+		static void apply(Archive& ar, \
+			const boost::fusion::vector<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& vector) \
+		{ \
+			ar & YAS_PP_INC(count); \
+			YAS_PP_REPEAT( \
+				YAS_PP_INC(count), \
+				YAS__TEXT__WRITE_BOOST_FUSION_VECTOR_ITEM, \
+				T \
+			) \
+		} \
+	};
+
+#define YAS__TEXT__GENERATE_SAVE_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS_VARIADIC(count) \
+	YAS__TEXT__GENERATE_EMPTY_SAVE_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTION_VARIADIC(); \
+	YAS_PP_REPEAT( \
+		count, \
+		YAS__TEXT__GENERATE_SAVE_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTION_VARIADIC, \
+		~ \
+	)
+
+#define YAS__TEXT__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTION_VARIADIC(unused, count, unused2) \
+	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
+	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
+		e_archive_type::json, e_direction::in, \
+		boost::fusion::vector<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
+	{ \
+		template<typename Archive> \
+		static void apply(\
+			Archive& ar, \
+			boost::fusion::vector<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& vector) \
+		{ \
+			yas::int32_t size = 0; \
+			ar & size; \
+			if ( size != YAS_PP_INC(count) ) throw std::runtime_error("size error on deserialize fusion::vector"); \
+			YAS_PP_REPEAT( \
+				YAS_PP_INC(count), \
+				YAS__TEXT__READ_BOOST_FUSION_VECTOR_ITEM, \
+				T \
+			) \
+		} \
+	};
+
+#define YAS__TEXT__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS_VARIADIC(count) \
+	YAS__TEXT__GENERATE_EMPTY_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTION_VARIADIC(); \
+	YAS_PP_REPEAT( \
+		count, \
+		YAS__TEXT__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTION_VARIADIC, \
+		~ \
+	)
+
+/***************************************************************************/
+
+YAS__TEXT__GENERATE_SAVE_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS_VARIADIC(FUSION_MAX_VECTOR_SIZE);
+YAS__TEXT__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS_VARIADIC(FUSION_MAX_VECTOR_SIZE);
+
+/***************************************************************************/
+
+} // namespace detail
 } // namespace yas
 
 #endif // defined(YAS_SERIALIZE_BOOST_TYPES)
-#endif
 
 #endif // _yas__json__boost_fusion_vector_serializer_hpp__included_

@@ -57,17 +57,10 @@ struct serializer<
 > {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::forward_list<T>& list) {
-		ar & static_cast<yas::uint32_t>(std::distance(list.begin(), list.end()));
-		if ( detail::is_pod<T>::value ) {
-			typename std::forward_list<T>::const_iterator it = list.begin();
-			for ( ; it != list.end(); ++it ) {
-				ar.write(&(*it), sizeof(T));
-			}
-		} else {
-			typename std::forward_list<T>::const_iterator it = list.begin();
-			for ( ; it != list.end(); ++it ) {
-				ar & (*it);
-			}
+		ar & std::distance(list.begin(), list.end());
+		typename std::forward_list<T>::const_iterator it = list.begin();
+		for ( ; it != list.end(); ++it ) {
+			ar & (*it);
 		}
 	}
 };
@@ -85,16 +78,9 @@ struct serializer<
 		yas::uint32_t size = 0;
 		ar & size;
 		list.resize(size);
-		if ( detail::is_pod<T>::value ) {
-			typename std::forward_list<T>::iterator it = list.begin();
-			for ( ; it != list.end(); ++it ) {
-				ar.read(&(*it), sizeof(T));
-			}
-		} else {
-			typename std::forward_list<T>::iterator it = list.begin();
-			for ( ; it != list.end(); ++it ) {
-				ar & (*it);
-			}
+		typename std::forward_list<T>::iterator it = list.begin();
+		for ( ; it != list.end(); ++it ) {
+			ar & (*it);
 		}
 	}
 };

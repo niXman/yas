@@ -30,60 +30,94 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__json__std_bitset_serializer_hpp__included_
-#define _yas__json__std_bitset_serializer_hpp__included_
+#ifndef _yas__json__pod_serializer_hpp__included_
+#define _yas__json__pod_serializer_hpp__included_
 
-#include <stdexcept>
-
-#include <yas/detail/config/config.hpp>
-#include <yas/detail/mpl/type_traits.hpp>
 #include <yas/detail/properties.hpp>
 #include <yas/detail/selector.hpp>
-
-#include <bitset>
 
 namespace yas {
 namespace detail {
 
 /***************************************************************************/
 
-template<std::size_t N>
+template<typename T>
 struct serializer<
-	e_type_type::not_a_pod,
+	e_type_type::is_enum,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::json,
 	e_direction::out,
-	std::bitset<N>
->
-{
+	T
+> {
 	template<typename Archive>
-	static void apply(Archive& ar, const std::bitset<N>& bits) {
-		ar & static_cast<yas::uint32_t>(N);
-		for ( std::size_t idx = 0; idx < N; ++idx ) {
-			ar & (int)bits[idx];
-		}
+	static void apply(Archive& ar, const T& v) {
+		ar << reinterpret_cast<const yas::uint32_t&>(v) << ' ';
 	}
 };
 
-template<std::size_t N>
+template<typename T>
 struct serializer<
-	e_type_type::not_a_pod,
+	e_type_type::is_enum,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::json,
 	e_direction::in,
-	std::bitset<N>
->
-{
+	T
+> {
 	template<typename Archive>
-	static void apply(Archive& ar, std::bitset<N>& bits) {
-		yas::uint32_t size = 0;
-		ar & size;
-		if ( size != N ) throw std::runtime_error("bitsets size is not equal");
-		for ( std::size_t idx = 0; idx < N; ++idx ) {
-			int v;
-			ar & v;
-			bits[idx] = v;
-		}
+	static void apply(Archive& ar, T& v) {
+		(ar >> reinterpret_cast<yas::uint32_t&>(v)).get();
+	}
+};
+
+/***************************************************************************/
+
+template<typename T>
+struct serializer<
+	e_type_type::is_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::json,
+	e_direction::out,
+	T
+> {
+	template<
+		 typename Archive
+		,typename U
+	>
+	static void apply(Archive& ar, const U& v, typename enable_if<is_any_of<U, char, signed char> >::type* = 0) {
+		ar << v;
+	}
+
+	template<
+		 typename Archive
+		,typename U
+	>
+	static void apply(Archive& ar, const U& v, typename disable_if<is_any_of<U, char, signed char> >::type* = 0) {
+		ar << v << ' ';
+	}
+};
+
+template<typename T>
+struct serializer<
+	e_type_type::is_pod,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::json,
+	e_direction::in,
+	T
+> {
+	template<
+		 typename Archive
+		,typename U
+	>
+	static void apply(Archive& ar, U& v, typename enable_if<is_any_of<U, char, signed char> >::type* = 0) {
+		ar >> v;
+	}
+
+	template<
+		 typename Archive
+		,typename U
+	>
+	static void apply(Archive& ar, U& v, typename disable_if<is_any_of<U, char, signed char> >::type* = 0) {
+		(ar >> v).get();
 	}
 };
 
@@ -92,4 +126,4 @@ struct serializer<
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__json__std_bitset_serializer_hpp__included_
+#endif // _yas__json__pod_serializer_hpp__included_

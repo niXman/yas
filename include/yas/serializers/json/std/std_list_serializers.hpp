@@ -54,17 +54,10 @@ struct serializer<
 > {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::list<T>& list) {
-		ar & list.size();
-		if ( detail::is_pod<T>::value ) {
-			typename std::list<T>::const_iterator it = list.begin();
-			for ( ; it != list.end(); ++it ) {
-				ar.write((*it), sizeof(T));
-			}
-		} else {
-			typename std::list<T>::const_iterator it = list.begin();
-			for ( ; it != list.end(); ++it ) {
-				ar & (*it);
-			}
+		ar & static_cast<yas::uint32_t>(list.size());
+		typename std::list<T>::const_iterator it = list.begin();
+		for ( ; it != list.end(); ++it ) {
+			ar & (*it);
 		}
 	}
 };
@@ -78,20 +71,13 @@ struct serializer<
 	std::list<T>
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, const std::list<T>& list) {
-		std::size_t size = 0;
+	static void apply(Archive& ar, std::list<T>& list) {
+		yas::uint32_t size = 0;
 		ar & size;
 		list.resize(size);
-		if ( detail::is_pod<T>::value ) {
-			typename std::list<T>::iterator it = list.begin();
-			for ( ; it != list.end(); ++it ) {
-				ar.read((*it), sizeof(T));
-			}
-		} else {
-			typename std::list<T>::iterator it = list.begin();
-			for ( ; it != list.end(); ++it ) {
-				ar & (*it);
-			}
+		typename std::list<T>::iterator it = list.begin();
+		for ( ; it != list.end(); ++it ) {
+			ar & (*it);
 		}
 	}
 };

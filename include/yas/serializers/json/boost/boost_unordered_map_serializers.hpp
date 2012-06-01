@@ -50,17 +50,18 @@ namespace detail {
 template<typename K, typename V>
 struct serializer<
 	e_type_type::e_type_type::not_a_pod,
-	e_ser_method::has_split_functions,
+	e_ser_method::use_internal_serializer,
 	e_archive_type::json,
 	e_direction::out,
 	boost::unordered_map<K, V>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, const boost::unordered_map<K, V>& map) {
-		ar << map.size();
+		ar & map.size();
 		typename boost::unordered_map<K, V>::const_iterator it = map.begin();
 		for ( ; it != map.end(); ++it ) {
+			ar & it->first
+				& it->second;
 		}
 	}
 };
@@ -68,15 +69,22 @@ struct serializer<
 template<typename K, typename V>
 struct serializer<
 	e_type_type::e_type_type::not_a_pod,
-	e_ser_method::has_split_functions,
+	e_ser_method::use_internal_serializer,
 	e_archive_type::json,
 	e_direction::in,
 	boost::unordered_map<K, V>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, boost::unordered_map<K, V>& map) {
-
+		std::size_t size = 0;
+		ar & size;
+		K key = K();
+		V val = V();
+		for ( std::size_t idx = 0; idx < size; ++idx ) {
+			ar & key
+				& val;
+			map[key] = val;
+		}
 	}
 };
 

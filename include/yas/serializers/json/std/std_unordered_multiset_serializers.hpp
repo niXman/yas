@@ -33,6 +33,8 @@
 #ifndef _yas__json__std_unordered_multiset_serializer_hpp__included_
 #define _yas__json__std_unordered_multiset_serializer_hpp__included_
 
+#include <yas/detail/config/config.hpp>
+
 #if defined(YAS_HAS_STD_UNORDERED)
 #include <yas/detail/mpl/type_traits.hpp>
 #include <yas/detail/properties.hpp>
@@ -56,17 +58,10 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::unordered_multiset<K>& set) {
-		std::size_t size = set.size();
-		ar.write(&size, sizeof(size));
+		ar & set.size();
 		typename std::unordered_multiset<K>::const_iterator it = set.begin();
-		if ( is_pod<K>::value ) {
-			for ( ; it != set.end(); ++it ) {
-				ar.write(&*it, sizeof(K));
-			}
-		} else {
-			for ( ; it != set.end(); ++it ) {
-				ar & (*it);
-			}
+		for ( ; it != set.end(); ++it ) {
+			ar & (*it);
 		}
 	}
 };
@@ -84,19 +79,11 @@ struct serializer<
 	template<typename Archive>
 	static void apply(Archive& ar, std::unordered_multiset<K>& set) {
 		std::size_t size = 0;
-		ar.read(&size, sizeof(size));
-		if ( is_pod<K>::value ) {
-			K key;
-			for ( std::size_t idx = 0; idx < size; ++idx ) {
-				ar.read(&key, sizeof(K));
-				set.insert(key);
-			}
-		} else {
-			K key = K();
-			for ( std::size_t idx = 0; idx < size; ++idx ) {
-				ar & key;
-				set.insert(key);
-			}
+		ar & size;
+		K key = K();
+		for ( std::size_t idx = 0; idx < size; ++idx ) {
+			ar & key;
+			set.insert(key);
 		}
 	}
 };

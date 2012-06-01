@@ -47,20 +47,23 @@ namespace detail {
 template<typename T1, typename T2>
 struct serializer<
 	e_type_type::not_a_pod,
-	e_ser_method::has_split_functions,
+	e_ser_method::use_internal_serializer,
 	e_archive_type::json,
 	e_direction::out,
 	std::pair<T1, T2>
-> {
+>
+{
 	template<typename Archive>
 	static void apply(Archive& ar, const std::pair<T1, T2>& pair) {
+		ar & pair.first
+			& pair.second;
 	}
 };
 
 template<typename T1, typename T2>
 struct serializer<
 	e_type_type::not_a_pod,
-	e_ser_method::has_split_functions,
+	e_ser_method::use_internal_serializer,
 	e_archive_type::json,
 	e_direction::in,
 	std::pair<T1, T2>
@@ -68,6 +71,8 @@ struct serializer<
 {
 	template<typename Archive>
 	static void apply(Archive& ar, std::pair<T1, T2>& pair) {
+		ar & pair.first
+			& pair.second;
 	}
 };
 

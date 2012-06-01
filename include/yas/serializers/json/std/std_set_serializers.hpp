@@ -51,10 +51,14 @@ struct serializer<
 	e_archive_type::json,
 	e_direction::out,
 	std::set<K>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::set<K>& set) {
+		ar & static_cast<yas::uint32_t>(set.size());
+		typename std::set<K>::const_iterator it = set.begin();
+		for ( ; it != set.end(); ++it ) {
+			ar & (*it);
+		}
 	}
 };
 template<typename K>
@@ -64,10 +68,16 @@ struct serializer<
 	e_archive_type::json,
 	e_direction::in,
 	std::set<K>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, std::set<K>& set) {
+		yas::uint32_t size = 0;
+		ar & size;
+		K key = K();
+		for ( ; size; --size ) {
+			ar & key;
+			set.insert(key);
+		}
 	}
 };
 

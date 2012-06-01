@@ -54,12 +54,13 @@ struct serializer<
 	e_archive_type::json,
 	e_direction::out,
 	std::unordered_set<K>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::unordered_set<K>& set) {
-		if ( is_pod<K>::value ) {
-		} else {
+		ar & set.size();
+		typename std::unordered_set<K>::const_iterator it = set.begin();
+		for ( ; it != set.end(); ++it ) {
+			ar & (*it);
 		}
 	}
 };
@@ -72,12 +73,15 @@ struct serializer<
 	e_archive_type::json,
 	e_direction::in,
 	std::unordered_set<K>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, std::unordered_set<K>& set) {
-		if ( is_pod<K>::value ) {
-		} else {
+		yas::uint32_t size = 0;
+		ar & size;
+		K key = K();
+		for ( ; size; --size ) {
+			ar & key;
+			set.insert(key);
 		}
 	}
 };
