@@ -42,7 +42,7 @@ B& base_object(D& d) {
 
 template<typename B, typename D>
 const B& base_object(const D& d) {
-	return static_cast<B&>(d);
+	return static_cast<const B&>(d);
 }
 
 } // namespace yas
