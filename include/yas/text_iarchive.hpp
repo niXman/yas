@@ -39,6 +39,7 @@
 
 #include <yas/detail/selector.hpp>
 #include <yas/detail/memstream.hpp>
+#include <yas/detail/base_object.hpp>
 
 #include <yas/serializers/text/utility/pod_serializers.hpp>
 #include <yas/serializers/text/utility/usertype_serializers.hpp>
