@@ -92,9 +92,15 @@ Planned the support for the following serializable types:
  - qvector2d
  - qvector3d
  - qvector4d
+ - yas::intrusive_buffer [1] (only serialization)
+ - yas::shared_buffer [2]
 
 Currently supports all types except Qt types.
 
 ===
 If you use YAS in your project - tell to the author with the short description of the reasons and advantages in comparison with other libraries of serialization! ;)
 Thanks!
+
+===
+[1] https://github.com/niXman/yas/blob/master/include/yas/detail/tools/buffer.hpp#L50
+[2] https://github.com/niXman/yas/blob/master/include/yas/detail/tools/buffer.hpp#L72
