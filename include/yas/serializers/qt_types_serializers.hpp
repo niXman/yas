@@ -33,44 +33,153 @@
 #ifndef _yas__qt_types_serializers_hpp__included_
 #define _yas__qt_types_serializers_hpp__included_
 
+#include <yas/detail/config/config.hpp>
+
 #if defined(YAS_SERIALIZE_QT_TYPES)
 
-#include <yas/serializers/qt/qt_qbitarray_serializers.hpp>
-#include <yas/serializers/qt/qt_qbytearray_serializers.hpp>
-#include <yas/serializers/qt/qt_qchar_serializers.hpp>
-#include <yas/serializers/qt/qt_qcolor_serializers.hpp>
-#include <yas/serializers/qt/qt_qdate_serializers.hpp>
-#include <yas/serializers/qt/qt_qdatetime_serializers.hpp>
-#include <yas/serializers/qt/qt_qhash_serializers.hpp>
-#include <yas/serializers/qt/qt_qlist_serializers.hpp>
-#include <yas/serializers/qt/qt_qmap_serializers.hpp>
-#include <yas/serializers/qt/qt_qmultihash_serializers.hpp>
-#include <yas/serializers/qt/qt_qmultimap_serializers.hpp>
-#include <yas/serializers/qt/qt_qpoint_serializers.hpp>
-#include <yas/serializers/qt/qt_qpointf_serializers.hpp>
-#include <yas/serializers/qt/qt_qpolygon_serializers.hpp>
-#include <yas/serializers/qt/qt_qpolygonf_serializers.hpp>
-#include <yas/serializers/qt/qt_qqueue_serializers.hpp>
-#include <yas/serializers/qt/qt_qrect_serializers.hpp>
-#include <yas/serializers/qt/qt_qrectf_serializers.hpp>
-#include <yas/serializers/qt/qt_qregion_serializers.hpp>
-#include <yas/serializers/qt/qt_qset_serializers.hpp>
-#include <yas/serializers/qt/qt_qsize_serializers.hpp>
-#include <yas/serializers/qt/qt_qsizef_serializers.hpp>
-#include <yas/serializers/qt/qt_qstack_serializers.hpp>
-#include <yas/serializers/qt/qt_qstring_serializers.hpp>
-#include <yas/serializers/qt/qt_qstringlist_serializers.hpp>
-#include <yas/serializers/qt/qt_qtime_serializers.hpp>
-#include <yas/serializers/qt/qt_qurl_serializers.hpp>
-#include <yas/serializers/qt/qt_quuid_serializers.hpp>
-#include <yas/serializers/qt/qt_qvariant_serializers.hpp>
-#include <yas/serializers/qt/qt_qvarianthash_serializers.hpp>
-#include <yas/serializers/qt/qt_qvariantlist_serializers.hpp>
-#include <yas/serializers/qt/qt_qvariantmap_serializers.hpp>
-#include <yas/serializers/qt/qt_qvector2d_serializers.hpp>
-#include <yas/serializers/qt/qt_qvector3d_serializers.hpp>
-#include <yas/serializers/qt/qt_qvector4d_serializers.hpp>
-#include <yas/serializers/qt/qt_qvector_serializers.hpp>
+#include <yas/serializers/binary/qt/qt_qbitarray_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qbitarray_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qbitarray_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qbytearray_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qbytearray_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qbytearray_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qchar_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qchar_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qchar_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qcolor_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qcolor_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qcolor_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qdate_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qdate_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qdate_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qdatetime_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qdatetime_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qdatetime_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qhash_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qhash_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qhash_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qlist_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qlist_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qlist_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qmap_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qmap_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qmap_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qmultihash_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qmultihash_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qmultihash_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qmultimap_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qmultimap_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qmultimap_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qpoint_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qpoint_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qpoint_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qpointf_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qpointf_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qpointf_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qpolygon_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qpolygon_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qpolygon_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qpolygonf_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qpolygonf_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qpolygonf_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qqueue_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qqueue_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qqueue_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qrect_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qrect_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qrect_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qrectf_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qrectf_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qrectf_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qregion_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qregion_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qregion_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qset_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qset_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qset_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qsize_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qsize_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qsize_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qsizef_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qsizef_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qsizef_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qstack_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qstack_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qstack_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qstring_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qstring_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qstring_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qstringlist_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qstringlist_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qstringlist_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qtime_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qtime_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qtime_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qurl_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qurl_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qurl_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_quuid_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_quuid_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_quuid_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qvariant_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qvariant_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qvariant_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qvarianthash_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qvarianthash_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qvarianthash_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qvariantlist_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qvariantlist_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qvariantlist_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qvariantmap_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qvariantmap_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qvariantmap_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qvector2d_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qvector2d_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qvector2d_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qvector3d_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qvector3d_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qvector3d_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qvector4d_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qvector4d_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qvector4d_serializers.hpp.hpp>
+
+#include <yas/serializers/binary/qt/qt_qvector_serializers.hpp.hpp>
+#include <yas/serializers/text/qt/qt_qvector_serializers.hpp.hpp>
+#include <yas/serializers/json/qt/qt_qvector_serializers.hpp.hpp>
 
 #endif // defined(YAS_SERIALIZE_QT_TYPES)
 
