@@ -26,20 +26,6 @@
 #include <yas/serializers/qt_types_serializers.hpp>
 #endif
 
-#if 0
-namespace ns {
-enum enum1 {e11, e12};
-}
-
-template<ns::enum1>
-struct type;
-
-template<>
-struct type<ns::e11> {};
-template<>
-struct type<ns::e12> {};
-#endif
-
 #include "include/array.hpp"
 #include "include/auto_array.hpp"
 #include "include/bitset.hpp"
