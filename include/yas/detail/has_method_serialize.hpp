@@ -86,11 +86,11 @@ public:
 
 /***************************************************************************/
 
-template<bool POD, typename Object, typename Sig>
+template<bool is_pod, bool is_enum, typename Object, typename Sig>
 struct has_method_serializer: false_ {};
 
 template<typename Object, typename Sig>
-struct has_method_serializer<false, Object, Sig> {
+struct has_method_serializer<false, false, Object, Sig> {
 private:
 	class yes {};
 	class no { yes m[2]; };
@@ -160,11 +160,11 @@ public:
 
 /***************************************************************************/
 
-template<bool POD, typename Object, typename Sig>
+template<bool is_pod, bool is_enum, typename Object, typename Sig>
 struct has_const_method_serializer: false_ {};
 
 template<typename Object, typename Sig>
-struct has_const_method_serializer<false, Object, Sig> {
+struct has_const_method_serializer<false, false, Object, Sig> {
 private:
 	class yes {};
 	class no { yes m[2]; };

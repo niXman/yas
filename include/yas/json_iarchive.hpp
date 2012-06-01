@@ -47,7 +47,6 @@
 
 #include <yas/detail/tools/buffer.hpp>
 #include <yas/detail/tools/noncopyable.hpp>
-#include <yas/detail/tools/enum_cast.hpp>
 
 namespace yas {
 

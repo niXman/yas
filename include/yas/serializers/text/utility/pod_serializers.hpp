@@ -43,6 +43,36 @@ namespace detail {
 
 template<typename T>
 struct serializer<
+	e_type_type::is_enum,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::text,
+	e_direction::out,
+	T
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, const T& v) {
+		ar << reinterpret_cast<const yas::uint32_t&>(v) << ' ';
+	}
+};
+
+template<typename T>
+struct serializer<
+	e_type_type::is_enum,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::text,
+	e_direction::in,
+	T
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, T& v) {
+		(ar >> reinterpret_cast<yas::uint32_t&>(v)).get();
+	}
+};
+
+/***************************************************************************/
+
+template<typename T>
+struct serializer<
 	e_type_type::is_pod,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::text,

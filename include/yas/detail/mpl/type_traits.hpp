@@ -66,23 +66,14 @@ struct is_const: false_ {};
 template<typename T>
 struct is_const<T const>: true_ {};
 
-/***************************************************************************/
-
 template<typename T>
 struct is_void: false_ {};
-
-template<typename T>
-struct is_pod: false_ {};
-
-/***************************************************************************/
 
 template<typename T0, typename T1>
 struct is_same: false_ {};
 
 template<typename T0>
 struct is_same<T0, T0>: true_ {};
-
-/***************************************************************************/
 
 template<typename T>
 struct is_array: false_ {};
@@ -138,14 +129,6 @@ struct remove_all_extents<T const volatile[]>
 
 /***************************************************************************/
 
-template<typename T>
-struct is_array_of_pods: bool_<
-	is_array<T>::value && is_pod<typename remove_all_extents<T>::type>::value
->
-{};
-
-/***************************************************************************/
-
 template<typename T, typename A1, typename A2, typename A3 = void, typename A4 = void>
 struct is_any_of: bool_
 <
@@ -180,6 +163,9 @@ struct is_any_of: bool_
 
 /***************************************************************************/
 
+template<typename T>
+struct is_pod: false_ {};
+
 YAS_WRITE_POD_SPECIALIZATIONS(
 	((is_void,void))
 	((is_pod, char))
@@ -198,6 +184,20 @@ YAS_WRITE_POD_SPECIALIZATIONS(
 	((is_pod, double))
 	((is_pod, float))
 );
+
+/***************************************************************************/
+
+template<typename T>
+struct is_array_of_pods: bool_<
+	is_array<T>::value && is_pod<typename remove_all_extents<T>::type>::value
+>
+{};
+
+/***************************************************************************/
+
+template<typename T>
+struct is_enum: bool_<__is_enum(T)>
+{};
 
 /***************************************************************************/
 

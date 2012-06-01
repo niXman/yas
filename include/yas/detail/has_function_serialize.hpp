@@ -51,13 +51,13 @@ struct msvc_type_deduct {
 
 #endif // #if defined(_MSC_VER)
 
-template<bool is_pod, typename T, typename T2>
+template<bool is_pod, bool is_enum, typename T, typename T2>
 struct has_function_const_serialize {
 	static const bool value = false;
 };
 
 template<typename T, typename T2>
-struct has_function_const_serialize<false, T, T2> {
+struct has_function_const_serialize<false, false, T, T2> {
 	typedef char (&yes) [1];
 	typedef char (&no)  [2];
 
@@ -91,13 +91,13 @@ struct has_function_const_serialize<false, T, T2> {
 
 /***************************************************************************/
 
-template<bool is_pod, typename T, typename T2>
+template<bool is_pod, bool is_enum, typename T, typename T2>
 struct has_function_serialize {
 	static const bool value = false;
 };
 
 template<typename T, typename T2>
-struct has_function_serialize<false, T, T2> {
+struct has_function_serialize<false, false, T, T2> {
 	typedef char (&yes) [1];
 	typedef char (&no)  [2];
 

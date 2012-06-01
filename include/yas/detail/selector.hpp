@@ -47,7 +47,8 @@ namespace detail {
 
 struct e_type_type {
 	enum type {
-		 is_pod
+		 is_enum
+		,is_pod
 		,is_array
 		,is_array_of_pods
 		,not_a_pod
@@ -79,28 +80,30 @@ template<
 template<typename T>
 struct type_propertyes {
 	static const e_type_type::type value =
-	is_pod<T>::value
-	? e_type_type::is_pod
-	: is_array_of_pods<T>::value
-		? e_type_type::is_array_of_pods
-		: is_array<T>::value
-			? e_type_type::is_array
-			: e_type_type::not_a_pod
+		is_enum<T>::value
+		? e_type_type::is_enum
+		: is_pod<T>::value
+			? e_type_type::is_pod
+			: is_array_of_pods<T>::value
+				? e_type_type::is_array_of_pods
+				: is_array<T>::value
+					? e_type_type::is_array
+					: e_type_type::not_a_pod
 	;
 };
 
 template<typename T, typename Ar>
 struct serialization_method {
 	static const e_ser_method::type value =
-	has_const_method_serializer<or_<is_pod<T>, is_array<T> >::value,T,void(Ar)>::value
-	? e_ser_method::has_split_methods
-	: has_method_serializer<or_<is_pod<T>, is_array<T> >::value,T,void(Ar)>::value
-		? e_ser_method::has_one_method
-		: has_function_const_serialize<or_<is_pod<T>, is_array<T> >::value, Ar, T>::value
-			? e_ser_method::has_split_functions
-			: has_function_serialize<or_<is_pod<T>, is_array<T> >::value, Ar, T>::value
-				? e_ser_method::has_one_function
-				: e_ser_method::use_internal_serializer
+		has_const_method_serializer<or_<is_pod<T>, is_array<T> >::value, is_enum<T>::value,T,void(Ar)>::value
+		? e_ser_method::has_split_methods
+		: has_method_serializer<or_<is_pod<T>, is_array<T> >::value, is_enum<T>::value,T,void(Ar)>::value
+			? e_ser_method::has_one_method
+			: has_function_const_serialize<or_<is_pod<T>, is_array<T> >::value, is_enum<T>::value, Ar, T>::value
+				? e_ser_method::has_split_functions
+				: has_function_serialize<or_<is_pod<T>, is_array<T> >::value, is_enum<T>::value, Ar, T>::value
+					? e_ser_method::has_one_function
+					: e_ser_method::use_internal_serializer
 	;
 };
 

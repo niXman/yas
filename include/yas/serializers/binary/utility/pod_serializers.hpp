@@ -43,13 +43,42 @@ namespace detail {
 
 template<typename T>
 struct serializer<
+	e_type_type::e_type_type::is_enum,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::binary,
+	e_direction::out,
+	T
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, const T& v) {
+		ar.sputn(reinterpret_cast<const typename Archive::char_type*>(&v), sizeof(T));
+	}
+};
+
+template<typename T>
+struct serializer<
+	e_type_type::e_type_type::is_enum,
+	e_ser_method::use_internal_serializer,
+	e_archive_type::binary,
+	e_direction::in,
+	T
+> {
+	template<typename Archive>
+	static void apply(Archive& ar, T& v) {
+		ar.sgetn(reinterpret_cast<typename Archive::char_type*>(&v), sizeof(T));
+	}
+};
+
+/***************************************************************************/
+
+template<typename T>
+struct serializer<
 	e_type_type::e_type_type::is_pod,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::binary,
 	e_direction::out,
 	T
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, const T& v) {
 		ar.sputn(reinterpret_cast<const typename Archive::char_type*>(&v), sizeof(T));
@@ -63,8 +92,7 @@ struct serializer<
 	e_archive_type::binary,
 	e_direction::in,
 	T
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, T& v) {
 		ar.sgetn(reinterpret_cast<typename Archive::char_type*>(&v), sizeof(T));

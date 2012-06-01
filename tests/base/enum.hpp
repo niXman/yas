@@ -42,14 +42,14 @@ enum class enum_test_enum2: char { _2_1, _2_2, _2_3, _2_4 };
 template<typename OA, typename IA>
 bool enum_test() {
 	OA oa1;
-	oa1 & yas::enum_cast_to<int>(_1_2)
-		 & yas::enum_cast_to<int>(_1_4);
+	oa1 & _1_2
+		 & _1_4;
 
 	enum_test_enum1 e11, e12;
 	IA ia1(oa1.get_intrusive_buffer());
-	ia1 & yas::enum_cast_from<int>(e11)
-		 & yas::enum_cast_from<int>(e12);
 
+	ia1 & e11
+		 & e12;
 	if ( e11 != _1_2 || e12 != _1_4 ) {
 		std::cout << "ENUM deserialization error! [1]" << std::endl;
 		return false;
@@ -58,13 +58,13 @@ bool enum_test() {
 #if defined(YAS_HAS_ENUM_CLASS)
 
 	OA oa2;
-	oa2 & yas::enum_cast_to<unsigned char>(enum_test_enum2::_2_1)
-		 & yas::enum_cast_to<unsigned char>(enum_test_enum2::_2_3);
+	oa2 & enum_test_enum2::_2_1
+		 & enum_test_enum2::_2_3;
 
 	enum_test_enum2 e21, e22;
 	IA ia2(oa2.get_intrusive_buffer());
-	ia2 & yas::enum_cast_from<unsigned char>(e21)
-		 & yas::enum_cast_from<unsigned char>(e22);
+	ia2 & e21
+		 & e22;
 
 	if ( e21 != enum_test_enum2::_2_1 || e22 != enum_test_enum2::_2_3 ) {
 		std::cout << "ENUM deserialization error! [2]" << std::endl;

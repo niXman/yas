@@ -251,5 +251,4 @@ HEADERS += \
 	 ../../include/yas/detail/tools/static_assert.hpp \
 	 ../../include/yas/detail/tools/noncopyable.hpp \
 	 ../../include/yas/detail/tools/hexdumper.hpp \
-	 ../../include/yas/detail/tools/enum_cast.hpp \
 	 ../../include/yas/detail/tools/buffer.hpp
