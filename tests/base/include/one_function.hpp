@@ -51,7 +51,7 @@ void serialize(Archive& ar, _binary_type_with_one_serializer& t) {
 	_binary_type_with_one_serializer_flag = true;
 }
 
-} // 
+} // namespace yas
 
 template<typename OA, typename IA>
 bool one_function_serializer_test() {
@@ -61,7 +61,7 @@ bool one_function_serializer_test() {
 	oa & type;
 
 	if ( !_binary_type_with_one_serializer_flag ) {
-		std::cout << "free function serialize() is not called!" << std::endl;
+		std::cout << "free function serialize() is not called! [1]" << std::endl;
 		return false;
 	}
 
@@ -71,7 +71,7 @@ bool one_function_serializer_test() {
 	ia & type2;
 
 	if ( !_binary_type_with_one_serializer_flag ) {
-		std::cout << "free function serialize() is not called!" << std::endl;
+		std::cout << "free function serialize() is not called! [2]" << std::endl;
 		return false;
 	}
 

@@ -59,7 +59,7 @@ void serialize(Archive& ar, _binary_type_for_split_function_serializers& t) {
 	_binary_type_for_split_function_serializers_load_flag = true;
 }
 
-} //
+} // namespace yas
 
 template<typename OA, typename IA>
 bool split_functions_serializer_test() {
@@ -70,7 +70,7 @@ bool split_functions_serializer_test() {
 	oa & t1;
 
 	if ( !_binary_type_for_split_function_serializers_save_flag ) {
-		std::cout << "free function serialize() for save is not called!" << std::endl;
+		std::cout << "free function serialize() for save is not called! [1]" << std::endl;
 		return false;
 	}
 
@@ -78,7 +78,7 @@ bool split_functions_serializer_test() {
 	ia & t2;
 
 	if ( !_binary_type_for_split_function_serializers_load_flag ) {
-		std::cout << "free function serialize() for load is not called!" << std::endl;
+		std::cout << "free function serialize() for load is not called! [2]" << std::endl;
 		return false;
 	}
 
