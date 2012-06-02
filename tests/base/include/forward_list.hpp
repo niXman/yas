@@ -37,7 +37,14 @@
 
 template<typename OA, typename IA>
 bool forward_list_test() {
-	std::forward_list<int> ilist1 = {1,1,3,4,56,67,5,3,2,3}, ilist2;
+	std::forward_list<int> ilist1, ilist2;
+	ilist1.push_front(1);
+	ilist1.push_front(2);
+	ilist1.push_front(4);
+	ilist1.push_front(6);
+	ilist1.push_front(23);
+	ilist1.push_front(8);
+
 	OA oa1;
 	oa1 & ilist1;
 
@@ -49,7 +56,13 @@ bool forward_list_test() {
 		return false;
 	}
 
-	std::forward_list<std::string> slist1 = {"23", "56", "22", "76", "17"}, slist2;
+	std::forward_list<std::string> slist1, slist2;
+	slist1.push_front("23");
+	slist1.push_front("56");
+	slist1.push_front("22");
+	slist1.push_front("76");
+	slist1.push_front("17");
+
 	OA oa2;
 	oa2 & slist1;
 

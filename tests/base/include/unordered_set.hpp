@@ -38,9 +38,17 @@
 template<typename OA, typename IA>
 bool unordered_set_test() {
 #if defined(YAS_HAS_STD_UNORDERED)
-	std::unordered_set<int> set1 = {
-		0,1,2,3,4,5,6,7,8,9
-	}, set2;
+	std::unordered_set<int> set1, set2;
+	set1.insert(0);
+	set1.insert(1);
+	set1.insert(2);
+	set1.insert(3);
+	set1.insert(4);
+	set1.insert(5);
+	set1.insert(6);
+	set1.insert(7);
+	set1.insert(8);
+	set1.insert(9);
 
 	OA oa;
 	oa & set1;
@@ -53,11 +61,12 @@ bool unordered_set_test() {
 		return false;
 	}
 
-	std::unordered_set<std::string> set3 = {
-		"0",
-		"1",
-		"2"
-	}, set4;
+	std::unordered_set<std::string> set3, set4;
+	set3.insert("1");
+	set3.insert("2");
+	set3.insert("3");
+	set3.insert("4");
+	set3.insert("5");
 
 	OA oa2;
 	oa2 & set3;

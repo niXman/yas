@@ -52,22 +52,8 @@ struct has_function_const_serialize<false, false, T, T2> {
 	typedef char (&yes) [1];
 	typedef char (&no)  [2];
 
-#if defined(YAS_TYPE_OF)
-
 	template<typename U, typename U2>
-	static yes check(YAS_TYPE_OF(serialize((*(U*)0),(*(const U2*)0)))*);
-
-#elif defined(_MSC_VER)
-
-   template <typename F, F f>
-   class Helper{};
-
-   template<typename U, typename U2>
-   static yes check(Helper<void(*)(U&, const U2&), &serialize> *);
-
-#else
-#  error "Please configure!"
-#endif // defined(YAS_TYPE_OF)
+	static yes check(YAS_DECLTYPE(serialize((*(U*)0),(*(const U2*)0)))*);
 
 	template<typename U, typename U2>
 	static no check(...);
@@ -87,22 +73,8 @@ struct has_function_serialize<false, false, T, T2> {
 	typedef char (&yes) [1];
 	typedef char (&no)  [2];
 
-#if defined(YAS_TYPE_OF)
-
 	template<typename U, typename U2>
-	static yes check(YAS_TYPE_OF(serialize((*(U*)0),(*(U2*)0)))*);
-
-#elif defined(_MSC_VER)
-
-   template <typename F, F f>
-   class Helper{};
-
-   template<typename U, typename U2>
-   static yes check(Helper<void(*)(U&, U2&), &serialize> *);
-
-#else
-#  error "Please configure!"
-#endif // defined(YAS_TYPE_OF)
+	static yes check(YAS_DECLTYPE(serialize((*(U*)0),(*(U2*)0)))*);
 
 	template<typename U, typename U2>
 	static no check(...);

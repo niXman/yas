@@ -35,16 +35,23 @@
 
 /***************************************************************************/
 
-#if (defined(_MSC_VER) && _MSC_VER >= 1700) || __cplusplus == 201103L
+#if (defined(_MSC_VER) && _MSC_VER >= 1600)
 #  define YAS_HAS_STD_FORWARD_LIST 1
 #  define YAS_HAS_STD_UNORDERED 1
 #  define YAS_HAS_STD_ARRAY 1
 #  define YAS_HAS_STD_TUPLE 1
 #  define YAS_HAS_DECLTYPE 1
 #  define YAS_HAS_STATIC_ASSERT 1
-#  define YAS_HAS_ENUM_CLASS 1
 #	define YAS_SHARED_BUFFER_USE_STD_SHARED_PTR 1
-#	define YAS_TYPE_OF(T) decltype(T)
+#	define YAS_DECLTYPE(T) decltype(T)
+#endif
+
+#if (defined(_MSC_VER) && _MSC_VER >= 1700)
+#  define YAS_HAS_ENUM_CLASS 1
+#endif
+
+#ifndef YAS_HAS_DECLTYPE
+#  error "Please configure!"
 #endif
 
 #ifdef YAS_SERIALIZE_BOOST_TYPES

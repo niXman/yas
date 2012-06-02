@@ -72,7 +72,7 @@ namespace detail {
 
 #define YAS__BINARY__GENERATE_EMPTY_SAVE_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC() \
 	template<> \
-	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
+	struct serializer<e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
 		e_archive_type::binary,e_direction::out,std::tuple<> \
 	> { \
 		template<typename Archive> \
@@ -81,7 +81,7 @@ namespace detail {
 
 #define YAS__BINARY__GENERATE_EMPTY_LOAD_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC() \
 	template<> \
-	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
+	struct serializer<e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
 		e_archive_type::binary,e_direction::in,std::tuple<> \
 	> { \
 		template<typename Archive> \
@@ -90,7 +90,7 @@ namespace detail {
 
 #define YAS__BINARY__GENERATE_SAVE_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC(unused, count, text) \
 	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
-	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
+	struct serializer<e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
 		e_archive_type::binary,e_direction::out, \
 		std::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> \
 	> { \
@@ -115,7 +115,7 @@ namespace detail {
 
 #define YAS__BINARY__GENERATE_LOAD_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC(unused, count, text) \
 	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
-	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
+	struct serializer<e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
 		e_archive_type::binary,e_direction::in, \
 		std::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> \
 	> { \

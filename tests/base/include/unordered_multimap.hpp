@@ -39,11 +39,12 @@ template<typename OA, typename IA>
 bool unordered_multimap_test() {
 #if defined(YAS_HAS_STD_UNORDERED)
 	OA oa;
-	std::unordered_multimap<int, int> pod_map = {
-		{1, 2},
-		{2, 3},
-		{2, 4}
-	}, pod_map2;
+	std::unordered_multimap<int, int> pod_map, pod_map2;
+	pod_map.insert(std::make_pair(1, 2));
+	pod_map.insert(std::make_pair(1, 2));
+	pod_map.insert(std::make_pair(3, 2));
+	pod_map.insert(std::make_pair(1, 5));
+	pod_map.insert(std::make_pair(3, 5));
 
 	oa & pod_map;
 
@@ -55,11 +56,11 @@ bool unordered_multimap_test() {
 		return false;
 	}
 
-	std::unordered_multimap<int, std::string> map = {
-		{1, "1"},
-		{2, "2"},
-		{2, "3"}
-	}, map2;
+	std::unordered_multimap<int, std::string> map, map2;
+	map.insert(std::make_pair(1, "1"));
+	map.insert(std::make_pair(2, "2"));
+	map.insert(std::make_pair(3, "3"));
+	map.insert(std::make_pair(4, "4"));
 
 	OA oa2;
 	oa2 & map;
@@ -72,11 +73,11 @@ bool unordered_multimap_test() {
 		return false;
 	}
 
-	std::unordered_multimap<std::string, int> map3 = {
-		{"1", 1},
-		{"2", 2},
-		{"3", 3}
-	}, map4;
+	std::unordered_multimap<std::string, int> map3, map4;
+	map.insert(std::make_pair("1", 1));
+	map.insert(std::make_pair("2", 2));
+	map.insert(std::make_pair("3", 3));
+	map.insert(std::make_pair("4", 4));
 
 	OA oa3;
 	oa3 & map3;

@@ -50,13 +50,12 @@ namespace detail {
 
 template<typename K, typename V>
 struct serializer<
-	e_type_type::e_type_type::not_a_pod,
+	e_type_type::not_a_pod,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::json,
 	e_direction::out,
 	std::unordered_map<K, V>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::unordered_map<K, V>& map) {
 		ar & map.size();
@@ -70,13 +69,12 @@ struct serializer<
 
 template<typename K, typename V>
 struct serializer<
-	e_type_type::e_type_type::not_a_pod,
+	e_type_type::not_a_pod,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::json,
 	e_direction::in,
 	std::unordered_map<K, V>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, std::unordered_map<K, V>& map) {
 		yas::uint32_t size = 0;

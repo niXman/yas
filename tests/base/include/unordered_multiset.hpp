@@ -38,9 +38,13 @@
 template<typename OA, typename IA>
 bool unordered_multiset_test() {
 #if defined(YAS_HAS_STD_UNORDERED)
-	std::unordered_multiset<int> set1 = {
-		0,0,2,3,4,4,6,7,8,9
-	}, set2;
+	std::unordered_multiset<int> set1, set2;
+	set1.insert(0);
+	set1.insert(1);
+	set1.insert(2);
+	set1.insert(3);
+	set1.insert(4);
+	set1.insert(5);
 
 	OA oa;
 	oa & set1;
@@ -53,11 +57,13 @@ bool unordered_multiset_test() {
 		return false;
 	}
 
-	std::unordered_multiset<std::string> set3 = {
-		"0",
-		"1",
-		"1"
-	}, set4;
+	std::unordered_multiset<std::string> set3, set4;
+	set3.insert("0");
+	set3.insert("1");
+	set3.insert("2");
+	set3.insert("3");
+	set3.insert("4");
+	set3.insert("5");
 
 	OA oa2;
 	oa2 & set3;

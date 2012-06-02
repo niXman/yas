@@ -49,13 +49,12 @@ namespace detail {
 
 template<typename K>
 struct serializer<
-	e_type_type::e_type_type::not_a_pod,
+	e_type_type::not_a_pod,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::text,
 	e_direction::out,
 	std::unordered_multiset<K>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::unordered_multiset<K>& set) {
 		ar & set.size();
@@ -69,13 +68,12 @@ struct serializer<
 
 template<typename K>
 struct serializer<
-	e_type_type::e_type_type::not_a_pod,
+	e_type_type::not_a_pod,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::text,
 	e_direction::in,
 	std::unordered_multiset<K>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, std::unordered_multiset<K>& set) {
 		std::size_t size = 0;

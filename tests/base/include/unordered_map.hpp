@@ -39,11 +39,10 @@ template<typename OA, typename IA>
 bool unordered_map_test() {
 #if defined(YAS_HAS_STD_UNORDERED)
 	OA oa;
-	std::unordered_map<int, int> pod_map = {
-		{1, 2},
-		{2, 3},
-		{3, 4}
-	}, pod_map2;
+	std::unordered_map<int, int> pod_map, pod_map2;
+	pod_map[1] = 2;
+	pod_map[2] = 3;
+	pod_map[3] = 4;
 
 	oa & pod_map;
 
@@ -55,11 +54,10 @@ bool unordered_map_test() {
 		return false;
 	}
 
-	std::unordered_map<int, std::string> map = {
-		{1, "1"},
-		{2, "2"},
-		{3, "3"}
-	}, map2;
+	std::unordered_map<int, std::string> map, map2;
+	map[1] = "1";
+	map[2] = "2";
+	map[3] = "3";
 
 	OA oa2;
 	oa2 & map;
@@ -72,11 +70,10 @@ bool unordered_map_test() {
 		return false;
 	}
 
-	std::unordered_map<std::string, int> map3 = {
-		{"1", 1},
-		{"2", 2},
-		{"3", 3}
-	}, map4;
+	std::unordered_map<std::string, int> map3, map4;
+	map3["1"] = 1;
+	map3["2"] = 2;
+	map3["3"] = 3;
 
 	OA oa3;
 	oa3 & map3;
