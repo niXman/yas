@@ -61,7 +61,7 @@ struct serializer<
 		typename std::unordered_set<K>::const_iterator it = set.begin();
 		if ( is_pod<K>::value ) {
 			for ( ; it != set.end(); ++it ) {
-				ar.write(&*it, sizeof(K));
+				ar.write(&(*it), sizeof(K));
 			}
 		} else {
 			for ( ; it != set.end(); ++it ) {
@@ -70,7 +70,6 @@ struct serializer<
 		}
 	}
 };
-
 
 template<typename K>
 struct serializer<
@@ -85,7 +84,7 @@ struct serializer<
 		yas::uint32_t size = 0;
 		ar & size;
 		if ( is_pod<K>::value ) {
-			K key;
+			K key = K();
 			for ( ; size; --size ) {
 				ar.read(&key, sizeof(K));
 				set.insert(key);

@@ -52,7 +52,7 @@ bool unordered_multiset_test() {
 	IA ia(oa.get_intrusive_buffer());
 	ia & set2;
 
-	if ( set1.size() != 10 || set2.size() != 10 || set1 != set2 ) {
+	if ( set1.size() != 6 || set2.size() != 6 || set1 != set2 ) {
 		std::cout << "UNORDERED_MULTISET deserialization error! [1]" << std::endl;
 		return false;
 	}
@@ -71,7 +71,7 @@ bool unordered_multiset_test() {
 	IA ia2(oa2.get_intrusive_buffer());
 	ia2 & set4;
 
-	if ( set3.size() != 3 || set4.size() != 3 || set3 != set4 ) {
+	if ( set3.size() != 6 || set4.size() != 6 || set3 != set4 ) {
 		std::cout << "UNORDERED_MULTISET deserialization error! [2]" << std::endl;
 		return false;
 	}

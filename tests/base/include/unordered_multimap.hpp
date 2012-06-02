@@ -57,10 +57,11 @@ bool unordered_multimap_test() {
 	}
 
 	std::unordered_multimap<int, std::string> map, map2;
-	map.insert(std::make_pair(1, "1"));
-	map.insert(std::make_pair(2, "2"));
-	map.insert(std::make_pair(3, "3"));
-	map.insert(std::make_pair(4, "4"));
+	map.insert(std::make_pair(1, std::string("1")));
+	map.insert(std::make_pair(2, std::string("2")));
+	map.insert(std::make_pair(3, std::string("3")));
+	map.insert(std::make_pair(4, std::string("4")));
+	map.insert(std::make_pair(5, std::string("5")));
 
 	OA oa2;
 	oa2 & map;
@@ -74,10 +75,11 @@ bool unordered_multimap_test() {
 	}
 
 	std::unordered_multimap<std::string, int> map3, map4;
-	map.insert(std::make_pair("1", 1));
-	map.insert(std::make_pair("2", 2));
-	map.insert(std::make_pair("3", 3));
-	map.insert(std::make_pair("4", 4));
+	map3.insert(std::make_pair(std::string("1"), 1));
+	map3.insert(std::make_pair(std::string("2"), 2));
+	map3.insert(std::make_pair(std::string("3"), 3));
+	map3.insert(std::make_pair(std::string("4"), 4));
+	map3.insert(std::make_pair(std::string("5"), 5));
 
 	OA oa3;
 	oa3 & map3;

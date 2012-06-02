@@ -172,6 +172,7 @@ YAS_WRITE_POD_SPECIALIZATIONS(
 	((is_pod, wchar_t))
 	((is_pod, signed char))
 	((is_pod, unsigned char))
+	((is_pod, bool))
 	((is_pod, short))
 	((is_pod, unsigned short))
 	((is_pod, int))

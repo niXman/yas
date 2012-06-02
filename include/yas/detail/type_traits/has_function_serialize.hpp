@@ -35,12 +35,24 @@
 
 #include <yas/detail/config/config.hpp>
 
+#if defined(_MSC_VER)
+
+extern void serialize(int&);
+
+#endif
+
 namespace yas {
 namespace detail {
 
 /***************************************************************************/
 
+#if !defined(_MSC_VER)
+
 extern void serialize(int&);
+
+#endif
+
+/***************************************************************************/
 
 template<bool is_pod, bool is_enum, typename T, typename T2>
 struct has_function_const_serialize {

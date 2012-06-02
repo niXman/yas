@@ -54,13 +54,12 @@ struct serializer<
 	e_archive_type::text,
 	e_direction::out,
 	std::bitset<N>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::bitset<N>& bits) {
 		ar & static_cast<yas::uint32_t>(N);
 		for ( std::size_t idx = 0; idx < N; ++idx ) {
-			ar & (int)bits[idx];
+			ar & bits[idx];
 		}
 	}
 };
@@ -72,15 +71,14 @@ struct serializer<
 	e_archive_type::text,
 	e_direction::in,
 	std::bitset<N>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, std::bitset<N>& bits) {
 		yas::uint32_t size = 0;
 		ar & size;
 		if ( size != N ) throw std::runtime_error("bitsets size is not equal");
 		for ( std::size_t idx = 0; idx < N; ++idx ) {
-			int v;
+			bool v;
 			ar & v;
 			bits[idx] = v;
 		}

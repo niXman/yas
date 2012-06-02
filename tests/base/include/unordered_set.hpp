@@ -62,11 +62,11 @@ bool unordered_set_test() {
 	}
 
 	std::unordered_set<std::string> set3, set4;
-	set3.insert("1");
-	set3.insert("2");
-	set3.insert("3");
-	set3.insert("4");
-	set3.insert("5");
+	set3.insert(std::string("1"));
+	set3.insert(std::string("2"));
+	set3.insert(std::string("3"));
+	set3.insert(std::string("4"));
+	set3.insert(std::string("5"));
 
 	OA oa2;
 	oa2 & set3;
