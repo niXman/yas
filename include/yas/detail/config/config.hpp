@@ -33,10 +33,10 @@
 #ifndef _yas__config_hpp__included_
 #define _yas__config_hpp__included_
 
-#if defined(__GNUC__)
-#  define YAS_COMPILER_CONFIG <yas/detail/config/compiler/gcc.hpp>
-#elif defined(__clang__)
+#if defined(__clang__)
 #  define YAS_COMPILER_CONFIG <yas/detail/config/compiler/clang.hpp>
+#elif defined(__GNUC__)
+#  define YAS_COMPILER_CONFIG <yas/detail/config/compiler/gcc.hpp>
 #elif defined(__INTEL_COMPILER) || defined(__ICL) || defined(__ICC) || defined(__ECC)
 #  define YAS_COMPILER_CONFIG <yas/detail/config/compiler/intel.hpp>
 #elif defined(_MSC_VER)

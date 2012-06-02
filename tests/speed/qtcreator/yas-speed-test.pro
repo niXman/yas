@@ -7,6 +7,8 @@ TEMPLATE = app
 DEFINES += \
 	YAS_SERIALIZE_BOOST_TYPES=1
 
+#QMAKE_CXX = clang++
+
 QMAKE_CXXFLAGS += \
 	-std=c++0x
 

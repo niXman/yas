@@ -32,4 +32,69 @@
 
 #ifndef _yas__config_clang_config_hpp__included_
 #define _yas__config_clang_config_hpp__included_
+
+/***************************************************************************/
+#if __GLIBCPP__ >= 20120301
+#	define YAS_HAS_STD_FORWARD_LIST 1
+#	define YAS_HAS_STD_UNORDERED 1
+#	define YAS_HAS_STD_ARRAY 1
+#	define YAS_HAS_STD_TUPLE 1
+#	define YAS_SHARED_BUFFER_USE_STD_SHARED_PTR 1
+#endif
+
+#	define YAS_HAS_STATIC_ASSERT 1
+#	define YAS_HAS_ENUM_CLASS 1
+#	define YAS_HAS_DECLTYPE 1
+#	define YAS_DECLTYPE(T) decltype(T)
+
+#ifndef YAS_HAS_DECLTYPE
+#  error "Please configure!"
+#endif
+
+#ifdef YAS_SERIALIZE_BOOST_TYPES
+#	define YAS_HAS_BOOST_UNORDERED 1
+#	define YAS_HAS_BOOST_ARRAY 1
+#	define YAS_HAS_BOOST_TUPLE 1
+#	define YAS_HAS_BOOST_FUSION 1
+#	define YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR 1
+#endif
+
+/***************************************************************************/
+
+namespace yas {
+
+#if defined(__x86_64__)
+#define YAS_PLATFORM_BITS_IS_32() (0)
+#define YAS_PLATFORM_BITS_IS_64() (1)
+
+typedef char int8_t;
+typedef unsigned char uint8_t;
+typedef short int16_t;
+typedef unsigned short uint16_t;
+typedef int int32_t;
+typedef unsigned int uint32_t;
+typedef long long int64_t;
+typedef unsigned long long uint64_t;
+
+#else // !__x86_64__ /******************************************************/
+
+#define YAS_PLATFORM_BITS_IS_32() (1)
+#define YAS_PLATFORM_BITS_IS_64() (0)
+
+typedef char int8_t;
+typedef unsigned char uint8_t;
+typedef short int16_t;
+typedef unsigned short uint16_t;
+typedef int int32_t;
+typedef unsigned int uint32_t;
+typedef long long int64_t;
+typedef unsigned long long uint64_t;
+
+#endif // __x86_64__
+
+} // namespace yas
+
+/***************************************************************************/
+
+
 #endif // _yas__config_clang_config_hpp__included_

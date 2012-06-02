@@ -13,6 +13,8 @@ DEFINES += \
 	YAS_HAS_STD_FORWARD_LIST=1 \
 	YAS_HAS_BOOST_FUSION=1
 
+#QMAKE_CXX = clang++
+
 QMAKE_CXXFLAGS += \
 	-std=c++0x
 

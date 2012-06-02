@@ -22,9 +22,9 @@ Supported the following types of archives:
 Supported the following compilers:
  - GCC  : 4.6.3-x32/x64
  - MinGW: 4.6.3-x32/x64, 4.7.0-x32/x64
- - Clang: (untested)
+ - Clang: 3.0
  - Intel: (untested)
- - MSVC : (untested)
+ - MSVC : 2008(partially), 2010, 2011
 
 ===
 Planned the support for the following serializable types:

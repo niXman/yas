@@ -37,17 +37,17 @@
 
 #if ((__GNUC__ >= 4) && (__GNUC_MINOR__ >= 6) && \
 	defined(__GXX_EXPERIMENTAL_CXX0X__)) || __cplusplus == 201103L
-#  define YAS_HAS_STD_FORWARD_LIST 1
-#  define YAS_HAS_STD_UNORDERED 1
-#  define YAS_HAS_STD_ARRAY 1
-#  define YAS_HAS_STD_TUPLE 1
-#  define YAS_HAS_DECLTYPE 1
-#  define YAS_HAS_STATIC_ASSERT 1
-#  define YAS_HAS_ENUM_CLASS 1
+#	define YAS_HAS_STD_FORWARD_LIST 1
+#	define YAS_HAS_STD_UNORDERED 1
+#	define YAS_HAS_STD_ARRAY 1
+#	define YAS_HAS_STD_TUPLE 1
+#	define YAS_HAS_DECLTYPE 1
+#	define YAS_HAS_STATIC_ASSERT 1
+#	define YAS_HAS_ENUM_CLASS 1
 #	define YAS_SHARED_BUFFER_USE_STD_SHARED_PTR 1
 #	define YAS_DECLTYPE(T) decltype(T)
 #else
-#  define YAS_HAS_DECLTYPE 1
+#	define YAS_HAS_DECLTYPE 1
 #	define YAS_DECLTYPE(T) __typeof__(T)
 #endif
 

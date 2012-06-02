@@ -203,8 +203,14 @@ struct header_reader_writer<e_archive_type::json> {
 		\
 		static yas::uint32_t	header_size() {return header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::full_header_size;} \
 		e_archive_type::type archive_type() const {return YAS_PP_SEQ_ELEM(idx, seq);} \
-		int bits() const {return(header.bits.version)?header.bits.bits?64:32:(throw no_header());} \
-		int version() const {return(header.bits.version)?header.bits.version:(throw no_header());} \
+		int bits() const { \
+			if ( !header.bits.version ) throw no_header(); \
+			return (header.bits.bits ? 64 : 32); \
+		} \
+		int version() const { \
+			if ( !header.bits.version ) throw no_header(); \
+			return header.bits.version; \
+		} \
 		\
 		static const yas::uint32_t				_header_size	= header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::full_header_size; \
 		static const int							_version			= archive_version; \
