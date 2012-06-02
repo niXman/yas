@@ -19,10 +19,6 @@ QMAKE_CXXFLAGS += \
 INCLUDEPATH += \
 	../../../include \
 
-LIBS += \
-	-lboost_system \
-	-lboost_serialization
-
 SOURCES += \
 	../main.cpp
 
