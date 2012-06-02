@@ -10,6 +10,7 @@ Increase speed of the YAS serialization compared with boost.serialization is:
  - ~6...7 times in debug mode
 
 Yas is header only library. You do not need to link it with your code.
+Yas does not depend on third-party libraries or boost.
 
 ===
 Supported the following types of archives:
