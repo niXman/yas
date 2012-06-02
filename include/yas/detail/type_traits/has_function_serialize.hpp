@@ -63,7 +63,7 @@ struct has_function_const_serialize<false, false, T, T2> {
    class Helper{};
 
    template<typename U, typename U2>
-   static yes deduce(Helper<void(*)(U&, const U2&), &serialize> *);
+   static yes check(Helper<void(*)(U&, const U2&), &serialize> *);
 
 #else
 #  error "Please configure!"
@@ -98,7 +98,7 @@ struct has_function_serialize<false, false, T, T2> {
    class Helper{};
 
    template<typename U, typename U2>
-   static yes deduce(Helper<void(*)(U&, U2&), &serialize> *);
+   static yes check(Helper<void(*)(U&, U2&), &serialize> *);
 
 #else
 #  error "Please configure!"
