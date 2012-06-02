@@ -30,8 +30,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__speed_one_method_hpp__included_
-#define _yas_test__speed_one_method_hpp__included_
+#ifndef _yas_test__speed_one_function_hpp__included_
+#define _yas_test__speed_one_function_hpp__included_
 
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
 #include <sstream>
@@ -44,39 +44,48 @@
 
 /***************************************************************************/
 
-struct one_method_test_pod_type {
+struct one_function_speed_test_pod_type {
 	size_t x;
 	size_t y;
-
-	/** boost.serialization call only this method */
-	template<typename Archive>
-	void serialize(Archive& ar, const unsigned int) {
-		ar & x
-			& y;
-	}
-
-	template<typename Archive>
-	void serialize(Archive& ar) {
-		ar & x
-			& y;
-	}
 };
+
+namespace boost {
+namespace serialization {
+
+template<class Archive>
+inline void serialize(Archive& ar, one_function_speed_test_pod_type& v, const unsigned int) {
+	ar & v.x
+		& v.y;
+}
+
+} //namespace serialization
+} // namespace boost
+
+namespace yas {
+
+template<typename Archive>
+void serialize(Archive& ar, one_function_speed_test_pod_type& v) {
+	ar & v.x
+		& v.y;
+}
+
+} // namespace yas
 
 /***************************************************************************/
 
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
 
 template<typename T>
-struct test_one_method_selector;
+struct test_one_function_selector;
 
 template<>
-struct test_one_method_selector<yas::binary_mem_oarchive> {
+struct test_one_function_selector<yas::binary_mem_oarchive> {
 	static void test(const size_t iterations, size_t& archive_size) {
-		one_method_test_pod_type _split_methods_test_pod_type;
+		one_function_speed_test_pod_type _one_function_speed_test_pod_type;
 		std::ostringstream os;
 		boost::archive::binary_oarchive oa(os);
 		for ( size_t idx = 0; idx < iterations; ++idx ) {
-			_split_methods_test_pod_type.x = _split_methods_test_pod_type.y = idx;
+			_one_function_speed_test_pod_type.x = _one_function_speed_test_pod_type.y = idx;
 			oa & _split_methods_test_pod_type;
 		}
 		archive_size = os.str().length();
@@ -84,14 +93,14 @@ struct test_one_method_selector<yas::binary_mem_oarchive> {
 };
 
 template<>
-struct test_one_method_selector<yas::text_mem_oarchive> {
+struct test_one_function_selector<yas::text_mem_oarchive> {
 	static void test(const size_t iterations, size_t& archive_size) {
-		one_method_test_pod_type _split_methods_test_pod_type;
+		one_function_speed_test_pod_type _one_function_speed_test_pod_type;
 		std::ostringstream os;
 		boost::archive::text_oarchive oa(os);
 		for ( size_t idx = 0; idx < iterations; ++idx ) {
-			_split_methods_test_pod_type.x = _split_methods_test_pod_type.y = idx;
-			oa & _split_methods_test_pod_type;
+			_one_function_speed_test_pod_type.x = _one_function_speed_test_pod_type.y = idx;
+			oa & _one_function_speed_test_pod_type;
 		}
 		archive_size = os.str().length();
 	}
@@ -102,10 +111,10 @@ struct test_one_method_selector<yas::text_mem_oarchive> {
 /***************************************************************************/
 
 template<typename OA, typename IA>
-std::string one_method_speed_test(yas::uint32_t iterations, const char* archive_type) {
+std::string one_function_speed_test(yas::uint32_t iterations, const char* archive_type) {
 	std::ostringstream os;
 	os
-	<< "one method" << std::endl
+	<< "one function" << std::endl
 	<< "   " << archive_type << std::endl;
 
 	clock_t start = clock();
@@ -114,7 +123,7 @@ std::string one_method_speed_test(yas::uint32_t iterations, const char* archive_
 	size_t boost_size = 0;
 
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
-	test_one_method_selector<OA>::test(iterations, boost_size);
+	test_one_function_selector<OA>::test(iterations, boost_size);
 	boost_time=clock()-start;
 
 	os
@@ -124,11 +133,11 @@ std::string one_method_speed_test(yas::uint32_t iterations, const char* archive_
 
 	start = clock();
 
-	one_method_test_pod_type _split_methods_test_pod_type;
+	one_function_speed_test_pod_type _one_function_speed_test_pod_type;
 	OA oa;
 	for ( size_t idx = 0; idx < iterations; ++idx ) {
-		_split_methods_test_pod_type.x = _split_methods_test_pod_type.y = idx;
-		oa & _split_methods_test_pod_type;
+		_one_function_speed_test_pod_type.x = _one_function_speed_test_pod_type.y = idx;
+		oa & _one_function_speed_test_pod_type;
 	}
 	yas_time=clock()-start;
 
@@ -142,4 +151,4 @@ std::string one_method_speed_test(yas::uint32_t iterations, const char* archive_
 
 /***************************************************************************/
 
-#endif // _yas_test__speed_one_method_hpp__included_
+#endif // _yas_test__speed_one_function_hpp__included_

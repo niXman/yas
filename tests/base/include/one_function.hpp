@@ -42,12 +42,16 @@ struct _binary_type_with_one_serializer {
 	int y;
 };
 
+namespace yas {
+
 template<typename Archive>
 void serialize(Archive& ar, _binary_type_with_one_serializer& t) {
 	ar & t.x
 		& t.y;
 	_binary_type_with_one_serializer_flag = true;
 }
+
+} // 
 
 template<typename OA, typename IA>
 bool one_function_serializer_test() {

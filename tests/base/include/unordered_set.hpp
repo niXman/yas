@@ -43,12 +43,13 @@ bool unordered_set_test() {
 	set1.insert(1);
 	set1.insert(2);
 	set1.insert(3);
-	set1.insert(4);
+	set1.insert(5);
 	set1.insert(5);
 	set1.insert(6);
 	set1.insert(7);
 	set1.insert(8);
-	set1.insert(9);
+	set1.insert(8);
+	int expected1 = std::accumulate(set1.begin(), set1.end(), 0);
 
 	OA oa;
 	oa & set1;
@@ -56,8 +57,8 @@ bool unordered_set_test() {
 	IA ia(oa.get_intrusive_buffer());
 	ia & set2;
 
-	if ( set1 != set2 ) {
-		std::cout << "UNORDERED_SET deserialization error!" << std::endl;
+	if ( expected1 != std::accumulate(set2.begin(), set2.end(), 0) ) {
+		std::cout << "UNORDERED_SET deserialization error! [1]" << std::endl;
 		return false;
 	}
 
@@ -67,6 +68,10 @@ bool unordered_set_test() {
 	set3.insert(std::string("3"));
 	set3.insert(std::string("4"));
 	set3.insert(std::string("5"));
+	set3.insert(std::string("4"));
+	
+	std::string expected2 = std::accumulate(set3.begin(), set3.end(), std::string());
+	std::sort(expected2.begin(), expected2.end());
 
 	OA oa2;
 	oa2 & set3;
@@ -74,8 +79,10 @@ bool unordered_set_test() {
 	IA ia2(oa2.get_intrusive_buffer());
 	ia2 & set4;
 
-	if ( set3 != set4 ) {
-		std::cout << "UNORDERED_SET deserialization error!" << std::endl;
+	std::string res2 = std::accumulate(set4.begin(), set4.end(), std::string());
+	std::sort(res2.begin(), res2.end());
+	if ( expected2 != res2 ) {
+		std::cout << "UNORDERED_SET deserialization error! [2]" << std::endl;
 		return false;
 	}
 
@@ -87,12 +94,13 @@ bool unordered_set_test() {
 	set5.insert(1);
 	set5.insert(2);
 	set5.insert(3);
-	set5.insert(4);
+	set5.insert(3);
 	set5.insert(5);
 	set5.insert(6);
 	set5.insert(7);
-	set5.insert(8);
+	set5.insert(5);
 	set5.insert(9);
+	int expected3 = std::accumulate(set5.begin(), set5.end(), 0);
 
 	OA oa4;
 	oa4 & set5;
@@ -100,8 +108,8 @@ bool unordered_set_test() {
 	IA ia4(oa4.get_intrusive_buffer());
 	ia4 & set6;
 
-	if ( set5 != set6 ) {
-		std::cout << "UNORDERED_SET deserialization error!" << std::endl;
+	if ( expected3 != std::accumulate(set6.begin(), set6.end(), 0) ) {
+		std::cout << "UNORDERED_SET deserialization error! [3]" << std::endl;
 		return false;
 	}
 
@@ -110,6 +118,10 @@ bool unordered_set_test() {
 	set7.insert("1");
 	set7.insert("2");
 	set7.insert("5");
+	set7.insert("2");
+	set7.insert("5");
+	std::string expected4 = std::accumulate(set7.begin(), set7.end(), std::string());
+	std::sort(expected4.begin(), expected4.end());
 
 	OA oa5;
 	oa5 & set7;
@@ -117,8 +129,10 @@ bool unordered_set_test() {
 	IA ia5(oa5.get_intrusive_buffer());
 	ia5 & set8;
 
-	if ( set7 != set8 ) {
-		std::cout << "UNORDERED_SET deserialization error!" << std::endl;
+	std::string res4 = std::accumulate(set8.begin(), set8.end(), std::string());
+	std::sort(res4.begin(), res4.end());
+	if ( expected4 != res4 ) {
+		std::cout << "UNORDERED_SET deserialization error! [4]" << std::endl;
 		return false;
 	}
 #endif // defined(YAS_HAS_BOOST_UNORDERED)

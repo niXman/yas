@@ -43,6 +43,8 @@ struct _binary_type_for_split_function_serializers {
 	int y;
 };
 
+namespace yas {
+
 template<typename Archive>
 void serialize(Archive& ar, const _binary_type_for_split_function_serializers& t) {
 	ar & t.x
@@ -56,6 +58,8 @@ void serialize(Archive& ar, _binary_type_for_split_function_serializers& t) {
 		& t.y;
 	_binary_type_for_split_function_serializers_load_flag = true;
 }
+
+} //
 
 template<typename OA, typename IA>
 bool split_functions_serializer_test() {

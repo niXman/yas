@@ -1,10 +1,10 @@
 
 #include <iostream>
 #include <algorithm>
+#include <numeric>
+
 #include <cstdio>
 #include <ctime>
-
-#include <yas/serializers/std_types_serializers.hpp>
 
 #include <yas/binary_oarchive.hpp>
 #include <yas/binary_iarchive.hpp>
@@ -13,9 +13,10 @@
 #include <yas/json_iarchive.hpp>
 #include <yas/json_oarchive.hpp>
 
+#include <yas/serializers/std_types_serializers.hpp>
+
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
 #include <yas/serializers/boost_types_serializers.hpp>
-
 #include <boost/fusion/container/generation/make_vector.hpp>
 #include <boost/fusion/include/make_vector.hpp>
 #include <boost/fusion/sequence/comparison.hpp>
@@ -62,20 +63,16 @@
 #include "include/split_functions.hpp"
 #include "include/split_methods.hpp"
 
-#include "include/speed_one_function.hpp"
-#include "include/speed_one_method.hpp"
-#include "include/speed_split_functions.hpp"
-#include "include/speed_split_methods.hpp"
-
 /***************************************************************************/
 
 template<typename OA, typename IA>
-bool tests(yas::uint32_t& p, yas::uint32_t& e, yas::uint32_t iterations, std::vector<std::string>& reports) {
+void tests(yas::uint32_t& p, yas::uint32_t& e) {
 	static const char* archive_type =
 	yas::is_binary_archive<OA>::value ? "binary:"
 		: yas::is_text_archive<OA>::value ? "text  :"
 			: yas::is_json_archive<OA>::value ? "json  :"
-				: "unknown:";
+				: "unknown:"
+	;
 
 	static const char* passed = "passed";
 	static const char* failed = "failed!";
@@ -125,13 +122,6 @@ bool tests(yas::uint32_t& p, yas::uint32_t& e, yas::uint32_t iterations, std::ve
 	printf("%s SPLIT_FUNCTIONS    test %s\n", archive_type, (split_functions_serializer_test<OA, IA>()?(++p,passed):(++e,failed)));
 	printf("%s ONE_METHOD         test %s\n", archive_type, (one_method_serializer_test<OA, IA>()?(++p,passed):(++e,failed)));
 	printf("%s SPLIT_METHODS      test %s\n", archive_type, (split_methods_serializer_test<OA, IA>()?(++p,passed):(++e,failed)));
-
-	reports.push_back(one_function_speed_test<OA, IA>(iterations, archive_type));
-	reports.push_back(split_functions_speed_test<OA, IA>(iterations, archive_type));
-	reports.push_back(one_method_speed_test<OA, IA>(iterations, archive_type));
-	reports.push_back(split_methods_speed_test<OA, IA>(iterations, archive_type));
-
-	return true;
 }
 
 /***************************************************************************/
@@ -144,12 +134,9 @@ int main() {
 	yas::uint32_t passed = 0;
 	yas::uint32_t failed = 0;
 
-	yas::uint32_t iterations = 1024*1024*10;
-	std::vector<std::string> reports;
-
-	tests<yas::binary_mem_oarchive, yas::binary_mem_iarchive>(passed, failed, iterations, reports);
-	tests<yas::text_mem_oarchive, yas::text_mem_iarchive>(passed, failed, iterations, reports);
-	//tests<yas::json_mem_oarchive, yas::json_mem_iarchive>(passed, failed, iterations, reports);
+	tests<yas::binary_mem_oarchive, yas::binary_mem_iarchive>(passed, failed);
+	tests<yas::text_mem_oarchive, yas::text_mem_iarchive>(passed, failed);
+	//tests<yas::json_mem_oarchive, yas::json_mem_iarchive>(passed, failed);
 
 	std::cout << std::endl
 	<< "/***************************************************/" << std::endl
@@ -157,11 +144,6 @@ int main() {
 	<< "> passed tests : " << passed << std::endl
 	<< "> failed tests : " << failed << std::endl
 	<< "/***************************************************/" << std::endl;
-
-	std::vector<std::string>::const_iterator it = reports.begin();
-	for ( ; it != reports.end(); ++it ) {
-		std::cout << *it << std::endl;
-	}
 }
 
 /***************************************************************************/

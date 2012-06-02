@@ -33,7 +33,7 @@
 #ifndef _yas__binary__buffer_serializer_hpp_included_
 #define _yas__binary__buffer_serializer_hpp_included_
 
-#include <stdexcept>
+#include <cassert>
 
 #include <yas/detail/config/config.hpp>
 #include <yas/detail/tools/buffer.hpp>

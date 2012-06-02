@@ -35,7 +35,7 @@
 
 /***************************************************************************/
 
-#if (defined(_MSC_VER) && _MSC_VER >= 1600)
+#if _MSC_VER >= 1600
 #  define YAS_HAS_STD_FORWARD_LIST 1
 #  define YAS_HAS_STD_UNORDERED 1
 #  define YAS_HAS_STD_ARRAY 1
@@ -51,7 +51,7 @@
 #endif
 
 #ifndef YAS_HAS_DECLTYPE
-#  error "Please configure!"
+//#  error "Please configure!"
 #endif
 
 #ifdef YAS_SERIALIZE_BOOST_TYPES
