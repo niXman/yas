@@ -86,7 +86,7 @@ struct test_one_function_selector<yas::binary_mem_oarchive> {
 		boost::archive::binary_oarchive oa(os);
 		for ( size_t idx = 0; idx < iterations; ++idx ) {
 			_one_function_speed_test_pod_type.x = _one_function_speed_test_pod_type.y = idx;
-			oa & _split_methods_test_pod_type;
+			oa & _one_function_speed_test_pod_type;
 		}
 		archive_size = os.str().length();
 	}

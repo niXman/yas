@@ -37,13 +37,13 @@ void tests(yas::uint32_t iterations, std::vector<std::string>& reports) {
 
 int main() {
 	setvbuf(stdout, 0, _IONBF, 0);
-	
-	yas::uint32_t iterations = 1024;
+
+	yas::uint32_t iterations = 1024*1024*10;
 	std::vector<std::string> reports;
-	
+
 	tests<yas::binary_mem_oarchive, yas::binary_mem_iarchive>(iterations, reports);
 	tests<yas::text_mem_oarchive, yas::text_mem_iarchive>(iterations, reports);
-	tests<yas::json_mem_oarchive, yas::json_mem_iarchive>(iterations, reports);
+	//tests<yas::json_mem_oarchive, yas::json_mem_iarchive>(iterations, reports);
 
 	std::vector<std::string>::const_iterator it = reports.begin();
 	for ( ; it != reports.end(); ++it ) {

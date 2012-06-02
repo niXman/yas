@@ -13,53 +13,51 @@ DEFINES += \
 	YAS_HAS_STD_FORWARD_LIST=1 \
 	YAS_HAS_BOOST_FUSION=1
 
-QMAKE_CXXFLAGS += -std=c++0x
+QMAKE_CXXFLAGS += \
+	-std=c++0x
 
 INCLUDEPATH += \
-	../../include \
+	../../../include \
 
 LIBS += \
 	-lboost_system \
 	-lboost_serialization
 
-SOURCES += main.cpp
+SOURCES += \
+	../main.cpp
 
 HEADERS += \
-    include/wstring.hpp \
-    include/version.hpp \
-    include/vector.hpp \
-    include/unordered_set.hpp \
-    include/unordered_multiset.hpp \
-    include/unordered_multimap.hpp \
-    include/unordered_map.hpp \
-    include/types.hpp \
-    include/tuple.hpp \
-    include/string.hpp \
-    include/split_methods.hpp \
-    include/split_functions.hpp \
-    include/speed_split_methods.hpp \
-    include/speed_split_functions.hpp \
-    include/speed_one_method.hpp \
-    include/speed_one_function.hpp \
-    include/set.hpp \
-    include/pod.hpp \
-    include/pair.hpp \
-    include/one_method.hpp \
-    include/one_function.hpp \
-    include/multiset.hpp \
-    include/multimap.hpp \
-    include/map.hpp \
-    include/list.hpp \
-    include/fusion_vector.hpp \
-    include/fusion_tuple.hpp \
-    include/fusion_set.hpp \
-    include/fusion_pair.hpp \
-    include/fusion_map.hpp \
-    include/fusion_list.hpp \
-    include/forward_list.hpp \
-    include/enum.hpp \
-    include/buffer.hpp \
-    include/bitset.hpp \
-    include/base_object.hpp \
-    include/auto_array.hpp \
-    include/array.hpp
+	 ../include/wstring.hpp \
+	 ../include/version.hpp \
+	 ../include/vector.hpp \
+	 ../include/unordered_set.hpp \
+	 ../include/unordered_multiset.hpp \
+	 ../include/unordered_multimap.hpp \
+	 ../include/unordered_map.hpp \
+	 ../include/types.hpp \
+	 ../include/tuple.hpp \
+	 ../include/string.hpp \
+	 ../include/split_methods.hpp \
+	 ../include/split_functions.hpp \
+	 ../include/set.hpp \
+	 ../include/pod.hpp \
+	 ../include/pair.hpp \
+	 ../include/one_method.hpp \
+	 ../include/one_function.hpp \
+	 ../include/multiset.hpp \
+	 ../include/multimap.hpp \
+	 ../include/map.hpp \
+	 ../include/list.hpp \
+	 ../include/fusion_vector.hpp \
+	 ../include/fusion_tuple.hpp \
+	 ../include/fusion_set.hpp \
+	 ../include/fusion_pair.hpp \
+	 ../include/fusion_map.hpp \
+	 ../include/fusion_list.hpp \
+	 ../include/forward_list.hpp \
+	 ../include/enum.hpp \
+	 ../include/buffer.hpp \
+	 ../include/bitset.hpp \
+	 ../include/base_object.hpp \
+	 ../include/auto_array.hpp \
+	 ../include/array.hpp

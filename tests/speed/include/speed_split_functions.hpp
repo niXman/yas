@@ -53,13 +53,13 @@ namespace boost {
 namespace serialization {
 
 template<class Archive>
-inline void save(Archive& ar, const split_functions_speed_test_pod_type& v, const unsigned int) {
+inline void serialize(Archive& ar, const split_functions_speed_test_pod_type& v, const unsigned int) {
 	ar & v.x
 		& v.y;
 }
 
 template<class Archive>
-inline void load(Archive& ar, split_functions_speed_test_pod_type& v, const unsigned int) {
+inline void serialize(Archive& ar, split_functions_speed_test_pod_type& v, const unsigned int) {
 	ar & v.x
 		& v.y;
 }
@@ -90,10 +90,10 @@ void serialize(Archive& ar, split_functions_speed_test_pod_type& v) {
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
 
 template<typename T>
-struct test_one_function_selector;
+struct test_split_functions_selector;
 
 template<>
-struct test_one_function_selector<yas::binary_mem_oarchive> {
+struct test_split_functions_selector<yas::binary_mem_oarchive> {
 	static void test(const size_t iterations, size_t& archive_size) {
 		split_functions_speed_test_pod_type _split_functions_speed_test_pod_type;
 		std::ostringstream os;
@@ -107,7 +107,7 @@ struct test_one_function_selector<yas::binary_mem_oarchive> {
 };
 
 template<>
-struct test_one_function_selector<yas::text_mem_oarchive> {
+struct test_split_functions_selector<yas::text_mem_oarchive> {
 	static void test(const size_t iterations, size_t& archive_size) {
 		split_functions_speed_test_pod_type _split_functions_speed_test_pod_type;
 		std::ostringstream os;
@@ -137,7 +137,7 @@ std::string split_functions_speed_test(yas::uint32_t iterations, const char* arc
 	size_t boost_size = 0;
 
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
-	test_one_function_selector<OA>::test(iterations, boost_size);
+	test_split_functions_selector<OA>::test(iterations, boost_size);
 	boost_time=clock()-start;
 
 	os
