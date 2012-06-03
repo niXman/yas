@@ -45,12 +45,12 @@ bool enum_test() {
 	oa1 & _1_2
 		 & _1_4;
 
-	enum_test_enum1 e11, e12;
+	enum_test_enum1 e11, e12, e13(_1_1);
 	IA ia1(oa1.get_intrusive_buffer());
 
 	ia1 & e11
 		 & e12;
-	if ( e11 != _1_2 || e12 != _1_4 ) {
+	if ( e11 != _1_2 || e12 != _1_4 || e13 != _1_1 ) {
 		std::cout << "ENUM deserialization error! [1]" << std::endl;
 		return false;
 	}
@@ -61,12 +61,13 @@ bool enum_test() {
 	oa2 & enum_test_enum2::_2_1
 		 & enum_test_enum2::_2_3;
 
-	enum_test_enum2 e21, e22;
+	enum_test_enum2 e21, e22, e23(enum_test_enum2::_2_1);
 	IA ia2(oa2.get_intrusive_buffer());
 	ia2 & e21
 		 & e22;
-
-	if ( e21 != enum_test_enum2::_2_1 || e22 != enum_test_enum2::_2_3 ) {
+	if ( e21 != enum_test_enum2::_2_1 || e22 != enum_test_enum2::_2_3 
+			|| e23 != enum_test_enum2::_2_1
+	) {
 		std::cout << "ENUM deserialization error! [2]" << std::endl;
 		return false;
 	}

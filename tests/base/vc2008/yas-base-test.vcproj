@@ -173,139 +173,139 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\include\array.hpp"
+				RelativePath="..\include\array.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\auto_array.hpp"
+				RelativePath="..\include\auto_array.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\base_object.hpp"
+				RelativePath="..\include\base_object.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\bitset.hpp"
+				RelativePath="..\include\bitset.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\buffer.hpp"
+				RelativePath="..\include\buffer.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\enum.hpp"
+				RelativePath="..\include\enum.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\forward_list.hpp"
+				RelativePath="..\include\forward_list.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\fusion_list.hpp"
+				RelativePath="..\include\fusion_list.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\fusion_map.hpp"
+				RelativePath="..\include\fusion_map.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\fusion_pair.hpp"
+				RelativePath="..\include\fusion_pair.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\fusion_set.hpp"
+				RelativePath="..\include\fusion_set.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\fusion_tuple.hpp"
+				RelativePath="..\include\fusion_tuple.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\fusion_vector.hpp"
+				RelativePath="..\include\fusion_vector.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\list.hpp"
+				RelativePath="..\include\list.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\map.hpp"
+				RelativePath="..\include\map.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\multimap.hpp"
+				RelativePath="..\include\multimap.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\multiset.hpp"
+				RelativePath="..\include\multiset.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\one_function.hpp"
+				RelativePath="..\include\one_function.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\one_method.hpp"
+				RelativePath="..\include\one_method.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\pair.hpp"
+				RelativePath="..\include\pair.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\pod.hpp"
+				RelativePath="..\include\pod.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\set.hpp"
+				RelativePath="..\include\set.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\split_functions.hpp"
+				RelativePath="..\include\split_functions.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\split_methods.hpp"
+				RelativePath="..\include\split_methods.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\string.hpp"
+				RelativePath="..\include\string.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\tuple.hpp"
+				RelativePath="..\include\tuple.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\types.hpp"
+				RelativePath="..\include\types.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\unordered_map.hpp"
+				RelativePath="..\include\unordered_map.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\unordered_multimap.hpp"
+				RelativePath="..\include\unordered_multimap.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\unordered_multiset.hpp"
+				RelativePath="..\include\unordered_multiset.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\unordered_set.hpp"
+				RelativePath="..\include\unordered_set.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\vector.hpp"
+				RelativePath="..\include\vector.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\version.hpp"
+				RelativePath="..\include\version.hpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\wstring.hpp"
+				RelativePath="..\include\wstring.hpp"
 				>
 			</File>
 		</Filter>

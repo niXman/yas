@@ -51,8 +51,7 @@ struct serializer<
 	e_archive_type::binary,
 	e_direction::out,
 	std::wstring
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::wstring& wstring) {
 		ar & detail::TypeConverter<std::string, std::wstring>::Convert(wstring);
@@ -66,8 +65,7 @@ struct serializer<
 	e_archive_type::binary,
 	e_direction::in,
 	std::wstring
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, std::wstring& wstring) {
 		std::string string;

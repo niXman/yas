@@ -128,8 +128,13 @@ namespace detail {
 
 /***************************************************************************/
 
+#if _MSC_VER >= 1700
+YAS__JSON__GENERATE_SAVE_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(_VARIADIC_MAX);
+YAS__JSON__GENERATE_LOAD_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(_VARIADIC_MAX);
+#else
 YAS__JSON__GENERATE_SAVE_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(10);
 YAS__JSON__GENERATE_LOAD_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(10);
+#endif
 
 /***************************************************************************/
 

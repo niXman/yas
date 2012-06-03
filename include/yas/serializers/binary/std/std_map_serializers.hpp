@@ -51,11 +51,11 @@ struct serializer<
 	e_archive_type::binary,
 	e_direction::out,
 	std::map<K, V>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::map<K, V>& map) {
-		ar & static_cast<yas::uint32_t>(map.size());
+		const yas::uint32_t size = map.size();
+		ar.write(&size, sizeof(size));
 		typename std::map<K, V>::const_iterator it = map.begin();
 		if ( detail::is_pod<K>::value && detail::is_pod<V>::value ) {
 			for ( ; it != map.end(); ++it ) {
@@ -88,12 +88,11 @@ struct serializer<
 	e_archive_type::binary,
 	e_direction::in,
 	std::map<K, V>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, std::map<K, V>& map) {
 		yas::uint32_t size = 0;
-		ar & size;
+		ar.read(&size, sizeof(size));
 		if ( detail::is_pod<K>::value && detail::is_pod<V>::value ) {
 			K key;
 			V val;

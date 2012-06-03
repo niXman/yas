@@ -49,16 +49,15 @@ namespace detail {
 
 template<typename K>
 struct serializer<
-	e_type_type::e_type_type::not_a_pod,
+	e_type_type::not_a_pod,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::binary,
 	e_direction::out,
 	boost::unordered_multiset<K>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, const boost::unordered_multiset<K>& set) {
-		const std::size_t size = set.size();
+		const yas::uint32_t size = set.size();
 		ar.write(&size, sizeof(size));
 		typename boost::unordered_multiset<K>::const_iterator it = set.begin();
 		if ( is_pod<K>::value ) {
@@ -75,26 +74,25 @@ struct serializer<
 
 template<typename K>
 struct serializer<
-	e_type_type::e_type_type::not_a_pod,
+	e_type_type::not_a_pod,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::binary,
 	e_direction::in,
 	boost::unordered_multiset<K>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, boost::unordered_multiset<K>& set) {
-		std::size_t size = 0;
+		yas::uint32_t size = 0;
 		ar.read(&size, sizeof(size));
 		if ( is_pod<K>::value ) {
 			K key;
-			for ( std::size_t idx = 0; idx < size; ++idx ) {
+			for ( ; size; --size ) {
 				ar.read(&key, sizeof(K));
 				set.insert(key);
 			}
 		} else {
 			K key = K();
-			for ( std::size_t idx = 0; idx < size; ++idx ) {
+			for ( ; size; --size ) {
 				ar & key;
 				set.insert(key);
 			}

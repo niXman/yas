@@ -91,7 +91,7 @@ struct serializer<
 	template<typename Archive>
 	static void apply(Archive& ar, shared_buffer& buf) {
 		yas::uint32_t size = 0;
-		ar & size;
+		ar.read(&size, sizeof(size));
 		buf.data.reset(new char[size+1], &shared_buffer::deleter);
 		assert(ar.read(buf.data.get(), size) == size);
 		buf.size = size;

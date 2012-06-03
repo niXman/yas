@@ -49,16 +49,15 @@ namespace detail {
 
 template<typename K, typename V>
 struct serializer<
-	e_type_type::e_type_type::not_a_pod,
+	e_type_type::not_a_pod,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::binary,
 	e_direction::out,
 	boost::unordered_map<K, V>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, const boost::unordered_map<K, V>& map) {
-		const std::size_t size = map.size();
+		yas::uint32_t size = map.size();
 		ar.write(&size, sizeof(size));
 		typename boost::unordered_map<K, V>::const_iterator it = map.begin();
 		if ( detail::is_pod<K>::value && detail::is_pod<V>::value ) {
@@ -87,21 +86,20 @@ struct serializer<
 
 template<typename K, typename V>
 struct serializer<
-	e_type_type::e_type_type::not_a_pod,
+	e_type_type::not_a_pod,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::binary,
 	e_direction::in,
 	boost::unordered_map<K, V>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, boost::unordered_map<K, V>& map) {
-		std::size_t size = 0;
-		ar & size;
+		yas::uint32_t size = 0;
+		ar.read(&size, sizeof(size));
 		if ( detail::is_pod<K>::value && detail::is_pod<V>::value ) {
 			K key;
 			V val;
-			for ( std::size_t idx = 0; idx < size; ++idx ) {
+			for ( ; size; --size ) {
 				ar.read(&key, sizeof(K));
 				ar.read(&val, sizeof(V));
 				map[key] = val;
@@ -109,7 +107,7 @@ struct serializer<
 		} else if ( detail::is_pod<K>::value ) {
 			K key;
 			V val = V();
-			for ( std::size_t idx = 0; idx < size; ++idx ) {
+			for ( ; size; --size ) {
 				ar.read(&key, sizeof(K));
 				ar & val;
 				map[key] = val;
@@ -117,7 +115,7 @@ struct serializer<
 		} else if ( detail::is_pod<V>::value ) {
 			K key = K();
 			V val;
-			for ( std::size_t idx = 0; idx < size; ++idx ) {
+			for ( ; size; --size ) {
 				ar & key;
 				ar.read(&val, sizeof(V));
 				map[key] = val;
@@ -125,7 +123,7 @@ struct serializer<
 		} else {
 			K key = K();
 			V val = V();
-			for ( std::size_t idx = 0; idx < size; ++idx ) {
+			for ( ; size; --size ) {
 				ar & key
 					& val;
 				map[key] = val;

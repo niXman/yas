@@ -51,11 +51,11 @@ struct serializer<
 	e_archive_type::binary,
 	e_direction::out,
 	std::vector<T>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::vector<T>& vector) {
-		ar & static_cast<yas::uint32_t>(vector.size());
+		const yas::uint32_t size = vector.size();
+		ar.write(&size, sizeof(size));
 		if ( is_pod<T>::value ) {
 			ar.write(&vector[0], sizeof(T)*vector.size());
 		} else {
@@ -74,12 +74,11 @@ struct serializer<
 	e_archive_type::binary,
 	e_direction::in,
 	std::vector<T>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, std::vector<T>& vector) {
 		yas::uint32_t size = 0;
-		ar & size;
+		ar.read(&size, sizeof(size));
 		vector.resize(size);
 		if ( detail::is_pod<T>::value ) {
 			ar.read(&vector[0], sizeof(T)*size);

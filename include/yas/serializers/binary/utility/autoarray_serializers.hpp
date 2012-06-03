@@ -61,7 +61,9 @@ struct serializer<
 		,typename U
 	>
 	static void apply(Archive& ar, const U(&v)[N], typename enable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
-		(ar & static_cast<yas::uint32_t>(N-1)).write(v, N-1);
+		const yas::uint32_t size = N-1;
+		ar.write(&size, sizeof(size));
+		ar.write(v, N-1);
 	}
 
 	template<
@@ -69,7 +71,9 @@ struct serializer<
 		,typename U
 	>
 	static void apply(Archive& ar, const U(&v)[N], typename disable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
-		(ar & static_cast<yas::uint32_t>(N*sizeof(T))).write(v, N*sizeof(T));
+		const yas::uint32_t size = N*sizeof(T);
+		ar.write(&size, sizeof(size));
+		ar.write(v, N*sizeof(T));
 	}
 };
 
@@ -99,9 +103,9 @@ struct serializer<
 	>
 	static void apply(Archive& ar, U(&v)[N], typename disable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
 		yas::uint32_t size = 0;
-		ar & size;
+		ar.read(&size, sizeof(size));
 		if ( size != (N*sizeof(T)) ) throw std::runtime_error("bad array size");
-		ar.read(v, sizeof(T)*N);
+		ar.read(v, size);
 	}
 };
 
@@ -117,7 +121,8 @@ struct serializer<
 > {
 	template<typename Archive>
 	static void apply(Archive& ar, const T(&v)[N]) {
-		ar & static_cast<yas::uint32_t>(N);
+		const yas::uint32_t size = N;
+		ar.write(&size, sizeof(size));
 		for ( size_t idx = 0; idx < N; ++idx ) {
 			ar & v[idx];
 		}
@@ -137,7 +142,7 @@ struct serializer<
 	template<typename Archive>
 	static void apply(Archive& ar, T(&v)[N]) {
 		yas::uint32_t size = 0;
-		ar & size;
+		ar.read(&size, sizeof(size));
 		if ( size != N ) throw std::runtime_error("bad array size");
 		for ( size_t idx = 0; idx < N; ++idx ) {
 			ar & v[idx];

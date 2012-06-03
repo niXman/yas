@@ -48,7 +48,7 @@ namespace detail {
 
 template<typename T, size_t N>
 struct serializer<
-	e_type_type::e_type_type::not_a_pod,
+	e_type_type::not_a_pod,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::binary,
 	e_direction::out,
@@ -56,7 +56,8 @@ struct serializer<
 > {
 	template<typename Archive>
 	static void apply(Archive& ar, const boost::array<T, N>& array) {
-		ar & static_cast<yas::uint32_t>(N);
+		const yas::uint32_t size = N;
+		ar.write(&size, sizeof(size));
 		if ( is_pod<T>::value ) {
 			ar.write(&array[0], sizeof(T)*N);
 		} else {
@@ -70,7 +71,7 @@ struct serializer<
 
 template<typename T, size_t N>
 struct serializer<
-	e_type_type::e_type_type::not_a_pod,
+	e_type_type::not_a_pod,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::binary,
 	e_direction::in,
@@ -79,7 +80,7 @@ struct serializer<
 	template<typename Archive>
 	static void apply(Archive& ar, boost::array<T, N>& array) {
 		yas::uint32_t size = 0;
-		ar & size;
+		ar.read(&size, sizeof(size));
 		if ( size != N ) throw std::runtime_error("array size is not equal");
 		if ( is_pod<T>::value ) {
 			ar.read(&array[0], sizeof(T)*N);

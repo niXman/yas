@@ -43,7 +43,7 @@ bool pod_test() {
 	short s = 2, ss;
 	int i = 3, ii;
 	long l = 4, ll;
-	float f = 3.14, ff;
+	float f = 3.14f, ff;
 	double d = 3.14, dd;
 	oa & c
 		& sc

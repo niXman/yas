@@ -51,11 +51,11 @@ struct serializer<
 	e_archive_type::binary,
 	e_direction::out,
 	std::multiset<K>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::multiset<K>& set) {
-		ar & static_cast<yas::uint32_t>(set.size());
+		const yas::uint32_t size = set.size();
+		ar.write(&size, sizeof(size));
 		typename std::multiset<K>::const_iterator it = set.begin();
 		if ( is_pod<K>::value ) {
 			for ( ; it != set.end(); ++it ) {
@@ -76,12 +76,11 @@ struct serializer<
 	e_archive_type::binary,
 	e_direction::in,
 	std::multiset<K>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, std::multiset<K>& set) {
 		yas::uint32_t size = 0;
-		ar & size;
+		ar.read(&size, sizeof(size));
 		if ( is_pod<K>::value ) {
 			K key;
 			for ( ; size; --size ) {

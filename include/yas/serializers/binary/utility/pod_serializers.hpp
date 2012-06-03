@@ -36,6 +36,8 @@
 #include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 
+#include <stdexcept>
+
 namespace yas {
 namespace detail {
 
@@ -51,7 +53,9 @@ struct serializer<
 > {
 	template<typename Archive>
 	static void apply(Archive& ar, const T& v) {
-		ar.sputn(reinterpret_cast<const typename Archive::char_type*>(&v), sizeof(T));
+		const yas::uint8_t size = sizeof(T);
+		ar.write(&size, sizeof(size));
+		ar.write(&v, sizeof(v));
 	}
 };
 
@@ -65,7 +69,36 @@ struct serializer<
 > {
 	template<typename Archive>
 	static void apply(Archive& ar, T& v) {
-		ar.sgetn(reinterpret_cast<typename Archive::char_type*>(&v), sizeof(T));
+		yas::uint8_t size = 0;
+		ar.read(&size, sizeof(size));
+		switch ( size ) {
+			case sizeof(yas::uint8_t): {
+				yas::uint8_t item = 0;
+				ar.read(&item, sizeof(item));
+				v = reinterpret_cast<T&>(item);
+			}
+			break;
+			case sizeof(yas::uint16_t): {
+				yas::uint16_t item = 0;
+				ar.read(&item, sizeof(item));
+				v = reinterpret_cast<T&>(item);
+			}
+			break;
+			case sizeof(yas::uint32_t): {
+				yas::uint32_t item = 0;
+				ar.read(&item, sizeof(item));
+				v = reinterpret_cast<T&>(item);
+			}
+			break;
+			case sizeof(yas::uint64_t): {
+				yas::uint64_t item = 0;
+				ar.read(&item, sizeof(item));
+				v = reinterpret_cast<T&>(item);
+			}
+			break;
+			default:
+				throw std::runtime_error("bad size of enum");
+		}
 	}
 };
 

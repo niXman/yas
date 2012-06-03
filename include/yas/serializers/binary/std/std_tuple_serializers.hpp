@@ -59,11 +59,6 @@ namespace detail {
 	else \
 		ar & std::get<idx>(tuple);
 
-#define YAS__BINARY__READ_AND_CHECK_STD_TUPLE_SIZE(count) \
-	yas::uint8_t size = 0; \
-	ar & size; \
-	if ( size != count ) throw std::runtime_error("size error on deserialize std::tuple");
-
 #define YAS__BINARY__READ_STD_TUPLE_ITEM(unused, idx, type) \
 	if ( detail::is_pod<YAS_PP_CAT(type, idx)>::value ) \
 		ar.read(&std::get<idx>(tuple), sizeof(YAS_PP_CAT(type, idx))); \
@@ -96,7 +91,8 @@ namespace detail {
 	> { \
 		template<typename Archive> \
 		static void apply(Archive& ar, const std::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
-			ar & static_cast<yas::uint8_t>(YAS_PP_INC(count)); \
+			const yas::uint8_t size = YAS_PP_INC(count); \
+			ar.write(&size, sizeof(size)); \
 			YAS_PP_REPEAT( \
 				YAS_PP_INC(count), \
 				YAS__BINARY__WRITE_STD_TUPLE_ITEM, \
@@ -121,7 +117,9 @@ namespace detail {
 	> { \
 		template<typename Archive> \
 		static void apply(Archive& ar, std::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
-			YAS__BINARY__READ_AND_CHECK_STD_TUPLE_SIZE(YAS_PP_INC(count)); \
+			yas::uint8_t size = 0; \
+			ar.read(&size, sizeof(size)); \
+			if ( size != YAS_PP_INC(count) ) throw std::runtime_error("size error on deserialize std::tuple"); \
 			YAS_PP_REPEAT( \
 				YAS_PP_INC(count), \
 				YAS__BINARY__READ_STD_TUPLE_ITEM, \
@@ -140,8 +138,13 @@ namespace detail {
 
 /***************************************************************************/
 
+#if _MSC_VER >= 1700
+YAS__BINARY__GENERATE_SAVE_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(_VARIADIC_MAX);
+YAS__BINARY__GENERATE_LOAD_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(_VARIADIC_MAX);
+#else
 YAS__BINARY__GENERATE_SAVE_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(10);
 YAS__BINARY__GENERATE_LOAD_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(10);
+#endif
 
 /***************************************************************************/
 

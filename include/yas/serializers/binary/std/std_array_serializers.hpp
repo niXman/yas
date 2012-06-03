@@ -57,11 +57,11 @@ struct serializer<
 	e_archive_type::binary,
 	e_direction::out,
 	std::array<T, N>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::array<T, N>& array) {
-		ar & static_cast<yas::uint32_t>(N);
+		const yas::uint32_t size = N;
+		ar.write(&size, sizeof(size));
 		if ( is_pod<T>::value ) {
 			ar.write(array.data(), sizeof(T)*N);
 		} else {
@@ -80,12 +80,11 @@ struct serializer<
 	e_archive_type::binary,
 	e_direction::in,
 	std::array<T, N>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, std::array<T, N>& array) {
 		yas::uint32_t size = 0;
-		ar & size;
+		ar.read(&size, sizeof(size));
 		if ( size != N ) throw std::runtime_error("array size is not equal");
 		if ( is_pod<T>::value ) {
 			ar.read(&array[0], sizeof(T)*N);

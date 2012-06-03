@@ -49,16 +49,15 @@ namespace detail {
 
 template<typename K, typename V>
 struct serializer<
-	e_type_type::e_type_type::not_a_pod,
+	e_type_type::not_a_pod,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::binary,
 	e_direction::out,
 	boost::unordered_multimap<K, V>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, const boost::unordered_multimap<K, V>& multimap) {
-		const std::size_t size = multimap.size();
+		const yas::uint32_t size = multimap.size();
 		ar.write(&size, sizeof(size));
 		typename boost::unordered_multimap<K, V>::const_iterator it = multimap.begin();
 		if ( is_pod<K>::value && is_pod<V>::value ) {
@@ -87,16 +86,15 @@ struct serializer<
 
 template<typename K, typename V>
 struct serializer<
-	e_type_type::e_type_type::not_a_pod,
+	e_type_type::not_a_pod,
 	e_ser_method::use_internal_serializer,
 	e_archive_type::binary,
 	e_direction::in,
 	boost::unordered_multimap<K, V>
->
-{
+> {
 	template<typename Archive>
 	static void apply(Archive& ar, boost::unordered_multimap<K, V>& multimap) {
-		std::size_t size = 0;
+		yas::uint32_t size = 0;
 		ar.read(&size, sizeof(size));
 		if ( is_pod<K>::value && is_pod<V>::value ) {
 			K key;

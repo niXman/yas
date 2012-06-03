@@ -54,7 +54,8 @@ struct serializer<
 > {
 	template<typename Archive>
 	static void apply(Archive& ar, const std::list<T>& list) {
-		ar & static_cast<yas::uint32_t>(list.size());
+		const yas::uint32_t size = list.size();
+		ar.write(&size, sizeof(size));
 		if ( detail::is_pod<T>::value ) {
 			typename std::list<T>::const_iterator it = list.begin();
 			for ( ; it != list.end(); ++it ) {
@@ -80,7 +81,7 @@ struct serializer<
 	template<typename Archive>
 	static void apply(Archive& ar, std::list<T>& list) {
 		yas::uint32_t size = 0;
-		ar & size;
+		ar.read(&size, sizeof(size));
 		list.resize(size);
 		if ( detail::is_pod<T>::value ) {
 			typename std::list<T>::iterator it = list.begin();
