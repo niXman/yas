@@ -40,17 +40,19 @@
 #  define YAS_HAS_STD_UNORDERED 1
 #  define YAS_HAS_STD_ARRAY 1
 #  define YAS_HAS_STD_TUPLE 1
-#  define YAS_HAS_DECLTYPE 1
 #  define YAS_HAS_STATIC_ASSERT 1
 #	define YAS_SHARED_BUFFER_USE_STD_SHARED_PTR 1
 #	define YAS_DECLTYPE(T) decltype(T)
+#	define YAS_MOVE(expr) std::move(expr)
+#else
+#	define YAS_MOVE(expr) expr
 #endif
 
 #if (defined(_MSC_VER) && _MSC_VER >= 1700)
 #  define YAS_HAS_ENUM_CLASS 1
 #endif
 
-#ifndef YAS_HAS_DECLTYPE
+#ifndef YAS_DECLTYPE
 //#  error "Please configure!"
 #endif
 

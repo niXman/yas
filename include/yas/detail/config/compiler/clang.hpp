@@ -42,12 +42,12 @@
 #	define YAS_SHARED_BUFFER_USE_STD_SHARED_PTR 1
 #endif
 
-#	define YAS_HAS_STATIC_ASSERT 1
-#	define YAS_HAS_ENUM_CLASS 1
-#	define YAS_HAS_DECLTYPE 1
-#	define YAS_DECLTYPE(T) decltype(T)
+#define YAS_HAS_STATIC_ASSERT 1
+#define YAS_HAS_ENUM_CLASS 1
+#define YAS_DECLTYPE(T) decltype(T)
+#define YAS_MOVE(expr) std::move(expr)
 
-#ifndef YAS_HAS_DECLTYPE
+#ifndef YAS_DECLTYPE
 #  error "Please configure!"
 #endif
 
