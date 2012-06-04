@@ -29,6 +29,7 @@ Supported the following compilers:
 ===
 Planned the support for the following serializable types:
  - all built-in types
+ - enum`s and 'enum class'es
  - std::array
  - std::bitset
  - std::string
