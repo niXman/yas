@@ -30,13 +30,13 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__memstream_hpp__included_
-#define _yas__memstream_hpp__included_
+#ifndef _yas__stream_hpp__included_
+#define _yas__stream_hpp__included_
 
 #include <yas/detail/tools/buffer.hpp>
-#include <yas/detail/io/information.hpp>
 #include <yas/detail/type_traits/properties.hpp>
 
+#include <memory>
 #include <sstream>
 
 namespace yas {
@@ -52,7 +52,7 @@ struct omemstream: std::stringbuf {
 		:std::stringbuf()
 		,buf(default_buffer_size)
 	{
-		stream = new std::ostream(this);
+		stream.reset(new std::ostream(this));
 		setp(buf.data, buf.data+buf.size);
 	}
 
@@ -60,16 +60,18 @@ struct omemstream: std::stringbuf {
 		:std::stringbuf()
 		,buf(size)
 	{
-		stream = new std::ostream(this);
+		stream.reset(new std::ostream(this));
 		setp(buf.data, buf.data+buf.size);
 	}
 
 	omemstream(char* ptr, size_t size)
 		:std::stringbuf()
 	{
-		stream = new std::ostream(this);
+		stream.reset(new std::ostream(this));
 		setp(ptr, ptr+size);
 	}
+
+	virtual ~omemstream() {}
 
 	std::streamsize write(const void* ptr, size_t size) {
 		return sputn(static_cast<const char_type*>(ptr), size);
@@ -119,7 +121,7 @@ private:
 		size_t size;
 	} buf;
 
-	std::ostream* stream;
+	std::auto_ptr<std::ostream> stream;
 };
 
 /***************************************************************************/
@@ -129,7 +131,7 @@ struct imemstream: std::stringbuf {
 	imemstream(const char* ptr, size_t size)
 		:std::stringbuf()
 	{
-		stream = new std::istream(this);
+		stream.reset(new std::istream(this));
 		setg(const_cast<char_type*>(ptr),
 			  const_cast<char_type*>(ptr),
 			  const_cast<char_type*>(ptr)+size
@@ -138,7 +140,7 @@ struct imemstream: std::stringbuf {
 	imemstream(const intrusive_buffer& buf)
 		:std::stringbuf()
 	{
-		stream = new std::istream(this);
+		stream.reset(new std::istream(this));
 		setg(const_cast<char_type*>(static_cast<const char_type*>(buf.data)),
 			  const_cast<char_type*>(static_cast<const char_type*>(buf.data)),
 			  const_cast<char_type*>(static_cast<const char_type*>(buf.data))+buf.size
@@ -150,13 +152,15 @@ struct imemstream: std::stringbuf {
 	imemstream(const shared_buffer& buf)
 		:std::stringbuf()
 	{
-		stream = new std::istream(this);
+		stream.reset(new std::istream(this));
 		setg(const_cast<char_type*>(static_cast<const char_type*>(buf.data.get())),
 			  const_cast<char_type*>(static_cast<const char_type*>(buf.data.get())),
 			  const_cast<char_type*>(static_cast<const char_type*>(buf.data.get()))+buf.size
 		);
 	}
 #endif
+
+	virtual ~imemstream() {}
 
 	std::streamsize read(void* ptr, size_t size) {return sgetn(static_cast<char_type*>(ptr), size);}
 
@@ -165,7 +169,7 @@ struct imemstream: std::stringbuf {
 		return ((*stream) >> v);
 	}
 
-	std::istream* stream;
+	std::auto_ptr<std::istream> stream;
 };
 
 /***************************************************************************/
@@ -173,5 +177,5 @@ struct imemstream: std::stringbuf {
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__memstream_hpp__included_
+#endif // _yas__stream_hpp__included_
 

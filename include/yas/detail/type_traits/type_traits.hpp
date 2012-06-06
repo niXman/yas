@@ -129,13 +129,26 @@ struct remove_all_extents<T const volatile[]>
 
 /***************************************************************************/
 
-template<typename T, typename A1, typename A2, typename A3 = void, typename A4 = void>
-struct is_any_of: bool_
-<
+template<
+	 typename T
+	,typename A1
+	,typename A2
+	,typename A3 = void
+	,typename A4 = void
+	,typename A5 = void
+	,typename A6 = void
+	,typename A7 = void
+	,typename A8 = void
+>
+struct is_any_of: bool_ <
 		is_same<T, A1>::value
 	|| is_same<T, A2>::value
 	|| is_same<T, A3>::value
 	|| is_same<T, A4>::value
+	|| is_same<T, A5>::value
+	|| is_same<T, A6>::value
+	|| is_same<T, A7>::value
+	|| is_same<T, A8>::value
 >
 {};
 

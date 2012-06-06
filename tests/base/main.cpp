@@ -81,19 +81,18 @@ struct archive_traits {
 #endif
 };
 
-template<typename OA, typename IA>
-struct get_specialized_archive;
+template<bool, typename, typename>
+struct get_concrete_archive;
 
-template<>
-struct get_specialized_archive<yas::binary_mem_oarchive, yas::binary_mem_iarchive> {
-	typedef archive_traits<yas::binary_mem_oarchive, yas::binary_mem_iarchive> this_type_traits;
+template<typename OA, typename IA>
+struct get_concrete_archive<true, OA, IA> {
+	typedef archive_traits<OA, IA> this_type_traits;
 
 	static typename this_type_traits::oarchive_ptr ocreate() {
-
 	}
 	static typename this_type_traits::iarchive_ptr icreate(const yas::intrusive_buffer& buf) {
-		typename this_type_traits::iarchive_ptr archive(new this_type_traits::iarchive_type(buf));
-		return archive;
+//		typename this_type_traits::iarchive_ptr archive(new this_type_traits::iarchive_type(buf));
+//		return archive;
 	}
 };
 

@@ -72,29 +72,17 @@ struct serializer<
 		yas::uint8_t size = 0;
 		ar.read(&size, sizeof(size));
 		switch ( size ) {
-			case sizeof(yas::uint8_t): {
-				yas::uint8_t item = 0;
-				ar.read(&item, sizeof(item));
-				v = reinterpret_cast<T&>(item);
-			}
+			case sizeof(yas::uint8_t):
+				ar.read(reinterpret_cast<void*>(&v), sizeof(yas::uint8_t));
 			break;
-			case sizeof(yas::uint16_t): {
-				yas::uint16_t item = 0;
-				ar.read(&item, sizeof(item));
-				v = reinterpret_cast<T&>(item);
-			}
+			case sizeof(yas::uint16_t):
+				ar.read(reinterpret_cast<void*>(&v), sizeof(yas::uint16_t));
 			break;
-			case sizeof(yas::uint32_t): {
-				yas::uint32_t item = 0;
-				ar.read(&item, sizeof(item));
-				v = reinterpret_cast<T&>(item);
-			}
+			case sizeof(yas::uint32_t):
+				ar.read(reinterpret_cast<void*>(&v), sizeof(yas::uint32_t));
 			break;
-			case sizeof(yas::uint64_t): {
-				yas::uint64_t item = 0;
-				ar.read(&item, sizeof(item));
-				v = reinterpret_cast<T&>(item);
-			}
+			case sizeof(yas::uint64_t):
+				ar.read(reinterpret_cast<void*>(&v), sizeof(yas::uint64_t));
 			break;
 			default:
 				throw std::runtime_error("bad size of enum");

@@ -36,13 +36,16 @@
 #include <stddef.h>
 #include <string.h>
 #include <stdexcept>
-#include <sstream>
 
 #include <yas/detail/config/config.hpp>
-#include <yas/detail/version.hpp>
+
+#include <yas/detail/io/stream.hpp>
 #include <yas/detail/tools/static_assert.hpp>
 #include <yas/detail/type_traits/properties.hpp>
+#include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/preprocessor/preprocessor.hpp>
+
+#include <yas/detail/version.hpp>
 
 namespace yas {
 
@@ -71,6 +74,10 @@ struct text_mem_iarchive;
 struct text_file_oarchive;
 struct text_file_iarchive;
 
+struct json_mem_oarchive;
+struct json_mem_iarchive;
+struct json_file_oarchive;
+struct json_file_iarchive;
 } // namespace yas
 
 /***************************************************************************/
@@ -107,30 +114,34 @@ static const char hex_alpha[] = "0123456789ABCDEF";
 
 /***************************************************************************/
 
-template<typename AR>
-struct io_proxy_specializer;
+template<bool>
+struct proxy_io;
+
+/***************************************************************************/
 
 template<>
-struct io_proxy_specializer<yas::binary_mem_iarchive> {
-	static size_t read(yas::binary_mem_iarchive* io, void* ptr, size_t size) {
+struct proxy_io<true> {
+	template<typename IO>
+	static std::streamsize read(IO* stream, void* ptr, size_t size) {
+		return stream->sgetn(static_cast<char*>(ptr), size);
+	}
+	template<typename IO>
+	static std::streamsize write(IO* stream, const void* ptr, size_t size) {
+		return stream->sputn(static_cast<const char*>(ptr), size);
 	}
 };
 
-template<>
-struct io_proxy_specializer<yas::binary_mem_oarchive> {
-	static size_t write(yas::binary_mem_oarchive* io, const void* ptr, size_t size) {
-	}
-};
+/***************************************************************************/
 
 template<>
-struct io_proxy_specializer<std::istream> {
-	static size_t read(std::istream* io, void* ptr, size_t size) {
+struct proxy_io<false> {
+	template<typename IO>
+	static std::streamsize read(IO* stream, void* ptr, size_t size) {
+		return stream->read(static_cast<char*>(ptr), size).gcount();
 	}
-};
-
-template<>
-struct io_proxy_specializer<std::ostream> {
-	static size_t write(std::ostream* io, const void* ptr, size_t size) {
+	template<typename IO>
+	static std::streamsize write(IO* stream, const void* ptr, size_t size) {
+		return stream->write(static_cast<const char*>(ptr), size).good() ? size : -1;
 	}
 };
 
@@ -146,10 +157,20 @@ struct header_reader_writer<e_archive_type::binary> {
 	template<typename Archive>
 	static void read(Archive* ar, yas::header_t op, archive_header& header) {
 		if ( op == yas::no_header ) {return;}
-		typename Archive::char_type raw_header[full_header_size];
-		if ( io_proxy_specializer<Archive>::read(ar, raw_header, full_header_size) != full_header_size ) {
-			throw empty_archive_exception();
-		}
+		char raw_header[full_header_size];
+
+		std::streamsize rd = proxy_io<
+			is_any_of<
+				 Archive
+				,yas::binary_mem_oarchive
+				,yas::binary_mem_iarchive
+				,yas::text_mem_oarchive
+				,yas::text_mem_oarchive
+				,json_mem_oarchive
+				,json_mem_iarchive
+			>::value
+		>::read(ar, raw_header, full_header_size);
+		if ( rd != full_header_size ) { throw empty_archive_exception(); }
 		if ( memcmp(raw_header, yas_id, sizeof(yas_id)) ) {
 			throw bad_archive_information_exception();
 		}
@@ -168,11 +189,18 @@ struct header_reader_writer<e_archive_type::binary> {
 			yas_id[0], yas_id[1], yas_id[2], header.as_char
 		};
 
-		io_proxy_specializer<Archive>::write(ar, buf, full_header_size);
-//		io_proxy_specializer<Archive>::write(ar, yas_id, sizeof(yas_id));
-//		io_proxy_specializer<Archive>::write(ar, &header.as_char, sizeof(header.as_char));
-//		ar->write(yas_id, sizeof(yas_id));
-//		ar->write(&header.as_char, sizeof(header.as_char));
+		std::streamsize wr = proxy_io<
+			is_any_of<
+				 Archive
+				,yas::binary_mem_oarchive
+				,yas::binary_mem_iarchive
+				,yas::text_mem_oarchive
+				,yas::text_mem_oarchive
+				,json_mem_oarchive
+				,json_mem_iarchive
+			>::value
+		>::write(ar, buf, full_header_size);
+		if ( wr != full_header_size ) { throw std::runtime_error("write error"); }
 	}
 };
 
@@ -213,7 +241,7 @@ struct header_reader_writer<e_archive_type::text> {
 		);
 
 		static const typename Archive::char_type raw_header[full_header_size+1] = {
-			 yas_id[0], yas_id[1], yas_id[2]
+			yas_id[0], yas_id[1], yas_id[2]
 			,hex_alpha[(((yas::uint8_t)header.as_char) >> 4) & 0xff]
 			,hex_alpha[((yas::uint8_t)header.as_char) & 15]
 			,' '

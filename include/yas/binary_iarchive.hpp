@@ -38,7 +38,7 @@
 #include <yas/detail/type_traits/has_function_serialize.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 
-#include <yas/detail/io/memstream.hpp>
+#include <yas/detail/io/information.hpp>
 #include <yas/detail/base_object.hpp>
 
 #include <yas/serializers/binary/utility/pod_serializers.hpp>

@@ -38,7 +38,7 @@
 #include <yas/detail/type_traits/has_function_serialize.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 
-#include <yas/detail/io/memstream.hpp>
+#include <yas/detail/io/information.hpp>
 #include <yas/detail/base_object.hpp>
 
 #include <yas/serializers/text/utility/pod_serializers.hpp>
@@ -53,8 +53,8 @@ namespace yas {
 
 /***************************************************************************/
 
-struct text_mem_iarchive
-	:detail::imemstream<text_mem_iarchive>
+struct text_mem_iarchive:
+	 detail::imemstream<text_mem_iarchive>
 	,detail::archive_information<e_archive_type::text, e_direction::in, text_mem_iarchive>
 	,private detail::noncopyable
 {
