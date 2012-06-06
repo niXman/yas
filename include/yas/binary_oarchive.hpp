@@ -33,6 +33,8 @@
 #ifndef _yas__binary_oarchive_hpp__included_
 #define _yas__binary_oarchive_hpp__included_
 
+#include <fstream>
+
 #include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/has_method_serialize.hpp>
 #include <yas/detail/type_traits/has_function_serialize.hpp>
@@ -58,17 +60,41 @@ struct binary_mem_oarchive:
 	,detail::archive_information<e_archive_type::binary, e_direction::out, binary_mem_oarchive>
 	,private detail::noncopyable
 {
-	binary_mem_oarchive(header_t::type op = header_t::with_header)
+	binary_mem_oarchive(header_t op = with_header)
 	{ init_header(this, op); }
-	binary_mem_oarchive(size_t size, header_t::type op = header_t::with_header)
+	binary_mem_oarchive(size_t size, header_t op = with_header)
 		:detail::omemstream<binary_mem_oarchive>(size)
 	{ init_header(this, op); }
-	binary_mem_oarchive(char* ptr, size_t size, header_t::type op = header_t::with_header)
+	binary_mem_oarchive(char* ptr, size_t size, header_t op = with_header)
 		:detail::omemstream<binary_mem_oarchive>(ptr, size)
 	{ init_header(this, op); }
 
 	template<typename T>
 	binary_mem_oarchive& operator& (const T& v) {
+		using namespace detail;
+		serializer<
+			type_propertyes<T>::value,
+			serialization_method<T, binary_mem_oarchive>::value,
+			e_archive_type::binary,
+			e_direction::out,
+			T
+		>::apply(*this, v);
+
+		return *this;
+	}
+};
+
+/***************************************************************************/
+
+struct binary_file_oarchive:
+	 detail::archive_information<e_archive_type::binary, e_direction::out, std::ostream>
+	,private detail::noncopyable
+{
+	binary_file_oarchive(std::ostream& file, header_t op = with_header)
+	{ init_header(&file, op); }
+
+	template<typename T>
+	binary_file_oarchive& operator& (const T& v) {
 		using namespace detail;
 		serializer<
 			type_propertyes<T>::value,

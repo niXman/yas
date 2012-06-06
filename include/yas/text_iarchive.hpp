@@ -58,21 +58,21 @@ struct text_mem_iarchive
 	,detail::archive_information<e_archive_type::text, e_direction::in, text_mem_iarchive>
 	,private detail::noncopyable
 {
-	text_mem_iarchive(const intrusive_buffer& o, header_t::type op = header_t::with_header)
+	text_mem_iarchive(const intrusive_buffer& o, header_t op = with_header)
 		:detail::imemstream<text_mem_iarchive>(o)
 	{ init_header(this, op); }
 
 #if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || \
 	defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
-	text_mem_iarchive(const shared_buffer& o, header_t::type op = header_t::with_header)
+	text_mem_iarchive(const shared_buffer& o, header_t op = with_header)
 		:detail::imemstream<text_mem_iarchive>(o)
 	{ init_header(this, op); }
 #endif
 
-	text_mem_iarchive(const std::string& o, header_t::type op = header_t::with_header)
+	text_mem_iarchive(const std::string& o, header_t op = with_header)
 		:detail::imemstream<text_mem_iarchive>(o.c_str(), o.size())
 	{ init_header(this, op); }
-	text_mem_iarchive(const char* ptr, size_t size, header_t::type op = header_t::with_header)
+	text_mem_iarchive(const char* ptr, size_t size, header_t op = with_header)
 		:detail::imemstream<text_mem_iarchive>(ptr, size)
 	{ init_header(this, op); }
 

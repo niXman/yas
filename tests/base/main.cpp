@@ -66,6 +66,41 @@
 /***************************************************************************/
 
 template<typename OA, typename IA>
+struct archive_traits {
+	typedef OA oarchive_type;
+	typedef IA iarchive_type;
+#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR)
+	typedef std::shared_ptr<oarchive_type> oarchive_ptr;
+	typedef std::shared_ptr<iarchive_type> iarchive_ptr;
+#elif defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
+	typedef boost::shared_ptr<oarchive_type> oarchive_ptr;
+	typedef boost::shared_ptr<iarchive_type> iarchive_ptr;
+#else
+	typedef OA *oarchive_ptr;
+	typedef IA *iarchive_ptr;
+#endif
+};
+
+template<typename OA, typename IA>
+struct get_specialized_archive;
+
+template<>
+struct get_specialized_archive<yas::binary_mem_oarchive, yas::binary_mem_iarchive> {
+	typedef archive_traits<yas::binary_mem_oarchive, yas::binary_mem_iarchive> this_type_traits;
+
+	static typename this_type_traits::oarchive_ptr ocreate() {
+
+	}
+	static typename this_type_traits::iarchive_ptr icreate(const yas::intrusive_buffer& buf) {
+		typename this_type_traits::iarchive_ptr archive(new this_type_traits::iarchive_type(buf));
+		return archive;
+	}
+};
+
+
+/***************************************************************************/
+
+template<typename OA, typename IA>
 void tests(yas::uint32_t& p, yas::uint32_t& e) {
 	static const char* archive_type =
 	yas::is_binary_archive<OA>::value ? "binary:"

@@ -58,10 +58,10 @@ struct text_mem_oarchive
 	,detail::archive_information<e_archive_type::text, e_direction::out, text_mem_oarchive>
 	,private detail::noncopyable
 {
-	text_mem_oarchive(header_t::type op = header_t::with_header)
+	text_mem_oarchive(header_t op = with_header)
 		:detail::omemstream<text_mem_oarchive>()
 	{ init_header(this, op); }
-	text_mem_oarchive(char* ptr, size_t size, header_t::type op = header_t::with_header)
+	text_mem_oarchive(char* ptr, size_t size, header_t op = with_header)
 		:detail::omemstream<text_mem_oarchive>(ptr, size)
 	{ init_header(this, op); }
 

@@ -39,11 +39,9 @@ namespace yas {
 
 /***************************************************************************/
 
-struct header_t {
-	enum type {
-		 with_header
-		,no_header
-	};
+enum header_t {
+	 with_header
+	,no_header
 };
 
 struct e_archive_type {
