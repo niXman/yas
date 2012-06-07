@@ -41,8 +41,8 @@
 
 #include <yas/detail/io/stream.hpp>
 #include <yas/detail/tools/static_assert.hpp>
-#include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/type_traits.hpp>
+#include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/preprocessor/preprocessor.hpp>
 
 #include <yas/detail/version.hpp>
@@ -61,23 +61,6 @@ struct no_header_exception: std::exception {
 	const char* what() const throw() {return "you cannot use information functions with \"no_header\" flag";}
 };
 
-/***************************************************************************/
-
-/** forwards for archive types */
-struct binary_mem_oarchive;
-struct binary_mem_iarchive;
-struct binary_file_oarchive;
-struct binary_file_iarchive;
-
-struct text_mem_oarchive;
-struct text_mem_iarchive;
-struct text_file_oarchive;
-struct text_file_iarchive;
-
-struct json_mem_oarchive;
-struct json_mem_iarchive;
-struct json_file_oarchive;
-struct json_file_iarchive;
 } // namespace yas
 
 /***************************************************************************/
@@ -160,15 +143,7 @@ struct header_reader_writer<e_archive_type::binary> {
 		char raw_header[full_header_size];
 
 		std::streamsize rd = proxy_io<
-			is_any_of<
-				 Archive
-				,yas::binary_mem_oarchive
-				,yas::binary_mem_iarchive
-				,yas::text_mem_oarchive
-				,yas::text_mem_oarchive
-				,json_mem_oarchive
-				,json_mem_iarchive
-			>::value
+			yas::is_mem_archive<Archive>::value
 		>::read(ar, raw_header, full_header_size);
 		if ( rd != full_header_size ) { throw empty_archive_exception(); }
 		if ( memcmp(raw_header, yas_id, sizeof(yas_id)) ) {
@@ -190,15 +165,7 @@ struct header_reader_writer<e_archive_type::binary> {
 		};
 
 		std::streamsize wr = proxy_io<
-			is_any_of<
-				 Archive
-				,yas::binary_mem_oarchive
-				,yas::binary_mem_iarchive
-				,yas::text_mem_oarchive
-				,yas::text_mem_oarchive
-				,json_mem_oarchive
-				,json_mem_iarchive
-			>::value
+			yas::is_mem_archive<Archive>::value
 		>::write(ar, buf, full_header_size);
 		if ( wr != full_header_size ) { throw std::runtime_error("write error"); }
 	}

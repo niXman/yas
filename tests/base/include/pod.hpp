@@ -33,9 +33,9 @@
 #ifndef _yas_test__pod_hpp__included_
 #define _yas_test__pod_hpp__included_
 
-template<typename OA, typename IA>
-bool pod_test() {
-	OA oa;
+template<typename archive_traits>
+bool pod_test(const char* archive_type) {
+	typename archive_traits::oarchive_ptr oa = archive_traits::ocreate(archive_type);
 
 	char c = '1', cc;
 	signed char sc = '2', sc2;
@@ -45,7 +45,7 @@ bool pod_test() {
 	long l = 4, ll;
 	float f = 3.14f, ff;
 	double d = 3.14, dd;
-	oa & c
+	*oa & c
 		& sc
 		& uc
 		& s
@@ -54,7 +54,7 @@ bool pod_test() {
 		& f
 		& d;
 
-	if ( yas::is_binary_archive<OA>::value ) {
+	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
 		const size_t expected =
 			4+ // archive information
 			sizeof(c)+
@@ -66,18 +66,18 @@ bool pod_test() {
 			sizeof(f)+
 			sizeof(d)
 		;
-		if ( oa.get_intrusive_buffer().size != expected ) {
+		if ( oa->get_intrusive_buffer().size != expected ) {
 			std::cout
 			<< "POD test failed! bad size of serialized archive! expected = " << expected
-			<< ", current = " << oa.get_intrusive_buffer().size << std::endl;
+			<< ", current = " << oa->get_intrusive_buffer().size << std::endl;
 			return false;
 		}
 	} else {
 		//std::cout.write(oa.beg(), oa.size()) << std::endl;
 	}
 
-	IA ia(oa.get_intrusive_buffer());
-	ia & cc
+	typename archive_traits::iarchive_ptr ia = archive_traits::icreate(archive_type, oa->get_intrusive_buffer());
+	*ia & cc
 		& sc2
 		& uc2
 		& ss

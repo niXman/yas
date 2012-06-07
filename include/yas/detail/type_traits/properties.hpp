@@ -34,6 +34,7 @@
 #define _yas__properties_hpp__included_
 
 #include <yas/detail/mpl/bool.hpp>
+#include <yas/detail/type_traits/type_traits.hpp>
 
 namespace yas {
 
@@ -77,6 +78,38 @@ struct is_readable_archive: detail::bool_<Ar::_is_readable>
 
 template<typename Ar>
 struct is_writable_archive: detail::bool_<Ar::_is_writable>
+{};
+
+/***************************************************************************/
+
+/** forwards for archive types */
+struct binary_mem_oarchive;
+struct binary_mem_iarchive;
+struct binary_file_oarchive;
+struct binary_file_iarchive;
+
+struct text_mem_oarchive;
+struct text_mem_iarchive;
+struct text_file_oarchive;
+struct text_file_iarchive;
+
+struct json_mem_oarchive;
+struct json_mem_iarchive;
+struct json_file_oarchive;
+struct json_file_iarchive;
+
+template<typename Ar>
+struct is_mem_archive: detail::bool_ <
+	detail::is_any_of<
+		 Ar
+		,yas::binary_mem_oarchive
+		,yas::binary_mem_iarchive
+		,yas::text_mem_oarchive
+		,yas::text_mem_oarchive
+		,json_mem_oarchive
+		,json_mem_iarchive
+	>::value
+>
 {};
 
 /***************************************************************************/

@@ -72,6 +72,7 @@ struct binary_mem_iarchive:
 	binary_mem_iarchive(const std::string& o, header_t op = with_header)
 		:detail::imemstream<binary_mem_iarchive>(o.c_str(), o.size())
 	{ init_header(this, op); }
+
 	binary_mem_iarchive(const char* ptr, size_t size, header_t op = with_header)
 		:detail::imemstream<binary_mem_iarchive>(ptr, size)
 	{ init_header(this, op); }

@@ -62,9 +62,11 @@ struct binary_mem_oarchive:
 {
 	binary_mem_oarchive(header_t op = with_header)
 	{ init_header(this, op); }
+
 	binary_mem_oarchive(size_t size, header_t op = with_header)
 		:detail::omemstream<binary_mem_oarchive>(size)
 	{ init_header(this, op); }
+
 	binary_mem_oarchive(char* ptr, size_t size, header_t op = with_header)
 		:detail::omemstream<binary_mem_oarchive>(ptr, size)
 	{ init_header(this, op); }

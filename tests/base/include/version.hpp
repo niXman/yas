@@ -33,35 +33,39 @@
 #ifndef _yas_test__version_hpp__included_
 #define _yas_test__version_hpp__included_
 
-template<typename OA, typename IA>
-bool version_test() {
-	OA oa;
-	IA ia(oa.get_intrusive_buffer());
+template<typename archive_traits>
+bool version_test(const char* archive_type) {
+	typename archive_traits::oarchive_ptr oa = archive_traits::ocreate(archive_type);
+	typename archive_traits::iarchive_ptr ia = archive_traits::icreate(archive_type, oa->get_intrusive_buffer());
 
-	if ( oa.archive_type() != ia.archive_type() ) {
+	if ( oa->archive_type() != ia->archive_type() ) {
 		std::cout << "VERSION test failed! archive type is not equal! [1]" << std::endl;
 		return false;
 	}
-	if ( oa.bits() != ia.bits() ) {
+	if ( oa->bits() != ia->bits() ) {
 		std::cout << "VERSION test failed! archive bits is not equal! [2]" << std::endl;
 		return false;
 	}
-	if ( oa.version() != ia.version() ) {
+	if ( oa->version() != ia->version() ) {
 		std::cout << "VERSION test failed! archive versions is not equal! [3]" << std::endl;
 		return false;
 	}
 
-	if ( yas::is_binary_archive<OA>::value ) {
-		if ( oa.header_size() != OA::_header_size || OA::_header_size != sizeof(yas::uint32_t) ) {
+	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
+		if ( oa->header_size() != archive_traits::oarchive_type::_header_size ||
+			  archive_traits::oarchive_type::_header_size != sizeof(yas::uint32_t)
+		) {
 			std::cout << "VERSION test failed! bad archive header size! [4]" << std::endl;
 			return false;
 		}
-	} else if ( yas::is_text_archive<OA>::value ) {
-		if ( oa.header_size() != OA::_header_size || OA::_header_size != 5 /** see information.hpp */ ) {
+	} else if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
+		if ( oa->header_size() != archive_traits::oarchive_type::_header_size ||
+			  archive_traits::oarchive_type::_header_size != 5 /** see information.hpp */
+		) {
 			std::cout << "VERSION test failed! bad archive header size! [5]" << std::endl;
 			return false;
 		}
-	} else if ( yas::is_json_archive<OA>::value ) {
+	} else if ( yas::is_json_archive<typename archive_traits::oarchive_type>::value ) {
 	} else {
 		std::cout << "VERSION test failed! bad archive type! [6]" << std::endl;
 		return false;
