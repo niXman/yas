@@ -72,16 +72,16 @@ template<typename OA, typename IA>
 struct concrete_archive_traits<true, OA, IA> {
 	typedef OA oarchive_type;
 	typedef IA iarchive_type;
-#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR)
-	typedef std::shared_ptr<oarchive_type> oarchive_ptr;
-	typedef std::shared_ptr<iarchive_type> iarchive_ptr;
-#elif defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
-	typedef boost::shared_ptr<oarchive_type> oarchive_ptr;
-	typedef boost::shared_ptr<iarchive_type> iarchive_ptr;
-#else
+//#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR)
+//	typedef std::shared_ptr<oarchive_type> oarchive_ptr;
+//	typedef std::shared_ptr<iarchive_type> iarchive_ptr;
+//#elif defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
+//	typedef boost::shared_ptr<oarchive_type> oarchive_ptr;
+//	typedef boost::shared_ptr<iarchive_type> iarchive_ptr;
+//#else
 	typedef std::auto_ptr<OA> oarchive_ptr;
 	typedef std::auto_ptr<IA> iarchive_ptr;
-#endif
+//#endif
 
 	static oarchive_ptr ocreate(const char*) {
 		oarchive_ptr archive(new oarchive_type);
@@ -98,41 +98,42 @@ template<typename OA, typename IA>
 struct concrete_archive_traits<false, OA, IA> {
 	typedef OA oarchive_type;
 	typedef IA iarchive_type;
-#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR)
-	typedef std::shared_ptr<oprivate_data> oarchive_ptr;
-	typedef std::shared_ptr<iprivate_data> iarchive_ptr;
-#elif defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
-	typedef boost::shared_ptr<oprivate_data> oarchive_ptr;
-	typedef boost::shared_ptr<iprivate_data> iarchive_ptr;
-#else
-	typedef std::auto_ptr<oprivate_data> oarchive_ptr;
-	typedef std::auto_ptr<iprivate_data> iarchive_ptr;
-#endif
+
+	struct oarchive_ptr {
+		oarchive_ptr(const std::string& fname) {
+			file.reset(new std::ofstream(fname));
+			archive.reset(new OA(*file));
+		}
+		oarchive_ptr(const oarchive_ptr& r)
+		{file=r.file;archive=r.archive;}
+
+		OA* operator->() { return archive.get(); }
+
+	private:
+		std::auto_ptr<std::ofstream> file;
+		std::auto_ptr<OA> archive;
+	};
+
+	struct iarchive_ptr {
+		iarchive_ptr(const std::string& fname) {
+			file.reset(new std::ifstream(fname));
+			archive.reset(new IA(*file));
+		}
+
+		IA* operator->() { return archive.get(); }
+	private:
+		std::auto_ptr<std::ifstream> file;
+		std::auto_ptr<IA> archive;
+	};
 
 	static oarchive_ptr ocreate(const char* archive_type) {
 		static const std::string filename("test."); filename += archive_type;
-
-		std::ofstream file(filename);
-		oarchive_ptr archive(new oarchive_type(file));
-		return archive;
+		return oarchive_ptr(filename);
 	}
 	static iarchive_ptr icreate(const char* archive_type) {
 		static const std::string filename("test."); filename += archive_type;
-
-		std::ifstream file(filename);
-		iarchive_ptr archive(new iarchive_type(file));
-		return archive;
+		return iarchive_ptr(filename);
 	}
-
-private:
-	struct oprivate_data {
-		std::ofstream file;
-		OA archive;
-	};
-	struct iprivate_data {
-		std::ifstream file;
-		IA archive;
-	};
 };
 
 /***************************************************************************/
@@ -215,6 +216,7 @@ int main() {
 	yas::uint32_t failed = 0;
 
 	tests<yas::binary_mem_oarchive, yas::binary_mem_iarchive>(passed, failed);
+	//tests<yas::binary_file_oarchive, yas::binary_file_iarchive>(passed, failed);
 	tests<yas::text_mem_oarchive, yas::text_mem_iarchive>(passed, failed);
 	//tests<yas::json_mem_oarchive, yas::json_mem_iarchive>(passed, failed);
 

@@ -313,7 +313,7 @@ YAS_WRITE_ARCHIVE_INFORMATION_SPECIALIZATIONS(
 	(e_archive_type::binary)
 	(e_archive_type::text)
 	(e_archive_type::json)
-);
+)
 
 /***************************************************************************/
 

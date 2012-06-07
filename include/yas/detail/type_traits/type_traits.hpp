@@ -197,7 +197,7 @@ YAS_WRITE_POD_SPECIALIZATIONS(
 	((is_pod, long double))
 	((is_pod, double))
 	((is_pod, float))
-);
+)
 
 /***************************************************************************/
 

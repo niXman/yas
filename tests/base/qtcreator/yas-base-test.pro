@@ -16,7 +16,8 @@ DEFINES += \
 #QMAKE_CXX = clang++
 
 QMAKE_CXXFLAGS += \
-	-std=c++0x
+	-std=c++0x \
+	-pedantic
 
 INCLUDEPATH += \
 	../../../include \
