@@ -36,7 +36,7 @@
 template<typename archive_traits>
 bool version_test(const char* archive_type) {
 	typename archive_traits::oarchive_ptr oa = archive_traits::ocreate(archive_type);
-	typename archive_traits::iarchive_ptr ia = archive_traits::icreate(archive_type, oa->get_intrusive_buffer());
+	typename archive_traits::iarchive_ptr ia = archive_traits::icreate(archive_type, oa);
 
 	if ( oa->archive_type() != ia->archive_type() ) {
 		std::cout << "VERSION test failed! archive type is not equal! [1]" << std::endl;

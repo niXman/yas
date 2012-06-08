@@ -72,24 +72,17 @@ template<typename OA, typename IA>
 struct concrete_archive_traits<true, OA, IA> {
 	typedef OA oarchive_type;
 	typedef IA iarchive_type;
-//#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR)
-//	typedef std::shared_ptr<oarchive_type> oarchive_ptr;
-//	typedef std::shared_ptr<iarchive_type> iarchive_ptr;
-//#elif defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
-//	typedef boost::shared_ptr<oarchive_type> oarchive_ptr;
-//	typedef boost::shared_ptr<iarchive_type> iarchive_ptr;
-//#else
-	typedef std::auto_ptr<OA> oarchive_ptr;
-	typedef std::auto_ptr<IA> iarchive_ptr;
-//#endif
+	typedef std::shared_ptr<OA> oarchive_ptr;
+	typedef std::shared_ptr<IA> iarchive_ptr;
 
-	static oarchive_ptr ocreate(const char*) {
+	static oarchive_ptr ocreate(const char* archive_type = 0) {
+		((void)archive_type);
 		oarchive_ptr archive(new oarchive_type);
 		return archive;
 	}
-	static iarchive_ptr icreate(const char*) { return 0; }
-	static iarchive_ptr icreate(const char*, const yas::intrusive_buffer& buf) {
-		iarchive_ptr archive(new iarchive_type(buf));
+	static iarchive_ptr icreate(const char* archive_type, oarchive_ptr ptr) {
+		((void)archive_type);
+		iarchive_ptr archive(new iarchive_type(ptr->get_intrusive_buffer()));
 		return archive;
 	}
 };
@@ -100,41 +93,73 @@ struct concrete_archive_traits<false, OA, IA> {
 	typedef IA iarchive_type;
 
 	struct oarchive_ptr {
-		oarchive_ptr(const std::string& fname) {
-			file.reset(new std::ofstream(fname));
-			archive.reset(new OA(*file));
+		oarchive_ptr(const char* archive_type) {
+			_pimpl.reset(new pimpl(archive_type));
 		}
-		oarchive_ptr(const oarchive_ptr& r)
-		{file=r.file;archive=r.archive;}
+		oarchive_ptr(const oarchive_ptr& ptr) {
+			pimpl* elem = ptr._pimpl.release();
+			_pimpl.reset(elem);
+		}
 
-		OA* operator->() { return archive.get(); }
+		OA* operator->() { return &_pimpl->archive; }
+		const std::string& name() const { return _pimpl->fname; }
 
 	private:
-		std::auto_ptr<std::ofstream> file;
-		std::auto_ptr<OA> archive;
+		struct pimpl {
+			pimpl(const char* archive_type) {
+				std::ostringstream os;
+				os
+				<< getcwd(0, 0) << "/" << counter++ << "." << archive_type;
+				fname = os.str();
+				file.open(fname);
+				if ( !file ) throw std::runtime_error("cannot open file");
+			}
+
+			~pimpl() {
+				file.close();
+				remove(fname.c_str());
+				--counter;
+			}
+
+			std::string fname;
+			std::ofstream file;
+			OA archive;
+			static int counter;
+		};
+		std::auto_ptr<pimpl> _pimpl;
 	};
 
 	struct iarchive_ptr {
 		iarchive_ptr(const std::string& fname) {
-			file.reset(new std::ifstream(fname));
-			archive.reset(new IA(*file));
+			_pimpl.reset(new pimpl(fname));
+		}
+		iarchive_ptr(const iarchive_ptr& ptr) {
+			pimpl* elem = ptr._pimpl.release();
+			_pimpl.reset(elem);
 		}
 
-		IA* operator->() { return archive.get(); }
+		IA& operator*() { return _pimpl->archive; }
+		IA* operator->() { return &_pimpl->archive; }
 	private:
-		std::auto_ptr<std::ifstream> file;
-		std::auto_ptr<IA> archive;
+		struct pimpl {
+			pimpl(const std::string& fname) {
+				file.open(fname);
+				if ( !file ) throw std::runtime_error("cannot open file");
+			}
+			std::ifstream file;
+			IA archive;
+		};
+		std::auto_ptr<pimpl> _pimpl;
 	};
 
 	static oarchive_ptr ocreate(const char* archive_type) {
-		static const std::string filename("test."); filename += archive_type;
-		return oarchive_ptr(filename);
 	}
-	static iarchive_ptr icreate(const char* archive_type) {
-		static const std::string filename("test."); filename += archive_type;
-		return iarchive_ptr(filename);
+	static iarchive_ptr icreate(const char* archive_type, oarchive_ptr ptr) {
 	}
 };
+
+template<typename OA, typename IA>
+int concrete_archive_traits<false, OA, IA>::oarchive_ptr::pimpl::counter = 0;
 
 /***************************************************************************/
 
@@ -156,52 +181,52 @@ void tests(yas::uint32_t& p, yas::uint32_t& e) {
 	static const char* passed = "passed";
 	static const char* failed = "failed!";
 
-	printf("%8s: VERSION          test %s\n", archive_type, (version_test<concrete_traits>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%8s: POD              test %s\n", archive_type, (pod_test<concrete_traits>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%6s: VERSION          test %s\n", archive_type, (version_test<concrete_traits>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%6s: POD              test %s\n", archive_type, (pod_test<concrete_traits>(archive_type)?(++p,passed):(++e,failed)));
 #if 0
-	printf("%s ENUM               test %s\n", archive_type, (enum_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%s BASE_OBJECT        test %s\n", archive_type, (base_object_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%s AUTO_ARRAY         test %s\n", archive_type, (auto_array_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s ENUM               test %s\n", archive_type, (enum_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s BASE_OBJECT        test %s\n", archive_type, (base_object_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s AUTO_ARRAY         test %s\n", archive_type, (auto_array_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
 #if defined(YAS_HAS_BOOST_ARRAY) || defined(YAS_HAS_STD_ARRAY)
-	printf("%s ARRAY              test %s\n", archive_type, (array_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s ARRAY              test %s\n", archive_type, (array_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
 #endif
-	printf("%s BITSET             test %s\n", archive_type, (bitset_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s BITSET             test %s\n", archive_type, (bitset_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
 #if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
-	printf("%s BUFFER             test %s\n", archive_type, (buffer_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s BUFFER             test %s\n", archive_type, (buffer_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
 #endif
-	printf("%s STRING             test %s\n", archive_type, (string_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%s WSTRING            test %s\n", archive_type, (wstring_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%s PAIR               test %s\n", archive_type, (pair_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s STRING             test %s\n", archive_type, (string_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s WSTRING            test %s\n", archive_type, (wstring_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s PAIR               test %s\n", archive_type, (pair_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
 #if defined(YAS_HAS_BOOST_TUPLE) || defined(YAS_HAS_STD_TUPLE)
-	printf("%s TUPLE              test %s\n", archive_type, (tuple_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s TUPLE              test %s\n", archive_type, (tuple_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
 #endif
-	printf("%s VECTOR             test %s\n", archive_type, (vector_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%s LIST               test %s\n", archive_type, (list_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s VECTOR             test %s\n", archive_type, (vector_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s LIST               test %s\n", archive_type, (list_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
 #if defined(YAS_HAS_STD_FORWARD_LIST)
-	printf("%s FORWARD_LIST       test %s\n", archive_type, (forward_list_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s FORWARD_LIST       test %s\n", archive_type, (forward_list_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
 #endif
-	printf("%s MAP                test %s\n", archive_type, (map_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%s SET                test %s\n", archive_type, (set_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%s MULTIMAP           test %s\n", archive_type, (multimap_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%s MULTISET           test %s\n", archive_type, (multiset_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s MAP                test %s\n", archive_type, (map_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s SET                test %s\n", archive_type, (set_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s MULTIMAP           test %s\n", archive_type, (multimap_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s MULTISET           test %s\n", archive_type, (multiset_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
 #if defined(YAS_HAS_BOOST_UNORDERED) || defined(YAS_HAS_STD_UNORDERED)
-	printf("%s UNORDERED_MAP      test %s\n", archive_type, (unordered_map_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%s UNORDERED_SET      test %s\n", archive_type, (unordered_set_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%s UNORDERED_MULTIMAP test %s\n", archive_type, (unordered_multimap_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%s UNORDERED_MULTISET test %s\n", archive_type, (unordered_multiset_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s UNORDERED_MAP      test %s\n", archive_type, (unordered_map_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s UNORDERED_SET      test %s\n", archive_type, (unordered_set_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s UNORDERED_MULTIMAP test %s\n", archive_type, (unordered_multimap_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s UNORDERED_MULTISET test %s\n", archive_type, (unordered_multiset_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
 #endif
 #if defined(YAS_HAS_BOOST_FUSION)
-	printf("%s FUSION_PAIR        test %s\n", archive_type, (fusion_pair_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%s FUSION_TUPLE       test %s\n", archive_type, (fusion_tuple_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%s FUSION_VECTOR      test %s\n", archive_type, (fusion_vector_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%s FUSION_LIST        test %s\n", archive_type, (fusion_list_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-//   printf("%s FUSION_SET         test %s\n", archive_type, (fusion_set_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-//   printf("%s FUSION_MAP         test %s\n", archive_type, (fusion_map_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s FUSION_PAIR        test %s\n", archive_type, (fusion_pair_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s FUSION_TUPLE       test %s\n", archive_type, (fusion_tuple_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s FUSION_VECTOR      test %s\n", archive_type, (fusion_vector_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s FUSION_LIST        test %s\n", archive_type, (fusion_list_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+//   printf("%8s FUSION_SET         test %s\n", archive_type, (fusion_set_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+//   printf("%8s FUSION_MAP         test %s\n", archive_type, (fusion_map_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
 #endif
-	printf("%s ONE_FUNCTION       test %s\n", archive_type, (one_function_serializer_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%s SPLIT_FUNCTIONS    test %s\n", archive_type, (split_functions_serializer_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%s ONE_METHOD         test %s\n", archive_type, (one_method_serializer_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%s SPLIT_METHODS      test %s\n", archive_type, (split_methods_serializer_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s ONE_FUNCTION       test %s\n", archive_type, (one_function_serializer_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s SPLIT_FUNCTIONS    test %s\n", archive_type, (split_functions_serializer_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s ONE_METHOD         test %s\n", archive_type, (one_method_serializer_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	printf("%8s SPLIT_METHODS      test %s\n", archive_type, (split_methods_serializer_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
 #endif
 }
 
@@ -216,13 +241,13 @@ int main() {
 	yas::uint32_t failed = 0;
 
 	tests<yas::binary_mem_oarchive, yas::binary_mem_iarchive>(passed, failed);
-	//tests<yas::binary_file_oarchive, yas::binary_file_iarchive>(passed, failed);
+	tests<yas::binary_file_oarchive, yas::binary_file_iarchive>(passed, failed);
 	tests<yas::text_mem_oarchive, yas::text_mem_iarchive>(passed, failed);
 	//tests<yas::json_mem_oarchive, yas::json_mem_iarchive>(passed, failed);
 
 	std::cout << std::endl
 	<< "/***************************************************/" << std::endl
-	<< "> platform bits: " << (YAS_PLATFORM_BITS_IS_64()?64:32) << std::endl
+	<< "> platform bits: " << (YAS_PLATFORM_BITS()) << std::endl
 	<< "> passed tests : " << passed << std::endl
 	<< "> failed tests : " << failed << std::endl
 	<< "/***************************************************/" << std::endl;
