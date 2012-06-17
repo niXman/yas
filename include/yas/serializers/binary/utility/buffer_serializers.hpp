@@ -1,4 +1,3 @@
-
 // Copyright (c) 2010-2012 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
@@ -93,7 +92,11 @@ struct serializer<
 		yas::uint32_t size = 0;
 		ar.read(&size, sizeof(size));
 		buf.data.reset(new char[size+1], &shared_buffer::deleter);
-		assert(ar.read(buf.data.get(), size) == size);
+		assert(
+			static_cast<yas::uint32_t>(ar.read(buf.data.get(), size))
+			==
+			static_cast<yas::uint32_t>(size)
+		);
 		buf.size = size;
 		buf.data.get()[size] = 0;
 	}
