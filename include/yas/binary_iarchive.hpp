@@ -1,4 +1,3 @@
-
 // Copyright (c) 2010-2012 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
@@ -106,7 +105,7 @@ struct binary_file_iarchive:
 		using namespace detail;
 		serializer<
 			type_propertyes<T>::value,
-			serialization_method<T, binary_mem_iarchive>::value,
+			serialization_method<T, binary_file_iarchive>::value,
 			e_archive_type::binary,
 			e_direction::in,
 			T
