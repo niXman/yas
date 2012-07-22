@@ -69,7 +69,7 @@ bool pod_test(const char* archive_type, const char* io_type) {
 		& dd;
 
 	if ( c != cc || sc != sc2 || sc != sc2 || s != ss || i != ii || l != ll || f != ff || d != dd ) {
-		std::cout << "POD deserialization result error!" << std::endl;
+		std::cout << "POD deserialization error!" << std::endl;
 		return false;
 	}
 

@@ -133,8 +133,8 @@ std::string split_methods_speed_test(yas::uint32_t iterations, const char* archi
 	boost_time=clock()-start;
 
 	os
-	<< "      boost time: " << (boost_time/(CLOCKS_PER_SEC/1000)) << " ms." << std::endl
-	<< "      boost size: " << boost_size << std::endl;
+	<< "      boost time: " << (boost_time/(CLOCKS_PER_SEC/1000)) << " ms." << std::endl;
+//	<< "      boost size: " << boost_size << std::endl;
 #endif
 
 	start = clock();
@@ -149,7 +149,7 @@ std::string split_methods_speed_test(yas::uint32_t iterations, const char* archi
 
 	os
 	<< "      yas time  : " << (yas_time/(CLOCKS_PER_SEC/1000)) << " ms." << std::endl
-	<< "      yas size  : " << oa.get_intrusive_buffer().size << std::endl
+//	<< "      yas size  : " << oa.get_intrusive_buffer().size << std::endl
 	<< "      speed up  : " << (((double)boost_time)/((double)yas_time)) << std::endl;
 
 	return os.str();

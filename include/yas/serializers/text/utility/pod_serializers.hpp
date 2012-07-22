@@ -53,16 +53,16 @@ struct serializer<
 	static void apply(Archive& ar, const T& v) {
 		switch ( sizeof(T) ) {
 			case sizeof(yas::uint8_t):
-				ar << static_cast<yas::uint8_t>(v) << ' ';
+				ar << ' ' << static_cast<yas::uint8_t>(v);
 			break;
 			case sizeof(yas::uint16_t):
-				ar << static_cast<yas::uint16_t>(v) << ' ';
+				ar << ' ' << static_cast<yas::uint16_t>(v);
 			break;
 			case sizeof(yas::uint32_t):
-				ar << static_cast<yas::uint32_t>(v) << ' ';
+				ar << ' ' << static_cast<yas::uint32_t>(v);
 			break;
 			case sizeof(yas::uint64_t):
-				ar << static_cast<yas::uint64_t>(v) << ' ';
+				ar << ' ' << static_cast<yas::uint64_t>(v);
 			break;
 		}
 	}
@@ -78,18 +78,19 @@ struct serializer<
 > {
 	template<typename Archive>
 	static void apply(Archive& ar, T& v) {
+		ar.get();
 		switch ( sizeof(T) ) {
 			case sizeof(yas::uint8_t):
-				(ar >> reinterpret_cast<yas::uint8_t&>(v)).get();
+				ar >> reinterpret_cast<yas::uint8_t&>(v);
 			break;
 			case sizeof(yas::uint16_t):
-				(ar >> reinterpret_cast<yas::uint16_t&>(v)).get();
+				ar >> reinterpret_cast<yas::uint16_t&>(v);
 			break;
 			case sizeof(yas::uint32_t):
-				(ar >> reinterpret_cast<yas::uint32_t&>(v)).get();
+				ar >> reinterpret_cast<yas::uint32_t&>(v);
 			break;
 			case sizeof(yas::uint64_t):
-				(ar >> reinterpret_cast<yas::uint64_t&>(v)).get();
+				ar >> reinterpret_cast<yas::uint64_t&>(v);
 			break;
 		}
 	}
@@ -118,7 +119,7 @@ struct serializer<
 		,typename U
 	>
 	static void apply(Archive& ar, const U& v, typename disable_if<is_any_of<U, char, signed char> >::type* = 0) {
-		ar << v << ' ';
+		ar << ' ' << v;
 	}
 };
 
@@ -143,7 +144,8 @@ struct serializer<
 		,typename U
 	>
 	static void apply(Archive& ar, U& v, typename disable_if<is_any_of<U, char, signed char> >::type* = 0) {
-		(ar >> v).get();
+		ar.get();
+		ar >> v;
 	}
 };
 

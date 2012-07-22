@@ -83,21 +83,13 @@ struct omemstream: std::stringbuf {
 	}
 
 	intrusive_buffer get_intrusive_buffer() const {
-		if ( yas::is_binary_archive<Archive>::value ) {
-			return intrusive_buffer(pbase(), pptr()-pbase());
-		} else {
-			return intrusive_buffer(pbase(), pptr()-pbase()-1);
-		}
+		return intrusive_buffer(pbase(), pptr()-pbase());
 	}
 
 #if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || \
 	defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
 	shared_buffer get_shared_buffer() const {
-		if ( yas::is_binary_archive<Archive>::value ) {
-			return shared_buffer(pbase(), pptr()-pbase());
-		} else {
-			return shared_buffer(pbase(), pptr()-pbase()-1);
-		}
+		return shared_buffer(pbase(), pptr()-pbase());
 	}
 #endif
 
@@ -163,6 +155,8 @@ struct imemstream: std::stringbuf {
 	virtual ~imemstream() {}
 
 	std::streamsize read(char* ptr, size_t size) {return sgetn(static_cast<char_type*>(ptr), size);}
+
+	char_type get() { return (*stream).get(); }
 
 	template<typename T>
 	std::istream& operator>> (T& v) {

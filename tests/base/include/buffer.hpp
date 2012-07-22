@@ -58,7 +58,7 @@ bool buffer_test(const char* archive_type, const char* io_type) {
 			std::cout << "BUFFER intrusive serialization error! [1]" << std::endl;
 			return false;
 		}
-		if ( !oa1.compare(ostr1, oa1.size()) ) {
+		if ( !oa1.compare(ostr1, sizeof(ostr1_64)) ) {
 			std::cout << "BUFFER intrusive serialization error! [2]" << std::endl;
 			return false;
 		}
@@ -71,7 +71,7 @@ bool buffer_test(const char* archive_type, const char* io_type) {
 			std::cout << "BUFFER intrusive serialization error! [3]" << std::endl;
 			return false;
 		}
-		if ( !oa1.compare(res, oa1.size()) ) {
+		if ( !oa1.compare(res, strlen(res)) ) {
 			std::cout << "BUFFER intrusive serialization error! [4]" << std::endl;
 			return false;
 		}
@@ -98,7 +98,7 @@ bool buffer_test(const char* archive_type, const char* io_type) {
 			std::cout << "BUFFER intrusive serialization error! [5]" << std::endl;
 			return false;
 		}
-		if ( !oa2.compare(ostr2, oa2.size()) ) {
+		if ( !oa2.compare(ostr2, sizeof(ostr2_64)) ) {
 			std::cout << "BUFFER intrusive serialization error! [6]" << std::endl;
 			return false;
 		}
@@ -111,7 +111,7 @@ bool buffer_test(const char* archive_type, const char* io_type) {
 			std::cout << "BUFFER intrusive serialization error! [7]" << std::endl;
 			return false;
 		}
-		if ( !oa2.compare(res, oa2.size()) ) {
+		if ( !oa2.compare(res, strlen(res)) ) {
 			std::cout << "BUFFER intrusive serialization error! [8]" << std::endl;
 			return false;
 		}
@@ -147,7 +147,7 @@ bool buffer_test(const char* archive_type, const char* io_type) {
 			std::cout << "BUFFER intrusive serialization error! [10]" << std::endl;
 			return false;
 		}
-		if ( !oa3.compare(ostr3, oa3.size()) ) {
+		if ( !oa3.compare(ostr3, sizeof(ostr3_64)) ) {
 			std::cout << "BUFFER intrusive serialization error! [11]" << std::endl;
 			return false;
 		}
@@ -160,7 +160,7 @@ bool buffer_test(const char* archive_type, const char* io_type) {
 			std::cout << "BUFFER intrusive serialization error! [12]" << std::endl;
 			return false;
 		}
-		if ( !oa3.compare(res, oa3.size()) ) {
+		if ( !oa3.compare(res, strlen(res)) ) {
 			std::cout << "BUFFER intrusive serialization error! [13]" << std::endl;
 			return false;
 		}

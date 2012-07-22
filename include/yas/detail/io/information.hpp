@@ -195,17 +195,16 @@ struct header_reader_writer<e_archive_type::text> {
 			(unsigned char)YAS_PLATFORM_BITS_IS_64()
 		);
 
-		static const char buf[header_size+1] = {
-			yas_id[0], yas_id[1], yas_id[2]
+		static const char buf[header_size] = {
+			 yas_id[0], yas_id[1], yas_id[2]
 			,hex_alpha[(((yas::uint8_t)header.as_char) >> 4) & 0xff]
 			,hex_alpha[((yas::uint8_t)header.as_char) & 15]
-			,' '
 		};
 
 		std::streamsize wr = proxy_io<
 			yas::is_mem_archive<Archive>::value
-		>::write(ar, buf, header_size+1);
-		if ( wr != header_size+1 ) { throw std::runtime_error("write error"); }
+		>::write(ar, buf, header_size);
+		if ( wr != header_size ) { throw std::runtime_error("write error"); }
 	}
 };
 

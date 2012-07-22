@@ -105,7 +105,6 @@ struct concrete_archive_traits<true, OA, IA> {
 	/** input archive */
 	struct iarchive {
 		iarchive():ia(0) {}
-//		iarchive(oarchive& oa) { ia = new iarchive_type(oa->get_intrusive_buffer()); }
 		~iarchive() { delete ia; }
 
 		iarchive_type* operator->() { return ia; }

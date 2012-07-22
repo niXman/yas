@@ -1,0 +1,52 @@
+
+Compiler command line: g++ -std=c++0x -g -DYAS_SERIALIZE_BOOST_TYPES=1
+
+===
+
+one function
+   binary:
+      boost time: 4080 ms.
+      yas time  : 560 ms.
+      speed up  : 7.28571
+
+split functions
+   binary:
+      boost time: 4130 ms.
+      yas time  : 550 ms.
+      speed up  : 7.50909
+
+one method
+   binary:
+      boost time: 4260 ms.
+      yas time  : 570 ms.
+      speed up  : 7.47368
+
+split methods
+   binary:
+      boost time: 4700 ms.
+      yas time  : 570 ms.
+      speed up  : 8.24561
+
+one function
+   text  :
+      boost time: 5240 ms.
+      yas time  : 1640 ms.
+      speed up  : 3.19512
+
+split functions
+   text  :
+      boost time: 5240 ms.
+      yas time  : 1630 ms.
+      speed up  : 3.21472
+
+one method
+   text  :
+      boost time: 5550 ms.
+      yas time  : 1620 ms.
+      speed up  : 3.42593
+
+split methods
+   text  :
+      boost time: 5730 ms.
+      yas time  : 1630 ms.
+      speed up  : 3.51534

@@ -55,8 +55,8 @@ struct serializer<
 	template<typename Archive>
 	static void apply(Archive& ar, const intrusive_buffer& buf) {
 		ar & buf.size;
-		ar.write(reinterpret_cast<const char*>(buf.data), buf.size);
 		ar & ' ';
+		ar.write(reinterpret_cast<const char*>(buf.data), buf.size);
 	}
 };
 
@@ -76,8 +76,8 @@ struct serializer<
 	template<typename Archive>
 	static void apply(Archive& ar, const shared_buffer& buf) {
 		ar & buf.size;
-		ar.write(reinterpret_cast<const char*>(buf.data.get()), buf.size);
 		ar & ' ';
+		ar.write(reinterpret_cast<const char*>(buf.data.get()), buf.size);
 	}
 };
 
@@ -93,11 +93,11 @@ struct serializer<
 	static void apply(Archive& ar, shared_buffer& buf) {
 		yas::uint32_t size = 0;
 		ar & size;
+		ar.get();
 		buf.data.reset(new char[size+1], &shared_buffer::deleter);
 		ar.read(reinterpret_cast<char*>(buf.data.get()), size);
 		buf.size = size;
 		buf.data.get()[size] = 0;
-		ar.read(reinterpret_cast<char*>(&size), 1);
 	}
 };
 
