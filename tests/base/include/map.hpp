@@ -33,17 +33,21 @@
 #ifndef _yas_test__map_hpp__included_
 #define _yas_test__map_hpp__included_
 
-template<typename OA, typename IA>
-bool map_test() {
-	OA oa;
+/***************************************************************************/
+
+template<typename archive_traits>
+bool map_test(const char* archive_type, const char* io_type) {
 	std::map<int, int> pod_map, pod_map2;
 	pod_map.insert(std::make_pair(1, 2));
 	pod_map.insert(std::make_pair(2, 3));
 	pod_map.insert(std::make_pair(3, 4));
 
+	typename archive_traits::oarchive oa;
+	archive_traits::ocreate(oa, archive_type, io_type);
 	oa & pod_map;
 
-	IA ia(oa.get_intrusive_buffer());
+	typename archive_traits::iarchive ia;
+	archive_traits::icreate(ia, oa, archive_type, io_type);
 	ia & pod_map2;
 
 	if ( pod_map != pod_map2 ) {
@@ -56,10 +60,12 @@ bool map_test() {
 	map.insert(std::make_pair(2, "2"));
 	map.insert(std::make_pair(3, "3"));
 
-	OA oa2;
+	typename archive_traits::oarchive oa2;
+	archive_traits::ocreate(oa2, archive_type, io_type);
 	oa2 & map;
 
-	IA ia2(oa2.get_intrusive_buffer());
+	typename archive_traits::iarchive ia2;
+	archive_traits::icreate(ia2, oa2, archive_type, io_type);
 	ia2 & map2;
 
 	if ( map != map2 ) {
@@ -72,10 +78,12 @@ bool map_test() {
 	map3.insert(std::make_pair("2", 2));
 	map3.insert(std::make_pair("3", 3));
 
-	OA oa3;
+	typename archive_traits::oarchive oa3;
+	archive_traits::ocreate(oa3, archive_type, io_type);
 	oa3 & map3;
 
-	IA ia3(oa3.get_intrusive_buffer());
+	typename archive_traits::iarchive ia3;
+	archive_traits::icreate(ia3, oa3, archive_type, io_type);
 	ia3 & map4;
 
 	if ( map3 != map4 ) {
@@ -85,5 +93,7 @@ bool map_test() {
 
 	return true;
 }
+
+/***************************************************************************/
 
 #endif // _yas_test__map_hpp__included_

@@ -55,13 +55,13 @@ namespace detail {
 
 #define YAS__BINARY__WRITE_BOOST_TUPLE_ITEM(unused, idx, type) \
 	if ( is_pod<YAS_PP_CAT(type, idx)>::value ) \
-		ar.write(&boost::tuples::get<idx>(tuple), sizeof(YAS_PP_CAT(type, idx))); \
+		ar.write(reinterpret_cast<const char*>(&boost::tuples::get<idx>(tuple)), sizeof(YAS_PP_CAT(type, idx))); \
 	else \
 		ar & boost::tuples::get<idx>(tuple);
 
 #define YAS__BINARY__READ_BOOST_TUPLE_ITEM(unused, idx, type) \
 	if ( is_pod<YAS_PP_CAT(type, idx)>::value ) \
-		ar.read(&boost::tuples::get<idx>(tuple), sizeof(YAS_PP_CAT(type, idx))); \
+		ar.read(reinterpret_cast<char*>(&boost::tuples::get<idx>(tuple)), sizeof(YAS_PP_CAT(type, idx))); \
 	else \
 		ar & boost::tuples::get<idx>(tuple);
 
@@ -93,7 +93,7 @@ namespace detail {
 		template<typename Archive> \
 		static void apply(Archive& ar, const boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
 			const yas::uint8_t size = YAS_PP_INC(count); \
-			ar.write(&size, sizeof(size)); \
+			ar.write(reinterpret_cast<const char*>(&size), sizeof(size)); \
 			YAS_PP_REPEAT( \
 				YAS_PP_INC(count), \
 				YAS__BINARY__WRITE_BOOST_TUPLE_ITEM, \
@@ -120,7 +120,7 @@ namespace detail {
 		template<typename Archive> \
 		static void apply(Archive& ar, boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
 			yas::uint8_t size = 0; \
-			ar.read(&size, sizeof(size)); \
+			ar.read(reinterpret_cast<char*>(&size), sizeof(size)); \
 			if ( size != YAS_PP_INC(count) ) throw std::runtime_error("size error on deserialize boost::tuple"); \
 			YAS_PP_REPEAT( \
 				YAS_PP_INC(count), \

@@ -33,15 +33,20 @@
 #ifndef _yas_test__fusion_tuple_hpp__included_
 #define _yas_test__fusion_tuple_hpp__included_
 
+/***************************************************************************/
+
 #if defined(YAS_HAS_BOOST_FUSION)
 
-template<typename OA, typename IA>
-bool fusion_tuple_test() {
+template<typename archive_traits>
+bool fusion_tuple_test(const char* archive_type, const char* io_type) {
 	boost::fusion::tuple<int, double> v1(33, 3.14), v2;
-	OA oa;
+
+	typename archive_traits::oarchive oa;
+	archive_traits::ocreate(oa, archive_type, io_type);
 	oa & v1;
 
-	IA ia(oa.get_intrusive_buffer());
+	typename archive_traits::iarchive ia;
+	archive_traits::icreate(ia, oa, archive_type, io_type);
 	ia & v2;
 	if ( v1 != v2 ) {
 		std::cout << "FUSION_TUPLE deserialization error! [1]" << std::endl;
@@ -58,10 +63,12 @@ bool fusion_tuple_test() {
 		std::set<std::string>
 	> v3("1", set), v4;
 
-	OA oa2;
+	typename archive_traits::oarchive oa2;
+	archive_traits::ocreate(oa2, archive_type, io_type);
 	oa2 & v3;
 
-	IA ia2(oa2.get_intrusive_buffer());
+	typename archive_traits::iarchive ia2;
+	archive_traits::icreate(ia2, oa2, archive_type, io_type);
 	ia2 & v4;
 	if ( v3 != v4 ) {
 		std::cout << "FUSION_TUPLE deserialization error! [2]" << std::endl;
@@ -69,10 +76,13 @@ bool fusion_tuple_test() {
 	}
 
 	boost::fusion::tuple<int, int> vv;
-	OA oa3;
+
+	typename archive_traits::oarchive oa3;
+	archive_traits::ocreate(oa3, archive_type, io_type);
 	oa3 & boost::fusion::make_tuple(33,44);
 
-	IA ia3(oa3.get_intrusive_buffer());
+	typename archive_traits::iarchive ia3;
+	archive_traits::icreate(ia3, oa3, archive_type, io_type);
 	ia3 & vv;
 
 	if ( vv != boost::fusion::make_tuple(33,44) ) {
@@ -82,7 +92,9 @@ bool fusion_tuple_test() {
 
 	static const char str[] = "str";
 	boost::fusion::tuple<yas::uint64_t, std::string> v5(33, str), v6;
-	OA oa4;
+
+	typename archive_traits::oarchive oa4;
+	archive_traits::ocreate(oa4, archive_type, io_type);
 	oa4 & v5;
 
 	const size_t expected_size =
@@ -91,26 +103,28 @@ bool fusion_tuple_test() {
 		sizeof(yas::uint64_t)+ // first type
 		sizeof(yas::uint32_t)+ // string size marker
 		strlen(str); // string length
-	if ( yas::is_binary_archive<OA>::value ) {
-		const size_t current_size = oa4.get_intrusive_buffer().size;
+	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
+		const size_t current_size = oa4.size();
 		if ( current_size != expected_size ) {
 			std::cout << "FUSION_TUPLE deserialization error! [4]" << std::endl;
 			return false;
 		}
 	}
 
-	IA ia4(oa4.get_intrusive_buffer());
+	typename archive_traits::iarchive ia4;
+	archive_traits::icreate(ia4, oa4, archive_type, io_type);
 	ia4 & v6;
 	if ( v5 != v6 ) {
 		std::cout << "FUSION_TUPLE deserialization error! [5]" << std::endl;
 		return false;
 	}
 
-	OA oa5;
+	typename archive_traits::oarchive oa5;
+	archive_traits::ocreate(oa5, archive_type, io_type);
 	oa5 & boost::fusion::make_tuple<yas::uint64_t, std::string>(33, "str");
 
-	if ( yas::is_binary_archive<OA>::value ) {
-		const size_t current_size2 = oa5.get_intrusive_buffer().size;
+	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
+		const size_t current_size2 = oa5.size();
 
 		if ( current_size2 != expected_size ) {
 			std::cout << "FUSION_TUPLE deserialization error! [6]" << std::endl;
@@ -118,7 +132,8 @@ bool fusion_tuple_test() {
 		}
 	}
 
-	IA ia5(oa5.get_intrusive_buffer());
+	typename archive_traits::iarchive ia5;
+	archive_traits::icreate(ia5, oa5, archive_type, io_type);
 	ia5 & v6;
 	if ( v5 != v6 ) {
 		std::cout << "FUSION_TUPLE deserialization error! [7]" << std::endl;
@@ -129,5 +144,7 @@ bool fusion_tuple_test() {
 }
 
 #endif // #if defined(YAS_HAS_BOOST_FUSION)
+
+/***************************************************************************/
 
 #endif // _yas_test__fusion_tuple_hpp__included_

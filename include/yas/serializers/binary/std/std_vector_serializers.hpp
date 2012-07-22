@@ -55,9 +55,9 @@ struct serializer<
 	template<typename Archive>
 	static void apply(Archive& ar, const std::vector<T>& vector) {
 		const yas::uint32_t size = vector.size();
-		ar.write(&size, sizeof(size));
+		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
 		if ( is_pod<T>::value ) {
-			ar.write(&vector[0], sizeof(T)*vector.size());
+			ar.write(reinterpret_cast<const char*>(&vector[0]), sizeof(T)*vector.size());
 		} else {
 			typename std::vector<T>::const_iterator it = vector.begin();
 			for ( ; it != vector.end(); ++it ) {
@@ -78,10 +78,10 @@ struct serializer<
 	template<typename Archive>
 	static void apply(Archive& ar, std::vector<T>& vector) {
 		yas::uint32_t size = 0;
-		ar.read(&size, sizeof(size));
+		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
 		vector.resize(size);
 		if ( detail::is_pod<T>::value ) {
-			ar.read(&vector[0], sizeof(T)*size);
+			ar.read(reinterpret_cast<char*>(&vector[0]), sizeof(T)*size);
 		} else {
 			typename std::vector<T>::iterator it = vector.begin();
 			for ( ; it != vector.end(); ++it ) {

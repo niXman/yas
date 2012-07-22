@@ -33,6 +33,8 @@
 #ifndef _yas_test__base_object_hpp__included_
 #define _yas_test__base_object_hpp__included_
 
+/***************************************************************************/
+
 namespace {
 
 struct base {
@@ -56,16 +58,18 @@ struct derived: base {
 
 } // namespace
 
-template<typename OA, typename IA>
-bool base_object_test() {
+template<typename archive_traits>
+bool base_object_test(const char* archive_type, const char* io_type) {
 	derived d1, d2;
 	d1.x = 2;d1.y = 5;
 
-	OA oa1;
-	oa1 & d1;
+	typename archive_traits::oarchive oa;
+	archive_traits::ocreate(oa, archive_type, io_type);
+	oa & d1;
 
-	IA ia1(oa1.get_intrusive_buffer());
-	ia1 & d2;
+	typename archive_traits::iarchive ia;
+	archive_traits::icreate(ia, oa, archive_type, io_type);
+	ia & d2;
 
 	if ( d1.x != d2.x || d1.y != d2.y ) {
 		std::cout << "BASE_OBJECT deserialization error!" << std::endl;
@@ -75,4 +79,7 @@ bool base_object_test() {
 	return true;
 }
 
+/***************************************************************************/
+
 #endif // _yas_test__base_object_hpp__included_
+

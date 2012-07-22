@@ -32,7 +32,7 @@
 #ifndef _yas__binary_oarchive_hpp__included_
 #define _yas__binary_oarchive_hpp__included_
 
-#include <fstream>
+#include <ostream>
 
 #include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/has_method_serialize.hpp>
@@ -88,11 +88,13 @@ struct binary_mem_oarchive:
 /***************************************************************************/
 
 struct binary_file_oarchive:
-	 detail::archive_information<e_archive_type::binary, e_direction::out, std::ostream>
+	 std::ostream
+	,detail::archive_information<e_archive_type::binary, e_direction::out, binary_file_oarchive>
 	,private detail::noncopyable
 {
 	binary_file_oarchive(std::ostream& file, header_t op = with_header)
-	{ init_header(&file, op); }
+		:std::ostream(file.rdbuf())
+	{ init_header(this, op); }
 
 	template<typename T>
 	binary_file_oarchive& operator& (const T& v) {

@@ -55,22 +55,22 @@ struct serializer<
 	template<typename Archive>
 	static void apply(Archive& ar, const std::multimap<K, V>& multimap) {
 		const yas::uint32_t size = multimap.size();
-		ar.write(&size, sizeof(size));
+		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
 		typename std::multimap<K, V>::const_iterator it = multimap.begin();
 		if ( is_pod<K>::value && is_pod<V>::value ) {
 			for ( ; it != multimap.end(); ++it ) {
-				ar.write(&it->first, sizeof(K));
-				ar.write(&it->second, sizeof(V));
+				ar.write(reinterpret_cast<const char*>(&it->first), sizeof(K));
+				ar.write(reinterpret_cast<const char*>(&it->second), sizeof(V));
 			}
 		} else if ( is_pod<K>::value ) {
 			for ( ; it != multimap.end(); ++it ) {
-				ar.write(&it->first, sizeof(K));
+				ar.write(reinterpret_cast<const char*>(&it->first), sizeof(K));
 				ar & it->second;
 			}
 		} else if ( is_pod<V>::value ) {
 			for ( ; it != multimap.end(); ++it ) {
 				ar & it->first;
-				ar.write(&it->second, sizeof(V));
+				ar.write(reinterpret_cast<const char*>(&it->second), sizeof(V));
 			}
 		} else {
 			for ( ; it != multimap.end(); ++it ) {
@@ -92,20 +92,20 @@ struct serializer<
 	template<typename Archive>
 	static void apply(Archive& ar, std::multimap<K, V>& multimap) {
 		yas::uint32_t size = 0;
-		ar.read(&size, sizeof(size));
+		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
 		if ( is_pod<K>::value && is_pod<V>::value ) {
 			K key;
 			V val;
 			for ( ; size; --size) {
-				ar.read(&key, sizeof(K));
-				ar.read(&val, sizeof(V));
+				ar.read(reinterpret_cast<char*>(&key), sizeof(K));
+				ar.read(reinterpret_cast<char*>(&val), sizeof(V));
 				multimap.insert(typename std::multimap<K, V>::value_type(key, val));
 			}
 		} else if ( is_pod<K>::value ) {
 			K key;
 			V val = V();
 			for ( ; size; --size ) {
-				ar.read(&key, sizeof(K));
+				ar.read(reinterpret_cast<char*>(&key), sizeof(K));
 				ar & val;
 				multimap.insert(typename std::multimap<K, V>::value_type(key, val));
 			}
@@ -114,7 +114,7 @@ struct serializer<
 			V val;
 			for ( ; size; --size ) {
 				ar & key;
-				ar.read(&val, sizeof(V));
+				ar.read(reinterpret_cast<char*>(&val), sizeof(V));
 				multimap.insert(typename std::multimap<K, V>::value_type(key, val));
 			}
 		} else {

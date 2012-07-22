@@ -33,13 +33,19 @@
 #ifndef _yas_test__fusion_map_hpp__included_
 #define _yas_test__fusion_map_hpp__included_
 
+/***************************************************************************/
+
 #if defined(YAS_HAS_BOOST_FUSION)
 
-template<typename OA, typename IA>
-bool fusion_map_test() {
+template<typename archive_traits>
+bool fusion_map_test(const char* archive_type, const char* io_type) {
+	((void)io_type);
+	((void)archive_type);
 	return true;
 }
 
 #endif // defined(YAS_HAS_BOOST_FUSION)
+
+/***************************************************************************/
 
 #endif // _yas_test__fusion_map_hpp__included_

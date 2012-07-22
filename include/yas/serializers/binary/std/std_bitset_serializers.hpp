@@ -59,14 +59,14 @@ struct serializer<
 	template<typename Archive>
 	static void apply(Archive& ar, const std::bitset<N>& bits) {
 		const yas::uint32_t size = N;
-		ar.write(&size, sizeof(size));
+		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
 		std::vector<yas::uint8_t> result((N + 7) >> 3);
 		for ( std::size_t idx = 0; idx < N; ++idx ) {
 			result[idx>>3] |= (bits[idx] << (idx & 7));
 		}
 		yas::uint8_t dsize = result.size();
-		ar.write(&dsize, sizeof(dsize));
-		ar.write(&result[0], dsize);
+		ar.write(reinterpret_cast<const char*>(&dsize), sizeof(dsize));
+		ar.write(reinterpret_cast<const char*>(&result[0]), dsize);
 	}
 };
 
@@ -81,14 +81,14 @@ struct serializer<
 	template<typename Archive>
 	static void apply(Archive& ar, std::bitset<N>& bits) {
 		yas::uint32_t size = 0;
-		ar.read(&size, sizeof(size));
+		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
 		if ( size != N ) throw std::runtime_error("bitsets size is not equal");
 
 		std::vector<yas::uint8_t> buf;
 		yas::uint8_t storage = 0;
-		ar.read(&storage, sizeof(storage));
+		ar.read(reinterpret_cast<char*>(&storage), sizeof(storage));
 		buf.resize(storage);
-		ar.read(&buf[0], storage);
+		ar.read(reinterpret_cast<char*>(&buf[0]), storage);
 
 		if ( buf.size() != ((N + 7) >> 3) ) throw std::runtime_error("bitsets storage size is not equal");
 		for ( std::size_t idx = 0; idx < N; ++idx ) {

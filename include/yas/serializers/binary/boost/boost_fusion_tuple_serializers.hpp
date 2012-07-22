@@ -54,13 +54,13 @@ namespace detail {
 
 #define YAS__BINARY__WRITE_BOOST_FUSION_TUPLE_ITEM(unused, idx, type) \
 	if ( is_pod<YAS_PP_CAT(type, idx)>::value ) \
-		ar.write(&boost::fusion::at_c<idx>(tuple), sizeof(YAS_PP_CAT(type, idx))); \
+		ar.write(reinterpret_cast<const char*>(&boost::fusion::at_c<idx>(tuple)), sizeof(YAS_PP_CAT(type, idx))); \
 	else \
 		ar & boost::fusion::at_c<idx>(tuple);
 
 #define YAS__BINARY__READ_BOOST_FUSION_TUPLE_ITEM(unused, idx, type) \
 	if ( is_pod<YAS_PP_CAT(type, idx)>::value ) \
-		ar.read(&boost::fusion::at_c<idx>(tuple), sizeof(YAS_PP_CAT(type, idx))); \
+		ar.read(reinterpret_cast<char*>(&boost::fusion::at_c<idx>(tuple)), sizeof(YAS_PP_CAT(type, idx))); \
 	else \
 		ar & boost::fusion::at_c<idx>(tuple);
 
@@ -93,7 +93,7 @@ namespace detail {
 			const boost::fusion::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) \
 		{ \
 			const yas::uint8_t size = YAS_PP_INC(count); \
-			ar.write(&size, sizeof(size)); \
+			ar.write(reinterpret_cast<const char*>(&size), sizeof(size)); \
 			YAS_PP_REPEAT( \
 				YAS_PP_INC(count), \
 				YAS__BINARY__WRITE_BOOST_FUSION_TUPLE_ITEM, \
@@ -122,7 +122,7 @@ namespace detail {
 			boost::fusion::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) \
 		{ \
 			yas::uint8_t size = 0; \
-			ar.read(&size, sizeof(size)); \
+			ar.read(reinterpret_cast<char*>(&size), sizeof(size)); \
 			if ( size != YAS_PP_INC(count) ) throw std::runtime_error("size error on deserialize fusion::tuple"); \
 			YAS_PP_REPEAT( \
 				YAS_PP_INC(count), \

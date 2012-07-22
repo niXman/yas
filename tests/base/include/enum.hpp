@@ -33,20 +33,25 @@
 #ifndef _yas_test__enum_hpp__included_
 #define _yas_test__enum_hpp__included_
 
+/***************************************************************************/
+
 enum enum_test_enum1 { _1_1, _1_2, _1_3, _1_4 };
 
 #if defined(YAS_HAS_ENUM_CLASS)
 enum class enum_test_enum2: char { _2_1, _2_2, _2_3, _2_4 };
 #endif // defined(YAS_HAS_ENUM_CLASS)
 
-template<typename OA, typename IA>
-bool enum_test() {
-	OA oa1;
+template<typename archive_traits>
+bool enum_test(const char* archive_type, const char* io_type) {
+	typename archive_traits::oarchive oa1;
+	archive_traits::ocreate(oa1, archive_type, io_type);
 	oa1 & _1_2
 		 & _1_4;
 
 	enum_test_enum1 e11, e12, e13(_1_1);
-	IA ia1(oa1.get_intrusive_buffer());
+	typename archive_traits::iarchive ia1;
+	archive_traits::icreate(ia1, oa1, archive_type, io_type);
+
 
 	ia1 & e11
 		 & e12;
@@ -57,15 +62,17 @@ bool enum_test() {
 
 #if defined(YAS_HAS_ENUM_CLASS)
 
-	OA oa2;
+	typename archive_traits::oarchive oa2;
+	archive_traits::ocreate(oa2, archive_type, io_type);
 	oa2 & enum_test_enum2::_2_1
 		 & enum_test_enum2::_2_3;
 
 	enum_test_enum2 e21, e22, e23(enum_test_enum2::_2_1);
-	IA ia2(oa2.get_intrusive_buffer());
+	typename archive_traits::iarchive ia2;
+	archive_traits::icreate(ia2, oa2, archive_type, io_type);
 	ia2 & e21
 		 & e22;
-	if ( e21 != enum_test_enum2::_2_1 || e22 != enum_test_enum2::_2_3 
+	if ( e21 != enum_test_enum2::_2_1 || e22 != enum_test_enum2::_2_3
 			|| e23 != enum_test_enum2::_2_1
 	) {
 		std::cout << "ENUM deserialization error! [2]" << std::endl;
@@ -76,5 +83,7 @@ bool enum_test() {
 
 	return true;
 }
+
+/***************************************************************************/
 
 #endif // _yas_test__enum_hpp__included_

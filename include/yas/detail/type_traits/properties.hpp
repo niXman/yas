@@ -102,12 +102,26 @@ template<typename Ar>
 struct is_mem_archive: detail::bool_ <
 	detail::is_any_of<
 		 Ar
-		,yas::binary_mem_oarchive
-		,yas::binary_mem_iarchive
-		,yas::text_mem_oarchive
-		,yas::text_mem_oarchive
+		,binary_mem_oarchive
+		,binary_mem_iarchive
+		,text_mem_oarchive
+		,text_mem_iarchive
 		,json_mem_oarchive
 		,json_mem_iarchive
+	>::value
+>
+{};
+
+template<typename Ar>
+struct is_file_archive: detail::bool_ <
+	detail::is_any_of<
+		 Ar
+		,binary_file_oarchive
+		,binary_file_iarchive
+		,text_file_oarchive
+		,text_file_iarchive
+		,json_file_oarchive
+		,json_file_iarchive
 	>::value
 >
 {};

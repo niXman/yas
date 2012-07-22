@@ -33,6 +33,8 @@
 #ifndef _yas__text_oarchive_hpp__included_
 #define _yas__text_oarchive_hpp__included_
 
+#include <ostream>
+
 #include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/has_method_serialize.hpp>
 #include <yas/detail/type_traits/has_function_serialize.hpp>
@@ -71,6 +73,32 @@ struct text_mem_oarchive:
 		serializer<
 			type_propertyes<T>::value,
 			serialization_method<T, text_mem_oarchive>::value,
+			e_archive_type::text,
+			e_direction::out,
+			T
+		>::apply(*this, v);
+
+		return *this;
+	}
+};
+
+/***************************************************************************/
+
+struct text_file_oarchive:
+	 std::ostream
+	,detail::archive_information<e_archive_type::text, e_direction::out, text_file_oarchive>
+	,private detail::noncopyable
+{
+	text_file_oarchive(std::ostream& file, header_t op = with_header)
+		:std::ostream(file.rdbuf())
+	{ init_header(this, op); }
+
+	template<typename T>
+	text_file_oarchive& operator& (const T& v) {
+		using namespace detail;
+		serializer<
+			type_propertyes<T>::value,
+			serialization_method<T, text_file_oarchive>::value,
 			e_archive_type::text,
 			e_direction::out,
 			T

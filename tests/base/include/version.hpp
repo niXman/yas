@@ -33,10 +33,14 @@
 #ifndef _yas_test__version_hpp__included_
 #define _yas_test__version_hpp__included_
 
+/***************************************************************************/
+
 template<typename archive_traits>
-bool version_test(const char* archive_type) {
-	typename archive_traits::oarchive_ptr oa = archive_traits::ocreate(archive_type);
-	typename archive_traits::iarchive_ptr ia = archive_traits::icreate(archive_type, oa);
+bool version_test(const char* archive_type, const char* io_type) {
+	typename archive_traits::oarchive oa;
+	archive_traits::ocreate(oa, archive_type, io_type);
+	typename archive_traits::iarchive ia;
+	archive_traits::icreate(ia, oa, archive_type, io_type);
 
 	if ( oa->archive_type() != ia->archive_type() ) {
 		std::cout << "VERSION test failed! archive type is not equal! [1]" << std::endl;
@@ -81,5 +85,7 @@ bool version_test(const char* archive_type) {
 
 	return true;
 }
+
+/***************************************************************************/
 
 #endif // _yas_test__version_hpp__included_

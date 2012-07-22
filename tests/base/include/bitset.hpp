@@ -33,8 +33,10 @@
 #ifndef _yas_test__bitset_hpp__included_
 #define _yas_test__bitset_hpp__included_
 
-template<typename OA, typename IA>
-bool bitset_test() {
+/***************************************************************************/
+
+template<typename archive_traits>
+bool bitset_test(const char* archive_type, const char* io_type) {
 	std::bitset<33> bs1, bs2;
 	bs1[2] = 1;
 	bs1[9] = 1;
@@ -43,11 +45,13 @@ bool bitset_test() {
 	bs1[1] = 1;
 	bs1[8] = 1;
 
-	OA oa1;
-	oa1 & bs1;
+	typename archive_traits::oarchive oa;
+	archive_traits::ocreate(oa, archive_type, io_type);
+	oa & bs1;
 
-	IA ia1(oa1.get_intrusive_buffer());
-	ia1 & bs2;
+	typename archive_traits::iarchive ia;
+	archive_traits::icreate(ia, oa, archive_type, io_type);
+	ia & bs2;
 
 	if ( bs1 != bs2 ) {
 		std::cout << "BITSET deserialization error!" << std::endl;
@@ -56,5 +60,7 @@ bool bitset_test() {
 
 	return true;
 }
+
+/***************************************************************************/
 
 #endif // _yas_test__bitset_hpp__included_

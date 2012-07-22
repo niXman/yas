@@ -33,6 +33,9 @@
 #ifndef _yas_test__split_functions_hpp__included_
 #define _yas_test__split_functions_hpp__included_
 
+/***************************************************************************/
+namespace {
+
 bool _binary_type_for_split_function_serializers_save_flag = false;
 bool _binary_type_for_split_function_serializers_load_flag = false;
 
@@ -42,6 +45,8 @@ struct _binary_type_for_split_function_serializers {
 	int x;
 	int y;
 };
+
+} // ns
 
 namespace yas {
 
@@ -61,12 +66,13 @@ void serialize(Archive& ar, _binary_type_for_split_function_serializers& t) {
 
 } // namespace yas
 
-template<typename OA, typename IA>
-bool split_functions_serializer_test() {
+template<typename archive_traits>
+bool split_functions_test(const char* archive_type, const char* io_type) {
 	_binary_type_for_split_function_serializers t1, t2;
 	t1.x = 33; t1.y = 44;
 
-	OA oa;
+	typename archive_traits::oarchive oa;
+	archive_traits::ocreate(oa, archive_type, io_type);
 	oa & t1;
 
 	if ( !_binary_type_for_split_function_serializers_save_flag ) {
@@ -74,7 +80,8 @@ bool split_functions_serializer_test() {
 		return false;
 	}
 
-	IA ia(oa.get_intrusive_buffer());
+	typename archive_traits::iarchive ia;
+	archive_traits::icreate(ia, oa, archive_type, io_type);
 	ia & t2;
 
 	if ( !_binary_type_for_split_function_serializers_load_flag ) {
@@ -89,5 +96,7 @@ bool split_functions_serializer_test() {
 
 	return true;
 }
+
+/***************************************************************************/
 
 #endif // _yas_test__split_functions_hpp__included_

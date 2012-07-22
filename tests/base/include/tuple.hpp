@@ -33,21 +33,25 @@
 #ifndef _yas_test__tuple_hpp__included_
 #define _yas_test__tuple_hpp__included_
 
+/***************************************************************************/
+
 #include <yas/detail/tools/hexdumper.hpp>
 
 #if defined(YAS_HAS_BOOST_TUPLE)
 //#include <boost/tuple/tuple_comparison.hpp>
 #endif // defined(YAS_HAS_BOOST_TUPLE)
 
-template<typename OA, typename IA>
-bool tuple_test() {
+template<typename archive_traits>
+bool tuple_test(const char* archive_type, const char* io_type) {
 #if defined(YAS_HAS_BOOST_TUPLE)
 	boost::tuples::tuple<int, int> t1(1, 3), t2;
 
-	OA oa;
+	typename archive_traits::oarchive oa;
+	archive_traits::ocreate(oa, archive_type, io_type);
 	oa & t1;
 
-	IA ia(oa.get_intrusive_buffer());
+	typename archive_traits::iarchive ia;
+	archive_traits::icreate(ia, oa, archive_type, io_type);
 	ia & t2;
 
 	if ( t1 != t2 ) {
@@ -58,10 +62,13 @@ bool tuple_test() {
 
 #if defined(YAS_HAS_STD_TUPLE)
 	std::tuple<int, int> t3(4, 7), t4;
-	OA oa2;
+
+	typename archive_traits::oarchive oa2;
+	archive_traits::ocreate(oa2, archive_type, io_type);
 	oa2 & t3;
 
-	IA ia2(oa2.get_intrusive_buffer());
+	typename archive_traits::iarchive ia2;
+	archive_traits::icreate(ia2, oa2, archive_type, io_type);
 	ia2 & t4;
 
 	if ( t3 != t4 ) {
@@ -71,5 +78,7 @@ bool tuple_test() {
 #endif // defined(YAS_HAS_STD_TUPLE)
 	return true;
 }
+
+/***************************************************************************/
 
 #endif // _yas_test__tuple_hpp__included_

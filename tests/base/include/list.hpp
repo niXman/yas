@@ -33,8 +33,10 @@
 #ifndef _yas_test__list_hpp__included_
 #define _yas_test__list_hpp__included_
 
-template<typename OA, typename IA>
-bool list_test() {
+/***************************************************************************/
+
+template<typename archive_traits>
+bool list_test(const char* archive_type, const char* io_type) {
 	std::list<int> ilist1, ilist2;
 	ilist1.push_back(2);
 	ilist1.push_back(3);
@@ -44,10 +46,12 @@ bool list_test() {
 	ilist1.push_back(4);
 	ilist1.push_back(54);
 
-	OA oa1;
+	typename archive_traits::oarchive oa1;
+	archive_traits::ocreate(oa1, archive_type, io_type);
 	oa1 & ilist1;
 
-	IA ia1(oa1.get_intrusive_buffer());
+	typename archive_traits::iarchive ia1;
+	archive_traits::icreate(ia1, oa1, archive_type, io_type);
 	ia1 & ilist2;
 
 	if ( ilist1 != ilist2 ) {
@@ -62,10 +66,12 @@ bool list_test() {
 	slist1.push_back("246");
 	slist1.push_back("976");
 
-	OA oa2;
+	typename archive_traits::oarchive oa2;
+	archive_traits::ocreate(oa2, archive_type, io_type);
 	oa2 & slist1;
 
-	IA ia2(oa2.get_intrusive_buffer());
+	typename archive_traits::iarchive ia2;
+	archive_traits::icreate(ia2, oa2, archive_type, io_type);
 	ia2 & slist2;
 
 	if ( slist1 != slist2 ) {
@@ -75,5 +81,7 @@ bool list_test() {
 
 	return true;
 }
+
+/***************************************************************************/
 
 #endif // _yas_test__list_hpp__included_

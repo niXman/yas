@@ -94,11 +94,13 @@ struct binary_mem_iarchive:
 /***************************************************************************/
 
 struct binary_file_iarchive:
-	 detail::archive_information<e_archive_type::binary, e_direction::in, std::istream>
+	 std::istream
+	,detail::archive_information<e_archive_type::binary, e_direction::in, binary_file_iarchive>
 	,private detail::noncopyable
 {
 	binary_file_iarchive(std::istream& file, header_t op = with_header)
-	{ init_header(&file, op); }
+		:std::istream(file.rdbuf())
+	{ init_header(this, op); }
 
 	template<typename T>
 	binary_file_iarchive& operator& (T& v) {

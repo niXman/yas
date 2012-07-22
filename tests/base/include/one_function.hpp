@@ -33,6 +33,10 @@
 #ifndef _yas_test__one_function_hpp__included_
 #define _yas_test__one_function_hpp__included_
 
+/***************************************************************************/
+
+namespace {
+
 bool _binary_type_with_one_serializer_flag = false;
 
 struct _binary_type_with_one_serializer {
@@ -41,6 +45,8 @@ struct _binary_type_with_one_serializer {
 	int x;
 	int y;
 };
+
+} // ns
 
 namespace yas {
 
@@ -53,11 +59,13 @@ void serialize(Archive& ar, _binary_type_with_one_serializer& t) {
 
 } // namespace yas
 
-template<typename OA, typename IA>
-bool one_function_serializer_test() {
+template<typename archive_traits>
+bool one_function_test(const char* archive_type, const char* io_type) {
 	_binary_type_with_one_serializer type, type2;
 	type.x = 33; type.y = 44;
-	OA oa;
+
+	typename archive_traits::oarchive oa;
+	archive_traits::ocreate(oa, archive_type, io_type);
 	oa & type;
 
 	if ( !_binary_type_with_one_serializer_flag ) {
@@ -67,7 +75,8 @@ bool one_function_serializer_test() {
 
 	_binary_type_with_one_serializer_flag = false;
 
-	IA ia(oa.get_intrusive_buffer());
+	typename archive_traits::iarchive ia;
+	archive_traits::icreate(ia, oa, archive_type, io_type);
 	ia & type2;
 
 	if ( !_binary_type_with_one_serializer_flag ) {
@@ -82,5 +91,7 @@ bool one_function_serializer_test() {
 
 	return true;
 }
+
+/***************************************************************************/
 
 #endif // _yas_test__one_function_hpp__included_

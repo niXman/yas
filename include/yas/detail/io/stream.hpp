@@ -73,7 +73,7 @@ struct omemstream: std::stringbuf {
 
 	virtual ~omemstream() {}
 
-	std::streamsize write(const void* ptr, size_t size) {
+	std::streamsize write(const char* ptr, size_t size) {
 		return sputn(static_cast<const char_type*>(ptr), size);
 	}
 
@@ -162,7 +162,7 @@ struct imemstream: std::stringbuf {
 
 	virtual ~imemstream() {}
 
-	std::streamsize read(void* ptr, size_t size) {return sgetn(static_cast<char_type*>(ptr), size);}
+	std::streamsize read(char* ptr, size_t size) {return sgetn(static_cast<char_type*>(ptr), size);}
 
 	template<typename T>
 	std::istream& operator>> (T& v) {

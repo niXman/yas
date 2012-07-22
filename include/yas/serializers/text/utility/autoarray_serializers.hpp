@@ -60,7 +60,7 @@ struct serializer<
 	>
 	static void apply(Archive& ar, const U(&v)[N], typename enable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
 		ar & (N-1);
-		ar.write(v, N-1);
+		ar.write(reinterpret_cast<const char*>(v), N-1);
 		ar & ' ';
 	}
 
@@ -92,7 +92,7 @@ struct serializer<
 		yas::uint32_t size = 0;
 		ar & size;
 		if ( size != N-1 ) throw std::runtime_error("bad array size");
-		ar.read(v, size);
+		ar.read(reinterpret_cast<char*>(v), size);
 		v[size] = 0;
 	}
 

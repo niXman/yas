@@ -33,10 +33,12 @@
 #ifndef _yas_test__forward_list_hpp__included_
 #define _yas_test__forward_list_hpp__included_
 
+/***************************************************************************/
+
 #if defined(YAS_HAS_STD_FORWARD_LIST)
 
-template<typename OA, typename IA>
-bool forward_list_test() {
+template<typename archive_traits>
+bool forward_list_test(const char* archive_type, const char* io_type) {
 	std::forward_list<int> ilist1, ilist2;
 	ilist1.push_front(1);
 	ilist1.push_front(2);
@@ -45,10 +47,12 @@ bool forward_list_test() {
 	ilist1.push_front(23);
 	ilist1.push_front(8);
 
-	OA oa1;
+	typename archive_traits::oarchive oa1;
+	archive_traits::ocreate(oa1, archive_type, io_type);
 	oa1 & ilist1;
 
-	IA ia1(oa1.get_intrusive_buffer());
+	typename archive_traits::iarchive ia1;
+	archive_traits::icreate(ia1, oa1, archive_type, io_type);
 	ia1 & ilist2;
 
 	if ( ilist1 != ilist2 ) {
@@ -63,10 +67,12 @@ bool forward_list_test() {
 	slist1.push_front("76");
 	slist1.push_front("17");
 
-	OA oa2;
+	typename archive_traits::oarchive oa2;
+	archive_traits::ocreate(oa2, archive_type, io_type);
 	oa2 & slist1;
 
-	IA ia2(oa2.get_intrusive_buffer());
+	typename archive_traits::iarchive ia2;
+	archive_traits::icreate(ia2, oa2, archive_type, io_type);
 	ia2 & slist2;
 
 	if ( slist1 != slist2 ) {
@@ -78,5 +84,7 @@ bool forward_list_test() {
 }
 
 #endif // defined(YAS_HAS_STD_FORWARD_LIST)
+
+/***************************************************************************/
 
 #endif // _yas_test__forward_list_hpp__included_

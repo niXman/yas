@@ -118,7 +118,7 @@ struct binary_list_deserializer {
 			const boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& list) \
 		{ \
 			const yas::uint8_t size = YAS_PP_INC(count); \
-			ar.write(&size, sizeof(size)); \
+			ar.write(reinterpret_cast<const char*>(&size), sizeof(size)); \
 			boost::fusion::for_each(list, detail::binary_list_serializer<Archive>(ar)); \
 		} \
 	};
@@ -141,7 +141,7 @@ struct binary_list_deserializer {
 			boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& list) \
 		{ \
 			yas::uint8_t size = 0; \
-			ar.read(&size, sizeof(size)); \
+			ar.read(reinterpret_cast<char*>(&size), sizeof(size)); \
 			if ( size != YAS_PP_INC(count) ) throw std::runtime_error("size error on deserialize fusion::list"); \
 			boost::fusion::for_each(list, detail::binary_list_deserializer<Archive>(ar)); \
 		} \

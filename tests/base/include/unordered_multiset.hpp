@@ -33,10 +33,12 @@
 #ifndef _yas_test__unordered_multiset_hpp__included_
 #define _yas_test__unordered_multiset_hpp__included_
 
+/***************************************************************************/
+
 #if defined(YAS_HAS_STD_UNORDERED) || defined(YAS_HAS_BOOST_UNORDERED)
 
-template<typename OA, typename IA>
-bool unordered_multiset_test() {
+template<typename archive_traits>
+bool unordered_multiset_test(const char* archive_type, const char* io_type) {
 #if defined(YAS_HAS_STD_UNORDERED)
 	std::unordered_multiset<int> set1, set2;
 	set1.insert(0);
@@ -46,10 +48,12 @@ bool unordered_multiset_test() {
 	set1.insert(4);
 	set1.insert(5);
 
-	OA oa;
+	typename archive_traits::oarchive oa;
+	archive_traits::ocreate(oa, archive_type, io_type);
 	oa & set1;
 
-	IA ia(oa.get_intrusive_buffer());
+	typename archive_traits::iarchive ia;
+	archive_traits::icreate(ia, oa, archive_type, io_type);
 	ia & set2;
 
 	if ( set1.size() != 6 || set2.size() != 6 || set1 != set2 ) {
@@ -65,10 +69,12 @@ bool unordered_multiset_test() {
 	set3.insert("4");
 	set3.insert("5");
 
-	OA oa2;
+	typename archive_traits::oarchive oa2;
+	archive_traits::ocreate(oa2, archive_type, io_type);
 	oa2 & set3;
 
-	IA ia2(oa2.get_intrusive_buffer());
+	typename archive_traits::iarchive ia2;
+	archive_traits::icreate(ia2, oa2, archive_type, io_type);
 	ia2 & set4;
 
 	if ( set3.size() != 6 || set4.size() != 6 || set3 != set4 ) {
@@ -90,10 +96,12 @@ bool unordered_multiset_test() {
 	set5.insert(8);
 	set5.insert(8);
 
-	OA oa3;
+	typename archive_traits::oarchive oa3;
+	archive_traits::ocreate(oa3, archive_type, io_type);
 	oa3 & set5;
 
-	IA ia3(oa3.get_intrusive_buffer());
+	typename archive_traits::iarchive ia3;
+	archive_traits::icreate(ia3, oa3, archive_type, io_type);
 	ia3 & set6;
 
 	if ( set5.size() != 10 || set6.size() != 10 || set5 != set6 ) {
@@ -106,10 +114,12 @@ bool unordered_multiset_test() {
 	set7.insert("1");
 	set7.insert("3");
 
-	OA oa4;
+	typename archive_traits::oarchive oa4;
+	archive_traits::ocreate(oa4, archive_type, io_type);
 	oa4 & set7;
 
-	IA ia4(oa4.get_intrusive_buffer());
+	typename archive_traits::iarchive ia4;
+	archive_traits::icreate(ia4, oa4, archive_type, io_type);
 	ia4 & set8;
 
 	if ( set7.size() != 3 || set8.size() != 3 || set7 != set8 ) {
@@ -121,5 +131,7 @@ bool unordered_multiset_test() {
 }
 
 #endif // #if defined(YAS_HAS_STD_UNORDERED) || defined(YAS_HAS_BOOST_UNORDERED)
+
+/***************************************************************************/
 
 #endif // _yas_test__unordered_multiset_hpp__included_

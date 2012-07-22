@@ -33,12 +33,13 @@
 #ifndef _yas_test__unordered_multimap_hpp__included_
 #define _yas_test__unordered_multimap_hpp__included_
 
+/***************************************************************************/
+
 #if defined(YAS_HAS_STD_UNORDERED) || defined(YAS_HAS_BOOST_UNORDERED)
 
-template<typename OA, typename IA>
-bool unordered_multimap_test() {
+template<typename archive_traits>
+bool unordered_multimap_test(const char* archive_type, const char* io_type) {
 #if defined(YAS_HAS_STD_UNORDERED)
-	OA oa;
 	std::unordered_multimap<int, int> pod_map, pod_map2;
 	pod_map.insert(std::make_pair(1, 2));
 	pod_map.insert(std::make_pair(1, 2));
@@ -46,9 +47,12 @@ bool unordered_multimap_test() {
 	pod_map.insert(std::make_pair(1, 5));
 	pod_map.insert(std::make_pair(3, 5));
 
+	typename archive_traits::oarchive oa;
+	archive_traits::ocreate(oa, archive_type, io_type);
 	oa & pod_map;
 
-	IA ia(oa.get_intrusive_buffer());
+	typename archive_traits::iarchive ia;
+	archive_traits::icreate(ia, oa, archive_type, io_type);
 	ia & pod_map2;
 
 	if ( pod_map != pod_map2 ) {
@@ -63,10 +67,12 @@ bool unordered_multimap_test() {
 	map.insert(std::make_pair(4, std::string("4")));
 	map.insert(std::make_pair(5, std::string("5")));
 
-	OA oa2;
+	typename archive_traits::oarchive oa2;
+	archive_traits::ocreate(oa2, archive_type, io_type);
 	oa2 & map;
 
-	IA ia2(oa2.get_intrusive_buffer());
+	typename archive_traits::iarchive ia2;
+	archive_traits::icreate(ia2, oa2, archive_type, io_type);
 	ia2 & map2;
 
 	if ( map != map2 ) {
@@ -81,10 +87,12 @@ bool unordered_multimap_test() {
 	map3.insert(std::make_pair(std::string("4"), 4));
 	map3.insert(std::make_pair(std::string("5"), 5));
 
-	OA oa3;
+	typename archive_traits::oarchive oa3;
+	archive_traits::ocreate(oa3, archive_type, io_type);
 	oa3 & map3;
 
-	IA ia3(oa3.get_intrusive_buffer());
+	typename archive_traits::iarchive ia3;
+	archive_traits::icreate(ia3, oa3, archive_type, io_type);
 	ia3 & map4;
 
 	if ( map3 != map4 ) {
@@ -101,10 +109,12 @@ bool unordered_multimap_test() {
 	map5.insert(std::make_pair(1, 5));
 	map5.insert(std::make_pair(3, 5));
 
-	OA oa4;
+	typename archive_traits::oarchive oa4;
+	archive_traits::ocreate(oa4, archive_type, io_type);
 	oa4 & map5;
 
-	IA ia4(oa4.get_intrusive_buffer());
+	typename archive_traits::iarchive ia4;
+	archive_traits::icreate(ia4, oa4, archive_type, io_type);
 	ia4 & map6;
 
 	if ( map5 != map6 ) {
@@ -116,5 +126,7 @@ bool unordered_multimap_test() {
 }
 
 #endif // #if defined(YAS_HAS_STD_UNORDERED) || defined(YAS_HAS_BOOST_UNORDERED)
+
+/***************************************************************************/
 
 #endif // _yas_test__unordered_multimap_hpp__included_

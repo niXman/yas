@@ -33,13 +33,18 @@
 #ifndef _yas_test__wstring_hpp__included_
 #define _yas_test__wstring_hpp__included_
 
-template<typename OA, typename IA>
-bool wstring_test() {
-	OA oa;
+/***************************************************************************/
+
+template<typename archive_traits>
+bool wstring_test(const char* archive_type, const char* io_type) {
 	std::wstring ws(L"wstring wstring"), wss;
+
+	typename archive_traits::oarchive oa;
+	archive_traits::ocreate(oa, archive_type, io_type);
 	oa & ws;
 
-	IA ia(oa.get_intrusive_buffer());
+	typename archive_traits::iarchive ia;
+	archive_traits::icreate(ia, oa, archive_type, io_type);
 	ia & wss;
 
 	if ( ws != wss ) {
@@ -49,5 +54,7 @@ bool wstring_test() {
 
 	return true;
 }
+
+/***************************************************************************/
 
 #endif // _yas_test__wstring_hpp__included_

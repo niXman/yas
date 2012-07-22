@@ -33,19 +33,23 @@
 #ifndef _yas_test__array_hpp__included_
 #define _yas_test__array_hpp__included_
 
+/***************************************************************************/
+
 #if defined(YAS_HAS_STD_ARRAY) || defined(YAS_HAS_BOOST_ARRAY)
 
-template<typename OA, typename IA>
-bool array_test() {
+template<typename archive_traits>
+bool array_test(const char* archive_type, const char* io_type) {
 #if defined(YAS_HAS_STD_ARRAY)
 	std::array<int, 10> arr1 = {
 		{0,1,2,3,4,5,6,7,8,9}
 	}, arr2;
 
-	OA oa;
+	typename archive_traits::oarchive oa;
+	archive_traits::ocreate(oa, archive_type, io_type);
 	oa & arr1;
 
-	IA ia(oa.get_intrusive_buffer());
+	typename archive_traits::iarchive ia;
+	archive_traits::icreate(ia, oa, archive_type, io_type);
 	ia & arr2;
 
 	if ( arr1 != arr2 ) {
@@ -57,10 +61,12 @@ bool array_test() {
 		{"0","1","2","3","4","5","6","7","8","9"}
 	}, arr4;
 
-	OA oa2;
+	typename archive_traits::oarchive oa2;
+	archive_traits::ocreate(oa2, archive_type, io_type);
 	oa2 & arr3;
 
-	IA ia2(oa2.get_intrusive_buffer());
+	typename archive_traits::iarchive ia2;
+	archive_traits::icreate(ia2, oa2, archive_type, io_type);
 	ia2 & arr4;
 
 	if ( arr3 != arr4 ) {
@@ -75,10 +81,12 @@ bool array_test() {
 		{0,1,2,3,4,5,6,7,8,9}
 	}, arr6;
 
-	OA oa3;
+	typename archive_traits::oarchive oa3;
+	archive_traits::ocreate(oa3, archive_type, io_type);
 	oa3 & arr5;
 
-	IA ia3(oa3.get_intrusive_buffer());
+	typename archive_traits::iarchive ia3;
+	archive_traits::icreate(ia3, oa3, archive_type, io_type);
 	ia3 & arr6;
 
 	if ( arr5 != arr6 ) {
@@ -90,10 +98,12 @@ bool array_test() {
 		{"0","1","2","3","4","5","6","7","8","9"}
 	}, arr8;
 
-	OA oa4;
+	typename archive_traits::oarchive oa4;
+	archive_traits::ocreate(oa4, archive_type, io_type);
 	oa4 & arr7;
 
-	IA ia4(oa4.get_intrusive_buffer());
+	typename archive_traits::iarchive ia4;
+	archive_traits::icreate(ia4, oa4, archive_type, io_type);
 	ia4 & arr8;
 
 	if ( arr7 != arr8 ) {
@@ -105,5 +115,7 @@ bool array_test() {
 }
 
 #endif // defined(YAS_HAS_STD_ARRAY) || defined(YAS_HAS_BOOST_ARRAY)
+
+/***************************************************************************/
 
 #endif // _yas_test__array_hpp__included_

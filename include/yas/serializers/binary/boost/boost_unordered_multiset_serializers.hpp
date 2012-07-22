@@ -58,11 +58,11 @@ struct serializer<
 	template<typename Archive>
 	static void apply(Archive& ar, const boost::unordered_multiset<K>& set) {
 		const yas::uint32_t size = set.size();
-		ar.write(&size, sizeof(size));
+		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
 		typename boost::unordered_multiset<K>::const_iterator it = set.begin();
 		if ( is_pod<K>::value ) {
 			for ( ; it != set.end(); ++it ) {
-				ar.write(&*it, sizeof(K));
+				ar.write(reinterpret_cast<const char*>(&(*it)), sizeof(K));
 			}
 		} else {
 			for ( ; it != set.end(); ++it ) {
@@ -83,11 +83,11 @@ struct serializer<
 	template<typename Archive>
 	static void apply(Archive& ar, boost::unordered_multiset<K>& set) {
 		yas::uint32_t size = 0;
-		ar.read(&size, sizeof(size));
+		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
 		if ( is_pod<K>::value ) {
 			K key;
 			for ( ; size; --size ) {
-				ar.read(&key, sizeof(K));
+				ar.read(reinterpret_cast<char*>(&key), sizeof(K));
 				set.insert(key);
 			}
 		} else {

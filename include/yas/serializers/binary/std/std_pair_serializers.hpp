@@ -55,14 +55,14 @@ struct serializer<
 	template<typename Archive>
 	static void apply(Archive& ar, const std::pair<T1, T2>& pair) {
 		if ( is_pod<T1>::value && is_pod<T2>::value ) {
-			ar.write(&pair.first, sizeof(T1));
-			ar.write(&pair.second, sizeof(T2));
+			ar.write(reinterpret_cast<const char*>(&pair.first), sizeof(T1));
+			ar.write(reinterpret_cast<const char*>(&pair.second), sizeof(T2));
 		} else if ( is_pod<T1>::value ) {
-			ar.write(&pair.first, sizeof(T1));
+			ar.write(reinterpret_cast<const char*>(&pair.first), sizeof(T1));
 			ar & pair.second;
 		} else if ( is_pod<T2>::value ) {
 			ar & pair.first;
-			ar.write(&pair.second, sizeof(T2));
+			ar.write(reinterpret_cast<const char*>(&pair.second), sizeof(T2));
 		} else {
 			ar & pair.first
 				& pair.second;
@@ -81,14 +81,14 @@ struct serializer<
 	template<typename Archive>
 	static void apply(Archive& ar, std::pair<T1, T2>& pair) {
 		if ( is_pod<T1>::value && is_pod<T2>::value ) {
-			ar.read(&pair.first, sizeof(T1));
-			ar.read(&pair.second, sizeof(T2));
+			ar.read(reinterpret_cast<char*>(&pair.first), sizeof(T1));
+			ar.read(reinterpret_cast<char*>(&pair.second), sizeof(T2));
 		} else if ( is_pod<T1>::value ) {
-			ar.read(&pair.first, sizeof(T1));
+			ar.read(reinterpret_cast<char*>(&pair.first), sizeof(T1));
 			ar & pair.second;
 		} else if ( is_pod<T2>::value ) {
 			ar & pair.first;
-			ar.read(&pair.second, sizeof(T2));
+			ar.read(reinterpret_cast<char*>(&pair.second), sizeof(T2));
 		} else {
 			ar & pair.first
 				& pair.second;

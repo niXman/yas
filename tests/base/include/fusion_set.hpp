@@ -33,10 +33,14 @@
 #ifndef _yas_test__fusion_set_hpp__included_
 #define _yas_test__fusion_set_hpp__included_
 
+/***************************************************************************/
+
 #if defined(YAS_HAS_BOOST_FUSION)
 
-template<typename OA, typename IA>
-bool fusion_set_test() {
+template<typename archive_traits>
+bool fusion_set_test(const char* archive_type, const char* io_type) {
+	((void)io_type);
+	((void)archive_type);
 #if 0
 
 	typedef boost::fusion::set<int, int> set;
@@ -62,5 +66,7 @@ bool fusion_set_test() {
 }
 
 #endif // #if defined(YAS_HAS_BOOST_FUSION)
+
+/***************************************************************************/
 
 #endif // _yas_test__fusion_set_hpp__included_

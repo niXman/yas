@@ -33,13 +33,18 @@
 #ifndef _yas_test__pair_hpp__included_
 #define _yas_test__pair_hpp__included_
 
-template<typename OA, typename IA>
-bool pair_test() {
-	OA oa;
+/***************************************************************************/
+
+template<typename archive_traits>
+bool pair_test(const char* archive_type, const char* io_type) {
 	std::pair<std::wstring, std::string> p = std::make_pair(L"wstring wstring", "string string"), pp;
+
+	typename archive_traits::oarchive oa;
+	archive_traits::ocreate(oa, archive_type, io_type);
 	oa & p;
 
-	IA ia(oa.get_intrusive_buffer());
+	typename archive_traits::iarchive ia;
+	archive_traits::icreate(ia, oa, archive_type, io_type);
 	ia & pp;
 
 	if ( p != pp ) {
@@ -49,5 +54,7 @@ bool pair_test() {
 
 	return true;
 }
+
+/***************************************************************************/
 
 #endif // _yas_test__pair_hpp__included_

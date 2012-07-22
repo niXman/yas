@@ -30,59 +30,27 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__set_hpp__included_
-#define _yas_test__set_hpp__included_
+#ifndef _yas__exceptions_hpp__included_
+#define _yas__exceptions_hpp__included_
+
+#include <stdexcept>
+
+namespace yas {
 
 /***************************************************************************/
 
-template<typename archive_traits>
-bool set_test(const char* archive_type, const char* io_type) {
-	std::set<int> set1, set2;
-	set1.insert(0);
-	set1.insert(1);
-	set1.insert(2);
-	set1.insert(3);
-	set1.insert(4);
-	set1.insert(5);
-	set1.insert(6);
-	set1.insert(7);
-	set1.insert(8);
-	set1.insert(9);
+struct empty_archive_exception: std::exception {
+	const char* what() const throw() {return "archive is empty";}
+};
+struct bad_archive_information_exception: std::exception {
+	const char* what() const throw() {return "archive is corrupted or try to use with \"no_header\" flag";}
+};
+struct no_header_exception: std::exception {
+	const char* what() const throw() {return "you cannot use information functions with \"no_header\" flag";}
+};
 
-	typename archive_traits::oarchive oa;
-	archive_traits::ocreate(oa, archive_type, io_type);
-	oa & set1;
-
-	typename archive_traits::iarchive ia;
-	archive_traits::icreate(ia, oa, archive_type, io_type);
-	ia & set2;
-
-	if ( set1 != set2 ) {
-		std::cout << "SET deserialization error!" << std::endl;
-		return false;
-	}
-
-	std::set<std::string> set3, set4;
-	set3.insert("1");
-	set3.insert("2");
-	set3.insert("3");
-
-	typename archive_traits::oarchive oa2;
-	archive_traits::ocreate(oa2, archive_type, io_type);
-	oa2 & set3;
-
-	typename archive_traits::iarchive ia2;
-	archive_traits::icreate(ia2, oa2, archive_type, io_type);
-	ia2 & set4;
-
-	if ( set3 != set4 ) {
-		std::cout << "SET deserialization error!" << std::endl;
-		return false;
-	}
-
-	return true;
-}
+} // namespace yas
 
 /***************************************************************************/
 
-#endif // _yas_test__set_hpp__included_
+#endif // _yas__exceptions_hpp__included_

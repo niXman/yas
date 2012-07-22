@@ -33,8 +33,10 @@
 #ifndef _yas_test__multiset_hpp__included_
 #define _yas_test__multiset_hpp__included_
 
-template<typename OA, typename IA>
-bool multiset_test() {
+/***************************************************************************/
+
+template<typename archive_traits>
+bool multiset_test(const char* archive_type, const char* io_type) {
 	std::multiset<int> set1, set2;
 	set1.insert(0);
 	set1.insert(1);
@@ -47,10 +49,12 @@ bool multiset_test() {
 	set1.insert(8);
 	set1.insert(9);
 
-	OA oa;
+	typename archive_traits::oarchive oa;
+	archive_traits::ocreate(oa, archive_type, io_type);
 	oa & set1;
 
-	IA ia(oa.get_intrusive_buffer());
+	typename archive_traits::iarchive ia;
+	archive_traits::icreate(ia, oa, archive_type, io_type);
 	ia & set2;
 
 	if ( set1.size() != 10 || set2.size() != 10 || set1 != set2 ) {
@@ -63,10 +67,12 @@ bool multiset_test() {
 	set3.insert("2");
 	set3.insert("3");
 
-	OA oa2;
+	typename archive_traits::oarchive oa2;
+	archive_traits::ocreate(oa2, archive_type, io_type);
 	oa2 & set3;
 
-	IA ia2(oa2.get_intrusive_buffer());
+	typename archive_traits::iarchive ia2;
+	archive_traits::icreate(ia2, oa2, archive_type, io_type);
 	ia2 & set4;
 
 	if ( set3.size() != 3 || set4.size() != 3 || set3 != set4 ) {
@@ -76,5 +82,7 @@ bool multiset_test() {
 
 	return true;
 }
+
+/***************************************************************************/
 
 #endif // _yas_test__multiset_hpp__included_

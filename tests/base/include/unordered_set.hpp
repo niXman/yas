@@ -33,10 +33,12 @@
 #ifndef _yas_test__unordered_set_hpp__included_
 #define _yas_test__unordered_set_hpp__included_
 
+/***************************************************************************/
+
 #if defined(YAS_HAS_STD_UNORDERED) || defined(YAS_HAS_BOOST_UNORDERED)
 
-template<typename OA, typename IA>
-bool unordered_set_test() {
+template<typename archive_traits>
+bool unordered_set_test(const char* archive_type, const char* io_type) {
 #if defined(YAS_HAS_STD_UNORDERED)
 	std::unordered_set<int> set1, set2;
 	set1.insert(0);
@@ -51,10 +53,12 @@ bool unordered_set_test() {
 	set1.insert(8);
 	int expected1 = std::accumulate(set1.begin(), set1.end(), 0);
 
-	OA oa;
+	typename archive_traits::oarchive oa;
+	archive_traits::ocreate(oa, archive_type, io_type);
 	oa & set1;
 
-	IA ia(oa.get_intrusive_buffer());
+	typename archive_traits::iarchive ia;
+	archive_traits::icreate(ia, oa, archive_type, io_type);
 	ia & set2;
 
 	if ( expected1 != std::accumulate(set2.begin(), set2.end(), 0) ) {
@@ -69,14 +73,16 @@ bool unordered_set_test() {
 	set3.insert(std::string("4"));
 	set3.insert(std::string("5"));
 	set3.insert(std::string("4"));
-	
+
 	std::string expected2 = std::accumulate(set3.begin(), set3.end(), std::string());
 	std::sort(expected2.begin(), expected2.end());
 
-	OA oa2;
+	typename archive_traits::oarchive oa2;
+	archive_traits::ocreate(oa2, archive_type, io_type);
 	oa2 & set3;
 
-	IA ia2(oa2.get_intrusive_buffer());
+	typename archive_traits::iarchive ia2;
+	archive_traits::icreate(ia2, oa2, archive_type, io_type);
 	ia2 & set4;
 
 	std::string res2 = std::accumulate(set4.begin(), set4.end(), std::string());
@@ -102,11 +108,13 @@ bool unordered_set_test() {
 	set5.insert(9);
 	int expected3 = std::accumulate(set5.begin(), set5.end(), 0);
 
-	OA oa4;
-	oa4 & set5;
+	typename archive_traits::oarchive oa3;
+	archive_traits::ocreate(oa3, archive_type, io_type);
+	oa3 & set5;
 
-	IA ia4(oa4.get_intrusive_buffer());
-	ia4 & set6;
+	typename archive_traits::iarchive ia3;
+	archive_traits::icreate(ia3, oa3, archive_type, io_type);
+	ia3 & set6;
 
 	if ( expected3 != std::accumulate(set6.begin(), set6.end(), 0) ) {
 		std::cout << "UNORDERED_SET deserialization error! [3]" << std::endl;
@@ -123,11 +131,13 @@ bool unordered_set_test() {
 	std::string expected4 = std::accumulate(set7.begin(), set7.end(), std::string());
 	std::sort(expected4.begin(), expected4.end());
 
-	OA oa5;
-	oa5 & set7;
+	typename archive_traits::oarchive oa4;
+	archive_traits::ocreate(oa4, archive_type, io_type);
+	oa4 & set7;
 
-	IA ia5(oa5.get_intrusive_buffer());
-	ia5 & set8;
+	typename archive_traits::iarchive ia4;
+	archive_traits::icreate(ia4, oa4, archive_type, io_type);
+	ia4 & set8;
 
 	std::string res4 = std::accumulate(set8.begin(), set8.end(), std::string());
 	std::sort(res4.begin(), res4.end());
@@ -140,5 +150,7 @@ bool unordered_set_test() {
 }
 
 #endif // #if defined(YAS_HAS_STD_UNORDERED) || defined(YAS_HAS_BOOST_UNORDERED)
+
+/***************************************************************************/
 
 #endif // _yas_test__unordered_set_hpp__included_

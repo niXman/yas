@@ -75,7 +75,7 @@ struct serializer<
 		ar & size;
 		string.resize(size);
 		ar.read(&string[0], size);
-		ar.snextc();
+		ar.read(reinterpret_cast<char*>(&size), 1);
 	}
 };
 

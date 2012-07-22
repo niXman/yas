@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <fstream>
 #include <algorithm>
 #include <numeric>
 
@@ -68,166 +69,211 @@
 template<bool, typename, typename>
 struct concrete_archive_traits;
 
+// mem archives traits
 template<typename OA, typename IA>
 struct concrete_archive_traits<true, OA, IA> {
 	typedef OA oarchive_type;
 	typedef IA iarchive_type;
-	typedef std::shared_ptr<OA> oarchive_ptr;
-	typedef std::shared_ptr<IA> iarchive_ptr;
 
-	static oarchive_ptr ocreate(const char* archive_type = 0) {
+	/** output archive */
+	struct oarchive {
+		oarchive():oa(0) {}
+		~oarchive() { delete oa; }
+
+		oarchive_type* operator->() { return oa; }
+
+		template<typename T>
+		oarchive_type& operator& (const T& v) { return (*(oa) & v); }
+
+		yas::uint32_t size() const { return oa->get_intrusive_buffer().size; }
+
+		bool compare(const void* ptr, yas::uint32_t size) const {
+			return size == oa->get_intrusive_buffer().size
+				? (memcmp(oa->get_intrusive_buffer().data, ptr, size)==0)
+				: false
+			;
+		}
+
+		oarchive_type* oa;
+	};
+	static void ocreate(oarchive& oa, const char* archive_type, const char* io_type) {
 		((void)archive_type);
-		oarchive_ptr archive(new oarchive_type);
-		return archive;
+		((void)io_type);
+		oa.oa = new oarchive_type;
 	}
-	static iarchive_ptr icreate(const char* archive_type, oarchive_ptr ptr) {
+
+	/** input archive */
+	struct iarchive {
+		iarchive():ia(0) {}
+//		iarchive(oarchive& oa) { ia = new iarchive_type(oa->get_intrusive_buffer()); }
+		~iarchive() { delete ia; }
+
+		iarchive_type* operator->() { return ia; }
+
+		template<typename T>
+		iarchive_type& operator& (T& v) { return (*(ia) & v); }
+
+		iarchive_type* ia;
+	};
+	static void icreate(iarchive& ia, oarchive& oa, const char* archive_type, const char* io_type) {
 		((void)archive_type);
-		iarchive_ptr archive(new iarchive_type(ptr->get_intrusive_buffer()));
-		return archive;
+		((void)io_type);
+		ia.ia = new iarchive_type(oa.oa->get_intrusive_buffer());
 	}
 };
 
+/***************************************************************************/
+
+static yas::uint32_t oa_cnt = 0;
+
+// file archives traits
 template<typename OA, typename IA>
 struct concrete_archive_traits<false, OA, IA> {
 	typedef OA oarchive_type;
 	typedef IA iarchive_type;
 
-	struct oarchive_ptr {
-		oarchive_ptr(const char* archive_type) {
-			_pimpl.reset(new pimpl(archive_type));
+	struct oarchive {
+		oarchive():oa(0) {++oa_cnt;}
+		~oarchive() {
+			delete oa;
+			--oa_cnt;
+			std::remove(fname.c_str());
 		}
-		oarchive_ptr(const oarchive_ptr& ptr) {
-			pimpl* elem = ptr._pimpl.release();
-			_pimpl.reset(elem);
+
+		oarchive_type* operator->() { return oa; }
+
+		template<typename T>
+		oarchive_type& operator& (const T& v) { return (*(oa) & v); }
+
+		yas::uint32_t size() {
+			file.flush();
+			std::ifstream f(fname, std::ios::binary);
+			f.seekg(0, std::ios::end);
+			yas::uint32_t s = f.tellg();
+			return s;
 		}
 
-		OA* operator->() { return &_pimpl->archive; }
-		const std::string& name() const { return _pimpl->fname; }
+		bool compare(const void* ptr, yas::uint32_t size) {
+			if ( this->size() != size ) return false;
+			std::string str(size, 0);
+			std::ifstream f(fname, std::ios::binary);
+			assert(f);
+			f.read(&str[0], size);
+			return memcmp(str.c_str(), ptr, size) == 0;
+		}
 
-	private:
-		struct pimpl {
-			pimpl(const char* archive_type) {
-				std::ostringstream os;
-				os
-				<< getcwd(0, 0) << "/" << counter++ << "." << archive_type;
-				fname = os.str();
-				file.open(fname);
-				if ( !file ) throw std::runtime_error("cannot open file");
-			}
-
-			~pimpl() {
-				file.close();
-				remove(fname.c_str());
-				--counter;
-			}
-
-			std::string fname;
-			std::ofstream file;
-			OA archive;
-			static int counter;
-		};
-		std::auto_ptr<pimpl> _pimpl;
+		std::string fname;
+		std::ofstream file;
+		oarchive_type* oa;
 	};
+	static void ocreate(oarchive& oa, const char* archive_type, const char* io_type) {
+		std::ostringstream os;
+		os << oa_cnt;
 
-	struct iarchive_ptr {
-		iarchive_ptr(const std::string& fname) {
-			_pimpl.reset(new pimpl(fname));
-		}
-		iarchive_ptr(const iarchive_ptr& ptr) {
-			pimpl* elem = ptr._pimpl.release();
-			_pimpl.reset(elem);
-		}
-
-		IA& operator*() { return _pimpl->archive; }
-		IA* operator->() { return &_pimpl->archive; }
-	private:
-		struct pimpl {
-			pimpl(const std::string& fname) {
-				file.open(fname);
-				if ( !file ) throw std::runtime_error("cannot open file");
-			}
-			std::ifstream file;
-			IA archive;
-		};
-		std::auto_ptr<pimpl> _pimpl;
-	};
-
-	static oarchive_ptr ocreate(const char* archive_type) {
+		oa.fname += archive_type;
+		oa.fname += "_";
+		oa.fname += os.str();
+		oa.fname += "_";
+		oa.fname += io_type;
+		oa.fname += ".bin";
+		oa.file.open(oa.fname, std::ios::trunc|std::ios::binary);
+		assert(oa.file.good());
+		oa.oa = new oarchive_type(oa.file);
 	}
-	static iarchive_ptr icreate(const char* archive_type, oarchive_ptr ptr) {
+
+	struct iarchive {
+		iarchive():ia(0) {}
+		~iarchive() { delete ia; }
+
+		iarchive_type* operator->() { return ia; }
+
+		template<typename T>
+		iarchive_type& operator& (T& v) { return (*(ia) & v); }
+
+		std::string fname;
+		std::ifstream file;
+		iarchive_type* ia;
+	};
+	static void icreate(iarchive& ia, oarchive& oa, const char* archive_type, const char* io_type) {
+		((void)io_type);
+		((void)archive_type);
+		ia.fname = oa.fname;
+		oa.file.flush();
+		ia.file.open(ia.fname, std::ios::binary);
+		assert(ia.file.good());
+		ia.ia = new iarchive_type(ia.file);
 	}
 };
 
-template<typename OA, typename IA>
-int concrete_archive_traits<false, OA, IA>::oarchive_ptr::pimpl::counter = 0;
-
 /***************************************************************************/
+
+#define YAS_RUN_TEST(testname, passcnt, failcnt) \
+	printf( \
+		 "%-6s %-4s: %-19s -> %s\n" \
+		,(yas::is_binary_archive<OA>::value ? "binary" \
+			: yas::is_text_archive<OA>::value ? "text" \
+				: yas::is_json_archive<OA>::value ? "json" \
+			: "unknown" \
+		 ) \
+		,(yas::is_mem_archive<OA>::value?"mem":"file") \
+		,#testname \
+		,(testname ## _test<concrete_archive_traits<yas::is_mem_archive<OA>::value,OA,IA>>( \
+			(yas::is_binary_archive<OA>::value ? "binary" \
+				: yas::is_text_archive<OA>::value ? "text" \
+					: yas::is_json_archive<OA>::value ? "json" \
+				: "unknown" \
+			 ) \
+			,(yas::is_mem_archive<OA>::value?"mem":"file") \
+		)?(++passcnt,"passed"):(++failcnt,"failed!")) \
+	)
 
 template<typename OA, typename IA>
 void tests(yas::uint32_t& p, yas::uint32_t& e) {
-	static const char* archive_type =
-	yas::is_binary_archive<OA>::value ? "binary"
-		: yas::is_text_archive<OA>::value ? "text"
-			: yas::is_json_archive<OA>::value ? "json"
-				: "unknown"
-	;
-
-	typedef concrete_archive_traits<
-		 yas::is_mem_archive<OA>::value
-		,OA
-		,IA
-	> concrete_traits;
-
-	static const char* passed = "passed";
-	static const char* failed = "failed!";
-
-	printf("%6s: VERSION          test %s\n", archive_type, (version_test<concrete_traits>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%6s: POD              test %s\n", archive_type, (pod_test<concrete_traits>(archive_type)?(++p,passed):(++e,failed)));
-#if 0
-	printf("%8s ENUM               test %s\n", archive_type, (enum_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%8s BASE_OBJECT        test %s\n", archive_type, (base_object_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%8s AUTO_ARRAY         test %s\n", archive_type, (auto_array_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	YAS_RUN_TEST(version					, p, e);
+	YAS_RUN_TEST(pod						, p, e);
+	YAS_RUN_TEST(enum						, p, e);
+	YAS_RUN_TEST(base_object			, p, e);
+	YAS_RUN_TEST(auto_array				, p, e);
 #if defined(YAS_HAS_BOOST_ARRAY) || defined(YAS_HAS_STD_ARRAY)
-	printf("%8s ARRAY              test %s\n", archive_type, (array_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	YAS_RUN_TEST(array					, p, e);
 #endif
-	printf("%8s BITSET             test %s\n", archive_type, (bitset_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	YAS_RUN_TEST(bitset					, p, e);
 #if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
-	printf("%8s BUFFER             test %s\n", archive_type, (buffer_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	YAS_RUN_TEST(buffer					, p, e);
 #endif
-	printf("%8s STRING             test %s\n", archive_type, (string_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%8s WSTRING            test %s\n", archive_type, (wstring_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%8s PAIR               test %s\n", archive_type, (pair_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	YAS_RUN_TEST(string					, p, e);
+	YAS_RUN_TEST(wstring					, p, e);
+	YAS_RUN_TEST(pair						, p, e);
 #if defined(YAS_HAS_BOOST_TUPLE) || defined(YAS_HAS_STD_TUPLE)
-	printf("%8s TUPLE              test %s\n", archive_type, (tuple_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	YAS_RUN_TEST(tuple					, p, e);
 #endif
-	printf("%8s VECTOR             test %s\n", archive_type, (vector_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%8s LIST               test %s\n", archive_type, (list_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	YAS_RUN_TEST(vector					, p, e);
+	YAS_RUN_TEST(list						, p, e);
 #if defined(YAS_HAS_STD_FORWARD_LIST)
-	printf("%8s FORWARD_LIST       test %s\n", archive_type, (forward_list_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	YAS_RUN_TEST(forward_list			, p, e);
 #endif
-	printf("%8s MAP                test %s\n", archive_type, (map_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%8s SET                test %s\n", archive_type, (set_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%8s MULTIMAP           test %s\n", archive_type, (multimap_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%8s MULTISET           test %s\n", archive_type, (multiset_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	YAS_RUN_TEST(map						, p, e);
+	YAS_RUN_TEST(set						, p, e);
+	YAS_RUN_TEST(multimap				, p, e);
+	YAS_RUN_TEST(multiset				, p, e);
 #if defined(YAS_HAS_BOOST_UNORDERED) || defined(YAS_HAS_STD_UNORDERED)
-	printf("%8s UNORDERED_MAP      test %s\n", archive_type, (unordered_map_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%8s UNORDERED_SET      test %s\n", archive_type, (unordered_set_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%8s UNORDERED_MULTIMAP test %s\n", archive_type, (unordered_multimap_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%8s UNORDERED_MULTISET test %s\n", archive_type, (unordered_multiset_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	YAS_RUN_TEST(unordered_map			, p, e);
+	YAS_RUN_TEST(unordered_set			, p, e);
+	YAS_RUN_TEST(unordered_multimap	, p, e);
+	YAS_RUN_TEST(unordered_multiset	, p, e);
 #endif
 #if defined(YAS_HAS_BOOST_FUSION)
-	printf("%8s FUSION_PAIR        test %s\n", archive_type, (fusion_pair_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%8s FUSION_TUPLE       test %s\n", archive_type, (fusion_tuple_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%8s FUSION_VECTOR      test %s\n", archive_type, (fusion_vector_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%8s FUSION_LIST        test %s\n", archive_type, (fusion_list_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-//   printf("%8s FUSION_SET         test %s\n", archive_type, (fusion_set_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-//   printf("%8s FUSION_MAP         test %s\n", archive_type, (fusion_map_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
+	YAS_RUN_TEST(fusion_pair			, p, e);
+	YAS_RUN_TEST(fusion_tuple			, p, e);
+	YAS_RUN_TEST(fusion_vector			, p, e);
+	YAS_RUN_TEST(fusion_list			, p, e);
+	YAS_RUN_TEST(fusion_set				, p, e);
+	YAS_RUN_TEST(fusion_map				, p, e);
 #endif
-	printf("%8s ONE_FUNCTION       test %s\n", archive_type, (one_function_serializer_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%8s SPLIT_FUNCTIONS    test %s\n", archive_type, (split_functions_serializer_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%8s ONE_METHOD         test %s\n", archive_type, (one_method_serializer_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-	printf("%8s SPLIT_METHODS      test %s\n", archive_type, (split_methods_serializer_test<OA, IA>(archive_type)?(++p,passed):(++e,failed)));
-#endif
+	YAS_RUN_TEST(one_function			, p, e);
+	YAS_RUN_TEST(split_functions		, p, e);
+	YAS_RUN_TEST(one_method				, p, e);
+	YAS_RUN_TEST(split_methods			, p, e);
 }
 
 /***************************************************************************/
@@ -241,9 +287,11 @@ int main() {
 	yas::uint32_t failed = 0;
 
 	tests<yas::binary_mem_oarchive, yas::binary_mem_iarchive>(passed, failed);
-	tests<yas::binary_file_oarchive, yas::binary_file_iarchive>(passed, failed);
 	tests<yas::text_mem_oarchive, yas::text_mem_iarchive>(passed, failed);
 	//tests<yas::json_mem_oarchive, yas::json_mem_iarchive>(passed, failed);
+	tests<yas::binary_file_oarchive, yas::binary_file_iarchive>(passed, failed);
+	tests<yas::text_file_oarchive, yas::text_file_iarchive>(passed, failed);
+	//tests<yas::json_file_oarchive, yas::json_file_iarchive>(passed, failed);
 
 	std::cout << std::endl
 	<< "/***************************************************/" << std::endl

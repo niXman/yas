@@ -54,8 +54,8 @@ struct serializer<
 	template<typename Archive>
 	static void apply(Archive& ar, const T& v) {
 		const yas::uint8_t size = sizeof(T);
-		ar.write(&size, sizeof(size));
-		ar.write(&v, sizeof(v));
+		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
+		ar.write(reinterpret_cast<const char*>(&v), sizeof(v));
 	}
 };
 
@@ -70,19 +70,19 @@ struct serializer<
 	template<typename Archive>
 	static void apply(Archive& ar, T& v) {
 		yas::uint8_t size = 0;
-		ar.read(&size, sizeof(size));
+		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
 		switch ( size ) {
 			case sizeof(yas::uint8_t):
-				ar.read(reinterpret_cast<void*>(&v), sizeof(yas::uint8_t));
+				ar.read(reinterpret_cast<char*>(&v), sizeof(yas::uint8_t));
 			break;
 			case sizeof(yas::uint16_t):
-				ar.read(reinterpret_cast<void*>(&v), sizeof(yas::uint16_t));
+				ar.read(reinterpret_cast<char*>(&v), sizeof(yas::uint16_t));
 			break;
 			case sizeof(yas::uint32_t):
-				ar.read(reinterpret_cast<void*>(&v), sizeof(yas::uint32_t));
+				ar.read(reinterpret_cast<char*>(&v), sizeof(yas::uint32_t));
 			break;
 			case sizeof(yas::uint64_t):
-				ar.read(reinterpret_cast<void*>(&v), sizeof(yas::uint64_t));
+				ar.read(reinterpret_cast<char*>(&v), sizeof(yas::uint64_t));
 			break;
 			default:
 				throw std::runtime_error("bad size of enum");
@@ -102,7 +102,7 @@ struct serializer<
 > {
 	template<typename Archive>
 	static void apply(Archive& ar, const T& v) {
-		ar.sputn(reinterpret_cast<const typename Archive::char_type*>(&v), sizeof(T));
+		ar.write(reinterpret_cast<const typename Archive::char_type*>(&v), sizeof(T));
 	}
 };
 
@@ -116,7 +116,7 @@ struct serializer<
 > {
 	template<typename Archive>
 	static void apply(Archive& ar, T& v) {
-		ar.sgetn(reinterpret_cast<typename Archive::char_type*>(&v), sizeof(T));
+		ar.read(reinterpret_cast<typename Archive::char_type*>(&v), sizeof(T));
 	}
 };
 

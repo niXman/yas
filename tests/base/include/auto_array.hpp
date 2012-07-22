@@ -33,8 +33,10 @@
 #ifndef _yas_test__auto_array_hpp__included_
 #define _yas_test__auto_array_hpp__included_
 
-template<typename OA, typename IA>
-bool auto_array_test() {
+/***************************************************************************/
+
+template<typename archive_traits>
+bool auto_array_test(const char* archive_type, const char* io_type) {
 	static const size_t array_size = 6;
 
 	char ca1[] = {"string"}, ca2[array_size+1] = {0};
@@ -50,101 +52,134 @@ bool auto_array_test() {
 	double da1[array_size] = {1,2,3,4,5,6}, da2[array_size];
 	float fa1[array_size] = {1,2,3,4,5,6}, fa2[array_size];
 
-	{  OA oa;
+	{
+		typename archive_traits::oarchive oa;
+		archive_traits::ocreate(oa, archive_type, io_type);
 		oa & ca1;
-		IA ia(oa.get_intrusive_buffer());
+		typename archive_traits::iarchive ia;
+		archive_traits::icreate(ia, oa, archive_type, io_type);
 		ia & ca2;
 		if ( memcmp(ca1, ca2, array_size*sizeof(ca1[0])) ) {
 			std::cout << "AUTO_ARRAY deserialization error! [1]" << std::endl;
 			return false;
 		}
 	}
-	{  OA oa;
+	{
+		typename archive_traits::oarchive oa;
+		archive_traits::ocreate(oa, archive_type, io_type);
 		oa & uca1;
-		IA ia(oa.get_intrusive_buffer());
+		typename archive_traits::iarchive ia;
+		archive_traits::icreate(ia, oa, archive_type, io_type);
 		ia & uca2;
 		if ( memcmp(uca1, uca2, array_size*sizeof(uca1[0])) ) {
 			std::cout << "AUTO_ARRAY deserialization error! [2]" << std::endl;
 			return false;
 		}
 	}
-	{  OA oa;
+	{
+		typename archive_traits::oarchive oa;
+		archive_traits::ocreate(oa, archive_type, io_type);
 		oa & sa1;
-		IA ia(oa.get_intrusive_buffer());
+		typename archive_traits::iarchive ia;
+		archive_traits::icreate(ia, oa, archive_type, io_type);
 		ia & sa2;
 		if ( memcmp(sa1, sa2, array_size*sizeof(sa1[0])) ) {
 			std::cout << "AUTO_ARRAY deserialization error! [3]" << std::endl;
 			return false;
 		}
 	}
-	{  OA oa;
+	{
+		typename archive_traits::oarchive oa;
+		archive_traits::ocreate(oa, archive_type, io_type);
 		oa & usa1;
-		IA ia(oa.get_intrusive_buffer());
+		typename archive_traits::iarchive ia;
+		archive_traits::icreate(ia, oa, archive_type, io_type);
 		ia & usa2;
 		if ( memcmp(usa1, usa2, array_size*sizeof(usa1[0])) ) {
 			std::cout << "AUTO_ARRAY deserialization error! [4]" << std::endl;
 			return false;
 		}
 	}
-	{  OA oa;
+	{
+		typename archive_traits::oarchive oa;
+		archive_traits::ocreate(oa, archive_type, io_type);
 		oa & ia1;
-		IA ia(oa.get_intrusive_buffer());
+		typename archive_traits::iarchive ia;
+		archive_traits::icreate(ia, oa, archive_type, io_type);
 		ia & ia2;
 		if ( memcmp(ia1, ia2, array_size*sizeof(ia1[0])) ) {
 			std::cout << "AUTO_ARRAY deserialization error! [5]" << std::endl;
 			return false;
 		}
 	}
-	{  OA oa;
+	{
+		typename archive_traits::oarchive oa;
+		archive_traits::ocreate(oa, archive_type, io_type);
 		oa & uia1;
-		IA ia(oa.get_intrusive_buffer());
+		typename archive_traits::iarchive ia;
+		archive_traits::icreate(ia, oa, archive_type, io_type);
 		ia & uia2;
 		if ( memcmp(uia1, uia2, array_size*sizeof(uia1[0])) ) {
 			std::cout << "AUTO_ARRAY deserialization error! [6]" << std::endl;
 			return false;
 		}
 	}
-	{  OA oa;
+	{
+		typename archive_traits::oarchive oa;
+		archive_traits::ocreate(oa, archive_type, io_type);
 		oa & la1;
-		IA ia(oa.get_intrusive_buffer());
+		typename archive_traits::iarchive ia;
+		archive_traits::icreate(ia, oa, archive_type, io_type);
 		ia & la2;
 		if ( memcmp(la1, la2, array_size*sizeof(la1[0])) ) {
 			std::cout << "AUTO_ARRAY deserialization error! [7]" << std::endl;
 			return false;
 		}
 	}
-	{  OA oa;
+	{
+		typename archive_traits::oarchive oa;
+		archive_traits::ocreate(oa, archive_type, io_type);
 		oa & ula1;
-		IA ia(oa.get_intrusive_buffer());
+		typename archive_traits::iarchive ia;
+		archive_traits::icreate(ia, oa, archive_type, io_type);
 		ia & ula2;
 		if ( memcmp(ula1, ula2, array_size*sizeof(ula1[0])) ) {
 			std::cout << "AUTO_ARRAY deserialization error! [8]" << std::endl;
 			return false;
 		}
 	}
-	{  OA oa;
+	{
+		typename archive_traits::oarchive oa;
+		archive_traits::ocreate(oa, archive_type, io_type);
 		oa & lla1;
-		IA ia(oa.get_intrusive_buffer());
+		typename archive_traits::iarchive ia;
+		archive_traits::icreate(ia, oa, archive_type, io_type);
 		ia & lla2;
 		if ( memcmp(lla1, lla2, array_size*sizeof(lla1[0])) ) {
 			std::cout << "AUTO_ARRAY deserialization error! [9]" << std::endl;
 			return false;
 		}
 	}
-	{  OA oa;
+	{
+		typename archive_traits::oarchive oa;
+		archive_traits::ocreate(oa, archive_type, io_type);
 		oa & ulla1;
-		IA ia(oa.get_intrusive_buffer());
+		typename archive_traits::iarchive ia;
+		archive_traits::icreate(ia, oa, archive_type, io_type);
 		ia & ulla2;
 		if ( memcmp(ulla1, ulla2, array_size*sizeof(ulla1[0])) ) {
 			std::cout << "AUTO_ARRAY deserialization error! [10]" << std::endl;
 			return false;
 		}
 	}
-	{  OA oa;
+	{
+		typename archive_traits::oarchive oa;
+		archive_traits::ocreate(oa, archive_type, io_type);
 		oa & da1;
-		IA ia(oa.get_intrusive_buffer());
+		typename archive_traits::iarchive ia;
+		archive_traits::icreate(ia, oa, archive_type, io_type);
 		ia & da2;
-		if ( yas::is_binary_archive<OA>::value ) {
+		if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
 			if ( memcmp(da1, da2, array_size*sizeof(da1[0])) ) {
 				std::cout << "AUTO_ARRAY deserialization error! [12]" << std::endl;
 				return false;
@@ -156,11 +191,14 @@ bool auto_array_test() {
 			}
 		}
 	}
-	{  OA oa;
+	{
+		typename archive_traits::oarchive oa;
+		archive_traits::ocreate(oa, archive_type, io_type);
 		oa & fa1;
-		IA ia(oa.get_intrusive_buffer());
+		typename archive_traits::iarchive ia;
+		archive_traits::icreate(ia, oa, archive_type, io_type);
 		ia & fa2;
-		if ( yas::is_binary_archive<OA>::value ) {
+		if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
 			if ( memcmp(fa1, fa2, array_size*sizeof(fa1[0])) ) {
 				std::cout << "AUTO_ARRAY deserialization error! [13]" << std::endl;
 				return false;
@@ -175,5 +213,7 @@ bool auto_array_test() {
 
 	return true;
 }
+
+/***************************************************************************/
 
 #endif // _yas_test__auto_array_hpp__included_

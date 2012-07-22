@@ -54,8 +54,8 @@ struct serializer<
 > {
 	template<typename Archive>
 	static void apply(Archive& ar, const intrusive_buffer& buf) {
-		ar.write(&buf.size, sizeof(yas::uint32_t));
-		ar.write(buf.data, buf.size);
+		ar.write(reinterpret_cast<const char*>(&buf.size), sizeof(buf.size));
+		ar.write(reinterpret_cast<const char*>(buf.data), buf.size);
 	}
 };
 
@@ -74,8 +74,8 @@ struct serializer<
 > {
 	template<typename Archive>
 	static void apply(Archive& ar, const shared_buffer& buf) {
-		ar.write(&buf.size, sizeof(yas::uint32_t));
-		ar.write(buf.data.get(), buf.size);
+		ar.write(reinterpret_cast<const char*>(&buf.size), sizeof(yas::uint32_t));
+		ar.write(reinterpret_cast<const char*>(buf.data.get()), buf.size);
 	}
 };
 
@@ -90,13 +90,9 @@ struct serializer<
 	template<typename Archive>
 	static void apply(Archive& ar, shared_buffer& buf) {
 		yas::uint32_t size = 0;
-		ar.read(&size, sizeof(size));
+		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
 		buf.data.reset(new char[size+1], &shared_buffer::deleter);
-		assert(
-			static_cast<yas::uint32_t>(ar.read(buf.data.get(), size))
-			==
-			static_cast<yas::uint32_t>(size)
-		);
+		ar.read(reinterpret_cast<char*>(buf.data.get()), size);
 		buf.size = size;
 		buf.data.get()[size] = 0;
 	}

@@ -33,20 +33,24 @@
 #ifndef _yas_test__unordered_map_hpp__included_
 #define _yas_test__unordered_map_hpp__included_
 
+/***************************************************************************/
+
 #if defined(YAS_HAS_STD_UNORDERED) || defined(YAS_HAS_BOOST_UNORDERED)
 
-template<typename OA, typename IA>
-bool unordered_map_test() {
+template<typename archive_traits>
+bool unordered_map_test(const char* archive_type, const char* io_type) {
 #if defined(YAS_HAS_STD_UNORDERED)
-	OA oa;
 	std::unordered_map<int, int> pod_map, pod_map2;
 	pod_map[1] = 2;
 	pod_map[2] = 3;
 	pod_map[3] = 4;
 
+	typename archive_traits::oarchive oa;
+	archive_traits::ocreate(oa, archive_type, io_type);
 	oa & pod_map;
 
-	IA ia(oa.get_intrusive_buffer());
+	typename archive_traits::iarchive ia;
+	archive_traits::icreate(ia, oa, archive_type, io_type);
 	ia & pod_map2;
 
 	if ( pod_map != pod_map2 ) {
@@ -59,10 +63,12 @@ bool unordered_map_test() {
 	map[2] = "2";
 	map[3] = "3";
 
-	OA oa2;
+	typename archive_traits::oarchive oa2;
+	archive_traits::ocreate(oa2, archive_type, io_type);
 	oa2 & map;
 
-	IA ia2(oa2.get_intrusive_buffer());
+	typename archive_traits::iarchive ia2;
+	archive_traits::icreate(ia2, oa2, archive_type, io_type);
 	ia2 & map2;
 
 	if ( map != map2 ) {
@@ -75,10 +81,12 @@ bool unordered_map_test() {
 	map3["2"] = 2;
 	map3["3"] = 3;
 
-	OA oa3;
+	typename archive_traits::oarchive oa3;
+	archive_traits::ocreate(oa3, archive_type, io_type);
 	oa3 & map3;
 
-	IA ia3(oa3.get_intrusive_buffer());
+	typename archive_traits::iarchive ia3;
+	archive_traits::icreate(ia3, oa3, archive_type, io_type);
 	ia3 & map4;
 
 	if ( map3 != map4 ) {
@@ -94,10 +102,12 @@ bool unordered_map_test() {
 	map5.insert(std::make_pair(3, 4));
 	map5.insert(std::make_pair(4, 5));
 
-	OA oa4;
+	typename archive_traits::oarchive oa4;
+	archive_traits::ocreate(oa4, archive_type, io_type);
 	oa4 & map5;
 
-	IA ia4(oa4.get_intrusive_buffer());
+	typename archive_traits::iarchive ia4;
+	archive_traits::icreate(ia4, oa4, archive_type, io_type);
 	ia4 & map6;
 
 	if ( map5 != map6 ) {
@@ -109,5 +119,7 @@ bool unordered_map_test() {
 }
 
 #endif // #if defined(YAS_HAS_STD_UNORDERED) || defined(YAS_HAS_BOOST_UNORDERED)
+
+/***************************************************************************/
 
 #endif // _yas_test__unordered_map_hpp__included_

@@ -62,8 +62,8 @@ struct serializer<
 	>
 	static void apply(Archive& ar, const U(&v)[N], typename enable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
 		const yas::uint32_t size = N-1;
-		ar.write(&size, sizeof(size));
-		ar.write(v, N-1);
+		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
+		ar.write(reinterpret_cast<const char*>(v), N-1);
 	}
 
 	template<
@@ -72,8 +72,8 @@ struct serializer<
 	>
 	static void apply(Archive& ar, const U(&v)[N], typename disable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
 		const yas::uint32_t size = N*sizeof(T);
-		ar.write(&size, sizeof(size));
-		ar.write(v, N*sizeof(T));
+		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
+		ar.write(reinterpret_cast<const char*>(v), N*sizeof(T));
 	}
 };
 
@@ -91,9 +91,9 @@ struct serializer<
 	>
 	static void apply(Archive& ar, U(&v)[N], typename enable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
 		yas::uint32_t size = 0;
-		ar & size;
+		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
 		if ( size != N-1 ) throw std::runtime_error("bad array size");
-		ar.read(v, size);
+		ar.read(reinterpret_cast<char*>(v), size);
 		v[size] = 0;
 	}
 
@@ -103,9 +103,9 @@ struct serializer<
 	>
 	static void apply(Archive& ar, U(&v)[N], typename disable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
 		yas::uint32_t size = 0;
-		ar.read(&size, sizeof(size));
+		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
 		if ( size != (N*sizeof(T)) ) throw std::runtime_error("bad array size");
-		ar.read(v, size);
+		ar.read(reinterpret_cast<char*>(v), size);
 	}
 };
 

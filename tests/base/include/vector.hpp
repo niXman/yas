@@ -33,9 +33,10 @@
 #ifndef _yas_test__vector_hpp__included_
 #define _yas_test__vector_hpp__included_
 
-template<typename OA, typename IA>
-bool vector_test() {
-	OA oa;
+/***************************************************************************/
+
+template<typename archive_traits>
+bool vector_test(const char* archive_type, const char* io_type) {
 	std::vector<int> v, vv;
 	v.push_back(0);
 	v.push_back(1);
@@ -48,9 +49,12 @@ bool vector_test() {
 	v.push_back(8);
 	v.push_back(9);
 
+	typename archive_traits::oarchive oa;
+	archive_traits::ocreate(oa, archive_type, io_type);
 	oa & v;
 
-	IA ia(oa.get_intrusive_buffer());
+	typename archive_traits::iarchive ia;
+	archive_traits::icreate(ia, oa, archive_type, io_type);
 	ia & vv;
 
 	if ( v != vv ) {
@@ -60,5 +64,7 @@ bool vector_test() {
 
 	return true;
 }
+
+/***************************************************************************/
 
 #endif // _yas_test__vector_hpp__included_
