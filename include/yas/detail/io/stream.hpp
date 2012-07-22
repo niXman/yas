@@ -156,7 +156,7 @@ struct imemstream: std::stringbuf {
 
 	std::streamsize read(char* ptr, size_t size) {return sgetn(static_cast<char_type*>(ptr), size);}
 
-	char_type get() { return (*stream).get(); }
+	void get() { (*stream).get(); }
 
 	template<typename T>
 	std::istream& operator>> (T& v) {
