@@ -70,6 +70,11 @@ private:
 	defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
 
 struct shared_buffer {
+#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR)
+	typedef std::shared_ptr<char> shared_array_type;
+#elif defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
+	typedef boost::shared_ptr<char> shared_array_type;
+#endif
 	shared_buffer()
 		:size(0)
 	{}
@@ -79,28 +84,14 @@ struct shared_buffer {
 		data.reset(new char[size], &deleter);
 		std::memcpy(data.get(), ptr, size);
 	}
-#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR)
-	shared_buffer(std::shared_ptr<char> buf, yas::uint32_t size)
+	shared_buffer(const shared_array_type& buf, yas::uint32_t size)
 		:data(buf)
 		,size(size)
 	{}
-#elif defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
-	shared_buffer(boost::shared_ptr<char> buf, yas::uint32_t size)
-		:data(buf)
-		,size(size)
-	{}
-#endif
-
 	shared_buffer(const shared_buffer& buf)
 		:data(buf.data)
 		,size(buf.size)
 	{}
-
-#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR)
-	typedef std::shared_ptr<char> shared_array_type;
-#elif defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
-	typedef boost::shared_ptr<char> shared_array_type;
-#endif
 
 	shared_array_type data;
 	yas::uint32_t size;
