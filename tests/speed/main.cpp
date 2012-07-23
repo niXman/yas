@@ -19,7 +19,7 @@
 /***************************************************************************/
 
 template<typename OA, typename IA>
-void tests(yas::uint32_t iterations, std::vector<std::string>& reports) {
+void tests(yas::uint32_t iterations) {
 	static const char* archive_type =
 	yas::is_binary_archive<OA>::value ? "binary:"
 		: yas::is_text_archive<OA>::value ? "text  :"
@@ -27,10 +27,10 @@ void tests(yas::uint32_t iterations, std::vector<std::string>& reports) {
 				: "unknown:"
 	;
 
-	reports.push_back(one_function_speed_test<OA, IA>(iterations, archive_type));
-	reports.push_back(split_functions_speed_test<OA, IA>(iterations, archive_type));
-	reports.push_back(one_method_speed_test<OA, IA>(iterations, archive_type));
-	reports.push_back(split_methods_speed_test<OA, IA>(iterations, archive_type));
+	std::cout << one_function_speed_test<OA, IA>(iterations, archive_type) << std::endl;
+	std::cout << split_functions_speed_test<OA, IA>(iterations, archive_type) << std::endl;
+	std::cout << one_method_speed_test<OA, IA>(iterations, archive_type) << std::endl;
+	std::cout << split_methods_speed_test<OA, IA>(iterations, archive_type) << std::endl;
 }
 
 /***************************************************************************/
@@ -39,16 +39,10 @@ int main() {
 	setvbuf(stdout, 0, _IONBF, 0);
 
 	yas::uint32_t iterations = 1024*1024*10;
-	std::vector<std::string> reports;
 
-	tests<yas::binary_mem_oarchive, yas::binary_mem_iarchive>(iterations, reports);
-	tests<yas::text_mem_oarchive, yas::text_mem_iarchive>(iterations, reports);
-	//tests<yas::json_mem_oarchive, yas::json_mem_iarchive>(iterations, reports);
-
-	std::vector<std::string>::const_iterator it = reports.begin();
-	for ( ; it != reports.end(); ++it ) {
-		std::cout << *it << std::endl;
-	}
+	tests<yas::binary_mem_oarchive, yas::binary_mem_iarchive>(iterations);
+	tests<yas::text_mem_oarchive, yas::text_mem_iarchive>(iterations);
+	//tests<yas::json_mem_oarchive, yas::json_mem_iarchive>(iterations);
 }
 
 /***************************************************************************/
