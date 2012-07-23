@@ -1,11 +1,7 @@
 
 #include <iostream>
 #include <fstream>
-#include <algorithm>
-#include <numeric>
-
 #include <cstdio>
-#include <ctime>
 
 #include <yas/binary_oarchive.hpp>
 #include <yas/binary_iarchive.hpp>
