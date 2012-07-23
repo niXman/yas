@@ -30,29 +30,30 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__stream_hpp__included_
-#define _yas__stream_hpp__included_
+#ifndef _yas__binary_mem_stream_hpp__included_
+#define _yas__binary_mem_stream_hpp__included_
+
+#include <sstream>
 
 #include <yas/detail/tools/buffer.hpp>
 #include <yas/detail/type_traits/properties.hpp>
 
-#include <memory>
-#include <sstream>
-
 namespace yas {
 namespace detail {
 
+template<archive_type::type>
+struct omemstream;
+
 /***************************************************************************/
 
-template<typename Archive>
-struct omemstream: std::stringbuf {
+template<>
+struct omemstream<archive_type::binary>: std::stringbuf {
 	enum { default_buffer_size = 1024*4 };
 
 	omemstream()
 		:std::stringbuf()
 		,buf(default_buffer_size)
 	{
-		stream.reset(new std::ostream(this));
 		setp(buf.data, buf.data+buf.size);
 	}
 
@@ -60,14 +61,12 @@ struct omemstream: std::stringbuf {
 		:std::stringbuf()
 		,buf(size)
 	{
-		stream.reset(new std::ostream(this));
 		setp(buf.data, buf.data+buf.size);
 	}
 
 	omemstream(char* ptr, size_t size)
 		:std::stringbuf()
 	{
-		stream.reset(new std::ostream(this));
 		setp(ptr, ptr+size);
 	}
 
@@ -75,11 +74,6 @@ struct omemstream: std::stringbuf {
 
 	std::streamsize write(const char* ptr, size_t size) {
 		return sputn(static_cast<const char_type*>(ptr), size);
-	}
-
-	template<typename T>
-	std::ostream& operator<< (const T& v) {
-		return ((*stream) << v);
 	}
 
 	intrusive_buffer get_intrusive_buffer() const {
@@ -92,8 +86,6 @@ struct omemstream: std::stringbuf {
 		return shared_buffer(pbase(), pptr()-pbase());
 	}
 #endif
-
-	std::string str() const {return std::string(pbase(), pptr());}
 
 private:
 	struct buffer_holder {
@@ -112,18 +104,18 @@ private:
 		char* data;
 		size_t size;
 	} buf;
-
-	std::auto_ptr<std::ostream> stream;
 };
 
 /***************************************************************************/
 
-template<typename Archive>
-struct imemstream: std::stringbuf {
+template<archive_type::type>
+struct imemstream;
+
+template<>
+struct imemstream<archive_type::binary>: std::stringbuf {
 	imemstream(const char* ptr, size_t size)
 		:std::stringbuf()
 	{
-		stream.reset(new std::istream(this));
 		setg(const_cast<char_type*>(ptr),
 			  const_cast<char_type*>(ptr),
 			  const_cast<char_type*>(ptr)+size
@@ -132,10 +124,9 @@ struct imemstream: std::stringbuf {
 	imemstream(const intrusive_buffer& buf)
 		:std::stringbuf()
 	{
-		stream.reset(new std::istream(this));
-		setg(const_cast<char_type*>(static_cast<const char_type*>(buf.data)),
-			  const_cast<char_type*>(static_cast<const char_type*>(buf.data)),
-			  const_cast<char_type*>(static_cast<const char_type*>(buf.data))+buf.size
+		setg(const_cast<char_type*>(buf.data),
+			  const_cast<char_type*>(buf.data),
+			  const_cast<char_type*>(buf.data)+buf.size
 		);
 	}
 
@@ -144,32 +135,21 @@ struct imemstream: std::stringbuf {
 	imemstream(const shared_buffer& buf)
 		:std::stringbuf()
 	{
-		stream.reset(new std::istream(this));
-		setg(const_cast<char_type*>(static_cast<const char_type*>(buf.data.get())),
-			  const_cast<char_type*>(static_cast<const char_type*>(buf.data.get())),
-			  const_cast<char_type*>(static_cast<const char_type*>(buf.data.get()))+buf.size
+		setg(const_cast<char_type*>(buf.data.get()),
+			  const_cast<char_type*>(buf.data.get()),
+			  const_cast<char_type*>(buf.data.get())+buf.size
 		);
 	}
-#endif
+#endif //
 
 	virtual ~imemstream() {}
 
-	std::streamsize read(char* ptr, size_t size) {return sgetn(static_cast<char_type*>(ptr), size);}
-
-	void get() { (*stream).get(); }
-
-	template<typename T>
-	std::istream& operator>> (T& v) {
-		return ((*stream) >> v);
-	}
-
-	std::auto_ptr<std::istream> stream;
+	std::streamsize read(char* ptr, size_t size) {return sgetn(ptr, size);}
 };
 
 /***************************************************************************/
 
-} // namespace detail
-} // namespace yas
+} // ns detail
+} // ns yas
 
-#endif // _yas__stream_hpp__included_
-
+#endif // _yas__binary_mem_stream_hpp__included_

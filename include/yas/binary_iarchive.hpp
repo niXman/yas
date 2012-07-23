@@ -53,27 +53,27 @@ namespace yas {
 /***************************************************************************/
 
 struct binary_mem_iarchive:
-	 detail::imemstream<binary_mem_iarchive>
+	 detail::imemstream<archive_type::binary>
 	,detail::archive_information<archive_type::binary, direction::in>
 	,private detail::noncopyable
 {
 	binary_mem_iarchive(const intrusive_buffer& o, header_flag op = with_header)
-		:detail::imemstream<binary_mem_iarchive>(o)
+		:detail::imemstream<archive_type::binary>(o)
 	{ init_header(this, op); }
 
 #if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || \
 	defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
 	binary_mem_iarchive(const shared_buffer& o, header_flag op = with_header)
-		:detail::imemstream<binary_mem_iarchive>(o)
+		:detail::imemstream<archive_type::binary>(o)
 	{ init_header(this, op); }
 #endif
 
 	binary_mem_iarchive(const std::string& o, header_flag op = with_header)
-		:detail::imemstream<binary_mem_iarchive>(o.c_str(), o.size())
+		:detail::imemstream<archive_type::binary>(o.c_str(), o.size())
 	{ init_header(this, op); }
 
 	binary_mem_iarchive(const char* ptr, size_t size, header_flag op = with_header)
-		:detail::imemstream<binary_mem_iarchive>(ptr, size)
+		:detail::imemstream<archive_type::binary>(ptr, size)
 	{ init_header(this, op); }
 
 	template<typename T>

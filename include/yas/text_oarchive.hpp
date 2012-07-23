@@ -56,15 +56,15 @@ namespace yas {
 /***************************************************************************/
 
 struct text_mem_oarchive:
-	 detail::omemstream<text_mem_oarchive>
+	 detail::omemstream<archive_type::text>
 	,detail::archive_information<archive_type::text, direction::out>
 	,private detail::noncopyable
 {
 	text_mem_oarchive(header_flag op = with_header)
-		:detail::omemstream<text_mem_oarchive>()
+		:detail::omemstream<archive_type::text>()
 	{ init_header(this, op); }
 	text_mem_oarchive(char* ptr, size_t size, header_flag op = with_header)
-		:detail::omemstream<text_mem_oarchive>(ptr, size)
+		:detail::omemstream<archive_type::text>(ptr, size)
 	{ init_header(this, op); }
 
 	template<typename T>

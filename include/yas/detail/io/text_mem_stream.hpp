@@ -30,70 +30,89 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__json_iarchive_hpp__included_
-#define _yas__json_iarchive_hpp__included_
+#ifndef _yas__text_mem_stream_hpp__included_
+#define _yas__text_mem_stream_hpp__included_
 
-#include <yas/detail/type_traits/properties.hpp>
-#include <yas/detail/type_traits/has_method_serialize.hpp>
-#include <yas/detail/type_traits/has_function_serialize.hpp>
-#include <yas/detail/type_traits/selector.hpp>
+#include <memory>
 
-#include <yas/detail/io/json_mem_stream.hpp>
-#include <yas/detail/io/information.hpp>
-#include <yas/detail/base_object.hpp>
-
-#include <yas/serializers/json/utility/pod_serializers.hpp>
-#include <yas/serializers/json/utility/usertype_serializers.hpp>
-#include <yas/serializers/json/utility/autoarray_serializers.hpp>
-#include <yas/serializers/json/utility/buffer_serializers.hpp>
-
-#include <yas/detail/tools/buffer.hpp>
-#include <yas/detail/tools/noncopyable.hpp>
+#include <yas/detail/io/binary_mem_stream.hpp>
 
 namespace yas {
+namespace detail {
 
 /***************************************************************************/
 
-struct json_mem_iarchive:
-	 detail::imemstream<archive_type::json>
-	,detail::archive_information<archive_type::json, direction::in>
-	,private detail::noncopyable
-{
-	json_mem_iarchive(const intrusive_buffer& o, header_flag op = with_header)
-		:detail::imemstream<archive_type::json>(o)
-	{ init_header(this, op); }
+template<archive_type::type>
+struct omemstream;
 
-#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || \
-	defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
-	json_mem_iarchive(const shared_buffer& o, header_flag op = with_header)
-		:detail::imemstream<archive_type::json>(o)
-	{ init_header(this, op); }
-#endif
+template<>
+struct omemstream<archive_type::text>: omemstream<archive_type::binary> {
+	omemstream()
+		:omemstream<archive_type::binary>()
+		,_stream(new std::ostream(this))
+	{}
 
-	json_mem_iarchive(const std::string& o, header_flag op = with_header)
-		:detail::imemstream<archive_type::json>(o.c_str(), o.size())
-	{ init_header(this, op); }
-	json_mem_iarchive(const char* ptr, size_t size, header_flag op = with_header)
-		:detail::imemstream<archive_type::json>(ptr, size)
-	{ init_header(this, op); }
+	omemstream(size_t size)
+		:omemstream<archive_type::binary>(size)
+		,_stream(new std::ostream(this))
+	{}
+
+	omemstream(char* ptr, size_t size)
+		:omemstream<archive_type::binary>(ptr, size)
+		,_stream(new std::ostream(this))
+	{}
+
+	virtual ~omemstream() {}
 
 	template<typename T>
-	json_mem_iarchive& operator& (T& v) {
-		using namespace detail;
-		serializer<
-			type_propertyes<T>::value,
-			serialization_method<T, json_mem_iarchive>::value,
-			archive_type::json,
-			direction::in,
-			T
-		>::apply(*this, v);
-
-		return *this;
+	std::ostream& operator<< (const T& v) {
+		return ((*_stream) << v);
 	}
+
+private:
+	std::auto_ptr<std::ostream> _stream;
 };
 
 /***************************************************************************/
 
-} // namespace yas
+template<archive_type::type>
+struct imemstream;
 
-#endif // _yas__json_iarchive_hpp__included_
+template<>
+struct imemstream<archive_type::text>: imemstream<archive_type::binary> {
+	imemstream(const char* ptr, size_t size)
+		:imemstream<archive_type::binary>(ptr, size)
+		,_stream(new std::istream(this))
+	{}
+	imemstream(const intrusive_buffer& buf)
+		:imemstream<archive_type::binary>(buf)
+		,_stream(new std::istream(this))
+	{}
+
+#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || \
+	defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
+	imemstream(const shared_buffer& buf)
+		:imemstream<archive_type::binary>(buf)
+		,_stream(new std::istream(this))
+	{}
+#endif
+
+	void get() { _stream->get(); }
+
+	template<typename T>
+	std::istream& operator>> (T& v) {
+		return ((*_stream) >> v);
+	}
+
+	virtual ~imemstream() {}
+
+private:
+	std::auto_ptr<std::istream> _stream;
+};
+
+/***************************************************************************/
+
+} // ns detail
+} // ns yas
+
+#endif // _yas__text_mem_stream_hpp__included_

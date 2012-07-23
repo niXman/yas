@@ -48,7 +48,7 @@ namespace yas {
 /***************************************************************************/
 
 struct intrusive_buffer {
-	intrusive_buffer(const void* data, yas::uint32_t size)
+	intrusive_buffer(const char* data, yas::uint32_t size)
 		:data(data)
 		,size(size)
 	{}
@@ -57,7 +57,7 @@ struct intrusive_buffer {
 		,size(o.size)
 	{}
 
-	const void* data;
+	const char* data;
 	const yas::uint32_t size;
 
 private:

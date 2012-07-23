@@ -39,6 +39,7 @@
 #include <yas/detail/type_traits/has_function_serialize.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 
+#include <yas/detail/io/binary_mem_stream.hpp>
 #include <yas/detail/io/information.hpp>
 #include <yas/detail/base_object.hpp>
 
@@ -55,19 +56,20 @@ namespace yas {
 /***************************************************************************/
 
 struct binary_mem_oarchive:
-	 detail::omemstream<binary_mem_oarchive>
+	 detail::omemstream<archive_type::binary>
 	,detail::archive_information<archive_type::binary, direction::out>
 	,private detail::noncopyable
 {
 	binary_mem_oarchive(header_flag op = with_header)
+		:detail::omemstream<archive_type::binary>()
 	{ init_header(this, op); }
 
 	binary_mem_oarchive(size_t size, header_flag op = with_header)
-		:detail::omemstream<binary_mem_oarchive>(size)
+		:detail::omemstream<archive_type::binary>(size)
 	{ init_header(this, op); }
 
 	binary_mem_oarchive(char* ptr, size_t size, header_flag op = with_header)
-		:detail::omemstream<binary_mem_oarchive>(ptr, size)
+		:detail::omemstream<archive_type::binary>(ptr, size)
 	{ init_header(this, op); }
 
 	template<typename T>

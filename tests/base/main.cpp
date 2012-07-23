@@ -204,7 +204,7 @@ struct concrete_archive_traits<false, OA, IA> {
 
 #define YAS_RUN_TEST(testname, passcnt, failcnt) \
 	printf( \
-		 "%-6s %-4s: %-19s -> %s\n" \
+		 "%-6s %-4s: %-18s -> %s\n" \
 		,(yas::is_binary_archive<OA>::value ? "binary" \
 			: yas::is_text_archive<OA>::value ? "text" \
 				: yas::is_json_archive<OA>::value ? "json" \
