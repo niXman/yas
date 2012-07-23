@@ -55,7 +55,7 @@ namespace yas {
 
 struct json_mem_iarchive:
 	 detail::imemstream<json_mem_iarchive>
-	,detail::archive_information<archive_type::json, direction::in, json_mem_iarchive>
+	,detail::archive_information<archive_type::json, direction::in>
 	,private detail::noncopyable
 {
 	json_mem_iarchive(const intrusive_buffer& o, header_flag op = with_header)

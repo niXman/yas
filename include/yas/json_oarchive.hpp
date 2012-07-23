@@ -55,7 +55,7 @@ namespace yas {
 
 struct json_mem_oarchive:
 	 detail::omemstream<json_mem_oarchive>
-	,detail::archive_information<archive_type::json, direction::out, json_mem_oarchive>
+	,detail::archive_information<archive_type::json, direction::out>
 	,private detail::noncopyable
 {
 	json_mem_oarchive(header_flag op = with_header)

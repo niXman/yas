@@ -56,7 +56,7 @@ namespace yas {
 
 struct binary_mem_oarchive:
 	 detail::omemstream<binary_mem_oarchive>
-	,detail::archive_information<archive_type::binary, direction::out, binary_mem_oarchive>
+	,detail::archive_information<archive_type::binary, direction::out>
 	,private detail::noncopyable
 {
 	binary_mem_oarchive(header_flag op = with_header)
@@ -89,7 +89,7 @@ struct binary_mem_oarchive:
 
 struct binary_file_oarchive:
 	 std::ostream
-	,detail::archive_information<archive_type::binary, direction::out, binary_file_oarchive>
+	,detail::archive_information<archive_type::binary, direction::out>
 	,private detail::noncopyable
 {
 	binary_file_oarchive(std::ostream& file, header_flag op = with_header)

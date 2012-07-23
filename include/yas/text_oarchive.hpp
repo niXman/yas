@@ -57,7 +57,7 @@ namespace yas {
 
 struct text_mem_oarchive:
 	 detail::omemstream<text_mem_oarchive>
-	,detail::archive_information<archive_type::text, direction::out, text_mem_oarchive>
+	,detail::archive_information<archive_type::text, direction::out>
 	,private detail::noncopyable
 {
 	text_mem_oarchive(header_flag op = with_header)
@@ -86,7 +86,7 @@ struct text_mem_oarchive:
 
 struct text_file_oarchive:
 	 std::ostream
-	,detail::archive_information<archive_type::text, direction::out, text_file_oarchive>
+	,detail::archive_information<archive_type::text, direction::out>
 	,private detail::noncopyable
 {
 	text_file_oarchive(std::ostream& file, header_flag op = with_header)

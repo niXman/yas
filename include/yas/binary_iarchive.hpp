@@ -54,7 +54,7 @@ namespace yas {
 
 struct binary_mem_iarchive:
 	 detail::imemstream<binary_mem_iarchive>
-	,detail::archive_information<archive_type::binary, direction::in, binary_mem_iarchive>
+	,detail::archive_information<archive_type::binary, direction::in>
 	,private detail::noncopyable
 {
 	binary_mem_iarchive(const intrusive_buffer& o, header_flag op = with_header)
@@ -95,7 +95,7 @@ struct binary_mem_iarchive:
 
 struct binary_file_iarchive:
 	 std::istream
-	,detail::archive_information<archive_type::binary, direction::in, binary_file_iarchive>
+	,detail::archive_information<archive_type::binary, direction::in>
 	,private detail::noncopyable
 {
 	binary_file_iarchive(std::istream& file, header_flag op = with_header)

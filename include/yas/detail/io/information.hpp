@@ -233,8 +233,8 @@ struct header_reader_writer<archive_type::json> {
 /***************************************************************************/
 
 #define YAS_WRITE_ARCHIVE_INFORMATION_SPECIALIZATION_IMPL(unused, idx, seq) \
-	template<typename Archive> \
-	struct archive_information<YAS_PP_SEQ_ELEM(idx, seq), direction::in, Archive> { \
+	template<> \
+	struct archive_information<YAS_PP_SEQ_ELEM(idx, seq), direction::in> { \
 		archive_information() \
 			:header() \
 		{} \
@@ -258,6 +258,7 @@ struct header_reader_writer<archive_type::json> {
 		static const bool						_is_writable	= false; \
 		\
 	protected: \
+		template<typename Archive> \
 		void init_header(Archive* ar, yas::header_flag op) { \
 			header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::read(ar, op, header); \
 		}\
@@ -266,8 +267,8 @@ struct header_reader_writer<archive_type::json> {
 		archive_header header; \
 	}; \
 	\
-	template<typename Archive> \
-	struct archive_information<YAS_PP_SEQ_ELEM(idx, seq), direction::out, Archive> { \
+	template<> \
+	struct archive_information<YAS_PP_SEQ_ELEM(idx, seq), direction::out> { \
 		archive_information() \
 		{} \
 		\
@@ -284,13 +285,14 @@ struct header_reader_writer<archive_type::json> {
 		static const bool						_is_writable	= true; \
 		\
 	protected: \
+		template<typename Archive> \
 		void init_header(Archive* ar, yas::header_flag op) { \
 			header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::write(ar, op, YAS_PP_SEQ_ELEM(idx, seq)); \
 		} \
 	};
 
 #define YAS_WRITE_ARCHIVE_INFORMATION_SPECIALIZATIONS(seq) \
-	template<archive_type::type, direction::type, typename> \
+	template<archive_type::type, direction::type> \
 	struct archive_information; \
 	YAS_PP_REPEAT( \
 		YAS_PP_SEQ_SIZE(seq), \
