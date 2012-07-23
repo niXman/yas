@@ -56,7 +56,7 @@ struct serializer<
 	boost::unordered_multimap<K, V>
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, const boost::unordered_multimap<K, V>& multimap) {
+	static Archive& apply(Archive& ar, const boost::unordered_multimap<K, V>& multimap) {
 		ar & multimap.size();
 		typename boost::unordered_multimap<K, V>::const_iterator it = multimap.begin();
 		for ( ; it != multimap.end(); ++it ) {
@@ -75,7 +75,7 @@ struct serializer<
 	boost::unordered_multimap<K, V>
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, boost::unordered_multimap<K, V>& multimap) {
+	static Archive& apply(Archive& ar, boost::unordered_multimap<K, V>& multimap) {
 		yas::uint32_t size = 0;
 		ar & size;
 		K key = K();

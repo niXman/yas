@@ -54,12 +54,13 @@ struct serializer<
 >
 {
 	template<typename Archive>
-	static void apply(Archive& ar, const std::vector<T>& vector) {
+	static Archive& apply(Archive& ar, const std::vector<T>& vector) {
 		ar & vector.size();
 		typename std::vector<T>::const_iterator it = vector.begin();
 		for ( ; it != vector.end(); ++it ) {
 			ar & (*it);
 		}
+		return ar;
 	}
 };
 
@@ -73,7 +74,7 @@ struct serializer<
 >
 {
 	template<typename Archive>
-	static void apply(Archive& ar, std::vector<T>& vector) {
+	static Archive& apply(Archive& ar, std::vector<T>& vector) {
 		yas::uint32_t size = 0;
 		ar & size;
 		vector.resize(size);
@@ -81,6 +82,7 @@ struct serializer<
 		for ( ; it != vector.end(); ++it ) {
 			ar & (*it);
 		}
+		return ar;
 	}
 };
 

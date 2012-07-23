@@ -53,7 +53,7 @@ struct serializer<
 	std::multimap<K, V>
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, const std::multimap<K, V>& multimap) {
+	static Archive& apply(Archive& ar, const std::multimap<K, V>& multimap) {
 		const yas::uint32_t size = multimap.size();
 		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
 		typename std::multimap<K, V>::const_iterator it = multimap.begin();
@@ -78,6 +78,7 @@ struct serializer<
 					& it->second;
 			}
 		}
+		return ar;
 	}
 };
 
@@ -90,7 +91,7 @@ struct serializer<
 	std::multimap<K, V>
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, std::multimap<K, V>& multimap) {
+	static Archive& apply(Archive& ar, std::multimap<K, V>& multimap) {
 		yas::uint32_t size = 0;
 		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
 		if ( is_pod<K>::value && is_pod<V>::value ) {
@@ -126,6 +127,7 @@ struct serializer<
 				multimap.insert(typename std::multimap<K, V>::value_type(key, val));
 			}
 		}
+		return ar;
 	}
 };
 

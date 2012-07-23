@@ -56,7 +56,7 @@ struct serializer<
 	boost::unordered_map<K, V>
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, const boost::unordered_map<K, V>& map) {
+	static Archive& apply(Archive& ar, const boost::unordered_map<K, V>& map) {
 		yas::uint32_t size = map.size();
 		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
 		typename boost::unordered_map<K, V>::const_iterator it = map.begin();
@@ -81,6 +81,7 @@ struct serializer<
 					& it->second;
 			}
 		}
+		return ar;
 	}
 };
 
@@ -93,7 +94,7 @@ struct serializer<
 	boost::unordered_map<K, V>
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, boost::unordered_map<K, V>& map) {
+	static Archive& apply(Archive& ar, boost::unordered_map<K, V>& map) {
 		yas::uint32_t size = 0;
 		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
 		if ( detail::is_pod<K>::value && detail::is_pod<V>::value ) {
@@ -129,6 +130,7 @@ struct serializer<
 				map[key] = val;
 			}
 		}
+		return ar;
 	}
 };
 

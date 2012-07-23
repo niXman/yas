@@ -57,8 +57,9 @@ struct serializer<
 	boost::fusion::pair<T1, T2>
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, const boost::fusion::pair<T1, T2>& pair) {
+	static Archive& apply(Archive& ar, const boost::fusion::pair<T1, T2>& pair) {
 		ar & pair.second;
+		return ar;
 	}
 };
 
@@ -71,8 +72,9 @@ struct serializer<
 	boost::fusion::pair<T1, T2>
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, boost::fusion::pair<T1, T2>& pair) {
+	static Archive& apply(Archive& ar, boost::fusion::pair<T1, T2>& pair) {
 		ar & pair.second;
+		return ar;
 	}
 };
 

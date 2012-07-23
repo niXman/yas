@@ -57,7 +57,7 @@ struct serializer<
 >
 {
 	template<typename Archive>
-	static void apply(Archive& ar, const boost::unordered_set<K>& set) {
+	static Archive& apply(Archive& ar, const boost::unordered_set<K>& set) {
 		ar & set.size();
 		typename boost::unordered_set<K>::const_iterator it = set.begin();
 		for ( ; it != set.end(); ++it ) {
@@ -76,7 +76,7 @@ struct serializer<
 >
 {
 	template<typename Archive>
-	static void apply(Archive& ar, boost::unordered_set<K>& set) {
+	static Archive& apply(Archive& ar, boost::unordered_set<K>& set) {
 		std::size_t size = 0;
 		ar & size;
 		K key;

@@ -96,7 +96,7 @@ struct binary_list_deserializer {
 		archive_type::binary, direction::out, boost::fusion::list<> > \
 	{ \
 		template<typename Archive> \
-		static void apply(Archive&, const boost::fusion::list<>&) {} \
+		static Archive& apply(Archive& ar, const boost::fusion::list<>&) { return ar; } \
 	};
 
 #define YAS__BINARY__GENERATE_EMPTY_LOAD_SERIALIZE_LIST_SPEC_VARIADIC() \
@@ -105,7 +105,7 @@ struct binary_list_deserializer {
 		archive_type::binary, direction::in, boost::fusion::list<> > \
 	{ \
 		template<typename Archive> \
-		static void apply(Archive&, boost::fusion::list<>&) {} \
+		static Archive& apply(Archive& ar, boost::fusion::list<>&) { return ar; } \
 	};
 
 #define YAS__BINARY__GENERATE_SAVE_SERIALIZE_LIST_SPEC_VARIADIC(unused, count, text) \
@@ -114,12 +114,13 @@ struct binary_list_deserializer {
 		archive_type::binary, direction::out, boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
 	{ \
 		template<typename Archive> \
-		static void apply(Archive& ar, \
+		static Archive& apply(Archive& ar, \
 			const boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& list) \
 		{ \
 			const yas::uint8_t size = YAS_PP_INC(count); \
 			ar.write(reinterpret_cast<const char*>(&size), sizeof(size)); \
 			boost::fusion::for_each(list, detail::binary_list_serializer<Archive>(ar)); \
+			return ar; \
 		} \
 	};
 
@@ -137,13 +138,14 @@ struct binary_list_deserializer {
 		archive_type::binary, direction::in, boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
 	{ \
 		template<typename Archive> \
-		static void apply(Archive& ar, \
+		static Archive& apply(Archive& ar, \
 			boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& list) \
 		{ \
 			yas::uint8_t size = 0; \
 			ar.read(reinterpret_cast<char*>(&size), sizeof(size)); \
 			if ( size != YAS_PP_INC(count) ) throw std::runtime_error("size error on deserialize fusion::list"); \
 			boost::fusion::for_each(list, detail::binary_list_deserializer<Archive>(ar)); \
+			return ar; \
 		} \
 	};
 

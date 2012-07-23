@@ -52,10 +52,11 @@ struct serializer<
 	T
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, const T& v) {
+	static Archive& apply(Archive& ar, const T& v) {
 		const yas::uint8_t size = sizeof(T);
 		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
 		ar.write(reinterpret_cast<const char*>(&v), sizeof(v));
+		return ar;
 	}
 };
 
@@ -68,7 +69,7 @@ struct serializer<
 	T
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, T& v) {
+	static Archive& apply(Archive& ar, T& v) {
 		yas::uint8_t size = 0;
 		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
 		switch ( size ) {
@@ -87,6 +88,7 @@ struct serializer<
 			default:
 				throw std::runtime_error("bad size of enum");
 		}
+		return ar;
 	}
 };
 
@@ -101,8 +103,9 @@ struct serializer<
 	T
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, const T& v) {
+	static Archive& apply(Archive& ar, const T& v) {
 		ar.write(reinterpret_cast<const typename Archive::char_type*>(&v), sizeof(T));
+		return ar;
 	}
 };
 
@@ -115,8 +118,9 @@ struct serializer<
 	T
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, T& v) {
+	static Archive& apply(Archive& ar, T& v) {
 		ar.read(reinterpret_cast<typename Archive::char_type*>(&v), sizeof(T));
+		return ar;
 	}
 };
 

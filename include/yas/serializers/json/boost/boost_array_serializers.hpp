@@ -56,7 +56,7 @@ struct serializer<
 	boost::array<T, N>
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, const boost::array<T, N>& array) {
+	static Archive& apply(Archive& ar, const boost::array<T, N>& array) {
 		ar & static_cast<yas::uint32_t>(N);
 		typename boost::array<T, N>::const_iterator it = array.begin();
 		for ( ; it != array.end(); ++it ) {
@@ -75,7 +75,7 @@ struct serializer<
 >
 {
 	template<typename Archive>
-	static void apply(Archive& ar, boost::array<T, N>& array) {
+	static Archive& apply(Archive& ar, boost::array<T, N>& array) {
 		yas::uint32_t size = 0;
 		ar & size;
 		if ( size != N ) throw std::runtime_error("array size is not equal");

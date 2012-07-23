@@ -71,7 +71,7 @@ namespace detail {
 		archive_type::binary,direction::out,boost::tuples::tuple<> \
 	> { \
 		template<typename Archive> \
-		static void apply(Archive&, const boost::tuples::tuple<>&) {} \
+		static Archive& apply(Archive& ar, const boost::tuples::tuple<>&) { return ar; } \
 	};
 
 #define YAS__BINARY__GENERATE_EMPTY_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC() \
@@ -80,7 +80,7 @@ namespace detail {
 		archive_type::binary, direction::in,boost::tuples::tuple<> \
 	> { \
 		template<typename Archive> \
-		static void apply(Archive&, boost::tuples::tuple<>&) {} \
+		static Archive& apply(Archive& ar, boost::tuples::tuple<>&) { return ar; } \
 	};
 
 #define YAS__BINARY__GENERATE_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC(unused, count, text) \
@@ -91,7 +91,7 @@ namespace detail {
 	> \
 	{ \
 		template<typename Archive> \
-		static void apply(Archive& ar, const boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
+		static Archive& apply(Archive& ar, const boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
 			const yas::uint8_t size = YAS_PP_INC(count); \
 			ar.write(reinterpret_cast<const char*>(&size), sizeof(size)); \
 			YAS_PP_REPEAT( \
@@ -99,6 +99,7 @@ namespace detail {
 				YAS__BINARY__WRITE_BOOST_TUPLE_ITEM, \
 				T \
 			) \
+			return ar; \
 		} \
 	};
 
@@ -118,7 +119,7 @@ namespace detail {
 	> \
 	{ \
 		template<typename Archive> \
-		static void apply(Archive& ar, boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
+		static Archive& apply(Archive& ar, boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
 			yas::uint8_t size = 0; \
 			ar.read(reinterpret_cast<char*>(&size), sizeof(size)); \
 			if ( size != YAS_PP_INC(count) ) throw std::runtime_error("size error on deserialize boost::tuple"); \
@@ -127,6 +128,7 @@ namespace detail {
 				YAS__BINARY__READ_BOOST_TUPLE_ITEM, \
 				T \
 			) \
+			return ar; \
 		} \
 	};
 

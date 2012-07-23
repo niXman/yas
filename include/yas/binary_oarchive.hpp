@@ -75,15 +75,13 @@ struct binary_mem_oarchive:
 	template<typename T>
 	binary_mem_oarchive& operator& (const T& v) {
 		using namespace detail;
-		serializer<
+		return serializer<
 			type_propertyes<T>::value,
 			serialization_method<T, binary_mem_oarchive>::value,
 			archive_type::binary,
 			direction::out,
 			T
 		>::apply(*this, v);
-
-		return *this;
 	}
 };
 
@@ -101,15 +99,13 @@ struct binary_file_oarchive:
 	template<typename T>
 	binary_file_oarchive& operator& (const T& v) {
 		using namespace detail;
-		serializer<
+		return serializer<
 			type_propertyes<T>::value,
 			serialization_method<T, binary_file_oarchive>::value,
 			archive_type::binary,
 			direction::out,
 			T
 		>::apply(*this, v);
-
-		return *this;
 	}
 };
 

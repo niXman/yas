@@ -52,7 +52,7 @@ struct serializer<
 	specialization_type
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, const specialization_type&) {
+	static Archive& apply(Archive& ar, const specialization_type&) {
 	}
 };
 
@@ -65,7 +65,7 @@ struct serializer<
 	specialization_type
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, specialization_type&) {
+	static Archive& apply(Archive& ar, specialization_type&) {
 	}
 };
 

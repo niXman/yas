@@ -60,20 +60,22 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static void apply(Archive& ar, const U(&v)[N], typename enable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
+	static Archive& apply(Archive& ar, const U(&v)[N], typename enable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
 		const yas::uint32_t size = N-1;
 		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
 		ar.write(reinterpret_cast<const char*>(v), N-1);
+		return ar;
 	}
 
 	template<
 		 typename Archive
 		,typename U
 	>
-	static void apply(Archive& ar, const U(&v)[N], typename disable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
+	static Archive& apply(Archive& ar, const U(&v)[N], typename disable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
 		const yas::uint32_t size = N*sizeof(T);
 		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
 		ar.write(reinterpret_cast<const char*>(v), N*sizeof(T));
+		return ar;
 	}
 };
 
@@ -89,23 +91,25 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static void apply(Archive& ar, U(&v)[N], typename enable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
+	static Archive& apply(Archive& ar, U(&v)[N], typename enable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
 		yas::uint32_t size = 0;
 		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
 		if ( size != N-1 ) throw std::runtime_error("bad array size");
 		ar.read(reinterpret_cast<char*>(v), size);
 		v[size] = 0;
+		return ar;
 	}
 
 	template<
 		 typename Archive
 		,typename U
 	>
-	static void apply(Archive& ar, U(&v)[N], typename disable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
+	static Archive& apply(Archive& ar, U(&v)[N], typename disable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
 		yas::uint32_t size = 0;
 		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
 		if ( size != (N*sizeof(T)) ) throw std::runtime_error("bad array size");
 		ar.read(reinterpret_cast<char*>(v), size);
+		return ar;
 	}
 };
 
@@ -120,12 +124,13 @@ struct serializer<
 	T[N]
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, const T(&v)[N]) {
+	static Archive& apply(Archive& ar, const T(&v)[N]) {
 		const yas::uint32_t size = N;
 		ar.write(&size, sizeof(size));
 		for ( size_t idx = 0; idx < N; ++idx ) {
 			ar & v[idx];
 		}
+		return ar;
 	}
 };
 
@@ -140,13 +145,14 @@ struct serializer<
 	T[N]
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, T(&v)[N]) {
+	static Archive& apply(Archive& ar, T(&v)[N]) {
 		yas::uint32_t size = 0;
 		ar.read(&size, sizeof(size));
 		if ( size != N ) throw std::runtime_error("bad array size");
 		for ( size_t idx = 0; idx < N; ++idx ) {
 			ar & v[idx];
 		}
+		return ar;
 	}
 };
 

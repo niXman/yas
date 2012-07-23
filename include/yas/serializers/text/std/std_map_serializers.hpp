@@ -54,13 +54,14 @@ struct serializer<
 >
 {
 	template<typename Archive>
-	static void apply(Archive& ar, const std::map<K, V>& map) {
+	static Archive& apply(Archive& ar, const std::map<K, V>& map) {
 		ar & map.size();
 		typename std::map<K, V>::const_iterator it = map.begin();
 		for ( ; it != map.end(); ++it ) {
 			ar & it->first
 				& it->second;
 		}
+		return ar;
 	}
 };
 
@@ -74,7 +75,7 @@ struct serializer<
 >
 {
 	template<typename Archive>
-	static void apply(Archive& ar, std::map<K, V>& map) {
+	static Archive& apply(Archive& ar, std::map<K, V>& map) {
 		yas::uint32_t size = 0;
 		ar & size;
 		K key = K();
@@ -84,6 +85,7 @@ struct serializer<
 				& val;
 			map[key] = val;
 		}
+		return ar;
 	}
 };
 

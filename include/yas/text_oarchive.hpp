@@ -70,15 +70,13 @@ struct text_mem_oarchive:
 	template<typename T>
 	text_mem_oarchive& operator& (const T& v) {
 		using namespace detail;
-		serializer<
+		return serializer<
 			type_propertyes<T>::value,
 			serialization_method<T, text_mem_oarchive>::value,
 			archive_type::text,
 			direction::out,
 			T
 		>::apply(*this, v);
-
-		return *this;
 	}
 };
 
@@ -96,15 +94,13 @@ struct text_file_oarchive:
 	template<typename T>
 	text_file_oarchive& operator& (const T& v) {
 		using namespace detail;
-		serializer<
+		return serializer<
 			type_propertyes<T>::value,
 			serialization_method<T, text_file_oarchive>::value,
 			archive_type::text,
 			direction::out,
 			T
 		>::apply(*this, v);
-
-		return *this;
 	}
 };
 

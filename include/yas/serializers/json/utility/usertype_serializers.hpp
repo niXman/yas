@@ -50,7 +50,7 @@ struct serializer<
 	T
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, const T& v) {
+	static Archive& apply(Archive& ar, const T& v) {
 		serialize(ar, v);
 	}
 };
@@ -66,7 +66,7 @@ struct serializer<
 	T
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, const T& v) {
+	static Archive& apply(Archive& ar, const T& v) {
 		serialize(ar, const_cast<T&>(v));
 	}
 };
@@ -82,7 +82,7 @@ struct serializer<
 	T
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, T& v) {
+	static Archive& apply(Archive& ar, T& v) {
 		serialize(ar, v);
 	}
 };
@@ -98,7 +98,7 @@ struct serializer<
 	T
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, T& v) {
+	static Archive& apply(Archive& ar, T& v) {
 		serialize(ar, v);
 	}
 };
@@ -116,7 +116,7 @@ struct serializer<
 	T
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, const T& v) {
+	static Archive& apply(Archive& ar, const T& v) {
 		const_cast<T&>(v).serialize(ar);
 	}
 };
@@ -132,7 +132,7 @@ struct serializer<
 	T
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, const T& v) {
+	static Archive& apply(Archive& ar, const T& v) {
 		v.serialize(ar);
 	}
 };
@@ -148,7 +148,7 @@ struct serializer<
 	T
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, T& v) {
+	static Archive& apply(Archive& ar, T& v) {
 		v.serialize(ar);
 	}
 };
@@ -164,7 +164,7 @@ struct serializer<
 	T
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, T& v) {
+	static Archive& apply(Archive& ar, T& v) {
 		v.serialize(ar);
 	}
 };

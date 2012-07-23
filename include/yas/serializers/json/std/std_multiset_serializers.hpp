@@ -54,7 +54,7 @@ struct serializer<
 >
 {
 	template<typename Archive>
-	static void apply(Archive& ar, const std::multiset<K>& multiset) {
+	static Archive& apply(Archive& ar, const std::multiset<K>& multiset) {
 		ar & multiset.size();
 		typename std::multiset<K>::const_iterator it = multiset.begin();
 		for ( ; it != multiset.end(); ++it ) {
@@ -73,7 +73,7 @@ struct serializer<
 >
 {
 	template<typename Archive>
-	static void apply(Archive& ar, std::multiset<K>& multiset) {
+	static Archive& apply(Archive& ar, std::multiset<K>& multiset) {
 		yas::uint32_t size = 0;
 		ar & size;
 		K key = K();

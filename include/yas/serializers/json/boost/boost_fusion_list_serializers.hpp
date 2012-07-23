@@ -91,7 +91,7 @@ struct json_list_deserializer {
 		archive_type::json, direction::out, boost::fusion::list<> > \
 	{ \
 		template<typename Archive> \
-		static void apply(Archive&, const boost::fusion::list<>&) {} \
+		static Archive& apply(Archive&, const boost::fusion::list<>&) {} \
 	};
 
 #define YAS__JSON__GENERATE_EMPTY_LOAD_SERIALIZE_LIST_SPEC_VARIADIC() \
@@ -100,7 +100,7 @@ struct json_list_deserializer {
 		archive_type::json, direction::in, boost::fusion::list<> > \
 	{ \
 		template<typename Archive> \
-		static void apply(Archive&, boost::fusion::list<>&) {} \
+		static Archive& apply(Archive&, boost::fusion::list<>&) {} \
 	};
 
 #define YAS__JSON__GENERATE_SAVE_SERIALIZE_LIST_SPEC_VARIADIC(unused, count, unused2) \
@@ -109,7 +109,7 @@ struct json_list_deserializer {
 		archive_type::json, direction::out, boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
 	{ \
 		template<typename Archive> \
-		static void apply(Archive& ar, \
+		static Archive& apply(Archive& ar, \
 			const boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& list) \
 		{ \
 			ar & YAS_PP_INC(count); \
@@ -131,7 +131,7 @@ struct json_list_deserializer {
 		archive_type::json, direction::in, boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
 	{ \
 		template<typename Archive> \
-		static void apply(Archive& ar, \
+		static Archive& apply(Archive& ar, \
 			boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& list) \
 		{ \
 			yas::int32_t size = 0; \

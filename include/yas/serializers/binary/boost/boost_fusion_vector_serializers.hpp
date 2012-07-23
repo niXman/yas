@@ -76,7 +76,7 @@ namespace detail {
 		archive_type::binary, direction::out, boost::fusion::vector0<> > \
 	{ \
 		template<typename Archive> \
-		static void apply(Archive&, const boost::fusion::vector0<>&) {} \
+		static Archive& apply(Archive& ar, const boost::fusion::vector0<>&) { return ar; } \
 	};
 
 #define YAS__BINARY__GENERATE_EMPTY_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTION() \
@@ -85,7 +85,7 @@ namespace detail {
 		archive_type::binary, direction::in, boost::fusion::vector0<> > \
 	{ \
 		template<typename Archive> \
-		static void apply(Archive&, boost::fusion::vector0<>&) {} \
+		static Archive& apply(Archive& ar, boost::fusion::vector0<>&) { return ar; } \
 	};
 
 #define YAS__BINARY__GENERATE_SAVE_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTION(unused, count, text) \
@@ -96,7 +96,7 @@ namespace detail {
 			<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
 	{ \
 		template<typename Archive> \
-		static void apply(\
+		static Archive& apply(\
 			Archive& ar, \
 			const YAS_PP_CAT(boost::fusion::vector, YAS_PP_INC(count)) \
 				<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& vector) \
@@ -108,6 +108,7 @@ namespace detail {
 				YAS__BINARY__WRITE_BOOST_FUSION_VECTOR_ITEM, \
 				T \
 			) \
+			return ar; \
 		} \
 	};
 
@@ -127,7 +128,7 @@ namespace detail {
 			<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
 	{ \
 		template<typename Archive> \
-		static void apply(\
+		static Archive& apply(\
 			Archive& ar, \
 			YAS_PP_CAT(boost::fusion::vector, YAS_PP_INC(count)) \
 				<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& vector) \
@@ -140,6 +141,7 @@ namespace detail {
 				YAS__BINARY__READ_BOOST_FUSION_VECTOR_ITEM, \
 				T \
 			) \
+			return ar; \
 		} \
 	};
 
@@ -164,7 +166,7 @@ YAS__BINARY__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS(FUSION_MAX_VE
 		archive_type::binary, direction::out, boost::fusion::vector<> > \
 	{ \
 		template<typename Archive> \
-		static void apply(Archive&, const boost::fusion::vector<>&) {} \
+		static Archive& apply(Archive& ar, const boost::fusion::vector<>&) { return ar; } \
 	};
 
 #define YAS__BINARY__GENERATE_EMPTY_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTION_VARIADIC() \
@@ -173,7 +175,7 @@ YAS__BINARY__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS(FUSION_MAX_VE
 		archive_type::binary, direction::in, boost::fusion::vector<> > \
 	{ \
 		template<typename Archive> \
-		static void apply(Archive&, boost::fusion::vector<>&) {} \
+		static Archive& apply(Archive& ar, boost::fusion::vector<>&) { return ar; } \
 	};
 
 #define YAS__BINARY__GENERATE_SAVE_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTION_VARIADIC(unused, count, text) \
@@ -183,7 +185,7 @@ YAS__BINARY__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS(FUSION_MAX_VE
 		boost::fusion::vector<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
 	{ \
 		template<typename Archive> \
-		static void apply(Archive& ar, \
+		static Archive& apply(Archive& ar, \
 			const boost::fusion::vector<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& vector) \
 		{ \
 			const yas::uint8_t size = YAS_PP_INC(count); \
@@ -193,6 +195,7 @@ YAS__BINARY__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS(FUSION_MAX_VE
 				YAS__BINARY__WRITE_BOOST_FUSION_VECTOR_ITEM, \
 				T \
 			) \
+			return ar; \
 		} \
 	};
 
@@ -211,7 +214,7 @@ YAS__BINARY__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS(FUSION_MAX_VE
 		boost::fusion::vector<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
 	{ \
 		template<typename Archive> \
-		static void apply(\
+		static Archive& apply(\
 			Archive& ar, \
 			boost::fusion::vector<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& vector) \
 		{ \
@@ -223,6 +226,7 @@ YAS__BINARY__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS(FUSION_MAX_VE
 				YAS__BINARY__READ_BOOST_FUSION_VECTOR_ITEM, \
 				T \
 			) \
+			return ar; \
 		} \
 	};
 

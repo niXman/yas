@@ -54,7 +54,7 @@ struct serializer<
 	intrusive_buffer
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, const intrusive_buffer& buf) {
+	static Archive& apply(Archive& ar, const intrusive_buffer& buf) {
 		ar & buf.size;
 		ar.write(buf.data, buf.size);
 		ar & ' ';
@@ -75,7 +75,7 @@ struct serializer<
 	shared_buffer
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, const shared_buffer& buf) {
+	static Archive& apply(Archive& ar, const shared_buffer& buf) {
 		ar & buf.size;
 		ar.write(buf.data.get(), buf.size);
 		ar & ' ';
@@ -91,7 +91,7 @@ struct serializer<
 	shared_buffer
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, shared_buffer& buf) {
+	static Archive& apply(Archive& ar, shared_buffer& buf) {
 		yas::uint32_t size = 0;
 		ar & size;
 		buf.data.reset(new char[size+1], &shared_buffer::deleter);

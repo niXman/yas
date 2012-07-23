@@ -62,7 +62,7 @@ namespace detail {
 		archive_type::json, direction::out, boost::tuples::tuple<> \
 	> { \
 		template<typename Archive> \
-		static void apply(Archive&, const boost::tuples::tuple<>&) {} \
+		static Archive& apply(Archive&, const boost::tuples::tuple<>&) {} \
 	};
 
 #define YAS__JSON__GENERATE_EMPTY_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC() \
@@ -71,7 +71,7 @@ namespace detail {
 		archive_type::json, direction::in, boost::tuples::tuple<> \
 	> { \
 		template<typename Archive> \
-		static void apply(Archive&, boost::tuples::tuple<>&) {} \
+		static Archive& apply(Archive&, boost::tuples::tuple<>&) {} \
 	};
 
 #define YAS__JSON__GENERATE_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC(unused, count, unused2) \
@@ -81,7 +81,7 @@ namespace detail {
 		boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> \
 	> { \
 		template<typename Archive> \
-		static void apply(Archive& ar, const boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
+		static Archive& apply(Archive& ar, const boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
 			ar & YAS_PP_INC(count); \
 			YAS_PP_REPEAT( \
 				YAS_PP_INC(count), \
@@ -106,7 +106,7 @@ namespace detail {
 		boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> \
 	> { \
 		template<typename Archive> \
-		static void apply(Archive& ar, boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
+		static Archive& apply(Archive& ar, boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
 			yas::int32_t size = 0; \
 			ar & size; \
 			if ( size != YAS_PP_INC(count) ) throw std::runtime_error("size error on deserialize boost::tuple"); \

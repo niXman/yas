@@ -56,7 +56,7 @@ struct serializer<
 	boost::unordered_map<K, V>
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, const boost::unordered_map<K, V>& map) {
+	static Archive& apply(Archive& ar, const boost::unordered_map<K, V>& map) {
 		ar & map.size();
 		typename boost::unordered_map<K, V>::const_iterator it = map.begin();
 		for ( ; it != map.end(); ++it ) {
@@ -75,7 +75,7 @@ struct serializer<
 	boost::unordered_map<K, V>
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, boost::unordered_map<K, V>& map) {
+	static Archive& apply(Archive& ar, boost::unordered_map<K, V>& map) {
 		std::size_t size = 0;
 		ar & size;
 		K key = K();

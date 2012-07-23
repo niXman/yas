@@ -55,7 +55,7 @@ struct serializer<
 	boost::array<T, N>
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, const boost::array<T, N>& array) {
+	static Archive& apply(Archive& ar, const boost::array<T, N>& array) {
 		const yas::uint32_t size = N;
 		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
 		if ( is_pod<T>::value ) {
@@ -66,6 +66,7 @@ struct serializer<
 				ar & (*it);
 			}
 		}
+		return ar;
 	}
 };
 
@@ -78,7 +79,7 @@ struct serializer<
 	boost::array<T, N>
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, boost::array<T, N>& array) {
+	static Archive& apply(Archive& ar, boost::array<T, N>& array) {
 		yas::uint32_t size = 0;
 		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
 		if ( size != N ) throw std::runtime_error("array size is not equal");
@@ -90,6 +91,7 @@ struct serializer<
 				ar & (*it);
 			}
 		}
+		return ar;
 	}
 };
 

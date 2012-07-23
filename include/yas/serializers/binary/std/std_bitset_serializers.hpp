@@ -57,7 +57,7 @@ struct serializer<
 	std::bitset<N>
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, const std::bitset<N>& bits) {
+	static Archive& apply(Archive& ar, const std::bitset<N>& bits) {
 		const yas::uint32_t size = N;
 		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
 		std::vector<yas::uint8_t> result((N + 7) >> 3);
@@ -67,6 +67,7 @@ struct serializer<
 		yas::uint8_t dsize = result.size();
 		ar.write(reinterpret_cast<const char*>(&dsize), sizeof(dsize));
 		ar.write(reinterpret_cast<const char*>(&result[0]), dsize);
+		return ar;
 	}
 };
 
@@ -79,7 +80,7 @@ struct serializer<
 	std::bitset<N>
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, std::bitset<N>& bits) {
+	static Archive& apply(Archive& ar, std::bitset<N>& bits) {
 		yas::uint32_t size = 0;
 		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
 		if ( size != N ) throw std::runtime_error("bitsets size is not equal");
@@ -94,6 +95,7 @@ struct serializer<
 		for ( std::size_t idx = 0; idx < N; ++idx ) {
 			bits[idx] = ((buf[idx>>3] >> (idx & 7)) & 1);
 		}
+		return ar;
 	}
 };
 

@@ -50,7 +50,7 @@ struct serializer<
 	T
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, const T& v) {
+	static Archive& apply(Archive& ar, const T& v) {
 		ar << reinterpret_cast<const yas::uint32_t&>(v) << ' ';
 	}
 };
@@ -64,7 +64,7 @@ struct serializer<
 	T
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, T& v) {
+	static Archive& apply(Archive& ar, T& v) {
 		(ar >> reinterpret_cast<yas::uint32_t&>(v)).get();
 	}
 };
@@ -83,7 +83,7 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static void apply(Archive& ar, const U& v, typename enable_if<is_any_of<U, char, signed char> >::type* = 0) {
+	static Archive& apply(Archive& ar, const U& v, typename enable_if<is_any_of<U, char, signed char> >::type* = 0) {
 		ar << v;
 	}
 
@@ -91,7 +91,7 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static void apply(Archive& ar, const U& v, typename disable_if<is_any_of<U, char, signed char> >::type* = 0) {
+	static Archive& apply(Archive& ar, const U& v, typename disable_if<is_any_of<U, char, signed char> >::type* = 0) {
 		ar << v << ' ';
 	}
 };
@@ -108,7 +108,7 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static void apply(Archive& ar, U& v, typename enable_if<is_any_of<U, char, signed char> >::type* = 0) {
+	static Archive& apply(Archive& ar, U& v, typename enable_if<is_any_of<U, char, signed char> >::type* = 0) {
 		ar >> v;
 	}
 
@@ -116,7 +116,7 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static void apply(Archive& ar, U& v, typename disable_if<is_any_of<U, char, signed char> >::type* = 0) {
+	static Archive& apply(Archive& ar, U& v, typename disable_if<is_any_of<U, char, signed char> >::type* = 0) {
 		(ar >> v).get();
 	}
 };

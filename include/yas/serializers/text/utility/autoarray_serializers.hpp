@@ -58,21 +58,23 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static void apply(Archive& ar, const U(&v)[N], typename enable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
+	static Archive& apply(Archive& ar, const U(&v)[N], typename enable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
 		ar & (N-1);
 		ar.write(reinterpret_cast<const char*>(v), N-1);
 		ar & ' ';
+		return ar;
 	}
 
 	template<
 		 typename Archive
 		,typename U
 	>
-	static void apply(Archive& ar, const U(&v)[N], typename disable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
+	static Archive& apply(Archive& ar, const U(&v)[N], typename disable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
 		ar & N & ' ';
 		for ( size_t idx = 0; idx < N; ++idx ) {
 			ar & v[idx] & ' ';
 		}
+		return ar;
 	}
 };
 
@@ -88,25 +90,27 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static void apply(Archive& ar, U(&v)[N], typename enable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
+	static Archive& apply(Archive& ar, U(&v)[N], typename enable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
 		yas::uint32_t size = 0;
 		ar & size;
 		if ( size != N-1 ) throw std::runtime_error("bad array size");
 		ar.read(reinterpret_cast<char*>(v), size);
 		v[size] = 0;
+		return ar;
 	}
 
 	template<
 		 typename Archive
 		,typename U
 	>
-	static void apply(Archive& ar, U(&v)[N], typename disable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
+	static Archive& apply(Archive& ar, U(&v)[N], typename disable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
 		yas::uint32_t size = 0;
 		ar & size;
 		if ( size != N ) throw std::runtime_error("bad array size");
 		for ( size_t idx = 0; idx < N; ++idx ) {
 			ar & v[idx];
 		}
+		return ar;
 	}
 };
 
@@ -121,11 +125,12 @@ struct serializer<
 	T[N]
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, const T(&v)[N]) {
+	static Archive& apply(Archive& ar, const T(&v)[N]) {
 		ar & N & ' ';
 		for ( size_t idx = 0; idx < N; ++idx ) {
 			ar & v[idx] & ' ';
 		}
+		return ar;
 	}
 };
 
@@ -140,13 +145,14 @@ struct serializer<
 	T[N]
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, T(&v)[N]) {
+	static Archive& apply(Archive& ar, T(&v)[N]) {
 		yas::uint32_t size = 0;
 		(ar & size).snextc();
 		if ( size != N ) throw std::runtime_error("bad array size");
 		for ( size_t idx = 0; idx < N; ++idx ) {
 			(ar & v[idx]).snextc();
 		}
+		return ar;
 	}
 };
 

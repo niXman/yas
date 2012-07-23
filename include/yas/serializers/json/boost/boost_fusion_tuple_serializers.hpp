@@ -61,7 +61,7 @@ namespace detail {
 		archive_type::json, direction::out, boost::fusion::tuple<> > \
 	{ \
 		template<typename Archive> \
-		static void apply(Archive&, const boost::fusion::tuple<>&) {} \
+		static Archive& apply(Archive&, const boost::fusion::tuple<>&) {} \
 	};
 
 #define YAS__JSON__GENERATE_EMPTY_LOAD_SERIALIZE_BOOST_FUSION_TUPLE_SPEC() \
@@ -70,7 +70,7 @@ namespace detail {
 		archive_type::json, direction::in, boost::fusion::tuple<> > \
 	{ \
 		template<typename Archive> \
-		static void apply(Archive&, boost::fusion::tuple<>&) {} \
+		static Archive& apply(Archive&, boost::fusion::tuple<>&) {} \
 	};
 
 #define YAS__JSON__GENERATE_SAVE_SERIALIZE_BOOST_FUSION_TUPLE_FUNCTION_SPEC(unused, count, unused2) \
@@ -80,7 +80,7 @@ namespace detail {
 		boost::fusion::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
 	{ \
 		template<typename Archive> \
-		static void apply(Archive& ar, \
+		static Archive& apply(Archive& ar, \
 			const boost::fusion::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) \
 		{ \
 			ar & YAS_PP_INC(count); \
@@ -107,7 +107,7 @@ namespace detail {
 		boost::fusion::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
 	{ \
 		template<typename Archive> \
-		static void apply(\
+		static Archive& apply(\
 			Archive& ar, \
 			boost::fusion::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) \
 		{ \

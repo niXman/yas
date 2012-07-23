@@ -58,12 +58,13 @@ struct serializer<
 >
 {
 	template<typename Archive>
-	static void apply(Archive& ar, const boost::fusion::pair<T1, T2>& pair) {
+	static Archive& apply(Archive& ar, const boost::fusion::pair<T1, T2>& pair) {
 		if ( is_pod<T2>::value ) {
 			ar.write(reinterpret_cast<const char*>(&pair.second), sizeof(T2));
 		} else {
 			ar & pair.second;
 		}
+		return ar;
 	}
 };
 
@@ -77,12 +78,13 @@ struct serializer<
 >
 {
 	template<typename Archive>
-	static void apply(Archive& ar, boost::fusion::pair<T1, T2>& pair) {
+	static Archive& apply(Archive& ar, boost::fusion::pair<T1, T2>& pair) {
 		if ( is_pod<T2>::value ) {
 			ar.read(reinterpret_cast<char*>(&pair.second), sizeof(T2));
 		} else {
 			ar & pair.second;
 		}
+		return ar;
 	}
 };
 

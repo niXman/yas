@@ -69,7 +69,7 @@ namespace detail {
 		archive_type::json, direction::out, boost::fusion::vector0<> > \
 	{ \
 		template<typename Archive> \
-		static void apply(Archive&, const boost::fusion::vector0<>&) {} \
+		static Archive& apply(Archive&, const boost::fusion::vector0<>&) {} \
 	};
 
 #define YAS__JSON__GENERATE_EMPTY_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTION() \
@@ -78,7 +78,7 @@ namespace detail {
 		archive_type::json, direction::in, boost::fusion::vector0<> > \
 	{ \
 		template<typename Archive> \
-		static void apply(Archive&, boost::fusion::vector0<>&) {} \
+		static Archive& apply(Archive&, boost::fusion::vector0<>&) {} \
 	};
 
 #define YAS__JSON__GENERATE_SAVE_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTION(unused, count, unused2) \
@@ -89,7 +89,7 @@ namespace detail {
 			<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
 	{ \
 		template<typename Archive> \
-		static void apply(\
+		static Archive& apply(\
 			Archive& ar, \
 			const YAS_PP_CAT(boost::fusion::vector, YAS_PP_INC(count)) \
 				<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& vector) \
@@ -119,7 +119,7 @@ namespace detail {
 			<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
 	{ \
 		template<typename Archive> \
-		static void apply(\
+		static Archive& apply(\
 			Archive& ar, \
 			YAS_PP_CAT(boost::fusion::vector, YAS_PP_INC(count)) \
 				<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& vector) \
@@ -156,7 +156,7 @@ YAS__JSON__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS(FUSION_MAX_VECT
 		archive_type::json, direction::out, boost::fusion::vector<> > \
 	{ \
 		template<typename Archive> \
-		static void apply(Archive&, const boost::fusion::vector<>&) {} \
+		static Archive& apply(Archive&, const boost::fusion::vector<>&) {} \
 	};
 
 #define YAS__JSON__GENERATE_EMPTY_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTION_VARIADIC() \
@@ -165,7 +165,7 @@ YAS__JSON__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS(FUSION_MAX_VECT
 		archive_type::json, direction::in, boost::fusion::vector<> > \
 	{ \
 		template<typename Archive> \
-		static void apply(Archive&, boost::fusion::vector<>&) {} \
+		static Archive& apply(Archive&, boost::fusion::vector<>&) {} \
 	};
 
 #define YAS__JSON__GENERATE_SAVE_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTION_VARIADIC(unused, count, unused2) \
@@ -175,7 +175,7 @@ YAS__JSON__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS(FUSION_MAX_VECT
 		boost::fusion::vector<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
 	{ \
 		template<typename Archive> \
-		static void apply(Archive& ar, \
+		static Archive& apply(Archive& ar, \
 			const boost::fusion::vector<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& vector) \
 		{ \
 			ar & YAS_PP_INC(count); \
@@ -202,7 +202,7 @@ YAS__JSON__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS(FUSION_MAX_VECT
 		boost::fusion::vector<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
 	{ \
 		template<typename Archive> \
-		static void apply(\
+		static Archive& apply(\
 			Archive& ar, \
 			boost::fusion::vector<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& vector) \
 		{ \

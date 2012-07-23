@@ -50,7 +50,7 @@ struct serializer<
 	T
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, const T& v) {
+	static Archive& apply(Archive& ar, const T& v) {
 		switch ( sizeof(T) ) {
 			case sizeof(yas::uint8_t):
 				ar << ' ' << static_cast<yas::uint8_t>(v);
@@ -65,6 +65,7 @@ struct serializer<
 				ar << ' ' << static_cast<yas::uint64_t>(v);
 			break;
 		}
+		return ar;
 	}
 };
 
@@ -77,7 +78,7 @@ struct serializer<
 	T
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, T& v) {
+	static Archive& apply(Archive& ar, T& v) {
 		ar.get();
 		switch ( sizeof(T) ) {
 			case sizeof(yas::uint8_t):
@@ -93,6 +94,7 @@ struct serializer<
 				ar >> reinterpret_cast<yas::uint64_t&>(v);
 			break;
 		}
+		return ar;
 	}
 };
 
@@ -110,16 +112,18 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static void apply(Archive& ar, const U& v, typename enable_if<is_any_of<U, char, signed char> >::type* = 0) {
+	static Archive& apply(Archive& ar, const U& v, typename enable_if<is_any_of<U, char, signed char> >::type* = 0) {
 		ar << v;
+		return ar;
 	}
 
 	template<
 		 typename Archive
 		,typename U
 	>
-	static void apply(Archive& ar, const U& v, typename disable_if<is_any_of<U, char, signed char> >::type* = 0) {
+	static Archive& apply(Archive& ar, const U& v, typename disable_if<is_any_of<U, char, signed char> >::type* = 0) {
 		ar << ' ' << v;
+		return ar;
 	}
 };
 
@@ -135,17 +139,19 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static void apply(Archive& ar, U& v, typename enable_if<is_any_of<U, char, signed char> >::type* = 0) {
+	static Archive& apply(Archive& ar, U& v, typename enable_if<is_any_of<U, char, signed char> >::type* = 0) {
 		ar >> v;
+		return ar;
 	}
 
 	template<
 		 typename Archive
 		,typename U
 	>
-	static void apply(Archive& ar, U& v, typename disable_if<is_any_of<U, char, signed char> >::type* = 0) {
+	static Archive& apply(Archive& ar, U& v, typename disable_if<is_any_of<U, char, signed char> >::type* = 0) {
 		ar.get();
 		ar >> v;
+		return ar;
 	}
 };
 

@@ -53,7 +53,7 @@ struct serializer<
 >
 {
 	template<typename Archive>
-	static void apply(Archive& ar, const std::string& string) {
+	static Archive& apply(Archive& ar, const std::string& string) {
 		ar & static_cast<yas::uint32_t>(string.length());
 		ar.write(&string[0], string.length());
 		ar & ' ';
@@ -70,7 +70,7 @@ struct serializer<
 >
 {
 	template<typename Archive>
-	static void apply(Archive& ar, std::string& string) {
+	static Archive& apply(Archive& ar, std::string& string) {
 		yas::uint32_t size = 0;
 		ar & size;
 		string.resize(size);

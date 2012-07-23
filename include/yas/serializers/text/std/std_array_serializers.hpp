@@ -57,12 +57,13 @@ struct serializer<
 >
 {
 	template<typename Archive>
-	static void apply(Archive& ar, const std::array<T, N>& array) {
+	static Archive& apply(Archive& ar, const std::array<T, N>& array) {
 		typename std::array<T, N>::const_iterator it = array.begin();
 		ar & static_cast<yas::uint32_t>(N);
 		for ( ; it != array.end(); ++it ) {
 			ar & (*it);
 		}
+		return ar;
 	}
 };
 
@@ -76,7 +77,7 @@ struct serializer<
 >
 {
 	template<typename Archive>
-	static void apply(Archive& ar, std::array<T, N>& array) {
+	static Archive& apply(Archive& ar, std::array<T, N>& array) {
 		yas::uint32_t size = 0;
 		ar & size;
 		if ( size != N ) throw std::runtime_error("array size is not equal");
@@ -84,6 +85,7 @@ struct serializer<
 		for ( ; it != array.end(); ++it ) {
 			ar & (*it);
 		}
+		return ar;
 	}
 };
 

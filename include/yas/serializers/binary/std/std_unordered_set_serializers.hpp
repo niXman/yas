@@ -56,7 +56,7 @@ struct serializer<
 	std::unordered_set<K>
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, const std::unordered_set<K>& set) {
+	static Archive& apply(Archive& ar, const std::unordered_set<K>& set) {
 		const yas::uint32_t size = set.size();
 		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
 		typename std::unordered_set<K>::const_iterator it = set.begin();
@@ -69,6 +69,7 @@ struct serializer<
 				ar & (*it);
 			}
 		}
+		return ar;
 	}
 };
 
@@ -81,7 +82,7 @@ struct serializer<
 	std::unordered_set<K>
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, std::unordered_set<K>& set) {
+	static Archive& apply(Archive& ar, std::unordered_set<K>& set) {
 		yas::uint32_t size = 0;
 		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
 		if ( is_pod<K>::value ) {
@@ -97,6 +98,7 @@ struct serializer<
 				set.insert(key);
 			}
 		}
+		return ar;
 	}
 };
 

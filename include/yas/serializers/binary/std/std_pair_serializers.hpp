@@ -53,7 +53,7 @@ struct serializer<
 	std::pair<T1, T2>
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, const std::pair<T1, T2>& pair) {
+	static Archive& apply(Archive& ar, const std::pair<T1, T2>& pair) {
 		if ( is_pod<T1>::value && is_pod<T2>::value ) {
 			ar.write(reinterpret_cast<const char*>(&pair.first), sizeof(T1));
 			ar.write(reinterpret_cast<const char*>(&pair.second), sizeof(T2));
@@ -67,6 +67,7 @@ struct serializer<
 			ar & pair.first
 				& pair.second;
 		}
+		return ar;
 	}
 };
 
@@ -79,7 +80,7 @@ struct serializer<
 	std::pair<T1, T2>
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, std::pair<T1, T2>& pair) {
+	static Archive& apply(Archive& ar, std::pair<T1, T2>& pair) {
 		if ( is_pod<T1>::value && is_pod<T2>::value ) {
 			ar.read(reinterpret_cast<char*>(&pair.first), sizeof(T1));
 			ar.read(reinterpret_cast<char*>(&pair.second), sizeof(T2));
@@ -93,6 +94,7 @@ struct serializer<
 			ar & pair.first
 				& pair.second;
 		}
+		return ar;
 	}
 };
 

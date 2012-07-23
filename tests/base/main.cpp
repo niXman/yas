@@ -54,7 +54,6 @@
 #include "include/vector.hpp"
 #include "include/version.hpp"
 #include "include/wstring.hpp"
-
 #include "include/one_function.hpp"
 #include "include/one_method.hpp"
 #include "include/split_functions.hpp"

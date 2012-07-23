@@ -54,9 +54,10 @@ struct serializer<
 >
 {
 	template<typename Archive>
-	static void apply(Archive& ar, const std::pair<T1, T2>& pair) {
+	static Archive& apply(Archive& ar, const std::pair<T1, T2>& pair) {
 		ar & pair.first
 			& pair.second;
+		return ar;
 	}
 };
 
@@ -70,9 +71,10 @@ struct serializer<
 >
 {
 	template<typename Archive>
-	static void apply(Archive& ar, std::pair<T1, T2>& pair) {
+	static Archive& apply(Archive& ar, std::pair<T1, T2>& pair) {
 		ar & pair.first
 			& pair.second;
+		return ar;
 	}
 };
 

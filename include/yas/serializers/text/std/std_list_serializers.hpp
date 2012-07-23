@@ -53,12 +53,13 @@ struct serializer<
 	std::list<T>
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, const std::list<T>& list) {
+	static Archive& apply(Archive& ar, const std::list<T>& list) {
 		ar & static_cast<yas::uint32_t>(list.size());
 		typename std::list<T>::const_iterator it = list.begin();
 		for ( ; it != list.end(); ++it ) {
 			ar & (*it);
 		}
+		return ar;
 	}
 };
 
@@ -71,7 +72,7 @@ struct serializer<
 	std::list<T>
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, std::list<T>& list) {
+	static Archive& apply(Archive& ar, std::list<T>& list) {
 		yas::uint32_t size = 0;
 		ar & size;
 		list.resize(size);
@@ -79,6 +80,7 @@ struct serializer<
 		for ( ; it != list.end(); ++it ) {
 			ar & (*it);
 		}
+		return ar;
 	}
 };
 

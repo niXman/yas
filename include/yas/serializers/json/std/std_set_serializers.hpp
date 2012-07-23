@@ -53,7 +53,7 @@ struct serializer<
 	std::set<K>
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, const std::set<K>& set) {
+	static Archive& apply(Archive& ar, const std::set<K>& set) {
 		ar & static_cast<yas::uint32_t>(set.size());
 		typename std::set<K>::const_iterator it = set.begin();
 		for ( ; it != set.end(); ++it ) {
@@ -70,7 +70,7 @@ struct serializer<
 	std::set<K>
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, std::set<K>& set) {
+	static Archive& apply(Archive& ar, std::set<K>& set) {
 		yas::uint32_t size = 0;
 		ar & size;
 		K key = K();

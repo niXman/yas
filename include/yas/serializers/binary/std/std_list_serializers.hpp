@@ -53,7 +53,7 @@ struct serializer<
 	std::list<T>
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, const std::list<T>& list) {
+	static Archive& apply(Archive& ar, const std::list<T>& list) {
 		const yas::uint32_t size = list.size();
 		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
 		if ( detail::is_pod<T>::value ) {
@@ -67,6 +67,7 @@ struct serializer<
 				ar & (*it);
 			}
 		}
+		return ar;
 	}
 };
 
@@ -79,7 +80,7 @@ struct serializer<
 	std::list<T>
 > {
 	template<typename Archive>
-	static void apply(Archive& ar, std::list<T>& list) {
+	static Archive& apply(Archive& ar, std::list<T>& list) {
 		yas::uint32_t size = 0;
 		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
 		list.resize(size);
@@ -94,6 +95,7 @@ struct serializer<
 				ar & (*it);
 			}
 		}
+		return ar;
 	}
 };
 
