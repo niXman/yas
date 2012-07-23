@@ -113,15 +113,15 @@ struct proxy_io<false> {
 
 /***************************************************************************/
 
-template<e_archive_type::type>
+template<archive_type::type>
 struct header_reader_writer;
 
 template<>
-struct header_reader_writer<e_archive_type::binary> {
+struct header_reader_writer<archive_type::binary> {
 	enum { header_size = 4 };
 
 	template<typename Archive>
-	static void read(Archive* ar, yas::header_t op, archive_header& header) {
+	static void read(Archive* ar, yas::header_flag op, archive_header& header) {
 		if ( op == yas::no_header ) return;
 
 		char buf[header_size];
@@ -139,7 +139,7 @@ struct header_reader_writer<e_archive_type::binary> {
 	}
 
 	template<typename Archive>
-	static void write(Archive* ar, yas::header_t op, e_archive_type::type at) {
+	static void write(Archive* ar, yas::header_flag op, archive_type::type at) {
 		if ( op == yas::no_header ) return;
 
 		static const archive_header header(
@@ -161,11 +161,11 @@ struct header_reader_writer<e_archive_type::binary> {
 /***************************************************************************/
 
 template<>
-struct header_reader_writer<e_archive_type::text> {
+struct header_reader_writer<archive_type::text> {
 	enum { header_size = 5 };
 
 	template<typename Archive>
-	static void read(Archive* ar, yas::header_t op, archive_header& header) {
+	static void read(Archive* ar, yas::header_flag op, archive_header& header) {
 		if ( op == yas::no_header ) return;
 		char buf[header_size];
 
@@ -187,7 +187,7 @@ struct header_reader_writer<e_archive_type::text> {
 	}
 
 	template<typename Archive>
-	static void write(Archive* ar, yas::header_t op, e_archive_type::type at) {
+	static void write(Archive* ar, yas::header_flag op, archive_type::type at) {
 		if ( op == yas::no_header ) return;
 		static const archive_header header(
 			(unsigned char)archive_version,
@@ -212,18 +212,18 @@ struct header_reader_writer<e_archive_type::text> {
 
 
 template<>
-struct header_reader_writer<e_archive_type::json> {
+struct header_reader_writer<archive_type::json> {
 	enum { header_size = 17 };
 
 	template<typename Archive>
-	static void read(Archive* ar, yas::header_t op, archive_header& header) {
+	static void read(Archive* ar, yas::header_flag op, archive_header& header) {
 		(void)ar;
 		(void)op;
 		(void)header;
 	}
 
 	template<typename Archive>
-	static void write(Archive* ar, yas::header_t op, e_archive_type::type at) {
+	static void write(Archive* ar, yas::header_flag op, archive_type::type at) {
 		(void)ar;
 		(void)op;
 		(void)at;
@@ -234,13 +234,13 @@ struct header_reader_writer<e_archive_type::json> {
 
 #define YAS_WRITE_ARCHIVE_INFORMATION_SPECIALIZATION_IMPL(unused, idx, seq) \
 	template<typename Archive> \
-	struct archive_information<YAS_PP_SEQ_ELEM(idx, seq), e_direction::in, Archive> { \
+	struct archive_information<YAS_PP_SEQ_ELEM(idx, seq), direction::in, Archive> { \
 		archive_information() \
 			:header() \
 		{} \
 		\
 		static yas::uint32_t	header_size() {return header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::header_size;} \
-		e_archive_type::type archive_type() const {return YAS_PP_SEQ_ELEM(idx, seq);} \
+		archive_type::type type() const {return YAS_PP_SEQ_ELEM(idx, seq);} \
 		int bits() const { \
 			if ( !header.bits.version ) throw no_header_exception(); \
 			return (header.bits.bits ? 64 : 32); \
@@ -250,15 +250,15 @@ struct header_reader_writer<e_archive_type::json> {
 			return header.bits.version; \
 		} \
 		\
-		static const yas::uint32_t				_header_size	= header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::header_size; \
-		static const int							_version			= archive_version; \
-		static const e_archive_type::type	_archive_type	= YAS_PP_SEQ_ELEM(idx, seq); \
-		static const e_direction::type		_direction		= e_direction::in; \
-		static const bool							_is_readable	= true; \
-		static const bool							_is_writable	= false; \
+		static const yas::uint32_t			_header_size	= header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::header_size; \
+		static const int						_version			= archive_version; \
+		static const archive_type::type	_type				= YAS_PP_SEQ_ELEM(idx, seq); \
+		static const direction::type		_direction		= direction::in; \
+		static const bool						_is_readable	= true; \
+		static const bool						_is_writable	= false; \
 		\
 	protected: \
-		void init_header(Archive* ar, yas::header_t op) { \
+		void init_header(Archive* ar, yas::header_flag op) { \
 			header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::read(ar, op, header); \
 		}\
 		\
@@ -267,30 +267,30 @@ struct header_reader_writer<e_archive_type::json> {
 	}; \
 	\
 	template<typename Archive> \
-	struct archive_information<YAS_PP_SEQ_ELEM(idx, seq), e_direction::out, Archive> { \
+	struct archive_information<YAS_PP_SEQ_ELEM(idx, seq), direction::out, Archive> { \
 		archive_information() \
 		{} \
 		\
 		static yas::uint32_t header_size() {return header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::header_size;} \
-		e_archive_type::type archive_type() const {return YAS_PP_SEQ_ELEM(idx, seq);} \
+		archive_type::type type() const {return YAS_PP_SEQ_ELEM(idx, seq);} \
 		int bits() const {return YAS_PLATFORM_BITS();} \
 		int version() const {return archive_version;} \
 		\
-		static const yas::uint32_t				_header_size	= header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::header_size; \
-		static const int							_version			= archive_version; \
-		static const e_archive_type::type	_archive_type	= YAS_PP_SEQ_ELEM(idx, seq); \
-		static const e_direction::type		_direction		= e_direction::in; \
-		static const bool							_is_readable	= false; \
-		static const bool							_is_writable	= true; \
+		static const yas::uint32_t			_header_size	= header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::header_size; \
+		static const int						_version			= archive_version; \
+		static const archive_type::type	_type				= YAS_PP_SEQ_ELEM(idx, seq); \
+		static const direction::type		_direction		= direction::in; \
+		static const bool						_is_readable	= false; \
+		static const bool						_is_writable	= true; \
 		\
 	protected: \
-		void init_header(Archive* ar, yas::header_t op) { \
+		void init_header(Archive* ar, yas::header_flag op) { \
 			header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::write(ar, op, YAS_PP_SEQ_ELEM(idx, seq)); \
 		} \
 	};
 
 #define YAS_WRITE_ARCHIVE_INFORMATION_SPECIALIZATIONS(seq) \
-	template<e_archive_type::type, e_direction::type, typename> \
+	template<archive_type::type, direction::type, typename> \
 	struct archive_information; \
 	YAS_PP_REPEAT( \
 		YAS_PP_SEQ_SIZE(seq), \
@@ -301,9 +301,9 @@ struct header_reader_writer<e_archive_type::json> {
 /***************************************************************************/
 
 YAS_WRITE_ARCHIVE_INFORMATION_SPECIALIZATIONS(
-	(e_archive_type::binary)
-	(e_archive_type::text)
-	(e_archive_type::json)
+	(archive_type::binary)
+	(archive_type::text)
+	(archive_type::json)
 )
 
 /***************************************************************************/

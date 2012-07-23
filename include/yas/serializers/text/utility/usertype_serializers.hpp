@@ -43,10 +43,10 @@ namespace detail {
 
 template<typename T>
 struct serializer<
-	e_type_type::not_a_pod,
-	e_ser_method::has_split_functions,
-	e_archive_type::text,
-	e_direction::out,
+	type_prop::not_a_pod,
+	ser_method::has_split_functions,
+	archive_type::text,
+	direction::out,
 	T
 > {
 	template<typename Archive>
@@ -59,10 +59,10 @@ struct serializer<
 
 template<typename T>
 struct serializer<
-	e_type_type::not_a_pod,
-	e_ser_method::has_one_function,
-	e_archive_type::text,
-	e_direction::out,
+	type_prop::not_a_pod,
+	ser_method::has_one_function,
+	archive_type::text,
+	direction::out,
 	T
 > {
 	template<typename Archive>
@@ -75,10 +75,10 @@ struct serializer<
 
 template<typename T>
 struct serializer<
-	e_type_type::not_a_pod,
-	e_ser_method::has_one_function,
-	e_archive_type::text,
-	e_direction::in,
+	type_prop::not_a_pod,
+	ser_method::has_one_function,
+	archive_type::text,
+	direction::in,
 	T
 > {
 	template<typename Archive>
@@ -91,10 +91,10 @@ struct serializer<
 
 template<typename T>
 struct serializer<
-	e_type_type::not_a_pod,
-	e_ser_method::has_split_functions,
-	e_archive_type::text,
-	e_direction::in,
+	type_prop::not_a_pod,
+	ser_method::has_split_functions,
+	archive_type::text,
+	direction::in,
 	T
 > {
 	template<typename Archive>
@@ -109,10 +109,10 @@ struct serializer<
 
 template<typename T>
 struct serializer<
-	e_type_type::not_a_pod,
-	e_ser_method::has_one_method,
-	e_archive_type::text,
-	e_direction::out,
+	type_prop::not_a_pod,
+	ser_method::has_one_method,
+	archive_type::text,
+	direction::out,
 	T
 > {
 	template<typename Archive>
@@ -125,10 +125,10 @@ struct serializer<
 
 template<typename T>
 struct serializer<
-	e_type_type::not_a_pod,
-	e_ser_method::has_split_methods,
-	e_archive_type::text,
-	e_direction::out,
+	type_prop::not_a_pod,
+	ser_method::has_split_methods,
+	archive_type::text,
+	direction::out,
 	T
 > {
 	template<typename Archive>
@@ -141,10 +141,10 @@ struct serializer<
 
 template<typename T>
 struct serializer<
-	e_type_type::not_a_pod,
-	e_ser_method::has_one_method,
-	e_archive_type::text,
-	e_direction::in,
+	type_prop::not_a_pod,
+	ser_method::has_one_method,
+	archive_type::text,
+	direction::in,
 	T
 > {
 	template<typename Archive>
@@ -157,10 +157,10 @@ struct serializer<
 
 template<typename T>
 struct serializer<
-	e_type_type::not_a_pod,
-	e_ser_method::has_split_methods,
-	e_archive_type::text,
-	e_direction::in,
+	type_prop::not_a_pod,
+	ser_method::has_split_methods,
+	archive_type::text,
+	direction::in,
 	T
 > {
 	template<typename Archive>

@@ -40,12 +40,12 @@ namespace yas {
 
 /***************************************************************************/
 
-enum header_t {
+enum header_flag {
 	 with_header
 	,no_header
 };
 
-struct e_archive_type {
+struct archive_type {
 	enum type {
 		binary,
 		text,
@@ -53,7 +53,7 @@ struct e_archive_type {
 	};
 };
 
-struct e_direction {
+struct direction {
 	enum type {
 		in,
 		out
@@ -61,15 +61,15 @@ struct e_direction {
 };
 
 template<typename Ar>
-struct is_binary_archive: detail::bool_<Ar::_archive_type == e_archive_type::binary>
+struct is_binary_archive: detail::bool_<Ar::_type == archive_type::binary>
 {};
 
 template<typename Ar>
-struct is_text_archive: detail::bool_<Ar::_archive_type == e_archive_type::text>
+struct is_text_archive: detail::bool_<Ar::_type == archive_type::text>
 {};
 
 template<typename Ar>
-struct is_json_archive: detail::bool_<Ar::_archive_type == e_archive_type::json>
+struct is_json_archive: detail::bool_<Ar::_type == archive_type::json>
 {};
 
 template<typename Ar>

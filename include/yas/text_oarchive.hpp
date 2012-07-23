@@ -57,13 +57,13 @@ namespace yas {
 
 struct text_mem_oarchive:
 	 detail::omemstream<text_mem_oarchive>
-	,detail::archive_information<e_archive_type::text, e_direction::out, text_mem_oarchive>
+	,detail::archive_information<archive_type::text, direction::out, text_mem_oarchive>
 	,private detail::noncopyable
 {
-	text_mem_oarchive(header_t op = with_header)
+	text_mem_oarchive(header_flag op = with_header)
 		:detail::omemstream<text_mem_oarchive>()
 	{ init_header(this, op); }
-	text_mem_oarchive(char* ptr, size_t size, header_t op = with_header)
+	text_mem_oarchive(char* ptr, size_t size, header_flag op = with_header)
 		:detail::omemstream<text_mem_oarchive>(ptr, size)
 	{ init_header(this, op); }
 
@@ -73,8 +73,8 @@ struct text_mem_oarchive:
 		serializer<
 			type_propertyes<T>::value,
 			serialization_method<T, text_mem_oarchive>::value,
-			e_archive_type::text,
-			e_direction::out,
+			archive_type::text,
+			direction::out,
 			T
 		>::apply(*this, v);
 
@@ -86,10 +86,10 @@ struct text_mem_oarchive:
 
 struct text_file_oarchive:
 	 std::ostream
-	,detail::archive_information<e_archive_type::text, e_direction::out, text_file_oarchive>
+	,detail::archive_information<archive_type::text, direction::out, text_file_oarchive>
 	,private detail::noncopyable
 {
-	text_file_oarchive(std::ostream& file, header_t op = with_header)
+	text_file_oarchive(std::ostream& file, header_flag op = with_header)
 		:std::ostream(file.rdbuf())
 	{ init_header(this, op); }
 
@@ -99,8 +99,8 @@ struct text_file_oarchive:
 		serializer<
 			type_propertyes<T>::value,
 			serialization_method<T, text_file_oarchive>::value,
-			e_archive_type::text,
-			e_direction::out,
+			archive_type::text,
+			direction::out,
 			T
 		>::apply(*this, v);
 

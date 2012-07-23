@@ -42,7 +42,7 @@ bool version_test(const char* archive_type, const char* io_type) {
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type, io_type);
 
-	if ( oa->archive_type() != ia->archive_type() ) {
+	if ( oa->type() != ia->type() ) {
 		std::cout << "VERSION test failed! archive type is not equal! [1]" << std::endl;
 		return false;
 	}

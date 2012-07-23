@@ -58,8 +58,8 @@ namespace detail {
 
 #define YAS__JSON__GENERATE_EMPTY_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC() \
 	template<> \
-	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
-		e_archive_type::json, e_direction::out, boost::tuples::tuple<> \
+	struct serializer<type_prop::type_prop::not_a_pod,ser_method::use_internal_serializer, \
+		archive_type::json, direction::out, boost::tuples::tuple<> \
 	> { \
 		template<typename Archive> \
 		static void apply(Archive&, const boost::tuples::tuple<>&) {} \
@@ -67,8 +67,8 @@ namespace detail {
 
 #define YAS__JSON__GENERATE_EMPTY_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC() \
 	template<> \
-	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
-		e_archive_type::json, e_direction::in, boost::tuples::tuple<> \
+	struct serializer<type_prop::type_prop::not_a_pod,ser_method::use_internal_serializer, \
+		archive_type::json, direction::in, boost::tuples::tuple<> \
 	> { \
 		template<typename Archive> \
 		static void apply(Archive&, boost::tuples::tuple<>&) {} \
@@ -76,8 +76,8 @@ namespace detail {
 
 #define YAS__JSON__GENERATE_SAVE_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC(unused, count, unused2) \
 	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
-	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
-		e_archive_type::json, e_direction::out, \
+	struct serializer<type_prop::type_prop::not_a_pod,ser_method::use_internal_serializer, \
+		archive_type::json, direction::out, \
 		boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> \
 	> { \
 		template<typename Archive> \
@@ -101,8 +101,8 @@ namespace detail {
 
 #define YAS__JSON__GENERATE_LOAD_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC(unused, count, unused2) \
 	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
-	struct serializer<e_type_type::e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
-		e_archive_type::json, e_direction::in, \
+	struct serializer<type_prop::type_prop::not_a_pod,ser_method::use_internal_serializer, \
+		archive_type::json, direction::in, \
 		boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> \
 	> { \
 		template<typename Archive> \

@@ -49,10 +49,10 @@ namespace detail {
 
 template<typename T, std::size_t N>
 struct serializer<
-	e_type_type::not_a_pod,
-	e_ser_method::use_internal_serializer,
-	e_archive_type::json,
-	e_direction::out,
+	type_prop::not_a_pod,
+	ser_method::use_internal_serializer,
+	archive_type::json,
+	direction::out,
 	std::array<T, N>
 >
 {
@@ -68,10 +68,10 @@ struct serializer<
 
 template<typename T, std::size_t N>
 struct serializer<
-	e_type_type::not_a_pod,
-	e_ser_method::use_internal_serializer,
-	e_archive_type::json,
-	e_direction::in,
+	type_prop::not_a_pod,
+	ser_method::use_internal_serializer,
+	archive_type::json,
+	direction::in,
 	std::array<T, N>
 >
 {

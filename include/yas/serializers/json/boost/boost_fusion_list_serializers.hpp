@@ -87,8 +87,8 @@ struct json_list_deserializer {
 
 #define YAS__JSON__GENERATE_EMPTY_SAVE_SERIALIZE_LIST_SPEC_VARIADIC() \
 	template<> \
-	struct serializer<e_type_type::not_a_pod, e_ser_method::use_internal_serializer, \
-		e_archive_type::json, e_direction::out, boost::fusion::list<> > \
+	struct serializer<type_prop::not_a_pod, ser_method::use_internal_serializer, \
+		archive_type::json, direction::out, boost::fusion::list<> > \
 	{ \
 		template<typename Archive> \
 		static void apply(Archive&, const boost::fusion::list<>&) {} \
@@ -96,8 +96,8 @@ struct json_list_deserializer {
 
 #define YAS__JSON__GENERATE_EMPTY_LOAD_SERIALIZE_LIST_SPEC_VARIADIC() \
 	template<> \
-	struct serializer<e_type_type::not_a_pod, e_ser_method::use_internal_serializer, \
-		e_archive_type::json, e_direction::in, boost::fusion::list<> > \
+	struct serializer<type_prop::not_a_pod, ser_method::use_internal_serializer, \
+		archive_type::json, direction::in, boost::fusion::list<> > \
 	{ \
 		template<typename Archive> \
 		static void apply(Archive&, boost::fusion::list<>&) {} \
@@ -105,8 +105,8 @@ struct json_list_deserializer {
 
 #define YAS__JSON__GENERATE_SAVE_SERIALIZE_LIST_SPEC_VARIADIC(unused, count, unused2) \
 	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
-	struct serializer<e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
-		e_archive_type::json, e_direction::out, boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
+	struct serializer<type_prop::not_a_pod,ser_method::use_internal_serializer, \
+		archive_type::json, direction::out, boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
 	{ \
 		template<typename Archive> \
 		static void apply(Archive& ar, \
@@ -127,8 +127,8 @@ struct json_list_deserializer {
 
 #define YAS__JSON__GENERATE_LOAD_SERIALIZE_LIST_SPEC_VARIADIC(unused, count, unused2) \
 	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
-	struct serializer<e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
-		e_archive_type::json, e_direction::in, boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
+	struct serializer<type_prop::not_a_pod,ser_method::use_internal_serializer, \
+		archive_type::json, direction::in, boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
 	{ \
 		template<typename Archive> \
 		static void apply(Archive& ar, \

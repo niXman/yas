@@ -45,10 +45,10 @@ namespace detail {
 
 template<typename T>
 struct serializer<
-	e_type_type::is_enum,
-	e_ser_method::use_internal_serializer,
-	e_archive_type::binary,
-	e_direction::out,
+	type_prop::is_enum,
+	ser_method::use_internal_serializer,
+	archive_type::binary,
+	direction::out,
 	T
 > {
 	template<typename Archive>
@@ -61,10 +61,10 @@ struct serializer<
 
 template<typename T>
 struct serializer<
-	e_type_type::is_enum,
-	e_ser_method::use_internal_serializer,
-	e_archive_type::binary,
-	e_direction::in,
+	type_prop::is_enum,
+	ser_method::use_internal_serializer,
+	archive_type::binary,
+	direction::in,
 	T
 > {
 	template<typename Archive>
@@ -94,10 +94,10 @@ struct serializer<
 
 template<typename T>
 struct serializer<
-	e_type_type::is_pod,
-	e_ser_method::use_internal_serializer,
-	e_archive_type::binary,
-	e_direction::out,
+	type_prop::is_pod,
+	ser_method::use_internal_serializer,
+	archive_type::binary,
+	direction::out,
 	T
 > {
 	template<typename Archive>
@@ -108,10 +108,10 @@ struct serializer<
 
 template<typename T>
 struct serializer<
-	e_type_type::is_pod,
-	e_ser_method::use_internal_serializer,
-	e_archive_type::binary,
-	e_direction::in,
+	type_prop::is_pod,
+	ser_method::use_internal_serializer,
+	archive_type::binary,
+	direction::in,
 	T
 > {
 	template<typename Archive>

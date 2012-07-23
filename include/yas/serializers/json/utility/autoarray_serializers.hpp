@@ -48,10 +48,10 @@ namespace detail {
 
 template<typename T, size_t N>
 struct serializer<
-	e_type_type::is_array_of_pods,
-	e_ser_method::use_internal_serializer,
-	e_archive_type::json,
-	e_direction::out,
+	type_prop::is_array_of_pods,
+	ser_method::use_internal_serializer,
+	archive_type::json,
+	direction::out,
 	T[N]
 > {
 	template<
@@ -78,10 +78,10 @@ struct serializer<
 
 template<typename T, size_t N>
 struct serializer<
-	e_type_type::is_array_of_pods,
-	e_ser_method::use_internal_serializer,
-	e_archive_type::json,
-	e_direction::in,
+	type_prop::is_array_of_pods,
+	ser_method::use_internal_serializer,
+	archive_type::json,
+	direction::in,
 	T[N]
 > {
 	template<
@@ -114,10 +114,10 @@ struct serializer<
 
 template<typename T, size_t N>
 struct serializer<
-	e_type_type::is_array,
-	e_ser_method::use_internal_serializer,
-	e_archive_type::json,
-	e_direction::out,
+	type_prop::is_array,
+	ser_method::use_internal_serializer,
+	archive_type::json,
+	direction::out,
 	T[N]
 > {
 	template<typename Archive>
@@ -133,10 +133,10 @@ struct serializer<
 
 template<typename T, size_t N>
 struct serializer<
-	e_type_type::is_array,
-	e_ser_method::use_internal_serializer,
-	e_archive_type::json,
-	e_direction::in,
+	type_prop::is_array,
+	ser_method::use_internal_serializer,
+	archive_type::json,
+	direction::in,
 	T[N]
 > {
 	template<typename Archive>

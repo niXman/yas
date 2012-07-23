@@ -66,8 +66,8 @@ namespace detail {
 
 #define YAS__BINARY__GENERATE_EMPTY_SAVE_SERIALIZE_BOOST_FUSION_TUPLE_SPEC() \
 	template<> \
-	struct serializer<e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
-		e_archive_type::binary, e_direction::out, boost::fusion::tuple<> > \
+	struct serializer<type_prop::not_a_pod,ser_method::use_internal_serializer, \
+		archive_type::binary, direction::out, boost::fusion::tuple<> > \
 	{ \
 		template<typename Archive> \
 		static void apply(Archive&, const boost::fusion::tuple<>&) {} \
@@ -75,8 +75,8 @@ namespace detail {
 
 #define YAS__BINARY__GENERATE_EMPTY_LOAD_SERIALIZE_BOOST_FUSION_TUPLE_SPEC() \
 	template<> \
-	struct serializer<e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
-		e_archive_type::binary, e_direction::in, boost::fusion::tuple<> > \
+	struct serializer<type_prop::not_a_pod,ser_method::use_internal_serializer, \
+		archive_type::binary, direction::in, boost::fusion::tuple<> > \
 	{ \
 		template<typename Archive> \
 		static void apply(Archive&, boost::fusion::tuple<>&) {} \
@@ -84,8 +84,8 @@ namespace detail {
 
 #define YAS__BINARY__GENERATE_SAVE_SERIALIZE_BOOST_FUSION_TUPLE_FUNCTION_SPEC(unused, count, text) \
 	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
-	struct serializer<e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
-		e_archive_type::binary, e_direction::out, \
+	struct serializer<type_prop::not_a_pod,ser_method::use_internal_serializer, \
+		archive_type::binary, direction::out, \
 		boost::fusion::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
 	{ \
 		template<typename Archive> \
@@ -112,8 +112,8 @@ namespace detail {
 
 #define YAS__BINARY__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_TUPLE_FUNCTION_SPEC(unused, count, text) \
 	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
-	struct serializer<e_type_type::not_a_pod,e_ser_method::use_internal_serializer, \
-		e_archive_type::binary, e_direction::in, \
+	struct serializer<type_prop::not_a_pod,ser_method::use_internal_serializer, \
+		archive_type::binary, direction::in, \
 		boost::fusion::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
 	{ \
 		template<typename Archive> \

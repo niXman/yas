@@ -49,10 +49,10 @@ namespace detail {
 
 template<typename K>
 struct serializer<
-	e_type_type::not_a_pod,
-	e_ser_method::use_internal_serializer,
-	e_archive_type::binary,
-	e_direction::out,
+	type_prop::not_a_pod,
+	ser_method::use_internal_serializer,
+	archive_type::binary,
+	direction::out,
 	std::unordered_multiset<K>
 > {
 	template<typename Archive>
@@ -75,10 +75,10 @@ struct serializer<
 
 template<typename K>
 struct serializer<
-	e_type_type::not_a_pod,
-	e_ser_method::use_internal_serializer,
-	e_archive_type::binary,
-	e_direction::in,
+	type_prop::not_a_pod,
+	ser_method::use_internal_serializer,
+	archive_type::binary,
+	direction::in,
 	std::unordered_multiset<K>
 > {
 	template<typename Archive>

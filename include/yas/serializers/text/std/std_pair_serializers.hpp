@@ -46,10 +46,10 @@ namespace detail {
 
 template<typename T1, typename T2>
 struct serializer<
-	e_type_type::not_a_pod,
-	e_ser_method::use_internal_serializer,
-	e_archive_type::text,
-	e_direction::out,
+	type_prop::not_a_pod,
+	ser_method::use_internal_serializer,
+	archive_type::text,
+	direction::out,
 	std::pair<T1, T2>
 >
 {
@@ -62,10 +62,10 @@ struct serializer<
 
 template<typename T1, typename T2>
 struct serializer<
-	e_type_type::not_a_pod,
-	e_ser_method::use_internal_serializer,
-	e_archive_type::text,
-	e_direction::in,
+	type_prop::not_a_pod,
+	ser_method::use_internal_serializer,
+	archive_type::text,
+	direction::in,
 	std::pair<T1, T2>
 >
 {

@@ -45,7 +45,7 @@ namespace detail {
 
 /***************************************************************************/
 
-struct e_type_type {
+struct type_prop {
 	enum type {
 		 is_enum
 		,is_pod
@@ -55,7 +55,7 @@ struct e_type_type {
 	};
 };
 
-struct e_ser_method {
+struct ser_method {
 	enum type {
 		 has_one_method
 		,has_split_methods
@@ -68,10 +68,10 @@ struct e_ser_method {
 /***************************************************************************/
 
 template<
-	e_type_type::type,
-	e_ser_method::type,
-	e_archive_type::type,// type of archive
-	e_direction::type,	// serialization direction
+	type_prop::type,
+	ser_method::type,
+	archive_type::type,// type of archive
+	direction::type,	// serialization direction
 	typename T           // serialized type
 > struct serializer;
 
@@ -79,31 +79,31 @@ template<
 
 template<typename T>
 struct type_propertyes {
-	static const e_type_type::type value =
+	static const type_prop::type value =
 		is_enum<T>::value
-		? e_type_type::is_enum
+		? type_prop::is_enum
 		: is_pod<T>::value
-			? e_type_type::is_pod
+			? type_prop::is_pod
 			: is_array_of_pods<T>::value
-				? e_type_type::is_array_of_pods
+				? type_prop::is_array_of_pods
 				: is_array<T>::value
-					? e_type_type::is_array
-					: e_type_type::not_a_pod
+					? type_prop::is_array
+					: type_prop::not_a_pod
 	;
 };
 
 template<typename T, typename Ar>
 struct serialization_method {
-	static const e_ser_method::type value =
+	static const ser_method::type value =
 		has_const_method_serializer<or_<is_pod<T>, is_array<T> >::value, is_enum<T>::value,T,void(Ar)>::value
-		? e_ser_method::has_split_methods
+		? ser_method::has_split_methods
 		: has_method_serializer<or_<is_pod<T>, is_array<T> >::value, is_enum<T>::value,T,void(Ar)>::value
-			? e_ser_method::has_one_method
+			? ser_method::has_one_method
 			: has_function_const_serialize<or_<is_pod<T>, is_array<T> >::value, is_enum<T>::value, Ar, T>::value
-				? e_ser_method::has_split_functions
+				? ser_method::has_split_functions
 				: has_function_serialize<or_<is_pod<T>, is_array<T> >::value, is_enum<T>::value, Ar, T>::value
-					? e_ser_method::has_one_function
-					: e_ser_method::use_internal_serializer
+					? ser_method::has_one_function
+					: ser_method::use_internal_serializer
 	;
 };
 

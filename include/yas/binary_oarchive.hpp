@@ -56,17 +56,17 @@ namespace yas {
 
 struct binary_mem_oarchive:
 	 detail::omemstream<binary_mem_oarchive>
-	,detail::archive_information<e_archive_type::binary, e_direction::out, binary_mem_oarchive>
+	,detail::archive_information<archive_type::binary, direction::out, binary_mem_oarchive>
 	,private detail::noncopyable
 {
-	binary_mem_oarchive(header_t op = with_header)
+	binary_mem_oarchive(header_flag op = with_header)
 	{ init_header(this, op); }
 
-	binary_mem_oarchive(size_t size, header_t op = with_header)
+	binary_mem_oarchive(size_t size, header_flag op = with_header)
 		:detail::omemstream<binary_mem_oarchive>(size)
 	{ init_header(this, op); }
 
-	binary_mem_oarchive(char* ptr, size_t size, header_t op = with_header)
+	binary_mem_oarchive(char* ptr, size_t size, header_flag op = with_header)
 		:detail::omemstream<binary_mem_oarchive>(ptr, size)
 	{ init_header(this, op); }
 
@@ -76,8 +76,8 @@ struct binary_mem_oarchive:
 		serializer<
 			type_propertyes<T>::value,
 			serialization_method<T, binary_mem_oarchive>::value,
-			e_archive_type::binary,
-			e_direction::out,
+			archive_type::binary,
+			direction::out,
 			T
 		>::apply(*this, v);
 
@@ -89,10 +89,10 @@ struct binary_mem_oarchive:
 
 struct binary_file_oarchive:
 	 std::ostream
-	,detail::archive_information<e_archive_type::binary, e_direction::out, binary_file_oarchive>
+	,detail::archive_information<archive_type::binary, direction::out, binary_file_oarchive>
 	,private detail::noncopyable
 {
-	binary_file_oarchive(std::ostream& file, header_t op = with_header)
+	binary_file_oarchive(std::ostream& file, header_flag op = with_header)
 		:std::ostream(file.rdbuf())
 	{ init_header(this, op); }
 
@@ -102,8 +102,8 @@ struct binary_file_oarchive:
 		serializer<
 			type_propertyes<T>::value,
 			serialization_method<T, binary_file_oarchive>::value,
-			e_archive_type::binary,
-			e_direction::out,
+			archive_type::binary,
+			direction::out,
 			T
 		>::apply(*this, v);
 

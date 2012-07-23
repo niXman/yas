@@ -55,24 +55,24 @@ namespace yas {
 
 struct json_mem_iarchive:
 	 detail::imemstream<json_mem_iarchive>
-	,detail::archive_information<e_archive_type::json, e_direction::in, json_mem_iarchive>
+	,detail::archive_information<archive_type::json, direction::in, json_mem_iarchive>
 	,private detail::noncopyable
 {
-	json_mem_iarchive(const intrusive_buffer& o, header_t op = with_header)
+	json_mem_iarchive(const intrusive_buffer& o, header_flag op = with_header)
 		:detail::imemstream<json_mem_iarchive>(o)
 	{ init_header(this, op); }
 
 #if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || \
 	defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
-	json_mem_iarchive(const shared_buffer& o, header_t op = with_header)
+	json_mem_iarchive(const shared_buffer& o, header_flag op = with_header)
 		:detail::imemstream<json_mem_iarchive>(o)
 	{ init_header(this, op); }
 #endif
 
-	json_mem_iarchive(const std::string& o, header_t op = with_header)
+	json_mem_iarchive(const std::string& o, header_flag op = with_header)
 		:detail::imemstream<json_mem_iarchive>(o.c_str(), o.size())
 	{ init_header(this, op); }
-	json_mem_iarchive(const char* ptr, size_t size, header_t op = with_header)
+	json_mem_iarchive(const char* ptr, size_t size, header_flag op = with_header)
 		:detail::imemstream<json_mem_iarchive>(ptr, size)
 	{ init_header(this, op); }
 
@@ -82,8 +82,8 @@ struct json_mem_iarchive:
 		serializer<
 			type_propertyes<T>::value,
 			serialization_method<T, json_mem_iarchive>::value,
-			e_archive_type::json,
-			e_direction::in,
+			archive_type::json,
+			direction::in,
 			T
 		>::apply(*this, v);
 

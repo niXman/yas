@@ -47,10 +47,10 @@ namespace detail {
 
 template<typename K, typename V>
 struct serializer<
-	e_type_type::not_a_pod,
-	e_ser_method::use_internal_serializer,
-	e_archive_type::text,
-	e_direction::out,
+	type_prop::not_a_pod,
+	ser_method::use_internal_serializer,
+	archive_type::text,
+	direction::out,
 	std::unordered_multimap<K, V>
 > {
 	template<typename Archive>
@@ -67,10 +67,10 @@ struct serializer<
 
 template<typename K, typename V>
 struct serializer<
-	e_type_type::not_a_pod,
-	e_ser_method::use_internal_serializer,
-	e_archive_type::text,
-	e_direction::in,
+	type_prop::not_a_pod,
+	ser_method::use_internal_serializer,
+	archive_type::text,
+	direction::in,
 	std::unordered_multimap<K, V>
 > {
 	template<typename Archive>

@@ -55,13 +55,13 @@ namespace yas {
 
 struct json_mem_oarchive:
 	 detail::omemstream<json_mem_oarchive>
-	,detail::archive_information<e_archive_type::json, e_direction::out, json_mem_oarchive>
+	,detail::archive_information<archive_type::json, direction::out, json_mem_oarchive>
 	,private detail::noncopyable
 {
-	json_mem_oarchive(header_t op = with_header)
+	json_mem_oarchive(header_flag op = with_header)
 		:detail::omemstream<json_mem_oarchive>()
 	{ init_header(this, op); }
-	json_mem_oarchive(char* ptr, size_t size, header_t op = with_header)
+	json_mem_oarchive(char* ptr, size_t size, header_flag op = with_header)
 		:detail::omemstream<json_mem_oarchive>(ptr, size)
 	{ init_header(this, op); }
 
@@ -71,8 +71,8 @@ struct json_mem_oarchive:
 		serializer<
 			type_propertyes<T>::value,
 			serialization_method<T, json_mem_oarchive>::value,
-			e_archive_type::json,
-			e_direction::out,
+			archive_type::json,
+			direction::out,
 			T
 		>::apply(*this, v);
 
