@@ -5,10 +5,10 @@
 
 #include <yas/binary_oarchive.hpp>
 #include <yas/binary_iarchive.hpp>
-#include <yas/text_iarchive.hpp>
 #include <yas/text_oarchive.hpp>
-#include <yas/json_iarchive.hpp>
+#include <yas/text_iarchive.hpp>
 #include <yas/json_oarchive.hpp>
+#include <yas/json_iarchive.hpp>
 
 #include <yas/serializers/std_types_serializers.hpp>
 

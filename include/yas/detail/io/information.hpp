@@ -78,7 +78,7 @@ static const char yas_id[3] = {'y', 'a', 's'};
 static const char hex_alpha[] = "0123456789ABCDEF";
 
 /***************************************************************************/
-
+#if 0
 template<bool>
 struct proxy_io;
 
@@ -102,14 +102,14 @@ template<>
 struct proxy_io<false> {
 	template<typename IO>
 	static std::streamsize read(IO* stream, void* ptr, size_t size) {
-		return stream->read(static_cast<char*>(ptr), size).gcount();
+		return stream->read(static_cast<char*>(ptr), size);
 	}
 	template<typename IO>
 	static std::streamsize write(IO* stream, const void* ptr, size_t size) {
-		return stream->write(static_cast<const char*>(ptr), size).good() ? size : -1;
+		return stream->write(static_cast<const char*>(ptr), size);
 	}
 };
-
+#endif
 /***************************************************************************/
 
 template<archive_type::type>
@@ -125,9 +125,10 @@ struct header_reader_writer<archive_type::binary> {
 
 		char buf[header_size];
 
-		std::streamsize rd = proxy_io<
-			yas::is_mem_archive<Archive>::value
-		>::read(ar, buf, header_size);
+//		std::streamsize rd = proxy_io<
+//			yas::is_mem_archive<Archive>::value
+//		>::read(ar, buf, header_size);
+		std::streamsize rd = ar->read(buf, header_size);
 
 		if ( rd != header_size ) throw empty_archive_exception();
 
@@ -150,9 +151,10 @@ struct header_reader_writer<archive_type::binary> {
 			yas_id[0], yas_id[1], yas_id[2], header.as_char
 		};
 
-		std::streamsize wr = proxy_io<
-			yas::is_mem_archive<Archive>::value
-		>::write(ar, buf, header_size);
+//		std::streamsize wr = proxy_io<
+//			yas::is_mem_archive<Archive>::value
+//		>::write(ar, buf, header_size);
+		std::streamsize wr = ar->write(&buf[0], header_size);
 		if ( wr != header_size ) { throw std::runtime_error("write error"); }
 	}
 };
@@ -168,9 +170,10 @@ struct header_reader_writer<archive_type::text> {
 		if ( op == yas::no_header ) return;
 		char buf[header_size];
 
-		std::streamsize rd = proxy_io<
-			yas::is_mem_archive<Archive>::value
-		>::read(ar, buf, header_size);
+//		std::streamsize rd = proxy_io<
+//			yas::is_mem_archive<Archive>::value
+//		>::read(ar, buf, header_size);
+		std::streamsize rd = ar->read(buf, header_size);
 		if ( rd != header_size ) throw empty_archive_exception();
 
 		if ( memcmp(buf, yas_id, sizeof(yas_id)) ) {
@@ -200,9 +203,10 @@ struct header_reader_writer<archive_type::text> {
 			,hex_alpha[((yas::uint8_t)header.as_char) & 15]
 		};
 
-		std::streamsize wr = proxy_io<
-			yas::is_mem_archive<Archive>::value
-		>::write(ar, buf, header_size);
+//		std::streamsize wr = proxy_io<
+//			yas::is_mem_archive<Archive>::value
+//		>::write(ar, buf, header_size);
+		std::streamsize wr = ar->write(buf, header_size);
 		if ( wr != header_size ) { throw std::runtime_error("write error"); }
 	}
 };

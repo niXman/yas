@@ -30,31 +30,13 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__static_assert_hpp__included_
-#define _yas__static_assert_hpp__included_
+#ifndef _yas__json_file_stream_hpp__included_
+#define _yas__json_file_stream_hpp__included_
 
-#include <yas/detail/config/config.hpp>
-
-/***************************************************************************/
-
-namespace yas{
+namespace yas {
 namespace detail {
 
-#if defined(YAS_HAS_STATIC_ASSERT)
+} // ns detail
+} // ns yas
 
-#define YAS_STATIC_ASSERT(cond, message) \
-	static_assert((cond), # message)
-
-#else
-
-#define YAS_STATIC_ASSERT(cond, message) \
-	typedef char __STATIC_ASSERT___##message##__[(cond)?1:-1]
-
-#endif // defined(YAS_HAS_STATIC_ASSERT)
-
-} // namespace detail
-} // namespace yas
-
-/***************************************************************************/
-
-#endif // _yas__static_assert_hpp__included_
+#endif // _yas__json_file_stream_hpp__included_

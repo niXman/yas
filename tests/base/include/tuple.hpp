@@ -55,13 +55,14 @@ bool tuple_test(const char* archive_type, const char* io_type) {
 	ia & t2;
 
 	if ( t1 != t2 ) {
-		std::cout << "TUPLE test failed!" << std::endl;
+		std::cout << "TUPLE test failed! [1]" << std::endl;
 		return false;
 	}
-#endif // defined(YAS_HAS_BOOST_TUPLE)
 
-#if defined(YAS_HAS_STD_TUPLE)
-	std::tuple<int, int> t3(4, 7), t4;
+	boost::tuples::tuple<std::vector<std::string>> t3, t4;
+	boost::tuples::get<0>(t3).push_back("1");
+	boost::tuples::get<0>(t3).push_back("2");
+	boost::tuples::get<0>(t3).push_back("3");
 
 	typename archive_traits::oarchive oa2;
 	archive_traits::ocreate(oa2, archive_type, io_type);
@@ -72,7 +73,42 @@ bool tuple_test(const char* archive_type, const char* io_type) {
 	ia2 & t4;
 
 	if ( t3 != t4 ) {
-		std::cout << "TUPLE test failed!" << std::endl;
+		std::cout << "TUPLE test failed! [2]" << std::endl;
+		return false;
+	}
+#endif // defined(YAS_HAS_BOOST_TUPLE)
+
+#if defined(YAS_HAS_STD_TUPLE)
+	std::tuple<int, int> t5(4, 7), t6;
+
+	typename archive_traits::oarchive oa3;
+	archive_traits::ocreate(oa3, archive_type, io_type);
+	oa3 & t5;
+
+	typename archive_traits::iarchive ia3;
+	archive_traits::icreate(ia3, oa3, archive_type, io_type);
+	ia3 & t6;
+
+	if ( t5 != t6 ) {
+		std::cout << "TUPLE test failed! [3]" << std::endl;
+		return false;
+	}
+
+	std::tuple<std::vector<std::string>> t7, t8;
+	std::get<0>(t7).push_back("1");
+	std::get<0>(t7).push_back("2");
+	std::get<0>(t7).push_back("3");
+
+	typename archive_traits::oarchive oa4;
+	archive_traits::ocreate(oa4, archive_type, io_type);
+	oa4 & t7;
+
+	typename archive_traits::iarchive ia4;
+	archive_traits::icreate(ia4, oa4, archive_type, io_type);
+	ia4 & t8;
+
+	if ( t7 != t7 ) {
+		std::cout << "TUPLE test failed! [4]" << std::endl;
 		return false;
 	}
 #endif // defined(YAS_HAS_STD_TUPLE)

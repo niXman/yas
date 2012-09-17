@@ -40,6 +40,8 @@
 #include <yas/detail/type_traits/has_function_serialize.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 
+#include <yas/detail/io/text_mem_stream.hpp>
+#include <yas/detail/io/text_file_stream.hpp>
 #include <yas/detail/io/information.hpp>
 #include <yas/detail/base_object.hpp>
 
@@ -83,12 +85,12 @@ struct text_mem_oarchive:
 /***************************************************************************/
 
 struct text_file_oarchive:
-	 std::ostream
+	 detail::ofilestream<archive_type::text>
 	,detail::archive_information<archive_type::text, direction::out>
 	,private detail::noncopyable
 {
 	text_file_oarchive(std::ostream& file, header_flag op = with_header)
-		:std::ostream(file.rdbuf())
+		:detail::ofilestream<archive_type::text>(file)
 	{ init_header(this, op); }
 
 	template<typename T>

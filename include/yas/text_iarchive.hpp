@@ -41,6 +41,7 @@
 #include <yas/detail/type_traits/selector.hpp>
 
 #include <yas/detail/io/text_mem_stream.hpp>
+#include <yas/detail/io/text_file_stream.hpp>
 #include <yas/detail/io/information.hpp>
 #include <yas/detail/base_object.hpp>
 
@@ -95,12 +96,12 @@ struct text_mem_iarchive:
 /***************************************************************************/
 
 struct text_file_iarchive:
-	 std::istream
+	 detail::ifilestream<archive_type::text>
 	,detail::archive_information<archive_type::text, direction::in>
 	,private detail::noncopyable
 {
 	text_file_iarchive(std::istream& file, header_flag op = with_header)
-		:std::istream(file.rdbuf())
+		:detail::ifilestream<archive_type::text>(file)
 	{ init_header(this, op); }
 
 	template<typename T>

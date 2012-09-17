@@ -37,6 +37,8 @@
 #include <yas/detail/type_traits/has_function_serialize.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 
+#include <yas/detail/io/binary_mem_stream.hpp>
+#include <yas/detail/io/binary_file_stream.hpp>
 #include <yas/detail/io/information.hpp>
 #include <yas/detail/base_object.hpp>
 
@@ -92,12 +94,12 @@ struct binary_mem_iarchive:
 /***************************************************************************/
 
 struct binary_file_iarchive:
-	 std::istream
+	 detail::ifilestream<archive_type::binary>
 	,detail::archive_information<archive_type::binary, direction::in>
 	,private detail::noncopyable
 {
 	binary_file_iarchive(std::istream& file, header_flag op = with_header)
-		:std::istream(file.rdbuf())
+		:detail::ifilestream<archive_type::binary>(file)
 	{ init_header(this, op); }
 
 	template<typename T>

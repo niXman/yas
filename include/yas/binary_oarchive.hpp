@@ -40,6 +40,7 @@
 #include <yas/detail/type_traits/selector.hpp>
 
 #include <yas/detail/io/binary_mem_stream.hpp>
+#include <yas/detail/io/binary_file_stream.hpp>
 #include <yas/detail/io/information.hpp>
 #include <yas/detail/base_object.hpp>
 
@@ -88,12 +89,12 @@ struct binary_mem_oarchive:
 /***************************************************************************/
 
 struct binary_file_oarchive:
-	 std::ostream
+	 detail::ofilestream<archive_type::binary>
 	,detail::archive_information<archive_type::binary, direction::out>
 	,private detail::noncopyable
 {
 	binary_file_oarchive(std::ostream& file, header_flag op = with_header)
-		:std::ostream(file.rdbuf())
+		:detail::ofilestream<archive_type::binary>(file)
 	{ init_header(this, op); }
 
 	template<typename T>

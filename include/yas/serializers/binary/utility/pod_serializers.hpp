@@ -104,7 +104,7 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const T& v) {
-		ar.write(reinterpret_cast<const typename Archive::char_type*>(&v), sizeof(T));
+		ar.write(reinterpret_cast<const char*>(&v), sizeof(T));
 		return ar;
 	}
 };
@@ -119,7 +119,7 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, T& v) {
-		ar.read(reinterpret_cast<typename Archive::char_type*>(&v), sizeof(T));
+		ar.read(reinterpret_cast<char*>(&v), sizeof(T));
 		return ar;
 	}
 };

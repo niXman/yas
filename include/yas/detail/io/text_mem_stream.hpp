@@ -62,8 +62,6 @@ struct omemstream<archive_type::text>: omemstream<archive_type::binary> {
 		,_stream(new std::ostream(this))
 	{}
 
-	virtual ~omemstream() {}
-
 	template<typename T>
 	std::ostream& operator<< (const T& v) {
 		return ((*_stream) << v);
@@ -103,8 +101,6 @@ struct imemstream<archive_type::text>: imemstream<archive_type::binary> {
 	std::istream& operator>> (T& v) {
 		return ((*_stream) >> v);
 	}
-
-	virtual ~imemstream() {}
 
 private:
 	std::auto_ptr<std::istream> _stream;

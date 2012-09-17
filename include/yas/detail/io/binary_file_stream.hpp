@@ -30,58 +30,53 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__json_oarchive_hpp__included_
-#define _yas__json_oarchive_hpp__included_
+#ifndef _yas__binary_file_stream_hpp__included_
+#define _yas__binary_file_stream_hpp__included_
 
+#include <ostream>
+#include <istream>
+
+#include <yas/detail/mpl/metafunctions.hpp>
 #include <yas/detail/type_traits/properties.hpp>
-#include <yas/detail/type_traits/has_method_serialize.hpp>
-#include <yas/detail/type_traits/has_function_serialize.hpp>
-#include <yas/detail/type_traits/selector.hpp>
-
-#include <yas/detail/io/json_mem_stream.hpp>
-#include <yas/detail/io/json_file_stream.hpp>
-#include <yas/detail/io/information.hpp>
-#include <yas/detail/base_object.hpp>
-
-#include <yas/serializers/json/utility/pod_serializers.hpp>
-#include <yas/serializers/json/utility/usertype_serializers.hpp>
-#include <yas/serializers/json/utility/autoarray_serializers.hpp>
-#include <yas/serializers/json/utility/buffer_serializers.hpp>
-
-#include <yas/detail/tools/buffer.hpp>
-#include <yas/detail/tools/noncopyable.hpp>
 
 namespace yas {
+namespace detail {
 
 /***************************************************************************/
 
-struct json_mem_oarchive:
-	 detail::omemstream<archive_type::json>
-	,detail::archive_information<archive_type::json, direction::out>
-	,private detail::noncopyable
-{
-	json_mem_oarchive(header_flag op = with_header)
-		:detail::omemstream<archive_type::json>()
-	{ init_header(this, op); }
-	json_mem_oarchive(char* ptr, size_t size, header_flag op = with_header)
-		:detail::omemstream<archive_type::json>(ptr, size)
-	{ init_header(this, op); }
+template<archive_type::type>
+struct ofilestream;
 
-	template<typename T>
-	json_mem_oarchive& operator& (const T& v) {
-		using namespace detail;
-		return serializer<
-			type_propertyes<T>::value,
-			serialization_method<T, json_mem_oarchive>::value,
-			archive_type::json,
-			direction::out,
-			T
-		>::apply(*this, v);
+template<>
+struct ofilestream<archive_type::binary>: std::ostream {
+	ofilestream(std::ostream& file)
+		:std::ostream(file.rdbuf())
+	{}
+
+	inline std::streamsize write(const void* ptr, yas::uint32_t size) {
+		return std::ostream::write(static_cast<const char*>(ptr), size).good() ? size : -1;
 	}
 };
 
 /***************************************************************************/
 
-} // namespace yas
+template<archive_type::type>
+struct ifilestream;
 
-#endif // _yas__json_oarchive_hpp__included_
+template<>
+struct ifilestream<archive_type::binary>: std::istream {
+	ifilestream(std::istream& file)
+		:std::istream(file.rdbuf())
+	{}
+
+	inline std::streamsize read(void* ptr, yas::uint32_t size) {
+		return std::istream::read(static_cast<char*>(ptr), size).gcount();
+	}
+};
+
+/***************************************************************************/
+
+} // ns detail
+} // ns yas
+
+#endif // _yas__binary_file_stream_hpp__included_
