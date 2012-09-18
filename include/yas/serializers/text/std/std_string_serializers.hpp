@@ -55,7 +55,7 @@ struct serializer<
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const std::string& string) {
 		ar & static_cast<yas::uint32_t>(string.length());
-		ar & ' ';
+		ar.write(&const_space_char, sizeof(const_space_char));
 		ar.write(&string[0], string.length());
 		return ar;
 	}

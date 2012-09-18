@@ -59,17 +59,23 @@ bool pod_test(const char* archive_type, const char* io_type) {
 
 	switch ( archive_traits::oarchive_type::_type ) {
 		case yas::archive_type::binary:
-			if ( oa.size() != 25+archive_traits::oarchive_type::_header_size )
+			if ( oa.size() != archive_traits::oarchive_type::_header_size+25 ) {
+				std::cout << "POD serialization error! [1]" << std::endl;
 				return false;
+			}
 		break;
 		case yas::archive_type::text:
-			if ( oa.size() != 18+archive_traits::oarchive_type::_header_size )
+			if ( oa.size() != archive_traits::oarchive_type::_header_size+22 ) {
+				std::cout << "POD serialization error! [2]" << std::endl;
 				return false;
+			}
 		break;
 		case yas::archive_type::json:
+			std::cout << "unimplemented" << std::endl;
+			return false;
 		break;
 		default:
-			std::cout << "" << std::endl;
+			std::cout << "bad archive type!" << std::endl;
 			return false;
 	}
 
@@ -85,7 +91,7 @@ bool pod_test(const char* archive_type, const char* io_type) {
 		& dd;
 
 	if ( c != cc || sc != sc2 || sc != sc2 || s != ss || i != ii || l != ll || f != ff || d != dd ) {
-		std::cout << "POD deserialization error!" << std::endl;
+		std::cout << "POD deserialization error! [4]" << std::endl;
 		return false;
 	}
 

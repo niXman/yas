@@ -37,7 +37,9 @@
 
 template<typename archive_traits>
 bool buffer_test(const char* archive_type, const char* io_type) {
-	const std::string str1 = "intrusive buffer test"; // 21 + 4(header) + 4(size of array) = 29
+	// binary: 21 + 4(header) + 4(string length) = 29
+	// text  : 21 + 6(header) + 2(string length) = 29
+	const std::string str1 = "intrusive buffer test";
 	const unsigned char ostr1_64[] = {
 		 0x79,0x61,0x73,0x81,0x15,0x00,0x00,0x00,0x69,0x6e,0x74,0x72,0x75,0x73
 		,0x69,0x76,0x65,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
@@ -52,6 +54,7 @@ bool buffer_test(const char* archive_type, const char* io_type) {
 	typename archive_traits::oarchive oa1;
 	archive_traits::ocreate(oa1, archive_type, io_type);
 	oa1 & buf1;
+	// binary
 	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ){
 		if ( oa1.size() != sizeof(ostr1_64) )
 		{
@@ -62,6 +65,7 @@ bool buffer_test(const char* archive_type, const char* io_type) {
 			std::cout << "BUFFER intrusive serialization error! [2]" << std::endl;
 			return false;
 		}
+	// text
 	} else if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
 		const char* res = (YAS_PLATFORM_BITS_IS_64())
 			?"yas91 21 intrusive buffer test"
@@ -75,6 +79,10 @@ bool buffer_test(const char* archive_type, const char* io_type) {
 			std::cout << "BUFFER intrusive serialization error! [4]" << std::endl;
 			return false;
 		}
+	// json
+	} else if ( yas::is_json_archive<typename archive_traits::oarchive_type>::value ) {
+		std::cout << "BUFFER intrusive serialization error! json is not implemented!" << std::endl;
+		return false;
 	}
 
 #if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR)

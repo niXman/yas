@@ -49,7 +49,7 @@
 #include <yas/serializers/binary/utility/autoarray_serializers.hpp>
 #include <yas/serializers/binary/utility/buffer_serializers.hpp>
 
-#include <yas/detail/tools/buffer.hpp>
+#include <yas/detail/tools/buffers.hpp>
 #include <yas/detail/tools/noncopyable.hpp>
 
 namespace yas {

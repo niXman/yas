@@ -36,7 +36,7 @@
 #include <stdexcept>
 
 #include <yas/detail/config/config.hpp>
-#include <yas/detail/tools/buffer.hpp>
+#include <yas/detail/tools/buffers.hpp>
 #include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 

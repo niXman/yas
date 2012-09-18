@@ -131,9 +131,9 @@ struct header_reader_writer<archive_type::text> {
 	template<typename Archive>
 	static void read(Archive* ar, yas::header_flag op, archive_header& header) {
 		if ( op == yas::no_header ) return;
-		char buf[header_size+1];
+		char buf[header_size];
 
-		if ( ar->read(buf, header_size+1) != header_size+1 )
+		if ( ar->read(buf, header_size) != header_size )
 			throw empty_archive_exception();
 		if ( memcmp(buf, yas_id, sizeof(yas_id)) )
 			throw bad_archive_information_exception();
@@ -154,14 +154,13 @@ struct header_reader_writer<archive_type::text> {
 			(unsigned char)YAS_PLATFORM_BITS_IS_64()
 		);
 
-		static const char buf[header_size+1] = {
+		static const char buf[header_size] = {
 			 yas_id[0], yas_id[1], yas_id[2]
 			,hex_alpha[(((yas::uint8_t)header.as_char) >> 4) & 0xff]
 			,hex_alpha[((yas::uint8_t)header.as_char) & 15]
-			,const_space_char
 		};
 
-		if ( ar->write(buf, header_size+1) != header_size+1 )
+		if ( ar->write(buf, header_size) != header_size )
 			throw std::runtime_error("write error");
 	}
 };

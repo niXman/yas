@@ -35,7 +35,7 @@
 #include <stdexcept>
 
 #include <yas/detail/config/config.hpp>
-#include <yas/detail/tools/buffer.hpp>
+#include <yas/detail/tools/buffers.hpp>
 #include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 
@@ -55,7 +55,7 @@ struct serializer<
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const intrusive_buffer& buf) {
 		ar & buf.size;
-		ar & ' ';
+		ar.write(&const_space_char, sizeof(const_space_char));
 		ar.write(reinterpret_cast<const char*>(buf.data), buf.size);
 		return ar;
 	}
@@ -77,8 +77,8 @@ struct serializer<
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const shared_buffer& buf) {
 		ar & buf.size;
-		ar & ' ';
-		ar.write(reinterpret_cast<const char*>(buf.data.get()), buf.size);
+		ar.write(&const_space_char, sizeof(const_space_char));
+		ar.write(buf.data.get(), buf.size);
 		return ar;
 	}
 };
@@ -97,7 +97,7 @@ struct serializer<
 		ar & size;
 		ar.get();
 		buf.data.reset(new char[size+1], &shared_buffer::deleter);
-		ar.read(reinterpret_cast<char*>(buf.data.get()), size);
+		ar.read(const_cast<char*>(buf.data.get()), size);
 		buf.size = size;
 		buf.data.get()[size] = 0;
 		return ar;
