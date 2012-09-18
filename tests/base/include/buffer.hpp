@@ -37,8 +37,8 @@
 
 template<typename archive_traits>
 bool buffer_test(const char* archive_type, const char* io_type) {
-	// binary: 21 + 4(header) + 4(string length) = 29
-	// text  : 21 + 6(header) + 2(string length) = 29
+	// binary: 4(header) + 4(string length) +21(string)= 29
+	// text  : 5(header) +1(space) + 2(string length) + 1(space) +21(string) = 30
 	const std::string str1 = "intrusive buffer test";
 	const unsigned char ostr1_64[] = {
 		 0x79,0x61,0x73,0x81,0x15,0x00,0x00,0x00,0x69,0x6e,0x74,0x72,0x75,0x73

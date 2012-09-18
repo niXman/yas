@@ -93,7 +93,6 @@ struct serializer<
 		yas::uint32_t size = 0;
 		ar & size;
 		if ( size != N-1 ) throw std::runtime_error("bad array size");
-		//ar.get();
 		ar.read(reinterpret_cast<char*>(v), size);
 		v[size] = 0;
 		return ar;

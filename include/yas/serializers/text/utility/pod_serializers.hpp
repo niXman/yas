@@ -108,24 +108,6 @@ struct serializer<
 	direction::out,
 	T
 > {
-//	template<
-//		 typename Archive
-//		,typename U
-//	>
-//	static Archive& apply(Archive& ar, const U& v, typename enable_if<is_any_of<U, char, signed char> >::type* = 0) {
-//		ar << v;
-//		return ar;
-//	}
-
-//	template<
-//		 typename Archive
-//		,typename U
-//	>
-//	static Archive& apply(Archive& ar, const U& v, typename disable_if<is_any_of<U, char, signed char> >::type* = 0) {
-//		ar << ' ' << v;
-//		return ar;
-//	}
-
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const T& v) {
 		ar << ' ' << v;
@@ -141,25 +123,6 @@ struct serializer<
 	direction::in,
 	T
 > {
-//	template<
-//		 typename Archive
-//		,typename U
-//	>
-//	static Archive& apply(Archive& ar, U& v, typename enable_if<is_any_of<U, char, signed char> >::type* = 0) {
-//		ar >> v;
-//		return ar;
-//	}
-
-//	template<
-//		 typename Archive
-//		,typename U
-//	>
-//	static Archive& apply(Archive& ar, U& v, typename disable_if<is_any_of<U, char, signed char> >::type* = 0) {
-//		ar.get();
-//		ar >> v;
-//		return ar;
-//	}
-
 	template<typename Archive>
 	static Archive& apply(Archive& ar, T& v) {
 		ar.get();
