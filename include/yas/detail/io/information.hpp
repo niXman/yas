@@ -79,6 +79,10 @@ namespace {
 	static const char hex_alpha[] = "0123456789ABCDEF";
 } // ns
 
+static const char const_foo_char = 0;
+static const char const_space_char = ' ';
+static char foo_char = 0;
+
 /***************************************************************************/
 
 template<archive_type::type>
@@ -127,10 +131,10 @@ struct header_reader_writer<archive_type::text> {
 	template<typename Archive>
 	static void read(Archive* ar, yas::header_flag op, archive_header& header) {
 		if ( op == yas::no_header ) return;
-		char buf[header_size];
+		char buf[header_size+1];
 
-		std::streamsize rd = ar->read(buf, header_size);
-		if ( rd != header_size ) throw empty_archive_exception();
+		if ( ar->read(buf, header_size+1) != header_size+1 )
+			throw empty_archive_exception();
 		if ( memcmp(buf, yas_id, sizeof(yas_id)) )
 			throw bad_archive_information_exception();
 		const char* p = std::lower_bound(hex_alpha, hex_alpha + 16, buf[3]);
@@ -150,14 +154,15 @@ struct header_reader_writer<archive_type::text> {
 			(unsigned char)YAS_PLATFORM_BITS_IS_64()
 		);
 
-		static const char buf[header_size] = {
+		static const char buf[header_size+1] = {
 			 yas_id[0], yas_id[1], yas_id[2]
 			,hex_alpha[(((yas::uint8_t)header.as_char) >> 4) & 0xff]
 			,hex_alpha[((yas::uint8_t)header.as_char) & 15]
+			,const_space_char
 		};
 
-		std::streamsize wr = ar->write(buf, header_size);
-		if ( wr != header_size ) { throw std::runtime_error("write error"); }
+		if ( ar->write(buf, header_size+1) != header_size+1 )
+			throw std::runtime_error("write error");
 	}
 };
 
@@ -259,7 +264,7 @@ YAS_WRITE_ARCHIVE_INFORMATION_SPECIALIZATIONS(
 	(archive_type::binary)
 	(archive_type::text)
 	(archive_type::json)
-)
+);
 
 /***************************************************************************/
 

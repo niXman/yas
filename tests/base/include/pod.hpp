@@ -43,9 +43,9 @@ bool pod_test(const char* archive_type, const char* io_type) {
 	char c = '1', cc;
 	signed char sc = '2', sc2;
 	unsigned char uc = '3', uc2;
-	short s = 2, ss;
-	int i = 3, ii;
-	long l = 4, ll;
+	short s = 4, ss;
+	int i = 5, ii;
+	long l = 6, ll;
 	float f = 3.14f, ff;
 	double d = 3.14, dd;
 	oa & c
@@ -56,6 +56,22 @@ bool pod_test(const char* archive_type, const char* io_type) {
 		& l
 		& f
 		& d;
+
+	switch ( archive_traits::oarchive_type::_type ) {
+		case yas::archive_type::binary:
+			if ( oa.size() != 25+archive_traits::oarchive_type::_header_size )
+				return false;
+		break;
+		case yas::archive_type::text:
+			if ( oa.size() != 18+archive_traits::oarchive_type::_header_size )
+				return false;
+		break;
+		case yas::archive_type::json:
+		break;
+		default:
+			std::cout << "" << std::endl;
+			return false;
+	}
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type, io_type);
