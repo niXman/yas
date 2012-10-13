@@ -104,5 +104,5 @@ If you use YAS in your project - tell to the author with the short description o
 Thanks!
 
 ===
-[1] https://github.com/niXman/yas/blob/master/include/yas/detail/tools/buffer.hpp#L50
-[2] https://github.com/niXman/yas/blob/master/include/yas/detail/tools/buffer.hpp#L72
+[1] https://github.com/niXman/yas/blob/master/include/yas/detail/tools/buffers.hpp#L50
+[2] https://github.com/niXman/yas/blob/master/include/yas/detail/tools/buffers.hpp#L72
