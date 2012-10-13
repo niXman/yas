@@ -1,4 +1,5 @@
 
+Отчет о времени сравнительного теста при сборке в release режиме.
 Compiler command line: g++ -std=c++0x -g -DYAS_SERIALIZE_BOOST_TYPES=1
 
 ===
