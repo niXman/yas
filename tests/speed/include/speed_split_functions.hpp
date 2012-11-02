@@ -97,7 +97,7 @@ struct test_split_functions_selector<yas::binary_mem_oarchive> {
 	static void test(const size_t iterations, size_t& archive_size) {
 		split_functions_speed_test_pod_type _split_functions_speed_test_pod_type;
 		std::ostringstream os;
-		boost::archive::binary_oarchive oa(os);
+		boost::archive::binary_oarchive oa(os, boost::archive::no_header);
 		for ( size_t idx = 0; idx < iterations; ++idx ) {
 			_split_functions_speed_test_pod_type.x = _split_functions_speed_test_pod_type.y = idx;
 			oa & _split_functions_speed_test_pod_type;
@@ -111,7 +111,7 @@ struct test_split_functions_selector<yas::text_mem_oarchive> {
 	static void test(const size_t iterations, size_t& archive_size) {
 		split_functions_speed_test_pod_type _split_functions_speed_test_pod_type;
 		std::ostringstream os;
-		boost::archive::text_oarchive oa(os);
+		boost::archive::text_oarchive oa(os, boost::archive::no_header);
 		for ( size_t idx = 0; idx < iterations; ++idx ) {
 			_split_functions_speed_test_pod_type.x = _split_functions_speed_test_pod_type.y = idx;
 			oa & _split_functions_speed_test_pod_type;
@@ -141,14 +141,14 @@ std::string split_functions_speed_test(yas::uint32_t iterations, const char* arc
 	boost_time=clock()-start;
 
 	os
-	<< "      boost time: " << (boost_time/(CLOCKS_PER_SEC/1000)) << " ms." << std::endl;
-//	<< "      boost size: " << boost_size << std::endl;
+	<< "      boost time: " << (boost_time/(CLOCKS_PER_SEC/1000)) << " ms." << std::endl
+	<< "      boost size: " << boost_size << std::endl;
 #endif
 
 	start = clock();
 
 	split_functions_speed_test_pod_type _split_functions_speed_test_pod_type;
-	OA oa;
+	OA oa(yas::no_header);
 	for ( size_t idx = 0; idx < iterations; ++idx ) {
 		_split_functions_speed_test_pod_type.x = _split_functions_speed_test_pod_type.y = idx;
 		oa & _split_functions_speed_test_pod_type;
@@ -157,7 +157,7 @@ std::string split_functions_speed_test(yas::uint32_t iterations, const char* arc
 
 	os
 	<< "      yas time  : " << (yas_time/(CLOCKS_PER_SEC/1000)) << " ms." << std::endl
-//	<< "      yas size  : " << oa.get_intrusive_buffer().size << std::endl
+	<< "      yas size  : " << oa.get_intrusive_buffer().size << std::endl
 	<< "      speed up  : " << (((double)boost_time)/((double)yas_time)) << std::endl;
 
 	return os.str();
