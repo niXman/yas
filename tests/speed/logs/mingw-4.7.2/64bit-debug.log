@@ -1,0 +1,66 @@
+compiled as: g++ -std=c++0x -g -Wall -DYAS_SERIALIZE_BOOST_TYPES=1
+
+platform bits: 64
+one function
+   binary:
+      boost time: 10353 ms.
+      boost size: 167772165
+      yas time  : 485 ms.
+      yas size  : 167772160
+      speed up  : 21.3464
+
+split functions
+   binary:
+      boost time: 10340 ms.
+      boost size: 167772165
+      yas time  : 483 ms.
+      yas size  : 167772160
+      speed up  : 21.4079
+
+one method
+   binary:
+      boost time: 10373 ms.
+      boost size: 167772165
+      yas time  : 468 ms.
+      yas size  : 167772160
+      speed up  : 22.1645
+
+split methods
+   binary:
+      boost time: 10949 ms.
+      boost size: 167772165
+      yas time  : 483 ms.
+      yas size  : 167772160
+      speed up  : 22.6687
+
+one function
+   text  :
+      boost time: 22477 ms.
+      boost size: 166521463
+      yas time  : 12325 ms.
+      yas size  : 166521460
+      speed up  : 1.82369
+
+split functions
+   text  :
+      boost time: 22221 ms.
+      boost size: 166521463
+      yas time  : 12744 ms.
+      yas size  : 166521460
+      speed up  : 1.74364
+
+one method
+   text  :
+      boost time: 23240 ms.
+      boost size: 166521463
+      yas time  : 12774 ms.
+      yas size  : 166521460
+      speed up  : 1.81932
+
+split methods
+   text  :
+      boost time: 23260 ms.
+      boost size: 166521463
+      yas time  : 12715 ms.
+      yas size  : 166521460
+      speed up  : 1.82934
