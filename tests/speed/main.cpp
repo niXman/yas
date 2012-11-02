@@ -37,6 +37,7 @@ void tests(yas::uint32_t iterations) {
 
 int main() {
 	setvbuf(stdout, 0, _IONBF, 0);
+	std::cout << "platform bits: " << (YAS_PLATFORM_BITS()) << std::endl;
 
 	yas::uint32_t iterations = 1024*1024*10;
 

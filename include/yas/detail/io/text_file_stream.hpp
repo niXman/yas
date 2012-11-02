@@ -52,11 +52,12 @@ struct ofilestream<archive_type::text>: std::ostream {
 		:std::ostream(file.rdbuf())
 	{}
 
-	inline std::streamsize write(const char* ptr, yas::uint32_t size) {
+	std::streamsize write(const char* ptr, yas::uint32_t size) {
 		return (std::ostream::write(ptr, size).good())?size:0;
 	}
+
 	template<typename T>
-	inline std::streamsize write(const T* ptr, yas::uint32_t) {
+	std::streamsize write(const T* ptr, yas::uint32_t) {
 		std::ostream::operator <<(*ptr);
 		return 0;
 	}

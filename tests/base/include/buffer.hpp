@@ -127,7 +127,7 @@ bool buffer_test(const char* archive_type, const char* io_type) {
 		archive_traits::icreate(ia1, oa2, archive_type, io_type);
 		yas::shared_buffer buf4;
 		ia1 & buf4;
-		if ( buf4.size != str2.length() || str2 != buf4.data.get() ) {
+		if ( buf4.size != str2.length() || memcmp(str2.c_str(), buf4.data.get(), buf4.size) ) {
 			std::cout << "BUFFER std shared buffer deserialization error! [9]" << std::endl;
 			return false;
 		}
@@ -176,7 +176,7 @@ bool buffer_test(const char* archive_type, const char* io_type) {
 		archive_traits::icreate(ia2, oa3, archive_type, io_type);
 		yas::shared_buffer buf5;
 		ia2 & buf5;
-		if ( buf5.size != str3.length() || str3 != buf5.data.get() ) {
+		if ( buf5.size != str3.length() || memcmp(str3.c_str(), buf5.data.get(), buf5.size) ) {
 			std::cout << "BUFFER std shared buffer deserialization error! [14]" << std::endl;
 			return false;
 		}

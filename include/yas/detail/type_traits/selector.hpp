@@ -70,8 +70,8 @@ struct ser_method {
 template<
 	type_prop::type,
 	ser_method::type,
-	archive_type::type,// type of archive
-	direction::type,	// serialization direction
+	archive_type::type,	// type of archive
+	direction::type,		// serialization direction
 	typename T           // serialized type
 > struct serializer;
 
@@ -95,9 +95,9 @@ struct type_propertyes {
 template<typename T, typename Ar>
 struct serialization_method {
 	static const ser_method::type value =
-		has_const_method_serializer<or_<is_pod<T>, is_array<T> >::value, is_enum<T>::value,T,void(Ar)>::value
+		has_const_method_serializer<or_<is_pod<T>, is_array<T> >::value, is_enum<T>::value, T, void(Ar)>::value
 		? ser_method::has_split_methods
-		: has_method_serializer<or_<is_pod<T>, is_array<T> >::value, is_enum<T>::value,T,void(Ar)>::value
+		: has_method_serializer<or_<is_pod<T>, is_array<T> >::value, is_enum<T>::value, T, void(Ar)>::value
 			? ser_method::has_one_method
 			: has_function_const_serialize<or_<is_pod<T>, is_array<T> >::value, is_enum<T>::value, Ar, T>::value
 				? ser_method::has_split_functions

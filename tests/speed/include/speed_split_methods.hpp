@@ -123,12 +123,12 @@ std::string split_methods_speed_test(yas::uint32_t iterations, const char* archi
 	<< "split methods" << std::endl
 	<< "   " << archive_type << std::endl;
 
-	clock_t start = clock();
-	clock_t boost_time=0, yas_time;
+	clock_t start, boost_time, yas_time;
 
 	size_t boost_size = 0;
 
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
+	start = clock();
 	test_split_methods_selector<OA>::test(iterations, boost_size);
 	boost_time=clock()-start;
 

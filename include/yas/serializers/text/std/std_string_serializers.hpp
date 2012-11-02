@@ -50,12 +50,11 @@ struct serializer<
 	archive_type::text,
 	direction::out,
 	std::string
->
-{
+> {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const std::string& string) {
-		ar & static_cast<yas::uint32_t>(string.length());
-		ar.write(&const_space_char, sizeof(const_space_char));
+		ar & string.length();
+		ar.put(' ');
 		ar.write(&string[0], string.length());
 		return ar;
 	}
@@ -68,8 +67,7 @@ struct serializer<
 	archive_type::text,
 	direction::in,
 	std::string
->
-{
+> {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, std::string& string) {
 		yas::uint32_t size = 0;

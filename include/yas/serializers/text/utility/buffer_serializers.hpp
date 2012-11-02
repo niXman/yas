@@ -32,8 +32,6 @@
 #ifndef _yas__text__buffer_serializer_hpp_included_
 #define _yas__text__buffer_serializer_hpp_included_
 
-#include <stdexcept>
-
 #include <yas/detail/config/config.hpp>
 #include <yas/detail/tools/buffers.hpp>
 #include <yas/detail/type_traits/properties.hpp>
@@ -55,7 +53,7 @@ struct serializer<
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const intrusive_buffer& buf) {
 		ar & buf.size;
-		ar.write(&const_space_char, sizeof(const_space_char));
+		ar.put(' ');
 		ar.write(reinterpret_cast<const char*>(buf.data), buf.size);
 		return ar;
 	}
@@ -77,7 +75,7 @@ struct serializer<
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const shared_buffer& buf) {
 		ar & buf.size;
-		ar.write(&const_space_char, sizeof(const_space_char));
+		ar.put(' ');
 		ar.write(buf.data.get(), buf.size);
 		return ar;
 	}
@@ -96,15 +94,14 @@ struct serializer<
 		yas::uint32_t size = 0;
 		ar & size;
 		ar.get();
-		buf.data.reset(new char[size+1], &shared_buffer::deleter);
+		buf.data.reset(new char[size], &shared_buffer::deleter);
 		ar.read(const_cast<char*>(buf.data.get()), size);
 		buf.size = size;
-		buf.data.get()[size] = 0;
 		return ar;
 	}
 };
 
-#endif
+#endif // YAS_SHARED_BUFFER_USE_STD_SHARED_PTR || YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR
 
 /***************************************************************************/
 

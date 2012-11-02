@@ -72,6 +72,10 @@ struct omemstream<archive_type::binary>: std::stringbuf {
 
 	virtual ~omemstream() {}
 
+	char put(const char ch) {
+		return sputc(ch);
+	}
+
 	std::streamsize write(const char* ptr, size_t size) {
 		return sputn(static_cast<const char_type*>(ptr), size);
 	}

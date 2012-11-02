@@ -79,10 +79,6 @@ namespace {
 	static const char hex_alpha[] = "0123456789ABCDEF";
 } // ns
 
-static const char const_foo_char = 0;
-static const char const_space_char = ' ';
-static char foo_char = 0;
-
 /***************************************************************************/
 
 template<archive_type::type>
