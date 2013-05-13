@@ -192,8 +192,8 @@ struct header_reader_writer<archive_type::json> {
 			:header() \
 		{} \
 		\
-		static yas::uint32_t	header_size() {return header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::header_size;} \
-		archive_type::type type() const {return YAS_PP_SEQ_ELEM(idx, seq);} \
+		static constexpr yas::uint32_t header_size() {return header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::header_size;} \
+		static constexpr archive_type::type type() {return YAS_PP_SEQ_ELEM(idx, seq);} \
 		int bits() const { \
 			if ( !header.bits.version ) throw no_header_exception(); \
 			return (header.bits.bits ? 64 : 32); \
@@ -203,12 +203,12 @@ struct header_reader_writer<archive_type::json> {
 			return header.bits.version; \
 		} \
 		\
-		static const yas::uint32_t			_header_size	= header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::header_size; \
-		static const int						_version			= archive_version; \
-		static const archive_type::type	_type				= YAS_PP_SEQ_ELEM(idx, seq); \
-		static const direction::type		_direction		= direction::in; \
-		static const bool						_is_readable	= true; \
-		static const bool						_is_writable	= false; \
+		static constexpr yas::uint32_t		_header_size	= header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::header_size; \
+		static constexpr int						_version			= archive_version; \
+		static constexpr archive_type::type	_type				= YAS_PP_SEQ_ELEM(idx, seq); \
+		static constexpr direction::type		_direction		= direction::in; \
+		static constexpr bool					_is_readable	= true; \
+		static constexpr bool					_is_writable	= false; \
 		\
 	protected: \
 		template<typename Archive> \
@@ -225,17 +225,17 @@ struct header_reader_writer<archive_type::json> {
 		archive_information() \
 		{} \
 		\
-		static yas::uint32_t header_size() {return header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::header_size;} \
-		archive_type::type type() const {return YAS_PP_SEQ_ELEM(idx, seq);} \
+		static constexpr yas::uint32_t header_size() {return header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::header_size;} \
+		static constexpr archive_type::type type() {return YAS_PP_SEQ_ELEM(idx, seq);} \
 		int bits() const {return YAS_PLATFORM_BITS();} \
 		int version() const {return archive_version;} \
 		\
-		static const yas::uint32_t			_header_size	= header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::header_size; \
-		static const int						_version			= archive_version; \
-		static const archive_type::type	_type				= YAS_PP_SEQ_ELEM(idx, seq); \
-		static const direction::type		_direction		= direction::in; \
-		static const bool						_is_readable	= false; \
-		static const bool						_is_writable	= true; \
+		static constexpr yas::uint32_t		_header_size	= header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::header_size; \
+		static constexpr int						_version			= archive_version; \
+		static constexpr archive_type::type	_type				= YAS_PP_SEQ_ELEM(idx, seq); \
+		static constexpr direction::type		_direction		= direction::in; \
+		static constexpr bool					_is_readable	= false; \
+		static constexpr bool					_is_writable	= true; \
 		\
 	protected: \
 		template<typename Archive> \

@@ -48,6 +48,21 @@ bool pod_test(const char* archive_type, const char* io_type) {
 	long l = 6, ll;
 	float f = 3.14f, ff;
 	double d = 3.14, dd;
+
+	enum {
+		binary_expected_size =
+			 sizeof(char)
+			+sizeof(signed char)
+			+sizeof(unsigned char)
+			+sizeof(short)
+			+sizeof(int)
+			+sizeof(long)
+			+sizeof(float)
+			+sizeof(double)
+		,text_expected_size = 22
+		,json_expected_size = 0
+	};
+
 	oa & c
 		& sc
 		& uc
@@ -59,13 +74,13 @@ bool pod_test(const char* archive_type, const char* io_type) {
 
 	switch ( archive_traits::oarchive_type::_type ) {
 		case yas::archive_type::binary:
-			if ( oa.size() != archive_traits::oarchive_type::_header_size+25 ) {
+			if ( oa.size() != archive_traits::oarchive_type::_header_size+binary_expected_size ) {
 				std::cout << "POD serialization error! [1]" << std::endl;
 				return false;
 			}
 		break;
 		case yas::archive_type::text:
-			if ( oa.size() != archive_traits::oarchive_type::_header_size+22 ) {
+			if ( oa.size() != archive_traits::oarchive_type::_header_size+text_expected_size ) {
 				std::cout << "POD serialization error! [2]" << std::endl;
 				return false;
 			}
