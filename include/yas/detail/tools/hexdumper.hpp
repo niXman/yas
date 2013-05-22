@@ -1,4 +1,3 @@
-
 // Copyright (c) 2010-2012 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
@@ -111,7 +110,7 @@ static const yas::uint32_t crc32_table[] = {
 	0xB40BBE37, 0xC30C8EA1, 0x5A05DF1B, 0x2D02EF8D
 };
 
-size_t chksum_crc32(const unsigned char *block, size_t length) {
+inline size_t chksum_crc32(const unsigned char *block, size_t length) {
 	size_t crc, idx;
 
 	crc = 0xFFFFFFFF;
@@ -125,7 +124,7 @@ size_t chksum_crc32(const unsigned char *block, size_t length) {
 
 /***************************************************************************/
 
-std::string hex_dump(const void* buf, size_t len) {
+inline std::string hex_dump(const void* buf, size_t len) {
 	const unsigned char* buffer = static_cast<const unsigned char*>(buf);
 	std::stringstream os;
 	if ( !buffer || len <= 0 ) return os.str();
@@ -182,7 +181,7 @@ std::string hex_dump(const void* buf, size_t len) {
 	return os.str();
 }
 
-std::string hex_dump(const std::string& buf, int len = -1) {
+inline std::string hex_dump(const std::string& buf, int len = -1) {
 	return hex_dump(buf.c_str(), (len==(-1)?buf.size():len));
 }
 
