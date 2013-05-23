@@ -1,4 +1,3 @@
-
 // Copyright (c) 2009-2011 Avanesov Tigran:
 // http://forum.vingrad.ru/index.php?showtopic=249965&view=findpost&p=1803380
 // http://forum.vingrad.ru/index.php?showtopic=249965&view=findpost&p=1803439
@@ -9,8 +8,6 @@
 #include <string>
 #include <sstream>
 #include <typeinfo>
-
-//#include <boost/locale/conversion.hpp>
 
 namespace yas {
 namespace detail {
