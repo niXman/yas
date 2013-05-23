@@ -38,7 +38,7 @@
 
 #include <yas/detail/config/config.hpp>
 
-#include <yas/detail/tools/exceptions.hpp>
+#include <yas/detail/io/exceptions.hpp>
 #include <yas/detail/tools/static_assert.hpp>
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/properties.hpp>
