@@ -45,7 +45,7 @@ struct bad_archive_information_exception: std::exception {
 	const char* what() const throw() {return "archive is corrupted or try to use with \"yas::no_header\" flag";}
 };
 struct no_header_exception: std::exception {
-	const char* what() const throw() {return "you cannot use information functions with \"no_header\" flag";}
+	const char* what() const throw() {return "you cannot use information functions with \"yas::no_header\" flag";}
 };
 
 } // namespace yas
