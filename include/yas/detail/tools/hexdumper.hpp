@@ -132,7 +132,6 @@ inline std::string hex_dump(const void* buf, size_t len) {
 	size_t addr = 0;
 
 	size_t n = 0, idx = 0, cnt2 = 0;
-	os << std::endl;
 	for ( n = 0; n < len; ++n ) {
 		if ( cnt2 == 0 ) {
 			os << std::setw(7) << std::setfill('0') << addr << ": ";
@@ -175,8 +174,7 @@ inline std::string hex_dump(const void* buf, size_t len) {
 
 	os << std::endl
 		<< "length: " << len << " bytes. "
-		<< "CRC32: 0x" << std::hex << detail::chksum_crc32(buffer, len)
-		<< std::endl;
+		<< "CRC32: 0x" << std::hex << detail::chksum_crc32(buffer, len);
 
 	return os.str();
 }
