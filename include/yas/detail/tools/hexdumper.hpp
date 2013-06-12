@@ -173,7 +173,7 @@ inline std::string hex_dump(const void* buf, size_t len) {
 	os << std::dec;
 
 	os << std::endl
-		<< "length: " << len << " bytes. "
+		<< "LEN: " << len << " bytes, "
 		<< "CRC32: 0x" << std::hex << detail::chksum_crc32(buffer, len);
 
 	return os.str();
