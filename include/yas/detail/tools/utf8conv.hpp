@@ -66,12 +66,13 @@ public:
 			} else if (nchar <= 0x07FF) {
 				result += (0xC0 | (nchar >> 6));
 				result += (0x80 | (nchar & 0x3F));
-			} else if (nchar <= 0xFFFF) {
+			}
+#if WCHAR_MAX > 0xffff
+			else if (nchar <= 0xFFFF) {
 				result += (0xE0 | (nchar >> 12));
 				result += (0x80 | ((nchar >> 6) & 0x3F));
 				result += (0x80 | (nchar & 0x3F));
 			}
-#if WCHAR_MAX > 0xffff
 			else if (nchar  <= 0x1FFFFF) {
 				result += (0xF0 | (nchar >> 18));
 				result += (0x80 | ((nchar >> 12) & 0x3F));
