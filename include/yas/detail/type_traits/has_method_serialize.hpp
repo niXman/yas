@@ -33,8 +33,6 @@
 #ifndef _yas__has_method_serializer_hpp__included_
 #define _yas__has_method_serializer_hpp__included_
 
-#include <yas/detail/mpl/bool.hpp>
-
 namespace yas {
 namespace detail {
 
@@ -87,7 +85,7 @@ public:
 /***************************************************************************/
 
 template<bool is_pod, bool is_enum, typename Object, typename Sig>
-struct has_method_serializer: false_ {};
+struct has_method_serializer: std::false_type {};
 
 template<typename Object, typename Sig>
 struct has_method_serializer<false, false, Object, Sig> {
@@ -161,7 +159,7 @@ public:
 /***************************************************************************/
 
 template<bool is_pod, bool is_enum, typename Object, typename Sig>
-struct has_const_method_serializer: false_ {};
+struct has_const_method_serializer: std::false_type {};
 
 template<typename Object, typename Sig>
 struct has_const_method_serializer<false, false, Object, Sig> {

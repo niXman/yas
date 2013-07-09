@@ -84,7 +84,7 @@ struct text_mem_iarchive:
 	text_mem_iarchive& operator& (T& v) {
 		using namespace detail;
 		return serializer<
-			type_propertyes<T>::value,
+			type_properties<T>::value,
 			serialization_method<T, text_mem_iarchive>::value,
 			archive_type::text,
 			direction::in,
@@ -108,7 +108,7 @@ struct text_file_iarchive:
 	text_file_iarchive& operator& (T& v) {
 		using namespace detail;
 		return serializer<
-			type_propertyes<T>::value,
+			type_properties<T>::value,
 			serialization_method<T, text_file_iarchive>::value,
 			archive_type::text,
 			direction::in,

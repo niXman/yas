@@ -73,7 +73,7 @@ struct text_mem_oarchive:
 	text_mem_oarchive& operator& (const T& v) {
 		using namespace detail;
 		return serializer<
-			type_propertyes<T>::value,
+			type_properties<T>::value,
 			serialization_method<T, text_mem_oarchive>::value,
 			archive_type::text,
 			direction::out,
@@ -97,7 +97,7 @@ struct text_file_oarchive:
 	text_file_oarchive& operator& (const T& v) {
 		using namespace detail;
 		return serializer<
-			type_propertyes<T>::value,
+			type_properties<T>::value,
 			serialization_method<T, text_file_oarchive>::value,
 			archive_type::text,
 			direction::out,

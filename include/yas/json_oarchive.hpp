@@ -71,7 +71,7 @@ struct json_mem_oarchive:
 	json_mem_oarchive& operator& (const T& v) {
 		using namespace detail;
 		return serializer<
-			type_propertyes<T>::value,
+			type_properties<T>::value,
 			serialization_method<T, json_mem_oarchive>::value,
 			archive_type::json,
 			direction::out,

@@ -56,7 +56,7 @@ struct serializer<
 	static Archive& apply(Archive& ar, const std::list<T>& list) {
 		const yas::uint32_t size = list.size();
 		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
-		if ( detail::is_pod<T>::value ) {
+		if ( std::is_fundamental<T>::value ) {
 			typename std::list<T>::const_iterator it = list.begin();
 			for ( ; it != list.end(); ++it ) {
 				ar.write(reinterpret_cast<const char*>(&(*it)), sizeof(T));
@@ -84,7 +84,7 @@ struct serializer<
 		yas::uint32_t size = 0;
 		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
 		list.resize(size);
-		if ( detail::is_pod<T>::value ) {
+		if ( std::is_fundamental<T>::value ) {
 			typename std::list<T>::iterator it = list.begin();
 			for ( ; it != list.end(); ++it ) {
 				ar.read(reinterpret_cast<char*>(&(*it)), sizeof(T));

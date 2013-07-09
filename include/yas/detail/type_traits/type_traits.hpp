@@ -33,99 +33,10 @@
 #ifndef _yas__type_traits_hpp__included_
 #define _yas__type_traits_hpp__included_
 
-#include <yas/detail/mpl/bool.hpp>
-#include <yas/detail/preprocessor/preprocessor.hpp>
-
-#include <cstddef>
+#include <type_traits>
 
 namespace yas {
 namespace detail {
-
-/***************************************************************************/
-
-template<typename T>
-struct is_pointer: false_ {};
-
-template<typename T>
-struct is_pointer<T*>: true_ {};
-
-template<typename T>
-struct is_pointer<T const*>: true_ {};
-
-template<typename T>
-struct is_pointer<T volatile*>: true_ {};
-
-template<typename T>
-struct is_pointer<T const volatile*>: true_ {};
-
-/***************************************************************************/
-
-template<typename T>
-struct is_const: false_ {};
-
-template<typename T>
-struct is_const<T const>: true_ {};
-
-template<typename T>
-struct is_void: false_ {};
-
-template<typename T0, typename T1>
-struct is_same: false_ {};
-
-template<typename T0>
-struct is_same<T0, T0>: true_ {};
-
-template<typename T>
-struct is_array: false_ {};
-
-template<typename T, std::size_t N>
-struct is_array<T [N]>: true_ {};
-
-template<typename T, std::size_t N>
-struct is_array<T const [N]>: true_ {};
-
-template<typename T, std::size_t N>
-struct is_array<T volatile [N]>: true_ {};
-
-template<typename T, std::size_t N>
-struct is_array<T const volatile [N]>: true_ {};
-
-/***************************************************************************/
-
-template<typename T>
-struct remove_all_extents {typedef T type;};
-
-template<typename T, size_t N>
-struct remove_all_extents<T[N]>
-{typedef typename remove_all_extents<T>::type type;};
-
-template<typename T, size_t N>
-struct remove_all_extents<T const[N]>
-{typedef typename remove_all_extents<T const>::type type;};
-
-template<typename T, size_t N>
-struct remove_all_extents<T volatile[N]>
-{typedef typename remove_all_extents<T volatile>::type type;};
-
-template<typename T, size_t N>
-struct remove_all_extents<T const volatile[N]>
-{typedef typename remove_all_extents<T const volatile>::type type;};
-
-template<typename T>
-struct remove_all_extents<T[]>
-{typedef typename remove_all_extents<T>::type type;};
-
-template<typename T>
-struct remove_all_extents<T const[]>
-{typedef typename remove_all_extents<T const>::type type;};
-
-template<typename T>
-struct remove_all_extents<T volatile[]>
-{typedef typename remove_all_extents<T volatile>::type type;};
-
-template<typename T>
-struct remove_all_extents<T const volatile[]>
-{typedef typename remove_all_extents<T const volatile>::type type;};
 
 /***************************************************************************/
 
@@ -140,77 +51,26 @@ template<
 	,typename A7 = void
 	,typename A8 = void
 >
-struct is_any_of: bool_ <
-		is_same<T, A1>::value
-	|| is_same<T, A2>::value
-	|| is_same<T, A3>::value
-	|| is_same<T, A4>::value
-	|| is_same<T, A5>::value
-	|| is_same<T, A6>::value
-	|| is_same<T, A7>::value
-	|| is_same<T, A8>::value
->
-{};
-
-/***************************************************************************/
-
-#define YAS_WRITE_ONE_SPECIALIZATION(unused, idx, seq) \
-	template<> \
-	struct YAS_PP_TUPLE_ELEM(2, 0, YAS_PP_SEQ_ELEM(idx, seq)) \
-		<YAS_PP_TUPLE_ELEM(2, 1, YAS_PP_SEQ_ELEM(idx, seq))> {static const bool value = true;}; \
-	\
-	template<> \
-	struct YAS_PP_TUPLE_ELEM(2, 0, YAS_PP_SEQ_ELEM(idx, seq)) \
-		<YAS_PP_TUPLE_ELEM(2, 1, YAS_PP_SEQ_ELEM(idx, seq)) const> {static const bool value = true;}; \
-	\
-	template<> \
-	struct YAS_PP_TUPLE_ELEM(2, 0, YAS_PP_SEQ_ELEM(idx, seq)) \
-		<YAS_PP_TUPLE_ELEM(2, 1, YAS_PP_SEQ_ELEM(idx, seq)) volatile> {static const bool value = true;}; \
-	\
-	template<> \
-	struct YAS_PP_TUPLE_ELEM(2, 0, YAS_PP_SEQ_ELEM(idx, seq)) \
-		<YAS_PP_TUPLE_ELEM(2, 1, YAS_PP_SEQ_ELEM(idx, seq)) const volatile> {static const bool value = true;};
-
-#define YAS_WRITE_POD_SPECIALIZATIONS(seq) \
-	YAS_PP_REPEAT(YAS_PP_SEQ_SIZE(seq), YAS_WRITE_ONE_SPECIALIZATION, seq)
-
-/***************************************************************************/
-
-template<typename T>
-struct is_pod: false_ {};
-
-YAS_WRITE_POD_SPECIALIZATIONS(
-	((is_void,void))
-	((is_pod, char))
-	((is_pod, wchar_t))
-	((is_pod, signed char))
-	((is_pod, unsigned char))
-	((is_pod, bool))
-	((is_pod, short))
-	((is_pod, unsigned short))
-	((is_pod, int))
-	((is_pod, unsigned int))
-	((is_pod, long))
-	((is_pod, unsigned long))
-	((is_pod, long long))
-	((is_pod, unsigned long long))
-	((is_pod, long double))
-	((is_pod, double))
-	((is_pod, float))
-)
-
-/***************************************************************************/
-
-template<typename T>
-struct is_array_of_pods: bool_<
-	is_array<T>::value && is_pod<typename remove_all_extents<T>::type>::value
+struct is_any_of: std::integral_constant<
+	bool
+	,	std::is_same<T, A1>::value
+	|| std::is_same<T, A2>::value
+	|| std::is_same<T, A3>::value
+	|| std::is_same<T, A4>::value
+	|| std::is_same<T, A5>::value
+	|| std::is_same<T, A6>::value
+	|| std::is_same<T, A7>::value
+	|| std::is_same<T, A8>::value
 >
 {};
 
 /***************************************************************************/
 
 template<typename T>
-struct is_enum: bool_<__is_enum(T)>
+struct is_array_of_pods: std::integral_constant<
+	 bool
+	,std::is_array<T>::value && std::is_fundamental<typename std::remove_all_extents<T>::type>::value
+>
 {};
 
 /***************************************************************************/

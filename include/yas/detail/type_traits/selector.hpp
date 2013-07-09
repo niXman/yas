@@ -34,7 +34,6 @@
 #define _yas__selector_hpp__included_
 
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/mpl/metafunctions.hpp>
 
 #include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/has_method_serialize.hpp>
@@ -48,7 +47,7 @@ namespace detail {
 struct type_prop {
 	enum type {
 		 is_enum
-		,is_pod
+		,is_fundamental
 		,is_array
 		,is_array_of_pods
 		,not_a_pod
@@ -78,15 +77,15 @@ template<
 /***************************************************************************/
 
 template<typename T>
-struct type_propertyes {
+struct type_properties {
 	static const type_prop::type value =
-		is_enum<T>::value
+		std::is_enum<T>::value
 		? type_prop::is_enum
-		: is_pod<T>::value
-			? type_prop::is_pod
+		: std::is_fundamental<T>::value
+			? type_prop::is_fundamental
 			: is_array_of_pods<T>::value
 				? type_prop::is_array_of_pods
-				: is_array<T>::value
+				: std::is_array<T>::value
 					? type_prop::is_array
 					: type_prop::not_a_pod
 	;
@@ -95,13 +94,13 @@ struct type_propertyes {
 template<typename T, typename Ar>
 struct serialization_method {
 	static const ser_method::type value =
-		has_const_method_serializer<or_<is_pod<T>, is_array<T> >::value, is_enum<T>::value, T, void(Ar)>::value
+		has_const_method_serializer<std::is_fundamental<T>::value || std::is_array<T>::value, std::is_enum<T>::value, T, void(Ar)>::value
 		? ser_method::has_split_methods
-		: has_method_serializer<or_<is_pod<T>, is_array<T> >::value, is_enum<T>::value, T, void(Ar)>::value
+		: has_method_serializer<std::is_fundamental<T>::value || std::is_array<T>::value, std::is_enum<T>::value, T, void(Ar)>::value
 			? ser_method::has_one_method
-			: has_function_const_serialize<or_<is_pod<T>, is_array<T> >::value, is_enum<T>::value, Ar, T>::value
+			: has_function_const_serialize<std::is_fundamental<T>::value || std::is_array<T>::value, std::is_enum<T>::value, Ar, T>::value
 				? ser_method::has_split_functions
-				: has_function_serialize<or_<is_pod<T>, is_array<T> >::value, is_enum<T>::value, Ar, T>::value
+				: has_function_serialize<std::is_fundamental<T>::value || std::is_array<T>::value, std::is_enum<T>::value, Ar, T>::value
 					? ser_method::has_one_function
 					: ser_method::use_internal_serializer
 	;

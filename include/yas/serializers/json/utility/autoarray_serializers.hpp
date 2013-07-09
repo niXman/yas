@@ -37,7 +37,6 @@
 
 #include <yas/detail/config/config.hpp>
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/mpl/metafunctions.hpp>
 #include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 
@@ -58,7 +57,7 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static Archive& apply(Archive& ar, const U(&v)[N], typename enable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
+	static Archive& apply(Archive& ar, const U(&v)[N], typename std::enable_if<is_any_of<U, char, signed char, unsigned char>::value>::type* = 0) {
 		ar & (N-1);
 		ar.write(v, N-1);
 		ar & ' ';
@@ -68,7 +67,7 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static Archive& apply(Archive& ar, const U(&v)[N], typename disable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
+	static Archive& apply(Archive& ar, const U(&v)[N], typename std::enable_if<!is_any_of<U, char, signed char, unsigned char>::value>::type* = 0) {
 		ar & N & ' ';
 		for ( size_t idx = 0; idx < N; ++idx ) {
 			ar & v[idx] & ' ';
@@ -88,7 +87,7 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static Archive& apply(Archive& ar, U(&v)[N], typename enable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
+	static Archive& apply(Archive& ar, U(&v)[N], typename std::enable_if<is_any_of<U, char, signed char, unsigned char>::value>::type* = 0) {
 		yas::uint32_t size = 0;
 		ar & size;
 		if ( size != N-1 ) throw std::runtime_error("bad array size");
@@ -100,7 +99,7 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static Archive& apply(Archive& ar, U(&v)[N], typename disable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
+	static Archive& apply(Archive& ar, U(&v)[N], typename std::enable_if<!is_any_of<U, char, signed char, unsigned char>::value>::type* = 0) {
 		yas::uint32_t size = 0;
 		ar & size;
 		if ( size != N ) throw std::runtime_error("bad array size");

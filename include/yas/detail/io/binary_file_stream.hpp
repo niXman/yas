@@ -36,7 +36,6 @@
 #include <ostream>
 #include <istream>
 
-#include <yas/detail/mpl/metafunctions.hpp>
 #include <yas/detail/type_traits/properties.hpp>
 
 namespace yas {

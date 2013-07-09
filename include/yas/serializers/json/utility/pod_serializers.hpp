@@ -73,7 +73,7 @@ struct serializer<
 
 template<typename T>
 struct serializer<
-	type_prop::is_pod,
+	type_prop::is_fundamental,
 	ser_method::use_internal_serializer,
 	archive_type::json,
 	direction::out,
@@ -83,7 +83,7 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static Archive& apply(Archive& ar, const U& v, typename enable_if<is_any_of<U, char, signed char> >::type* = 0) {
+	static Archive& apply(Archive& ar, const U& v, typename std::enable_if<is_any_of<U, char, signed char>::value>::type* = 0) {
 		ar << v;
 	}
 
@@ -91,14 +91,14 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static Archive& apply(Archive& ar, const U& v, typename disable_if<is_any_of<U, char, signed char> >::type* = 0) {
+	static Archive& apply(Archive& ar, const U& v, typename std::enable_if<!is_any_of<U, char, signed char>::value>::type* = 0) {
 		ar << v << ' ';
 	}
 };
 
 template<typename T>
 struct serializer<
-	type_prop::is_pod,
+	type_prop::is_fundamental,
 	ser_method::use_internal_serializer,
 	archive_type::json,
 	direction::in,
@@ -108,7 +108,7 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static Archive& apply(Archive& ar, U& v, typename enable_if<is_any_of<U, char, signed char> >::type* = 0) {
+	static Archive& apply(Archive& ar, U& v, typename std::enable_if<is_any_of<U, char, signed char>::value>::type* = 0) {
 		ar >> v;
 	}
 
@@ -116,7 +116,7 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static Archive& apply(Archive& ar, U& v, typename disable_if<is_any_of<U, char, signed char> >::type* = 0) {
+	static Archive& apply(Archive& ar, U& v, typename std::enable_if<!is_any_of<U, char, signed char>::value>::type* = 0) {
 		(ar >> v).get();
 	}
 };

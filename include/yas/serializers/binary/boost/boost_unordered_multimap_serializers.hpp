@@ -60,17 +60,17 @@ struct serializer<
 		const yas::uint32_t size = multimap.size();
 		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
 		typename boost::unordered_multimap<K, V>::const_iterator it = multimap.begin();
-		if ( is_pod<K>::value && is_pod<V>::value ) {
+		if ( std::is_fundamental<K>::value && std::is_fundamental<V>::value ) {
 			for ( ; it != multimap.end(); ++it ) {
 				ar.write(reinterpret_cast<const char*>(&it->first), sizeof(K));
 				ar.write(reinterpret_cast<const char*>(&it->second), sizeof(V));
 			}
-		} else if ( is_pod<K>::value ) {
+		} else if ( std::is_fundamental<K>::value ) {
 			for ( ; it != multimap.end(); ++it ) {
 				ar.write(reinterpret_cast<const char*>(&it->first), sizeof(K));
 				ar & it->second;
 			}
-		} else if ( is_pod<V>::value ) {
+		} else if ( std::is_fundamental<V>::value ) {
 			for ( ; it != multimap.end(); ++it ) {
 				ar & it->first;
 				ar.write(reinterpret_cast<const char*>(&it->second), sizeof(V));
@@ -97,7 +97,7 @@ struct serializer<
 	static Archive& apply(Archive& ar, boost::unordered_multimap<K, V>& multimap) {
 		yas::uint32_t size = 0;
 		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
-		if ( is_pod<K>::value && is_pod<V>::value ) {
+		if ( std::is_fundamental<K>::value && std::is_fundamental<V>::value ) {
 			K key;
 			V val;
 			for ( std::size_t idx = 0; idx < size; ++idx ) {
@@ -105,7 +105,7 @@ struct serializer<
 				ar.read(reinterpret_cast<char*>(&val), sizeof(V));
 				multimap.insert(typename boost::unordered_multimap<K, V>::value_type(key, val));
 			}
-		} else if ( is_pod<K>::value ) {
+		} else if ( std::is_fundamental<K>::value ) {
 			K key;
 			V val = V();
 			for ( std::size_t idx = 0; idx < size; ++idx ) {
@@ -113,7 +113,7 @@ struct serializer<
 				ar & val;
 				multimap.insert(typename boost::unordered_multimap<K, V>::value_type(key, val));
 			}
-		} else if ( is_pod<V>::value ) {
+		} else if ( std::is_fundamental<V>::value ) {
 			K key = K();
 			V val;
 			for ( std::size_t idx = 0; idx < size; ++idx ) {

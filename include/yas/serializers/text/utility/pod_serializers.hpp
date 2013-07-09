@@ -102,7 +102,7 @@ struct serializer<
 
 template<typename T>
 struct serializer<
-	type_prop::is_pod,
+	type_prop::is_fundamental,
 	ser_method::use_internal_serializer,
 	archive_type::text,
 	direction::out,
@@ -117,7 +117,7 @@ struct serializer<
 
 template<typename T>
 struct serializer<
-	type_prop::is_pod,
+	type_prop::is_fundamental,
 	ser_method::use_internal_serializer,
 	archive_type::text,
 	direction::in,

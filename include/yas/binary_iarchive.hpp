@@ -82,7 +82,7 @@ struct binary_mem_iarchive:
 	binary_mem_iarchive& operator& (T& v) {
 		using namespace detail;
 		return serializer<
-			type_propertyes<T>::value,
+			type_properties<T>::value,
 			serialization_method<T, binary_mem_iarchive>::value,
 			archive_type::binary,
 			direction::in,
@@ -106,7 +106,7 @@ struct binary_file_iarchive:
 	binary_file_iarchive& operator& (T& v) {
 		using namespace detail;
 		return serializer<
-			type_propertyes<T>::value,
+			type_properties<T>::value,
 			serialization_method<T, binary_file_iarchive>::value,
 			archive_type::binary,
 			direction::in,

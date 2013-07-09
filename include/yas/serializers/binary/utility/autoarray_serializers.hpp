@@ -39,7 +39,6 @@
 #include <yas/detail/tools/utf8conv.hpp>
 #include <yas/detail/tools/static_assert.hpp>
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/mpl/metafunctions.hpp>
 #include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 
@@ -60,7 +59,7 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static Archive& apply(Archive& ar, const U(&v)[N], typename enable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
+	static Archive& apply(Archive& ar, const U(&v)[N], typename std::enable_if<is_any_of<U, char, signed char, unsigned char>::value>::type* = 0) {
 		const yas::uint32_t size = N-1;
 		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
 		ar.write(reinterpret_cast<const char*>(v), N-1);
@@ -71,7 +70,7 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static Archive& apply(Archive& ar, const U(&v)[N], typename disable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
+	static Archive& apply(Archive& ar, const U(&v)[N], typename std::enable_if<!is_any_of<U, char, signed char, unsigned char>::value>::type* = 0) {
 		const yas::uint32_t size = N*sizeof(T);
 		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
 		ar.write(reinterpret_cast<const char*>(v), N*sizeof(T));
@@ -91,7 +90,7 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static Archive& apply(Archive& ar, U(&v)[N], typename enable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
+	static Archive& apply(Archive& ar, U(&v)[N], typename std::enable_if<is_any_of<U, char, signed char, unsigned char>::value>::type* = 0) {
 		yas::uint32_t size = 0;
 		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
 		if ( size != N-1 ) throw std::runtime_error("bad array size");
@@ -104,7 +103,7 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static Archive& apply(Archive& ar, U(&v)[N], typename disable_if<is_any_of<U, char, signed char, unsigned char> >::type* = 0) {
+	static Archive& apply(Archive& ar, U(&v)[N], typename std::enable_if<!is_any_of<U, char, signed char, unsigned char>::value>::type* = 0) {
 		yas::uint32_t size = 0;
 		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
 		if ( size != (N*sizeof(T)) ) throw std::runtime_error("bad array size");

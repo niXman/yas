@@ -58,7 +58,7 @@ struct serializer<
 	static Archive& apply(Archive& ar, const boost::array<T, N>& array) {
 		const yas::uint32_t size = N;
 		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
-		if ( is_pod<T>::value ) {
+		if ( std::is_fundamental<T>::value ) {
 			ar.write(reinterpret_cast<const char*>(&array[0]), sizeof(T)*N);
 		} else {
 			typename boost::array<T, N>::const_iterator it = array.begin();
@@ -83,7 +83,7 @@ struct serializer<
 		yas::uint32_t size = 0;
 		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
 		if ( size != N ) throw std::runtime_error("array size is not equal");
-		if ( is_pod<T>::value ) {
+		if ( std::is_fundamental<T>::value ) {
 			ar.read(reinterpret_cast<char*>(&array[0]), sizeof(T)*N);
 		} else {
 			typename boost::array<T, N>::iterator it = array.begin();

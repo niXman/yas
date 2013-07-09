@@ -33,7 +33,6 @@
 #ifndef _yas__properties_hpp__included_
 #define _yas__properties_hpp__included_
 
-#include <yas/detail/mpl/bool.hpp>
 #include <yas/detail/type_traits/type_traits.hpp>
 
 namespace yas {
@@ -61,23 +60,23 @@ struct direction {
 };
 
 template<typename Ar>
-struct is_binary_archive: detail::bool_<Ar::_type == archive_type::binary>
+struct is_binary_archive: std::integral_constant<bool, Ar::_type == archive_type::binary>
 {};
 
 template<typename Ar>
-struct is_text_archive: detail::bool_<Ar::_type == archive_type::text>
+struct is_text_archive: std::integral_constant<bool, Ar::_type == archive_type::text>
 {};
 
 template<typename Ar>
-struct is_json_archive: detail::bool_<Ar::_type == archive_type::json>
+struct is_json_archive: std::integral_constant<bool, Ar::_type == archive_type::json>
 {};
 
 template<typename Ar>
-struct is_readable_archive: detail::bool_<Ar::_is_readable>
+struct is_readable_archive: std::integral_constant<bool, Ar::_is_readable>
 {};
 
 template<typename Ar>
-struct is_writable_archive: detail::bool_<Ar::_is_writable>
+struct is_writable_archive: std::integral_constant<bool, Ar::_is_writable>
 {};
 
 /***************************************************************************/
@@ -99,8 +98,9 @@ struct json_file_oarchive;
 struct json_file_iarchive;
 
 template<typename Ar>
-struct is_mem_archive: detail::bool_ <
-	detail::is_any_of<
+struct is_mem_archive: std::integral_constant<
+	 bool
+	,detail::is_any_of<
 		 Ar
 		,binary_mem_oarchive
 		,binary_mem_iarchive
@@ -113,8 +113,9 @@ struct is_mem_archive: detail::bool_ <
 {};
 
 template<typename Ar>
-struct is_file_archive: detail::bool_ <
-	detail::is_any_of<
+struct is_file_archive: std::integral_constant<
+	 bool
+	,detail::is_any_of<
 		 Ar
 		,binary_file_oarchive
 		,binary_file_iarchive

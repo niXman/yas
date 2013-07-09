@@ -57,7 +57,7 @@ struct serializer<
 		const yas::uint32_t size = set.size();
 		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
 		typename std::multiset<K>::const_iterator it = set.begin();
-		if ( is_pod<K>::value ) {
+		if ( std::is_fundamental<K>::value ) {
 			for ( ; it != set.end(); ++it ) {
 				ar.write(reinterpret_cast<const char*>(&(*it)), sizeof(K));
 			}
@@ -82,7 +82,7 @@ struct serializer<
 	static Archive& apply(Archive& ar, std::multiset<K>& set) {
 		yas::uint32_t size = 0;
 		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
-		if ( is_pod<K>::value ) {
+		if ( std::is_fundamental<K>::value ) {
 			K key;
 			for ( ; size; --size ) {
 				ar.read(reinterpret_cast<char*>(&key), sizeof(K));

@@ -54,13 +54,13 @@ namespace detail {
 /***************************************************************************/
 
 #define YAS__BINARY__WRITE_STD_TUPLE_ITEM(unused, idx, type) \
-	if ( detail::is_pod<YAS_PP_CAT(type, idx)>::value ) \
+	if ( std::is_fundamental<YAS_PP_CAT(type, idx)>::value ) \
 		ar.write(reinterpret_cast<const char*>(&std::get<idx>(tuple)), sizeof(YAS_PP_CAT(type, idx))); \
 	else \
 		ar & std::get<idx>(tuple);
 
 #define YAS__BINARY__READ_STD_TUPLE_ITEM(unused, idx, type) \
-	if ( detail::is_pod<YAS_PP_CAT(type, idx)>::value ) \
+	if ( std::is_fundamental<YAS_PP_CAT(type, idx)>::value ) \
 		ar.read(reinterpret_cast<char*>(&std::get<idx>(tuple)), sizeof(YAS_PP_CAT(type, idx))); \
 	else \
 		ar & std::get<idx>(tuple);

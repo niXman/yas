@@ -54,13 +54,13 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const std::pair<T1, T2>& pair) {
-		if ( is_pod<T1>::value && is_pod<T2>::value ) {
+		if ( std::is_fundamental<T1>::value && std::is_fundamental<T2>::value ) {
 			ar.write(reinterpret_cast<const char*>(&pair.first), sizeof(T1));
 			ar.write(reinterpret_cast<const char*>(&pair.second), sizeof(T2));
-		} else if ( is_pod<T1>::value ) {
+		} else if ( std::is_fundamental<T1>::value ) {
 			ar.write(reinterpret_cast<const char*>(&pair.first), sizeof(T1));
 			ar & pair.second;
-		} else if ( is_pod<T2>::value ) {
+		} else if ( std::is_fundamental<T2>::value ) {
 			ar & pair.first;
 			ar.write(reinterpret_cast<const char*>(&pair.second), sizeof(T2));
 		} else {
@@ -81,13 +81,13 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, std::pair<T1, T2>& pair) {
-		if ( is_pod<T1>::value && is_pod<T2>::value ) {
+		if ( std::is_fundamental<T1>::value && std::is_fundamental<T2>::value ) {
 			ar.read(reinterpret_cast<char*>(&pair.first), sizeof(T1));
 			ar.read(reinterpret_cast<char*>(&pair.second), sizeof(T2));
-		} else if ( is_pod<T1>::value ) {
+		} else if ( std::is_fundamental<T1>::value ) {
 			ar.read(reinterpret_cast<char*>(&pair.first), sizeof(T1));
 			ar & pair.second;
-		} else if ( is_pod<T2>::value ) {
+		} else if ( std::is_fundamental<T2>::value ) {
 			ar & pair.first;
 			ar.read(reinterpret_cast<char*>(&pair.second), sizeof(T2));
 		} else {

@@ -57,17 +57,17 @@ struct serializer<
 		const yas::uint32_t size = multimap.size();
 		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
 		typename std::multimap<K, V>::const_iterator it = multimap.begin();
-		if ( is_pod<K>::value && is_pod<V>::value ) {
+		if ( std::is_fundamental<K>::value && std::is_fundamental<V>::value ) {
 			for ( ; it != multimap.end(); ++it ) {
 				ar.write(reinterpret_cast<const char*>(&it->first), sizeof(K));
 				ar.write(reinterpret_cast<const char*>(&it->second), sizeof(V));
 			}
-		} else if ( is_pod<K>::value ) {
+		} else if ( std::is_fundamental<K>::value ) {
 			for ( ; it != multimap.end(); ++it ) {
 				ar.write(reinterpret_cast<const char*>(&it->first), sizeof(K));
 				ar & it->second;
 			}
-		} else if ( is_pod<V>::value ) {
+		} else if ( std::is_fundamental<V>::value ) {
 			for ( ; it != multimap.end(); ++it ) {
 				ar & it->first;
 				ar.write(reinterpret_cast<const char*>(&it->second), sizeof(V));
@@ -94,7 +94,7 @@ struct serializer<
 	static Archive& apply(Archive& ar, std::multimap<K, V>& multimap) {
 		yas::uint32_t size = 0;
 		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
-		if ( is_pod<K>::value && is_pod<V>::value ) {
+		if ( std::is_fundamental<K>::value && std::is_fundamental<V>::value ) {
 			K key;
 			V val;
 			for ( ; size; --size) {
@@ -102,7 +102,7 @@ struct serializer<
 				ar.read(reinterpret_cast<char*>(&val), sizeof(V));
 				multimap.insert(typename std::multimap<K, V>::value_type(key, val));
 			}
-		} else if ( is_pod<K>::value ) {
+		} else if ( std::is_fundamental<K>::value ) {
 			K key;
 			V val = V();
 			for ( ; size; --size ) {
@@ -110,7 +110,7 @@ struct serializer<
 				ar & val;
 				multimap.insert(typename std::multimap<K, V>::value_type(key, val));
 			}
-		} else if ( is_pod<V>::value ) {
+		} else if ( std::is_fundamental<V>::value ) {
 			K key = K();
 			V val;
 			for ( ; size; --size ) {
