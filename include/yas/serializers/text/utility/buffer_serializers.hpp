@@ -29,8 +29,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__text__buffer_serializer_hpp_included_
-#define _yas__text__buffer_serializer_hpp_included_
+#ifndef _yas__text__buffer_serializer_hpp
+#define _yas__text__buffer_serializer_hpp
 
 #include <yas/detail/config/config.hpp>
 #include <yas/detail/tools/buffers.hpp>
@@ -108,4 +108,4 @@ struct serializer<
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__text__buffer_serializer_hpp_included_
+#endif // _yas__text__buffer_serializer_hpp

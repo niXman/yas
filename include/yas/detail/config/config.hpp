@@ -30,8 +30,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__config_hpp__included_
-#define _yas__config_hpp__included_
+#ifndef _yas__config_hpp
+#define _yas__config_hpp
 
 #if defined(__clang__)
 #  define YAS_COMPILER_CONFIG <yas/detail/config/compiler/clang.hpp>
@@ -49,4 +49,4 @@
 
 #define YAS_PLATFORM_BITS() (YAS_PLATFORM_BITS_IS_32()?32:64)
 
-#endif // _yas__config_hpp__included_
+#endif // _yas__config_hpp

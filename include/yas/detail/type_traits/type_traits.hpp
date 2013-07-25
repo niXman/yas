@@ -30,8 +30,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__type_traits_hpp__included_
-#define _yas__type_traits_hpp__included_
+#ifndef _yas__type_traits_hpp
+#define _yas__type_traits_hpp
 
 #include <type_traits>
 
@@ -78,4 +78,4 @@ struct is_array_of_pods: std::integral_constant<
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__type_traits_hpp__included_
+#endif // _yas__type_traits_hpp

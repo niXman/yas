@@ -30,8 +30,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__json_oarchive_hpp__included_
-#define _yas__json_oarchive_hpp__included_
+#ifndef _yas__json_oarchive_hpp
+#define _yas__json_oarchive_hpp
 
 #include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/has_method_serialize.hpp>
@@ -85,4 +85,4 @@ struct json_mem_oarchive:
 
 } // namespace yas
 
-#endif // _yas__json_oarchive_hpp__included_
+#endif // _yas__json_oarchive_hpp

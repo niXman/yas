@@ -30,8 +30,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__properties_hpp__included_
-#define _yas__properties_hpp__included_
+#ifndef _yas__properties_hpp
+#define _yas__properties_hpp
 
 #include <yas/detail/type_traits/type_traits.hpp>
 
@@ -131,4 +131,4 @@ struct is_file_archive: std::integral_constant<
 
 } // namespace yas
 
-#endif // _yas__properties_hpp__included_
+#endif // _yas__properties_hpp

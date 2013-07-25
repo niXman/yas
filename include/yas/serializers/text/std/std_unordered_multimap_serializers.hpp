@@ -30,8 +30,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__text__std_unordered_multimap_serializer_hpp__included_
-#define _yas__text__std_unordered_multimap_serializer_hpp__included_
+#ifndef _yas__text__std_unordered_multimap_serializer_hpp
+#define _yas__text__std_unordered_multimap_serializer_hpp
 
 #if defined(YAS_HAS_STD_UNORDERED)
 #include <yas/detail/type_traits/type_traits.hpp>
@@ -96,4 +96,4 @@ struct serializer<
 
 #endif // defined(YAS_HAS_STD_UNORDERED)
 
-#endif // _yas__text__std_unordered_multimap_serializer_hpp__included_
+#endif // _yas__text__std_unordered_multimap_serializer_hpp

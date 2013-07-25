@@ -30,8 +30,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__text__boost_fusion_list_serializer_hpp__included_
-#define _yas__text__boost_fusion_list_serializer_hpp__included_
+#ifndef _yas__text__boost_fusion_list_serializer_hpp
+#define _yas__text__boost_fusion_list_serializer_hpp
 
 #include <yas/detail/config/config.hpp>
 
@@ -239,4 +239,4 @@ YAS__BINARY__GENERATE_LOAD_SERIALIZE_LIST_SPECS(FUSION_MAX_LIST_SIZE);
 
 #endif // defined(YAS_HAS_BOOST_FUSION)
 
-#endif // _yas__text__boost_fusion_list_serializer_hpp__included_
+#endif // _yas__text__boost_fusion_list_serializer_hpp

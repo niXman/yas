@@ -29,8 +29,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__exceptions_hpp__included_
-#define _yas__exceptions_hpp__included_
+#ifndef _yas__exceptions_hpp
+#define _yas__exceptions_hpp
 
 #include <stdexcept>
 
@@ -52,4 +52,4 @@ struct no_header_exception: std::exception {
 
 /***************************************************************************/
 
-#endif // _yas__exceptions_hpp__included_
+#endif // _yas__exceptions_hpp

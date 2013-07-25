@@ -30,8 +30,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__preprocessor_hpp__included_
-#define _yas__preprocessor_hpp__included_
+#ifndef _yas__preprocessor_hpp
+#define _yas__preprocessor_hpp
 
 #include <yas/detail/preprocessor/auto_rec.hpp>
 #include <yas/detail/preprocessor/bool.hpp>
@@ -52,4 +52,4 @@
 #include <yas/detail/preprocessor/elem.hpp>
 #include <yas/detail/preprocessor/telem.hpp>
 
-#endif // _yas__preprocessor_hpp__included_
+#endif // _yas__preprocessor_hpp

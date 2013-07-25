@@ -30,8 +30,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__boost_types_serializers_hpp__included_
-#define _yas__boost_types_serializers_hpp__included_
+#ifndef _yas__boost_types_serializers_hpp
+#define _yas__boost_types_serializers_hpp
 
 #include <yas/detail/config/config.hpp>
 
@@ -87,4 +87,4 @@
 
 #endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 
-#endif // _yas__boost_types_serializers_hpp__included_
+#endif // _yas__boost_types_serializers_hpp

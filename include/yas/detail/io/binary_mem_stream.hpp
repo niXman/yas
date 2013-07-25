@@ -30,8 +30,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__binary_mem_stream_hpp__included_
-#define _yas__binary_mem_stream_hpp__included_
+#ifndef _yas__binary_mem_stream_hpp
+#define _yas__binary_mem_stream_hpp
 
 #include <sstream>
 
@@ -156,4 +156,4 @@ struct imemstream<archive_type::binary>: std::stringbuf {
 } // ns detail
 } // ns yas
 
-#endif // _yas__binary_mem_stream_hpp__included_
+#endif // _yas__binary_mem_stream_hpp

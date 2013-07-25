@@ -30,8 +30,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__binary__boost_unordered_multimap_hpp__included_
-#define _yas__binary__boost_unordered_multimap_hpp__included_
+#ifndef _yas__binary__boost_unordered_multimap_hpp
+#define _yas__binary__boost_unordered_multimap_hpp
 
 #include <yas/detail/config/config.hpp>
 
@@ -141,4 +141,4 @@ struct serializer<
 
 #endif // defined(YAS_HAS_BOOST_UNORDERED)
 
-#endif // _yas__binary__boost_unordered_multimap_hpp__included_
+#endif // _yas__binary__boost_unordered_multimap_hpp

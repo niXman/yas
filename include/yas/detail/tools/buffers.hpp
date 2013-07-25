@@ -30,8 +30,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__const_buffer_hpp__included_
-#define _yas__const_buffer_hpp__included_
+#ifndef _yas__const_buffer_hpp
+#define _yas__const_buffer_hpp
 
 #include <cstring>
 
@@ -106,4 +106,4 @@ struct shared_buffer {
 
 } // namespace yas
 
-#endif // _yas__const_buffer_hpp__included_
+#endif // _yas__const_buffer_hpp

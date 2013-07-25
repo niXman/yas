@@ -30,8 +30,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__static_assert_hpp__included_
-#define _yas__static_assert_hpp__included_
+#ifndef _yas__static_assert_hpp
+#define _yas__static_assert_hpp
 
 #include <yas/detail/config/config.hpp>
 
@@ -57,4 +57,4 @@ namespace detail {
 
 /***************************************************************************/
 
-#endif // _yas__static_assert_hpp__included_
+#endif // _yas__static_assert_hpp

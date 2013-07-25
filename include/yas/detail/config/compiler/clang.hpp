@@ -30,8 +30,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__config_clang_config_hpp__included_
-#define _yas__config_clang_config_hpp__included_
+#ifndef _yas__config_clang_config_hpp
+#define _yas__config_clang_config_hpp
 
 /***************************************************************************/
 #if __GLIBCPP__ >= 20120301
@@ -97,4 +97,4 @@ typedef unsigned long long uint64_t;
 /***************************************************************************/
 
 
-#endif // _yas__config_clang_config_hpp__included_
+#endif // _yas__config_clang_config_hpp

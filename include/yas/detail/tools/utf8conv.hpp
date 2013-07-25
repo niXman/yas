@@ -2,8 +2,8 @@
 // http://forum.vingrad.ru/index.php?showtopic=249965&view=findpost&p=1803380
 // http://forum.vingrad.ru/index.php?showtopic=249965&view=findpost&p=1803439
 
-#ifndef _yas__utf8conv_hpp__included_
-#define _yas__utf8conv_hpp__included_
+#ifndef _yas__utf8conv_hpp
+#define _yas__utf8conv_hpp
 
 #include <string>
 #include <sstream>
@@ -134,4 +134,4 @@ T lexical_cast(const U& from) {
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__utf8conv_hpp__included_
+#endif // _yas__utf8conv_hpp

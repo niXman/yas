@@ -30,8 +30,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__binary__boost_fusion_vector_serializer_hpp__included_
-#define _yas__binary__boost_fusion_vector_serializer_hpp__included_
+#ifndef _yas__binary__boost_fusion_vector_serializer_hpp
+#define _yas__binary__boost_fusion_vector_serializer_hpp
 
 #include <yas/detail/config/config.hpp>
 
@@ -250,4 +250,4 @@ YAS__BINARY__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS_VARIADIC(FUSI
 
 #endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 
-#endif // _yas__binary__boost_fusion_vector_serializer_hpp__included_
+#endif // _yas__binary__boost_fusion_vector_serializer_hpp

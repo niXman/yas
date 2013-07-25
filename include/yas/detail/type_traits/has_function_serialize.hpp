@@ -30,8 +30,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__has_function_serialize_hpp__included_
-#define _yas__has_function_serialize_hpp__included_
+#ifndef _yas__has_function_serialize_hpp
+#define _yas__has_function_serialize_hpp
 
 #include <yas/detail/config/config.hpp>
 
@@ -85,4 +85,4 @@ struct has_function_serialize<false, false, T, T2> {
 
 } // namespace yas
 
-#endif // _yas__has_function_serialize_hpp__included_
+#endif // _yas__has_function_serialize_hpp

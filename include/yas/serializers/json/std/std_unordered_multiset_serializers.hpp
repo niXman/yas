@@ -30,8 +30,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__json__std_unordered_multiset_serializer_hpp__included_
-#define _yas__json__std_unordered_multiset_serializer_hpp__included_
+#ifndef _yas__json__std_unordered_multiset_serializer_hpp
+#define _yas__json__std_unordered_multiset_serializer_hpp
 
 #include <yas/detail/config/config.hpp>
 
@@ -93,4 +93,4 @@ struct serializer<
 
 #endif // defined(YAS_HAS_STD_UNORDERED)
 
-#endif // _yas__json__std_unordered_multiset_serializer_hpp__included_
+#endif // _yas__json__std_unordered_multiset_serializer_hpp

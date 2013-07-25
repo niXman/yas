@@ -30,8 +30,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__text__std_multiset_serializer_hpp__included_
-#define _yas__text__std_multiset_serializer_hpp__included_
+#ifndef _yas__text__std_multiset_serializer_hpp
+#define _yas__text__std_multiset_serializer_hpp
 
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/properties.hpp>
@@ -91,4 +91,4 @@ struct serializer<
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__text__std_multiset_serializer_hpp__included_
+#endif // _yas__text__std_multiset_serializer_hpp
