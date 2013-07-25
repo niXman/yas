@@ -36,67 +36,10 @@
 #include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 
+#include <stdexcept>
+
 namespace yas {
 namespace detail {
-
-/***************************************************************************/
-
-template<typename T>
-struct serializer<
-	type_prop::is_enum,
-	ser_method::use_internal_serializer,
-	archive_type::text,
-	direction::out,
-	T
-> {
-	template<typename Archive>
-	static Archive& apply(Archive& ar, const T& v) {
-		switch ( sizeof(T) ) {
-			case sizeof(yas::uint8_t):
-				ar << ' ' << static_cast<yas::uint8_t>(v);
-			break;
-			case sizeof(yas::uint16_t):
-				ar << ' ' << static_cast<yas::uint16_t>(v);
-			break;
-			case sizeof(yas::uint32_t):
-				ar << ' ' << static_cast<yas::uint32_t>(v);
-			break;
-			case sizeof(yas::uint64_t):
-				ar << ' ' << static_cast<yas::uint64_t>(v);
-			break;
-		}
-		return ar;
-	}
-};
-
-template<typename T>
-struct serializer<
-	type_prop::is_enum,
-	ser_method::use_internal_serializer,
-	archive_type::text,
-	direction::in,
-	T
-> {
-	template<typename Archive>
-	static Archive& apply(Archive& ar, T& v) {
-		ar.get();
-		switch ( sizeof(T) ) {
-			case sizeof(yas::uint8_t):
-				ar >> reinterpret_cast<yas::uint8_t&>(v);
-			break;
-			case sizeof(yas::uint16_t):
-				ar >> reinterpret_cast<yas::uint16_t&>(v);
-			break;
-			case sizeof(yas::uint32_t):
-				ar >> reinterpret_cast<yas::uint32_t&>(v);
-			break;
-			case sizeof(yas::uint64_t):
-				ar >> reinterpret_cast<yas::uint64_t&>(v);
-			break;
-		}
-		return ar;
-	}
-};
 
 /***************************************************************************/
 

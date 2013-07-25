@@ -45,57 +45,6 @@ namespace detail {
 
 template<typename T>
 struct serializer<
-	type_prop::is_enum,
-	ser_method::use_internal_serializer,
-	archive_type::binary,
-	direction::out,
-	T
-> {
-	template<typename Archive>
-	static Archive& apply(Archive& ar, const T& v) {
-		const yas::uint8_t size = sizeof(T);
-		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
-		ar.write(reinterpret_cast<const char*>(&v), sizeof(v));
-		return ar;
-	}
-};
-
-template<typename T>
-struct serializer<
-	type_prop::is_enum,
-	ser_method::use_internal_serializer,
-	archive_type::binary,
-	direction::in,
-	T
-> {
-	template<typename Archive>
-	static Archive& apply(Archive& ar, T& v) {
-		yas::uint8_t size = 0;
-		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
-		switch ( size ) {
-			case sizeof(yas::uint8_t):
-				ar.read(reinterpret_cast<char*>(&v), sizeof(yas::uint8_t));
-			break;
-			case sizeof(yas::uint16_t):
-				ar.read(reinterpret_cast<char*>(&v), sizeof(yas::uint16_t));
-			break;
-			case sizeof(yas::uint32_t):
-				ar.read(reinterpret_cast<char*>(&v), sizeof(yas::uint32_t));
-			break;
-			case sizeof(yas::uint64_t):
-				ar.read(reinterpret_cast<char*>(&v), sizeof(yas::uint64_t));
-			break;
-			default:
-				throw std::runtime_error("bad size of enum");
-		}
-		return ar;
-	}
-};
-
-/***************************************************************************/
-
-template<typename T>
-struct serializer<
 	type_prop::is_fundamental,
 	ser_method::use_internal_serializer,
 	archive_type::binary,

@@ -43,7 +43,7 @@ namespace detail {
 
 template<typename T>
 struct serializer<
-	type_prop::is_enum,
+	type_prop::is_fundamental,
 	ser_method::use_internal_serializer,
 	archive_type::json,
 	direction::out,
@@ -51,13 +51,14 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const T& v) {
-		ar << reinterpret_cast<const yas::uint32_t&>(v) << ' ';
+		ar << ' ' << v;
+		return ar;
 	}
 };
 
 template<typename T>
 struct serializer<
-	type_prop::is_enum,
+	type_prop::is_fundamental,
 	ser_method::use_internal_serializer,
 	archive_type::json,
 	direction::in,
@@ -65,59 +66,9 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, T& v) {
-		(ar >> reinterpret_cast<yas::uint32_t&>(v)).get();
-	}
-};
-
-/***************************************************************************/
-
-template<typename T>
-struct serializer<
-	type_prop::is_fundamental,
-	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::out,
-	T
-> {
-	template<
-		 typename Archive
-		,typename U
-	>
-	static Archive& apply(Archive& ar, const U& v, typename std::enable_if<is_any_of<U, char, signed char>::value>::type* = 0) {
-		ar << v;
-	}
-
-	template<
-		 typename Archive
-		,typename U
-	>
-	static Archive& apply(Archive& ar, const U& v, typename std::enable_if<!is_any_of<U, char, signed char>::value>::type* = 0) {
-		ar << v << ' ';
-	}
-};
-
-template<typename T>
-struct serializer<
-	type_prop::is_fundamental,
-	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::in,
-	T
-> {
-	template<
-		 typename Archive
-		,typename U
-	>
-	static Archive& apply(Archive& ar, U& v, typename std::enable_if<is_any_of<U, char, signed char>::value>::type* = 0) {
+		ar.get();
 		ar >> v;
-	}
-
-	template<
-		 typename Archive
-		,typename U
-	>
-	static Archive& apply(Archive& ar, U& v, typename std::enable_if<!is_any_of<U, char, signed char>::value>::type* = 0) {
-		(ar >> v).get();
+		return ar;
 	}
 };
 

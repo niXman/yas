@@ -43,6 +43,7 @@
 #include <yas/detail/base_object.hpp>
 
 #include <yas/serializers/binary/utility/pod_serializers.hpp>
+#include <yas/serializers/binary/utility/enum_serializer.hpp>
 #include <yas/serializers/binary/utility/usertype_serializers.hpp>
 #include <yas/serializers/binary/utility/autoarray_serializers.hpp>
 #include <yas/serializers/binary/utility/buffer_serializers.hpp>

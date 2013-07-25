@@ -39,10 +39,12 @@
 #include <yas/detail/type_traits/selector.hpp>
 
 #include <yas/detail/io/json_mem_stream.hpp>
+#include <yas/detail/io/json_file_stream.hpp>
 #include <yas/detail/io/information.hpp>
 #include <yas/detail/base_object.hpp>
 
 #include <yas/serializers/json/utility/pod_serializers.hpp>
+#include <yas/serializers/json/utility/enum_serializer.hpp>
 #include <yas/serializers/json/utility/usertype_serializers.hpp>
 #include <yas/serializers/json/utility/autoarray_serializers.hpp>
 #include <yas/serializers/json/utility/buffer_serializers.hpp>
