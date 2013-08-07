@@ -11,6 +11,7 @@ Increase speed of the YAS serialization compared with boost.serialization is:
 
 Yas is header only library. You do not need to link it with your code.
 Yas does not depend on third-party libraries or boost.
+Yas require C++11 support.
 
 ===
 Supported the following types of archives:
@@ -100,9 +101,17 @@ Planned the support for the following serializable types:
 Currently supports all types except Qt types.
 
 ===
-If you use YAS in your project - tell to the author with the short description of the reasons and advantages in comparison with other libraries of serialization! ;)
-Thanks!
+If you use YAS in your project - please tell to the author with the short description of the reasons and advantages in comparison with other serialization libraries ;)
 
 ===
 [1] https://github.com/niXman/yas/blob/master/include/yas/detail/tools/buffers.hpp#L50
 [2] https://github.com/niXman/yas/blob/master/include/yas/detail/tools/buffers.hpp#L72
+
+
+===
+TODO
+
+Implement the ability for compressing archives with LZO,ZLIB.
+Example:
+yas::binary_mem_oarchive<yas::lzo_compressor> oa;
+oa & 33;
