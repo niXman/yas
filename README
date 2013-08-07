@@ -111,7 +111,8 @@ If you use YAS in your project - please tell to the author with the short descri
 ===
 TODO
 
-Implement the ability for compressing archives with LZO,ZLIB.
-Example:
-yas::binary_mem_oarchive<yas::lzo_compressor> oa;
-oa & 33;
+1. Add move-semantics support for deserializers.
+2. Implement the ability for compressing archives with LZO,ZLIB.
+   Example:
+    yas::binary_mem_oarchive<yas::lzo_compressor> oa;
+    oa & 33;
