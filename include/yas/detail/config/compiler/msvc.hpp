@@ -35,33 +35,24 @@
 
 /***************************************************************************/
 
-#if _MSC_VER >= 1600
-#  define YAS_HAS_STD_FORWARD_LIST 1
-#  define YAS_HAS_STD_UNORDERED 1
-#  define YAS_HAS_STD_ARRAY 1
-#  define YAS_HAS_STD_TUPLE 1
-#  define YAS_HAS_STATIC_ASSERT 1
-#	define YAS_SHARED_BUFFER_USE_STD_SHARED_PTR 1
-#	define YAS_DECLTYPE(T) decltype(T)
-#	define YAS_MOVE(expr) std::move(expr)
-#else
-#	define YAS_MOVE(expr) expr
+#if !(_MSC_VER >= 1700 || __cplusplus == 201103L)
+#	error "C++11 support required"
 #endif
 
-#if (defined(_MSC_VER) && _MSC_VER >= 1700)
-#  define YAS_HAS_ENUM_CLASS 1
-#endif
-
-#ifndef YAS_DECLTYPE
-//#  error "Please configure!"
-#endif
+#define YAS_HAS_STD_FORWARD_LIST 1
+#define YAS_HAS_STD_UNORDERED 1
+#define YAS_HAS_STD_ARRAY 1
+#define YAS_HAS_STD_TUPLE 1
+#define YAS_HAS_STATIC_ASSERT 1
+#define YAS_HAS_ENUM_CLASS 0
+#define YAS_DECLTYPE(T) decltype(T)
+#define YAS_MOVE(expr) std::move(expr)
 
 #ifdef YAS_SERIALIZE_BOOST_TYPES
 #  define YAS_HAS_BOOST_UNORDERED 1
 #  define YAS_HAS_BOOST_ARRAY 1
 #  define YAS_HAS_BOOST_TUPLE 1
 #  define YAS_HAS_BOOST_FUSION 1
-#	define YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR 1
 #endif
 
 /***************************************************************************/

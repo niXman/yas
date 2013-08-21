@@ -87,13 +87,10 @@ struct imemstream<archive_type::text>: imemstream<archive_type::binary> {
 		,_stream(new std::istream(this))
 	{}
 
-#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || \
-	defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
 	imemstream(const shared_buffer& buf)
 		:imemstream<archive_type::binary>(buf)
 		,_stream(new std::istream(this))
 	{}
-#endif
 
 	void get() { _stream->get(); }
 

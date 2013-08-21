@@ -63,9 +63,6 @@ struct serializer<
 
 /***************************************************************************/
 
-#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || \
-	defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
-
 template<>
 struct serializer<
 	type_prop::not_a_pod,
@@ -101,8 +98,6 @@ struct serializer<
 		buf.data.get()[size] = 0;
 	}
 };
-
-#endif
 
 /***************************************************************************/
 

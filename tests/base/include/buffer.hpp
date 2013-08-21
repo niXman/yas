@@ -85,7 +85,6 @@ bool buffer_test(const char* archive_type, const char* io_type) {
 		return false;
 	}
 
-#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR)
 	const std::string str2 = "std shared buffer test"; // 22 + 4(header) + 4(size of array) = 30
 	const unsigned char ostr2_64[] = {
 		 0x79,0x61,0x73,0x81,0x16,0x00,0x00,0x00,0x73,0x74,0x64,0x20,0x73,0x68,0x61
@@ -132,56 +131,6 @@ bool buffer_test(const char* archive_type, const char* io_type) {
 			return false;
 		}
 	}
-#endif
-
-#if defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
-	const std::string str3 = "boost shared buffer test"; // 24 + 4(header) + 4(size of array) = 32
-	const unsigned char ostr3_64[] = {
-		 0x79,0x61,0x73,0x81,0x18,0x00,0x00,0x00,0x62,0x6f,0x6f,0x73,0x74,0x20,0x73,0x68
-		,0x61,0x72,0x65,0x64,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
-	};
-	const unsigned char ostr3_32[] = {
-		 0x79,0x61,0x73,0x01,0x18,0x00,0x00,0x00,0x62,0x6f,0x6f,0x73,0x74,0x20,0x73,0x68
-		,0x61,0x72,0x65,0x64,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
-	};
-	const unsigned char* ostr3 = (YAS_PLATFORM_BITS_IS_64())?ostr3_64:ostr3_32;
-
-	yas::shared_buffer buf3(str3.c_str(), str3.length());
-	typename archive_traits::oarchive oa3;
-	archive_traits::ocreate(oa3, archive_type, io_type);
-	oa3 & buf3;
-	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ){
-		if ( oa3.size() != sizeof(ostr3_64) ) {
-			std::cout << "BUFFER intrusive serialization error! [10]" << std::endl;
-			return false;
-		}
-		if ( !oa3.compare(ostr3, sizeof(ostr3_64)) ) {
-			std::cout << "BUFFER intrusive serialization error! [11]" << std::endl;
-			return false;
-		}
-	} else if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
-		const char* res = (YAS_PLATFORM_BITS_IS_64())
-			?"yas91 24 boost shared buffer test"
-			:"yas11 24 boost shared buffer test"
-		;
-		if ( oa3.size() != strlen(res) ) {
-			std::cout << "BUFFER intrusive serialization error! [12]" << std::endl;
-			return false;
-		}
-		if ( !oa3.compare(res, strlen(res)) ) {
-			std::cout << "BUFFER intrusive serialization error! [13]" << std::endl;
-			return false;
-		}
-		typename archive_traits::iarchive ia2;
-		archive_traits::icreate(ia2, oa3, archive_type, io_type);
-		yas::shared_buffer buf5;
-		ia2 & buf5;
-		if ( buf5.size != str3.length() || memcmp(str3.c_str(), buf5.data.get(), buf5.size) ) {
-			std::cout << "BUFFER std shared buffer deserialization error! [14]" << std::endl;
-			return false;
-		}
-	}
-#endif
 
 	return true;
 }

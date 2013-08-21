@@ -232,9 +232,7 @@ void tests(yas::uint32_t& p, yas::uint32_t& e) {
 	YAS_RUN_TEST(array					, p, e);
 #endif
 	YAS_RUN_TEST(bitset					, p, e);
-#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
 	YAS_RUN_TEST(buffer					, p, e);
-#endif
 	YAS_RUN_TEST(string					, p, e);
 	YAS_RUN_TEST(wstring					, p, e);
 	YAS_RUN_TEST(pair						, p, e);

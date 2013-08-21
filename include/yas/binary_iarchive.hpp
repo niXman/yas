@@ -64,12 +64,9 @@ struct binary_mem_iarchive:
 		:detail::imemstream<archive_type::binary>(o)
 	{ init_header(this, op); }
 
-#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || \
-	defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
 	binary_mem_iarchive(const shared_buffer& o, header_flag op = with_header)
 		:detail::imemstream<archive_type::binary>(o)
 	{ init_header(this, op); }
-#endif
 
 	binary_mem_iarchive(const std::string& o, header_flag op = with_header)
 		:detail::imemstream<archive_type::binary>(o.c_str(), o.size())

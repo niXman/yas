@@ -33,15 +33,10 @@
 #ifndef _yas__const_buffer_hpp
 #define _yas__const_buffer_hpp
 
-#include <cstring>
-
 #include <yas/detail/config/config.hpp>
 
-#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR)
-#	include <memory>
-#elif defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
-#	include <boost/shared_ptr.hpp>
-#endif
+#include <cstring>
+#include <memory>
 
 namespace yas {
 
@@ -66,15 +61,9 @@ private:
 
 /***************************************************************************/
 
-#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || \
-	defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
-
 struct shared_buffer {
-#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR)
 	typedef std::shared_ptr<char> shared_array_type;
-#elif defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
-	typedef boost::shared_ptr<char> shared_array_type;
-#endif
+
 	shared_buffer()
 		:size(0)
 	{}
@@ -103,9 +92,6 @@ struct shared_buffer {
 
 	static void deleter(void* ptr) { delete[] ((char*)ptr); }
 };
-
-#endif /* defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) \
-			 || defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR) */
 
 /***************************************************************************/
 

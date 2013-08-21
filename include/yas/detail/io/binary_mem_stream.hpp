@@ -84,12 +84,9 @@ struct omemstream<archive_type::binary>: std::stringbuf {
 		return intrusive_buffer(pbase(), pptr()-pbase());
 	}
 
-#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || \
-	defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
 	shared_buffer get_shared_buffer() const {
 		return shared_buffer(pbase(), pptr()-pbase());
 	}
-#endif
 
 private:
 	struct buffer_holder {
@@ -134,8 +131,6 @@ struct imemstream<archive_type::binary>: std::stringbuf {
 		);
 	}
 
-#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || \
-	defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
 	imemstream(const shared_buffer& buf)
 		:std::stringbuf()
 	{
@@ -144,7 +139,6 @@ struct imemstream<archive_type::binary>: std::stringbuf {
 			  const_cast<char_type*>(buf.data.get())+buf.size
 		);
 	}
-#endif //
 
 	virtual ~imemstream() {}
 

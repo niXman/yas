@@ -65,12 +65,9 @@ struct json_mem_iarchive:
 		:detail::imemstream<archive_type::json>(o)
 	{ init_header(this, op); }
 
-#if defined(YAS_SHARED_BUFFER_USE_STD_SHARED_PTR) || \
-	defined(YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR)
 	json_mem_iarchive(const shared_buffer& o, header_flag op = with_header)
 		:detail::imemstream<archive_type::json>(o)
 	{ init_header(this, op); }
-#endif
 
 	json_mem_iarchive(const std::string& o, header_flag op = with_header)
 		:detail::imemstream<archive_type::json>(o.c_str(), o.size())
