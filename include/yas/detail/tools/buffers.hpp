@@ -78,6 +78,11 @@ struct shared_buffer {
 	shared_buffer()
 		:size(0)
 	{}
+	shared_buffer(yas::uint32_t size)
+		:size(size)
+	{
+		data.reset(new char[size], &deleter);
+	}
 	shared_buffer(const void* ptr, yas::uint32_t size)
 		:size(size)
 	{
