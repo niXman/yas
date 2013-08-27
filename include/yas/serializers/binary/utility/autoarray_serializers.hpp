@@ -1,4 +1,3 @@
-
 // Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
@@ -125,7 +124,7 @@ struct serializer<
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const T(&v)[N]) {
 		const yas::uint32_t size = N;
-		ar.write(&size, sizeof(size));
+		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
 		for ( size_t idx = 0; idx < N; ++idx ) {
 			ar & v[idx];
 		}
@@ -146,7 +145,7 @@ struct serializer<
 	template<typename Archive>
 	static Archive& apply(Archive& ar, T(&v)[N]) {
 		yas::uint32_t size = 0;
-		ar.read(&size, sizeof(size));
+		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
 		if ( size != N ) throw std::runtime_error("bad array size");
 		for ( size_t idx = 0; idx < N; ++idx ) {
 			ar & v[idx];
