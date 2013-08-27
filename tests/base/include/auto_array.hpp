@@ -51,7 +51,9 @@ bool auto_array_test(const char* archive_type, const char* io_type) {
 	unsigned long long ulla1[array_size] = {1,2,3,4,5,6}, ulla2[array_size];
 	double da1[array_size] = {1,2,3,4,5,6}, da2[array_size];
 	float fa1[array_size] = {1,2,3,4,5,6}, fa2[array_size];
-
+	std::string stra1[array_size] = {
+		"1", "2", "3", "4", "5", "6"
+	}, stra2[array_size];
 	{
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type, io_type);
@@ -181,12 +183,12 @@ bool auto_array_test(const char* archive_type, const char* io_type) {
 		ia & da2;
 		if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
 			if ( memcmp(da1, da2, array_size*sizeof(da1[0])) ) {
-				std::cout << "AUTO_ARRAY deserialization error! [12]" << std::endl;
+				std::cout << "AUTO_ARRAY deserialization error! [11]" << std::endl;
 				return false;
 			}
 		} else {
 			if ( !std::equal(da1, da1+array_size, da2) ) {
-				std::cout << "AUTO_ARRAY deserialization error! [12]" << std::endl;
+				std::cout << "AUTO_ARRAY deserialization error! [11]" << std::endl;
 				return false;
 			}
 		}
@@ -200,11 +202,30 @@ bool auto_array_test(const char* archive_type, const char* io_type) {
 		ia & fa2;
 		if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
 			if ( memcmp(fa1, fa2, array_size*sizeof(fa1[0])) ) {
-				std::cout << "AUTO_ARRAY deserialization error! [13]" << std::endl;
+				std::cout << "AUTO_ARRAY deserialization error! [12]" << std::endl;
 				return false;
 			}
 		} else {
 			if ( !std::equal(fa1, fa1+array_size, fa2) ) {
+				std::cout << "AUTO_ARRAY deserialization error! [12]" << std::endl;
+				return false;
+			}
+		}
+	}
+	{
+		typename archive_traits::oarchive oa;
+		archive_traits::ocreate(oa, archive_type, io_type);
+		oa & stra1;
+		typename archive_traits::iarchive ia;
+		archive_traits::icreate(ia, oa, archive_type, io_type);
+		ia & stra2;
+		if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
+			if ( memcmp(fa1, fa2, array_size*sizeof(fa1[0])) ) {
+				std::cout << "AUTO_ARRAY deserialization error! [13]" << std::endl;
+				return false;
+			}
+		} else {
+			if ( !std::equal(stra1, stra1+array_size, stra2) ) {
 				std::cout << "AUTO_ARRAY deserialization error! [13]" << std::endl;
 				return false;
 			}

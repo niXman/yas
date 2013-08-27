@@ -145,10 +145,10 @@ struct serializer<
 	template<typename Archive>
 	static Archive& apply(Archive& ar, T(&v)[N]) {
 		yas::uint32_t size = 0;
-		(ar & size).snextc();
+		(ar & size).get();
 		if ( size != N ) throw std::runtime_error("bad array size");
 		for ( size_t idx = 0; idx < N; ++idx ) {
-			(ar & v[idx]).snextc();
+			(ar & v[idx]).get();
 		}
 		return ar;
 	}
