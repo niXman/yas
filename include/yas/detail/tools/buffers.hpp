@@ -90,7 +90,7 @@ struct shared_buffer {
 	shared_array_type data;
 	yas::uint32_t size;
 
-	static void deleter(void* ptr) { delete[] ((char*)ptr); }
+	static void deleter(char *ptr) { delete []ptr; }
 };
 
 /***************************************************************************/

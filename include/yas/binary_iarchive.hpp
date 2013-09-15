@@ -32,6 +32,8 @@
 #ifndef _yas__binary_iarchive_hpp
 #define _yas__binary_iarchive_hpp
 
+#include <istream>
+
 #include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/has_method_serialize.hpp>
 #include <yas/detail/type_traits/has_function_serialize.hpp>
@@ -42,6 +44,7 @@
 #include <yas/detail/io/information.hpp>
 #include <yas/detail/base_object.hpp>
 
+#include <yas/serializers/serializer.hpp>
 #include <yas/serializers/binary/utility/pod_serializers.hpp>
 #include <yas/serializers/binary/utility/enum_serializer.hpp>
 #include <yas/serializers/binary/utility/usertype_serializers.hpp>

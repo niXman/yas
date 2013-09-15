@@ -1,3 +1,4 @@
+
 // Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying

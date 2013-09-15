@@ -43,7 +43,7 @@ namespace detail {
 #if defined(YAS_HAS_STATIC_ASSERT)
 
 #define YAS_STATIC_ASSERT(cond, message) \
-	static_assert((cond), # message)
+	static_assert((cond), #message)
 
 #else
 

@@ -66,16 +66,6 @@ struct ser_method {
 
 /***************************************************************************/
 
-template<
-	type_prop::type,
-	ser_method::type,
-	archive_type::type,	// type of archive
-	direction::type,		// serialization direction
-	typename T           // serialized type
-> struct serializer;
-
-/***************************************************************************/
-
 template<typename T>
 struct type_properties {
 	static const type_prop::type value =

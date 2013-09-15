@@ -43,6 +43,7 @@
 #include <yas/detail/io/information.hpp>
 #include <yas/detail/base_object.hpp>
 
+#include <yas/serializers/serializer.hpp>
 #include <yas/serializers/json/utility/pod_serializers.hpp>
 #include <yas/serializers/json/utility/enum_serializer.hpp>
 #include <yas/serializers/json/utility/usertype_serializers.hpp>

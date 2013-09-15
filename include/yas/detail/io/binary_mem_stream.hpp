@@ -77,7 +77,7 @@ struct omemstream<archive_type::binary>: std::stringbuf {
 	}
 
 	std::streamsize write(const char* ptr, size_t size) {
-		return sputn(static_cast<const char_type*>(ptr), size);
+		return sputn(ptr, size);
 	}
 
 	intrusive_buffer get_intrusive_buffer() const {
