@@ -21,9 +21,9 @@ Supported the following types of archives:
 
 ===
 Supported the following compilers:
- - GCC  : 4.6.3, 4.6.4, 4.7.0, 4.7.1, 4.7.2, 4.7.3, 4.8.0 - x32/x64
- - MinGW: 4.6.3, 4.6.4, 4.7.0, 4.7.1, 4.7.2, 4.7.3, 4.8.0 - x32/x64
- - Clang: 3.0, 3.1, 3.2 - x32/x64
+ - GCC  : 4.7.0, 4.7.1, 4.7.2, 4.7.3, 4.8.0, 4.8.1 - x32/x64
+ - MinGW: 4.7.0, 4.7.1, 4.7.2, 4.7.3, 4.8.0, 4.8.1 - x32/x64
+ - Clang: 3.0, 3.1, 3.2, 3.3, 3.4 - x32/x64
  - Intel: (untested)
  - MSVC : 2008(partially), 2010, 2011 - x32/x64
 
