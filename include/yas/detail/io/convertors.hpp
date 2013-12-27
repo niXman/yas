@@ -183,27 +183,13 @@ T atoi(const char *str, std::size_t len) {
 
 template<typename T>
 std::uint32_t utoa(T v, char *buf) {
-	std::size_t digits = 0;
-	if ( v < 10ull ) digits = 1;
-	else if ( v < 100ull ) digits = 2;
-	else if ( v < 1000ull ) digits = 3;
-	else if ( v < 10000ull ) digits = 4;
-	else if ( v < 100000ull ) digits = 5;
-	else if ( v < 1000000ull ) digits = 6;
-	else if ( v < 10000000ull ) digits = 7;
-	else if ( v < 100000000ull ) digits = 8;
-	else if ( v < 1000000000ull ) digits = 9;
-	else if ( v < 10000000000ull ) digits = 10;
-	else if ( v < 100000000000ull ) digits = 11;
-	else if ( v < 1000000000000ull ) digits = 12;
-	else if ( v < 10000000000000ull ) digits = 13;
-	else if ( v < 100000000000000ull ) digits = 14;
-	else if ( v < 1000000000000000ull ) digits = 15;
-	else if ( v < 10000000000000000ull ) digits = 16;
-	else if ( v < 100000000000000000ull ) digits = 17;
-	else if ( v < 1000000000000000000ull ) digits = 18;
-	else if ( v < 10000000000000000000ull ) digits = 19;
-	else digits = 20;
+	T t = v;
+	std::size_t digits = 1;
+	if ( t >= 10000000000000000ull ) { digits += 16; t /= 10000000000000000ull; }
+	if ( t >= 100000000 ) { digits += 8; t /= 100000000; }
+	if ( t >= 10000 ) { digits += 4; t /= 10000; }
+	if ( t >= 100 ) { digits += 2; t /= 100; }
+	if ( t >= 10 ) { digits += 1; }
 
 	*(buf+digits) = 0;
 	char *p = buf+digits-1;
@@ -238,28 +224,14 @@ std::uint32_t utoa(T v, char *buf) {
 template<typename T>
 std::uint32_t itoa(T v, char *buf) {
 	if ( v < 0 ) { *buf++ = '-'; }
-	v = std::abs(v);
+	T t = v = std::abs(v);
 
-	std::size_t digits = 0;
-	if ( v < 10ll ) digits = 1;
-	else if ( v < 100ll ) digits = 2;
-	else if ( v < 1000ll ) digits = 3;
-	else if ( v < 10000ll ) digits = 4;
-	else if ( v < 100000ll ) digits = 5;
-	else if ( v < 1000000ll ) digits = 6;
-	else if ( v < 10000000ll ) digits = 7;
-	else if ( v < 100000000ll ) digits = 8;
-	else if ( v < 1000000000ll ) digits = 9;
-	else if ( v < 10000000000ll ) digits = 10;
-	else if ( v < 100000000000ll ) digits = 11;
-	else if ( v < 1000000000000ll ) digits = 12;
-	else if ( v < 10000000000000ll ) digits = 13;
-	else if ( v < 100000000000000ll ) digits = 14;
-	else if ( v < 1000000000000000ll ) digits = 15;
-	else if ( v < 10000000000000000ll ) digits = 16;
-	else if ( v < 100000000000000000ll ) digits = 17;
-	else if ( v < 1000000000000000000ll ) digits = 18;
-	else digits = 19;
+	std::size_t digits = 1;
+	if ( t >= 10000000000000000ll ) { digits += 16; t /= 10000000000000000ll; }
+	if ( t >= 100000000 ) { digits += 8; t /= 100000000; }
+	if ( t >= 10000 ) { digits += 4; t /= 10000; }
+	if ( t >= 100 ) { digits += 2; t /= 100; }
+	if ( t >= 10 ) { digits += 1; }
 
 	*(buf+digits) = 0;
 	char *p = buf+digits-1;
