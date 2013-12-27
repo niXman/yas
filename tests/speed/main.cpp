@@ -132,9 +132,11 @@ std::chrono::milliseconds load(IA &ia, const std::size_t iterations) {
 
 /***************************************************************************/
 
-test_result boost_binary_test(const std::size_t iterations) {
+test_result boost_binary_test(const std::size_t iterations, const std::size_t preallocated) {
 	test_result res;
-	std::ostringstream os;
+	std::string sb;
+	sb.reserve(preallocated);
+	std::ostringstream os(sb);
 	boost::archive::binary_oarchive oa(os, boost::archive::no_header);
 	res.save = save(oa, iterations);
 
@@ -147,9 +149,11 @@ test_result boost_binary_test(const std::size_t iterations) {
 	return res;
 }
 
-test_result boost_text_test(const std::size_t iterations) {
+test_result boost_text_test(const std::size_t iterations, const std::size_t preallocated) {
 	test_result res;
-	std::ostringstream os;
+	std::string sb;
+	sb.reserve(preallocated);
+	std::ostringstream os(sb);
 	boost::archive::text_oarchive oa(os, boost::archive::no_header);
 	res.save = save(oa, iterations);
 
@@ -164,9 +168,9 @@ test_result boost_text_test(const std::size_t iterations) {
 
 /***************************************************************************/
 
-test_result yas_binary_test(const std::size_t iterations) {
+test_result yas_binary_test(const std::size_t iterations, const std::size_t preallocated) {
 	test_result res;
-	yas::mem_ostream os;
+	yas::mem_ostream os(preallocated);
 	yas::binary_oarchive<yas::mem_ostream> oa(os, yas::no_header);
 	res.save = save(oa, iterations);
 
@@ -180,9 +184,9 @@ test_result yas_binary_test(const std::size_t iterations) {
 	return res;
 }
 
-test_result yas_text_test(const std::size_t iterations) {
+test_result yas_text_test(const std::size_t iterations, const std::size_t preallocated) {
 	test_result res;
-	yas::mem_ostream os;
+	yas::mem_ostream os(preallocated);
 	yas::text_oarchive<yas::mem_ostream> oa(os, yas::no_header);
 	res.save = save(oa, iterations);
 
@@ -202,17 +206,17 @@ int main() {
 	setvbuf(stdout, 0, _IONBF, 0);
 	std::cout << "platform bits: " << (YAS_PLATFORM_BITS()) << std::endl;
 
-	static const std::size_t iterations = 1024*1024;
+	enum { iterations = 1024*1024, preallocated = iterations*100 };
 
 	try {
 		test_result bb, bt, yb, yt;
-		bb = boost_binary_test(iterations);
+		bb = boost_binary_test(iterations, preallocated);
 		std::cout
 		<< "binary:" << std::endl
 		<< "   boost save time  : " << bb.save.count() << " ms" << std::endl
 		<< "   boost load time  : " << bb.load.count() << " ms" << std::endl
 		<< "   boost data size  : " << bb.size << std::endl;
-		yb = yas_binary_test(iterations);
+		yb = yas_binary_test(iterations, preallocated);
 		std::cout
 		<< "   yas save time    : " << yb.save.count() << " ms" << std::endl
 		<< "   yas load time    : " << yb.load.count() << " ms" << std::endl
@@ -220,13 +224,13 @@ int main() {
 		<< "   yas save speed up: " << (((double)bb.save.count())/((double)yb.save.count())) << std::endl
 		<< "   yas load speed up: " << (((double)bb.load.count())/((double)yb.load.count())) << std::endl;
 
-		bt = boost_text_test(iterations);
+		bt = boost_text_test(iterations, preallocated);
 		std::cout
 		<< "text:" << std::endl
 		<< "   boost save time  : " << bt.save.count() << " ms" << std::endl
 		<< "   boost load time  : " << bt.load.count() << " ms" << std::endl
 		<< "   boost data size  : " << bt.size << std::endl;
-		yt = yas_text_test(iterations);
+		yt = yas_text_test(iterations, preallocated);
 		std::cout
 		<< "   yas save time    : " << yt.save.count() << " ms" << std::endl
 		<< "   yas load time    : " << yt.load.count() << " ms" << std::endl
