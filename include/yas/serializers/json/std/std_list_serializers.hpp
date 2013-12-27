@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -54,7 +54,7 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const std::list<T>& list) {
-		ar & static_cast<yas::uint32_t>(list.size());
+		ar & static_cast<std::uint32_t>(list.size());
 		typename std::list<T>::const_iterator it = list.begin();
 		for ( ; it != list.end(); ++it ) {
 			ar & (*it);
@@ -72,7 +72,7 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, std::list<T>& list) {
-		yas::uint32_t size = 0;
+		std::uint32_t size = 0;
 		ar & size;
 		list.resize(size);
 		typename std::list<T>::iterator it = list.begin();

@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -79,19 +79,14 @@
 #include <yas/serializers/text/std/std_multiset_serializers.hpp>
 #include <yas/serializers/json/std/std_multiset_serializers.hpp>
 
-#if defined(YAS_HAS_STD_ARRAY)
 #include <yas/serializers/binary/std/std_array_serializers.hpp>
 #include <yas/serializers/text/std/std_array_serializers.hpp>
 #include <yas/serializers/json/std/std_array_serializers.hpp>
-#endif
 
-#if defined(YAS_HAS_STD_TUPLE)
 #include <yas/serializers/binary/std/std_tuple_serializers.hpp>
 #include <yas/serializers/text/std/std_tuple_serializers.hpp>
 #include <yas/serializers/json/std/std_tuple_serializers.hpp>
-#endif
 
-#if defined(YAS_HAS_STD_UNORDERED)
 #include <yas/serializers/binary/std/std_unordered_set_serializers.hpp>
 #include <yas/serializers/text/std/std_unordered_set_serializers.hpp>
 #include <yas/serializers/json/std/std_unordered_set_serializers.hpp>
@@ -107,6 +102,5 @@
 #include <yas/serializers/binary/std/std_unordered_multimap_serializers.hpp>
 #include <yas/serializers/text/std/std_unordered_multimap_serializers.hpp>
 #include <yas/serializers/json/std/std_unordered_multimap_serializers.hpp>
-#endif // defined(YAS_HAS_STD_UNORDERED)
 
 #endif // _yas__std_types_serializers_hpp

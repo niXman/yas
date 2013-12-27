@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -33,7 +33,6 @@
 #ifndef _yas__json__std_unordered_multimap_serializer_hpp
 #define _yas__json__std_unordered_multimap_serializer_hpp
 
-#if defined(YAS_HAS_STD_UNORDERED)
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
@@ -75,7 +74,7 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, std::unordered_multimap<K, V>& map) {
-		yas::uint32_t size = 0;
+		std::uint32_t size = 0;
 		ar & size;
 		K key = K();
 		V val = V();
@@ -91,7 +90,5 @@ struct serializer<
 
 } // namespace detail
 } // namespace yas
-
-#endif // defined(YAS_HAS_STD_UNORDERED)
 
 #endif // _yas__json__std_unordered_multimap_serializer_hpp

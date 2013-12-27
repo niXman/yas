@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -30,60 +30,53 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__json_mem_stream_hpp
-#define _yas__json_mem_stream_hpp
+#ifndef _yas__serialization_exceptions_hpp
+#define _yas__serialization_exceptions_hpp
 
-#include <yas/detail/io/text_mem_stream.hpp>
+#include <yas/detail/io/exceptions_base.hpp>
+
+#include <stdexcept>
 
 namespace yas {
-namespace detail {
 
 /***************************************************************************/
 
-template<archive_type::type>
-struct omemstream;
-
-template<>
-struct omemstream<archive_type::json>: omemstream<archive_type::text> {
-	omemstream()
-		:omemstream<archive_type::text>()
-	{}
-
-	omemstream(size_t size)
-		:omemstream<archive_type::text>(size)
-	{}
-
-	omemstream(char* ptr, size_t size)
-		:omemstream<archive_type::text>(ptr, size)
-	{}
-
-	virtual ~omemstream() {}
-};
+YAS_DECLARE_EXCEPTION_TYPE(serialization_exception);
 
 /***************************************************************************/
 
-template<archive_type::type>
-struct imemstream;
+#define YAS_THROW_BAD_ARRAY_SIZE() \
+	do { \
+		throw ::yas::serialization_exception(YAS_EXCEPTION_MAKE_MSG("bad array size")); \
+	} while(0)
 
-template<>
-struct imemstream<archive_type::json>: imemstream<archive_type::text> {
-	imemstream(const char* ptr, size_t size)
-		:imemstream<archive_type::text>(ptr, size)
-	{}
-	imemstream(const intrusive_buffer& buf)
-		:imemstream<archive_type::text>(buf)
-	{}
+#define YAS_THROW_SPACE_IS_EXPECTED() \
+	do { \
+		throw ::yas::serialization_exception(YAS_EXCEPTION_MAKE_MSG("space symbol is expected")); \
+	} while(0)
 
-	imemstream(const shared_buffer& buf)
-		:imemstream<archive_type::text>(buf)
-	{}
+#define YAS_THROW_BAD_SIZE_OF_ENUM() \
+	do { \
+		throw ::yas::serialization_exception(YAS_EXCEPTION_MAKE_MSG("bad size of enum")); \
+	} while(0)
 
-	virtual ~imemstream() {}
-};
+#define YAS_THROW_BAD_BITSET_SIZE() \
+	do { \
+		throw ::yas::serialization_exception(YAS_EXCEPTION_MAKE_MSG("bad bitset size")); \
+	} while(0)
+
+#define YAS_THROW_BAD_BITSET_STORAGE_SIZE() \
+	do { \
+		throw ::yas::serialization_exception(YAS_EXCEPTION_MAKE_MSG("bad bitset storage size")); \
+	} while(0)
+
+#define YAS_THROW_BAD_SIZE_ON_DESERIALIZE_FUSION(type) \
+	do { \
+		throw ::yas::serialization_exception(YAS_EXCEPTION_MAKE_MSG("bad size on deserialize " type)); \
+	} while(0)
 
 /***************************************************************************/
 
-} // ns detail
 } // ns yas
 
-#endif // _yas__json_mem_stream_hpp
+#endif // _yas__serialization_exceptions_hpp

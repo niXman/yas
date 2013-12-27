@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2012 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -37,9 +37,7 @@
 
 enum enum_test_enum1 { _1_1, _1_2, _1_3, _1_4 };
 
-#if defined(YAS_HAS_ENUM_CLASS)
 enum class enum_test_enum2: char { _2_1, _2_2, _2_3, _2_4 };
-#endif // defined(YAS_HAS_ENUM_CLASS)
 
 template<typename archive_traits>
 bool enum_test(const char* archive_type, const char* io_type) {
@@ -52,15 +50,12 @@ bool enum_test(const char* archive_type, const char* io_type) {
 	typename archive_traits::iarchive ia1;
 	archive_traits::icreate(ia1, oa1, archive_type, io_type);
 
-
 	ia1 & e11
 		 & e12;
 	if ( e11 != _1_2 || e12 != _1_4 || e13 != _1_1 ) {
 		std::cout << "ENUM deserialization error! [1]" << std::endl;
 		return false;
 	}
-
-#if defined(YAS_HAS_ENUM_CLASS)
 
 	typename archive_traits::oarchive oa2;
 	archive_traits::ocreate(oa2, archive_type, io_type);
@@ -78,8 +73,6 @@ bool enum_test(const char* archive_type, const char* io_type) {
 		std::cout << "ENUM deserialization error! [2]" << std::endl;
 		return false;
 	}
-
-#endif // defined(YAS_HAS_ENUM_CLASS)
 
 	return true;
 }

@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -33,6 +33,31 @@
 #ifndef _yas__config_hpp
 #define _yas__config_hpp
 
+/***************************************************************************/
+
+#if __cplusplus != 201103L
+#	error "C++11 support required"
+#endif
+
+/***************************************************************************/
+
+#include <cstdint>
+#include <yas/detail/config/endian.hpp>
+
+/***************************************************************************/
+
+#if defined(__x86_64__)
+#	define YAS_PLATFORM_BITS_IS_32() (0)
+#	define YAS_PLATFORM_BITS_IS_64() (1)
+#else // !__x86_64__
+#	define YAS_PLATFORM_BITS_IS_32() (1)
+#	define YAS_PLATFORM_BITS_IS_64() (0)
+#endif // __x86_64__
+
+#define YAS_PLATFORM_BITS() (YAS_PLATFORM_BITS_IS_32()?32:64)
+
+/***************************************************************************/
+
 #if defined(__clang__)
 #  define YAS_COMPILER_CONFIG <yas/detail/config/compiler/clang.hpp>
 #elif defined(__GNUC__)
@@ -47,6 +72,15 @@
 
 #include YAS_COMPILER_CONFIG
 
-#define YAS_PLATFORM_BITS() (YAS_PLATFORM_BITS_IS_32()?32:64)
+/***************************************************************************/
+
+#ifdef YAS_SERIALIZE_BOOST_TYPES
+#  define YAS_HAS_BOOST_UNORDERED 1
+#  define YAS_HAS_BOOST_ARRAY 1
+#  define YAS_HAS_BOOST_TUPLE 1
+#  define YAS_HAS_BOOST_FUSION 1
+#endif
+
+/***************************************************************************/
 
 #endif // _yas__config_hpp

@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -34,8 +34,8 @@
 #define _yas__binary__std_list_serializer_hpp
 
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 #include <list>
 
@@ -54,18 +54,9 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const std::list<T>& list) {
-		const yas::uint32_t size = list.size();
-		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
-		if ( std::is_fundamental<T>::value ) {
-			typename std::list<T>::const_iterator it = list.begin();
-			for ( ; it != list.end(); ++it ) {
-				ar.write(reinterpret_cast<const char*>(&(*it)), sizeof(T));
-			}
-		} else {
-			typename std::list<T>::const_iterator it = list.begin();
-			for ( ; it != list.end(); ++it ) {
-				ar & (*it);
-			}
+		ar.write((std::uint32_t)list.size());
+		for ( const auto &it: list) {
+			ar & it;
 		}
 		return ar;
 	}
@@ -81,19 +72,11 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, std::list<T>& list) {
-		yas::uint32_t size = 0;
-		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
+		std::uint32_t size = 0;
+		ar.read(size);
 		list.resize(size);
-		if ( std::is_fundamental<T>::value ) {
-			typename std::list<T>::iterator it = list.begin();
-			for ( ; it != list.end(); ++it ) {
-				ar.read(reinterpret_cast<char*>(&(*it)), sizeof(T));
-			}
-		} else {
-			typename std::list<T>::iterator it = list.begin();
-			for ( ; it != list.end(); ++it ) {
-				ar & (*it);
-			}
+		for ( auto &it: list) {
+			ar & it;
 		}
 		return ar;
 	}

@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -43,7 +43,7 @@ namespace detail {
 template<
 	 typename T
 	,typename A1
-	,typename A2
+	,typename A2 = void
 	,typename A3 = void
 	,typename A4 = void
 	,typename A5 = void
@@ -67,11 +67,58 @@ struct is_any_of: std::integral_constant<
 /***************************************************************************/
 
 template<typename T>
-struct is_array_of_pods: std::integral_constant<
-	 bool
-	,std::is_array<T>::value && std::is_fundamental<typename std::remove_all_extents<T>::type>::value
->
+struct is_array_of_pods
+	:std::integral_constant<
+		 bool
+		,std::is_array<T>::value && std::is_fundamental<typename std::remove_all_extents<T>::type>::value
+	>
 {};
+
+/***************************************************************************/
+
+template<typename T, std::size_t N>
+struct is_fundamental_and_sizeof_is:
+	std::integral_constant<
+		 bool
+		,std::is_fundamental<T>::value && sizeof(T) == N
+	>
+{};
+
+/***************************************************************************/
+
+template<typename... Types>
+struct enable_if_is_any_of
+	:std::enable_if<is_any_of<Types...>::value>
+{};
+
+template<typename... Types>
+struct disable_if_is_any_of
+	:std::enable_if<!is_any_of<Types...>::value>
+{};
+
+//template<typename T, std::size_t N>
+//struct enable_if_is_fundamental_and_sizeof_is
+//	:std::enable_if<is_fundamental_and_sizeof_is<T, N>::value>
+//{};
+
+//template<typename T, std::size_t N>
+//struct disable_if_is_fundamental_and_sizeof_is
+//	:std::enable_if<!is_fundamental_and_sizeof_is<T, N>::value>
+//{};
+
+//template<typename T, std::size_t N, typename... Types>
+//struct enable_if_is_fundamental_and_sizeof_is_but_not_any_of
+//	:std::enable_if<is_fundamental_and_sizeof_is<T, N>::value && !is_any_of<T, Types...>::value>
+//{};
+
+//template<typename T, std::size_t N, typename... Types>
+//struct disable_if_is_fundamental_and_sizeof_is_but_not_any_of
+//	:std::enable_if<!(is_fundamental_and_sizeof_is<T, N>::value && !is_any_of<T, Types...>::value)>
+//{};
+
+/***************************************************************************/
+
+static constexpr const char space_sep = ' ';
 
 /***************************************************************************/
 

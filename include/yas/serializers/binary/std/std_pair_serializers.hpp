@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -35,7 +35,7 @@
 
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/selector.hpp>
-#include <yas/detail/type_traits/properties.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 #include <utility>
 
@@ -54,19 +54,8 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const std::pair<T1, T2>& pair) {
-		if ( std::is_fundamental<T1>::value && std::is_fundamental<T2>::value ) {
-			ar.write(reinterpret_cast<const char*>(&pair.first), sizeof(T1));
-			ar.write(reinterpret_cast<const char*>(&pair.second), sizeof(T2));
-		} else if ( std::is_fundamental<T1>::value ) {
-			ar.write(reinterpret_cast<const char*>(&pair.first), sizeof(T1));
-			ar & pair.second;
-		} else if ( std::is_fundamental<T2>::value ) {
-			ar & pair.first;
-			ar.write(reinterpret_cast<const char*>(&pair.second), sizeof(T2));
-		} else {
-			ar & pair.first
-				& pair.second;
-		}
+		ar & pair.first
+			& pair.second;
 		return ar;
 	}
 };
@@ -81,19 +70,8 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, std::pair<T1, T2>& pair) {
-		if ( std::is_fundamental<T1>::value && std::is_fundamental<T2>::value ) {
-			ar.read(reinterpret_cast<char*>(&pair.first), sizeof(T1));
-			ar.read(reinterpret_cast<char*>(&pair.second), sizeof(T2));
-		} else if ( std::is_fundamental<T1>::value ) {
-			ar.read(reinterpret_cast<char*>(&pair.first), sizeof(T1));
-			ar & pair.second;
-		} else if ( std::is_fundamental<T2>::value ) {
-			ar & pair.first;
-			ar.read(reinterpret_cast<char*>(&pair.second), sizeof(T2));
-		} else {
-			ar & pair.first
-				& pair.second;
-		}
+		ar & pair.first
+			& pair.second;
 		return ar;
 	}
 };

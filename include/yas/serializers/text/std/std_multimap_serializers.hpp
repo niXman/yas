@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -34,8 +34,8 @@
 #define _yas__text__std_multimap_serializer_hpp
 
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 #include <map>
 
@@ -55,11 +55,10 @@ struct serializer<
 {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const std::multimap<K, V>& multimap) {
-		ar & multimap.size();
-		typename std::multimap<K, V>::const_iterator it = multimap.begin();
-		for ( ; it != multimap.end(); ++it ) {
-			ar & it->first
-				& it->second;
+		ar & (std::uint32_t)multimap.size();
+		for ( const auto &it: multimap ) {
+			ar & it.first
+				& it.second;
 		}
 		return ar;
 	}
@@ -76,14 +75,14 @@ struct serializer<
 {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, std::multimap<K, V>& multimap) {
-		yas::uint32_t size = 0;
+		std::uint32_t size = 0;
 		ar & size;
-		K key = K();
-		V val = V();
 		for ( ; size; --size ) {
+			K key = K();
+			V val = V();
 			ar & key
 				& val;
-			multimap.insert(typename std::multimap<K, V>::value_type(key, val));
+			multimap.insert(std::make_pair(std::move(key), std::move(val)));
 		}
 		return ar;
 	}

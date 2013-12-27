@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -37,8 +37,8 @@
 
 #if defined(YAS_HAS_BOOST_UNORDERED)
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 #include <boost/unordered_map.hpp>
 
@@ -49,7 +49,7 @@ namespace detail {
 
 template<typename K, typename V>
 struct serializer<
-	type_prop::type_prop::not_a_pod,
+	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::text,
 	direction::out,
@@ -57,11 +57,10 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const boost::unordered_map<K, V>& map) {
-		ar & map.size();
-		typename boost::unordered_map<K, V>::const_iterator it = map.begin();
-		for ( ; it != map.end(); ++it ) {
-			ar & it->first
-				& it->second;
+		ar & (std::uint32_t)map.size();
+		for ( const auto &it: map ) {
+			ar & it.first
+				& it.second;
 		}
 		return ar;
 	}
@@ -69,7 +68,7 @@ struct serializer<
 
 template<typename K, typename V>
 struct serializer<
-	type_prop::type_prop::not_a_pod,
+	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::text,
 	direction::in,
@@ -77,14 +76,14 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, boost::unordered_map<K, V>& map) {
-		std::size_t size = 0;
+		std::uint32_t size = 0;
 		ar & size;
-		K key = K();
-		V val = V();
-		for ( std::size_t idx = 0; idx < size; ++idx ) {
+		for ( ; size; --size ) {
+			K key = K();
+			V val = V();
 			ar & key
 				& val;
-			map[key] = val;
+			map.insert(std::make_pair(std::move(key), std::move(val)));
 		}
 		return ar;
 	}

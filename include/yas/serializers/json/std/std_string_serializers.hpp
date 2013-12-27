@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -54,7 +54,7 @@ struct serializer<
 {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const std::string& string) {
-		ar & static_cast<yas::uint32_t>(string.length());
+		ar & static_cast<std::uint32_t>(string.length());
 		ar.write(&string[0], string.length());
 		ar & ' ';
 	}
@@ -71,7 +71,7 @@ struct serializer<
 {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, std::string& string) {
-		yas::uint32_t size = 0;
+		std::uint32_t size = 0;
 		ar & size;
 		string.resize(size);
 		ar.read(&string[0], size);

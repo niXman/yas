@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -30,82 +30,55 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__text_mem_stream_hpp
-#define _yas__text_mem_stream_hpp
-
-#include <memory>
-
-#include <yas/detail/io/binary_mem_stream.hpp>
-
-namespace yas {
-namespace detail {
+#ifndef _yas__endian_hpp
+#define _yas__endian_hpp
 
 /***************************************************************************/
 
-template<archive_type::type>
-struct omemstream;
-
-template<>
-struct omemstream<archive_type::text>: omemstream<archive_type::binary> {
-	omemstream()
-		:omemstream<archive_type::binary>()
-		,_stream(new std::ostream(this))
-	{}
-
-	omemstream(size_t size)
-		:omemstream<archive_type::binary>(size)
-		,_stream(new std::ostream(this))
-	{}
-
-	omemstream(char* ptr, size_t size)
-		:omemstream<archive_type::binary>(ptr, size)
-		,_stream(new std::ostream(this))
-	{}
-
-	template<typename T>
-	std::ostream& operator<< (const T& v) {
-		return ((*_stream) << v);
-	}
-
-private:
-	std::auto_ptr<std::ostream> _stream;
-};
-
-/***************************************************************************/
-
-template<archive_type::type>
-struct imemstream;
-
-template<>
-struct imemstream<archive_type::text>: imemstream<archive_type::binary> {
-	imemstream(const char* ptr, size_t size)
-		:imemstream<archive_type::binary>(ptr, size)
-		,_stream(new std::istream(this))
-	{}
-	imemstream(const intrusive_buffer& buf)
-		:imemstream<archive_type::binary>(buf)
-		,_stream(new std::istream(this))
-	{}
-
-	imemstream(const shared_buffer& buf)
-		:imemstream<archive_type::binary>(buf)
-		,_stream(new std::istream(this))
-	{}
-
-	void get() { _stream->get(); }
-
-	template<typename T>
-	std::istream& operator>> (T& v) {
-		return ((*_stream) >> v);
-	}
-
-private:
-	std::auto_ptr<std::istream> _stream;
-};
+#if defined (__GLIBC__)
+#	include <endian.h>
+#	if (__BYTE_ORDER == __LITTLE_ENDIAN)
+#		define YAS_LITTLE_ENDIAN() (1)
+#		define YAS_BIG_ENDIAN() (0)
+#	elif (__BYTE_ORDER == __BIG_ENDIAN)
+#		define YAS_LITTLE_ENDIAN() (0)
+#		define YAS_BIG_ENDIAN() (1)
+#	elif (__BYTE_ORDER == __PDP_ENDIAN)
+#		define YAS_PDP_ENDIAN
+#	else
+#		error Unknown machine endianness detected.
+#	endif
+#	define YAS_BYTE_ORDER __BYTE_ORDER
+#elif defined(_BIG_ENDIAN)
+#	define YAS_LITTLE_ENDIAN() (0)
+#	define YAS_BIG_ENDIAN() (1)
+#	define YAS_BYTE_ORDER 4321
+#elif defined(_LITTLE_ENDIAN)
+#	define YAS_LITTLE_ENDIAN() (1)
+#	define YAS_BIG_ENDIAN() (0)
+#	define YAS_BYTE_ORDER 1234
+#elif defined(__sparc) || defined(__sparc__) \
+	|| defined(_POWER) || defined(__powerpc__) \
+	|| defined(__ppc__) || defined(__hpux) \
+	|| defined(_MIPSEB) || defined(_POWER) \
+	|| defined(__s390__)
+#	define YAS_LITTLE_ENDIAN() (0)
+#	define YAS_BIG_ENDIAN() (1)
+#	define YAS_BYTE_ORDER 4321
+#elif defined(__i386__) || defined(__alpha__) \
+	|| defined(__ia64) || defined(__ia64__) \
+	|| defined(_M_IX86) || defined(_M_IA64) \
+	|| defined(_M_ALPHA) || defined(__amd64) \
+	|| defined(__amd64__) || defined(_M_AMD64) \
+	|| defined(__x86_64) || defined(__x86_64__) \
+	|| defined(_M_X64)
+#	define YAS_LITTLE_ENDIAN() (1)
+#	define YAS_BIG_ENDIAN() (0)
+#	define YAS_BYTE_ORDER 1234
+#else
+#	error The file yas/detail/config/endian.hpp needs to be set up for your CPU type.
+#endif
 
 /***************************************************************************/
 
-} // ns detail
-} // ns yas
-
-#endif // _yas__text_mem_stream_hpp
+#endif // _yas__endian_hpp

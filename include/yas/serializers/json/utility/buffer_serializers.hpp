@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -89,7 +89,7 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, shared_buffer& buf) {
-		yas::uint32_t size = 0;
+		std::uint32_t size = 0;
 		ar & size;
 		buf.data.reset(new char[size+1], &shared_buffer::deleter);
 		assert(ar.read(buf.data.get(), size) == size);

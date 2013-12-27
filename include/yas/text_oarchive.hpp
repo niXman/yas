@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -40,9 +40,9 @@
 #include <yas/detail/type_traits/has_function_serialize.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 
-#include <yas/detail/io/text_mem_stream.hpp>
-#include <yas/detail/io/text_file_stream.hpp>
 #include <yas/detail/io/information.hpp>
+#include <yas/detail/io/streams.hpp>
+
 #include <yas/detail/base_object.hpp>
 
 #include <yas/serializers/serializer.hpp>
@@ -59,48 +59,25 @@ namespace yas {
 
 /***************************************************************************/
 
-struct text_mem_oarchive:
-	 detail::omemstream<archive_type::text>
-	,detail::archive_information<archive_type::text, direction::out>
+template<typename OS>
+struct text_oarchive
+	:detail::stream<archive_type::text, direction::out, OS>
+	,detail::archive_information<archive_type::text, direction::out, OS>
 	,private detail::noncopyable
 {
-	text_mem_oarchive(header_flag op = with_header)
-		:detail::omemstream<archive_type::text>()
-	{ init_header(this, op); }
-	text_mem_oarchive(char* ptr, size_t size, header_flag op = with_header)
-		:detail::omemstream<archive_type::text>(ptr, size)
-	{ init_header(this, op); }
+	using stream_type = OS;
+
+	text_oarchive(OS &os, header_flag op = with_header)
+		:detail::stream<archive_type::text, direction::out, OS>(os)
+		,detail::archive_information<archive_type::text, direction::out, OS>(os, op)
+	{}
 
 	template<typename T>
-	text_mem_oarchive& operator& (const T& v) {
+	text_oarchive& operator& (const T& v) {
 		using namespace detail;
 		return serializer<
 			type_properties<T>::value,
-			serialization_method<T, text_mem_oarchive>::value,
-			archive_type::text,
-			direction::out,
-			T
-		>::apply(*this, v);
-	}
-};
-
-/***************************************************************************/
-
-struct text_file_oarchive:
-	 detail::ofilestream<archive_type::text>
-	,detail::archive_information<archive_type::text, direction::out>
-	,private detail::noncopyable
-{
-	text_file_oarchive(std::ostream& file, header_flag op = with_header)
-		:detail::ofilestream<archive_type::text>(file)
-	{ init_header(this, op); }
-
-	template<typename T>
-	text_file_oarchive& operator& (const T& v) {
-		using namespace detail;
-		return serializer<
-			type_properties<T>::value,
-			serialization_method<T, text_file_oarchive>::value,
+			serialization_method<T, text_oarchive<OS>>::value,
 			archive_type::text,
 			direction::out,
 			T

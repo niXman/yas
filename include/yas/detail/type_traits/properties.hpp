@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -60,71 +60,23 @@ struct direction {
 };
 
 template<typename Ar>
-struct is_binary_archive: std::integral_constant<bool, Ar::_type == archive_type::binary>
+struct is_binary_archive: std::integral_constant<bool, Ar::type() == archive_type::binary>
 {};
 
 template<typename Ar>
-struct is_text_archive: std::integral_constant<bool, Ar::_type == archive_type::text>
+struct is_text_archive: std::integral_constant<bool, Ar::type() == archive_type::text>
 {};
 
 template<typename Ar>
-struct is_json_archive: std::integral_constant<bool, Ar::_type == archive_type::json>
+struct is_json_archive: std::integral_constant<bool, Ar::type() == archive_type::json>
 {};
 
 template<typename Ar>
-struct is_readable_archive: std::integral_constant<bool, Ar::_is_readable>
+struct is_readable_archive: std::integral_constant<bool, Ar::is_readable()>
 {};
 
 template<typename Ar>
-struct is_writable_archive: std::integral_constant<bool, Ar::_is_writable>
-{};
-
-/***************************************************************************/
-
-/** forwards for archive types */
-struct binary_mem_oarchive;
-struct binary_mem_iarchive;
-struct binary_file_oarchive;
-struct binary_file_iarchive;
-
-struct text_mem_oarchive;
-struct text_mem_iarchive;
-struct text_file_oarchive;
-struct text_file_iarchive;
-
-struct json_mem_oarchive;
-struct json_mem_iarchive;
-struct json_file_oarchive;
-struct json_file_iarchive;
-
-template<typename Ar>
-struct is_mem_archive: std::integral_constant<
-	 bool
-	,detail::is_any_of<
-		 Ar
-		,binary_mem_oarchive
-		,binary_mem_iarchive
-		,text_mem_oarchive
-		,text_mem_iarchive
-		,json_mem_oarchive
-		,json_mem_iarchive
-	>::value
->
-{};
-
-template<typename Ar>
-struct is_file_archive: std::integral_constant<
-	 bool
-	,detail::is_any_of<
-		 Ar
-		,binary_file_oarchive
-		,binary_file_iarchive
-		,text_file_oarchive
-		,text_file_iarchive
-		,json_file_oarchive
-		,json_file_iarchive
-	>::value
->
+struct is_writable_archive: std::integral_constant<bool, Ar::is_writable()>
 {};
 
 /***************************************************************************/

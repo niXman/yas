@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2012 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -91,7 +91,7 @@ bool fusion_tuple_test(const char* archive_type, const char* io_type) {
 	}
 
 	static const char str[] = "str";
-	boost::fusion::tuple<yas::uint64_t, std::string> v5(33, str), v6;
+	boost::fusion::tuple<std::uint64_t, std::string> v5(33, str), v6;
 
 	typename archive_traits::oarchive oa4;
 	archive_traits::ocreate(oa4, archive_type, io_type);
@@ -99,9 +99,9 @@ bool fusion_tuple_test(const char* archive_type, const char* io_type) {
 
 	const size_t expected_size =
 		4+ // archive information
-		sizeof(yas::uint8_t)+ // fusion::tuple size marker
-		sizeof(yas::uint64_t)+ // first type
-		sizeof(yas::uint32_t)+ // string size marker
+		sizeof(std::uint8_t)+ // fusion::tuple size marker
+		sizeof(std::uint64_t)+ // first type
+		sizeof(std::uint32_t)+ // string size marker
 		strlen(str); // string length
 	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
 		const size_t current_size = oa4.size();
@@ -121,7 +121,7 @@ bool fusion_tuple_test(const char* archive_type, const char* io_type) {
 
 	typename archive_traits::oarchive oa5;
 	archive_traits::ocreate(oa5, archive_type, io_type);
-	oa5 & boost::fusion::make_tuple<yas::uint64_t, std::string>(33, "str");
+	oa5 & boost::fusion::make_tuple<std::uint64_t, std::string>(33, "str");
 
 	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
 		const size_t current_size2 = oa5.size();

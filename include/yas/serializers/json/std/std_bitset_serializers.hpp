@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -58,7 +58,7 @@ struct serializer<
 {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const std::bitset<N>& bits) {
-		ar & static_cast<yas::uint32_t>(N);
+		ar & static_cast<std::uint32_t>(N);
 		for ( std::size_t idx = 0; idx < N; ++idx ) {
 			ar & (int)bits[idx];
 		}
@@ -76,9 +76,9 @@ struct serializer<
 {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, std::bitset<N>& bits) {
-		yas::uint32_t size = 0;
+		std::uint32_t size = 0;
 		ar & size;
-		if ( size != N ) throw std::runtime_error("bitsets size is not equal");
+		if ( size != N ) YAS_THROW_BAD_BITSET_SIZE();
 		for ( std::size_t idx = 0; idx < N; ++idx ) {
 			int v;
 			ar & v;

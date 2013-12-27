@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -37,8 +37,8 @@
 
 #if defined(YAS_HAS_BOOST_UNORDERED)
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 #include <boost/unordered_set.hpp>
 
@@ -49,7 +49,7 @@ namespace detail {
 
 template<typename K>
 struct serializer<
-	type_prop::type_prop::not_a_pod,
+	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::text,
 	direction::out,
@@ -58,10 +58,9 @@ struct serializer<
 {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const boost::unordered_multiset<K>& set) {
-		ar & set.size();
-		typename boost::unordered_multiset<K>::const_iterator it = set.begin();
-		for ( ; it != set.end(); ++it ) {
-			ar & (*it);
+		ar & (std::uint32_t)set.size();
+		for ( const auto &it: set ) {
+			ar & it;
 		}
 		return ar;
 	}
@@ -69,7 +68,7 @@ struct serializer<
 
 template<typename K>
 struct serializer<
-	type_prop::type_prop::not_a_pod,
+	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::text,
 	direction::in,
@@ -78,12 +77,12 @@ struct serializer<
 {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, boost::unordered_multiset<K>& set) {
-		yas::uint32_t size = 0;
+		std::uint32_t size = 0;
 		ar & size;
-		K key = K();
 		for ( ; size; --size ) {
+			K key = K();
 			ar & key;
-			set.insert(key);
+			set.insert(std::move(key));
 		}
 		return ar;
 	}

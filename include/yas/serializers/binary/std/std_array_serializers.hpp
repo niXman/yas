@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -33,15 +33,9 @@
 #ifndef _yas__binary__std_array_serializer_hpp
 #define _yas__binary__std_array_serializer_hpp
 
-#include <yas/detail/config/config.hpp>
-
-#if defined(YAS_HAS_STD_ARRAY)
-
-#include <stdexcept>
-
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 #include <array>
 
@@ -60,14 +54,12 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const std::array<T, N>& array) {
-		const yas::uint32_t size = N;
-		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
-		if ( std::is_fundamental<T>::value ) {
-			ar.write(reinterpret_cast<const char*>(array.data()), sizeof(T)*N);
+		ar.write((std::uint32_t)N);
+		if ( is_fundamental_and_sizeof_is<T, 1>::value ) {
+			ar.write(&array[0], N);
 		} else {
-			typename std::array<T, N>::const_iterator it = array.begin();
-			for ( ; it != array.end(); ++it ) {
-				ar & (*it);
+			for ( const auto &it: array ) {
+				ar & it;
 			}
 		}
 		return ar;
@@ -84,15 +76,14 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, std::array<T, N>& array) {
-		yas::uint32_t size = 0;
-		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
-		if ( size != N ) throw std::runtime_error("array size is not equal");
-		if ( std::is_fundamental<T>::value ) {
-			ar.read(reinterpret_cast<char*>(&array[0]), sizeof(T)*N);
+		std::uint32_t size = 0;
+		ar.read(size);
+		if ( size != N ) YAS_THROW_BAD_ARRAY_SIZE();
+		if ( is_fundamental_and_sizeof_is<T, 1>::value ) {
+			ar.read(&array[0], N);
 		} else {
-			typename std::array<T, N>::iterator it = array.begin();
-			for ( ; it != array.end(); ++it ) {
-				ar & (*it);
+			for ( auto &it: array ) {
+				ar & it;
 			}
 		}
 		return ar;
@@ -103,7 +94,5 @@ struct serializer<
 
 } // namespace detail
 } // namespace yas
-
-#endif // defined(YAS_HAS_STD_ARRAY)
 
 #endif // _yas__binary__std_array_serializer_hpp

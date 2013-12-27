@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2012 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -99,9 +99,9 @@ bool fusion_list_test(const char* archive_type, const char* io_type) {
 
 	const size_t expected_size =
 		4+ // archive information
-		sizeof(yas::uint8_t)+ // fusion::list size marker
-		sizeof(yas::uint64_t)+ // first type
-		sizeof(yas::uint32_t)+ // string size marker
+		sizeof(std::uint8_t)+ // fusion::list size marker
+		sizeof(std::uint64_t)+ // first type
+		sizeof(std::uint32_t)+ // string size marker
 		strlen(str); // string length
 
 	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {

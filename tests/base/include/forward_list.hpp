@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2012 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -34,8 +34,6 @@
 #define _yas_test__forward_list_hpp__included_
 
 /***************************************************************************/
-
-#if defined(YAS_HAS_STD_FORWARD_LIST)
 
 template<typename archive_traits>
 bool forward_list_test(const char* archive_type, const char* io_type) {
@@ -82,8 +80,6 @@ bool forward_list_test(const char* archive_type, const char* io_type) {
 
 	return true;
 }
-
-#endif // defined(YAS_HAS_STD_FORWARD_LIST)
 
 /***************************************************************************/
 

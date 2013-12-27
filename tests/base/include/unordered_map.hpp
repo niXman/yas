@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2012 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -35,11 +35,8 @@
 
 /***************************************************************************/
 
-#if defined(YAS_HAS_STD_UNORDERED) || defined(YAS_HAS_BOOST_UNORDERED)
-
 template<typename archive_traits>
 bool unordered_map_test(const char* archive_type, const char* io_type) {
-#if defined(YAS_HAS_STD_UNORDERED)
 	std::unordered_map<int, int> pod_map, pod_map2;
 	pod_map[1] = 2;
 	pod_map[2] = 3;
@@ -93,7 +90,6 @@ bool unordered_map_test(const char* archive_type, const char* io_type) {
 		std::cout << "UNORDERED_MAP deserialization error! [3]" << std::endl;
 		return false;
 	}
-#endif // defined(YAS_HAS_STD_UNORDERED)
 
 #if defined(YAS_HAS_BOOST_UNORDERED)
 	boost::unordered_map<int, int> map5, map6;
@@ -117,8 +113,6 @@ bool unordered_map_test(const char* archive_type, const char* io_type) {
 #endif // defined(YAS_HAS_BOOST_UNORDERED)
 	return true;
 }
-
-#endif // #if defined(YAS_HAS_STD_UNORDERED) || defined(YAS_HAS_BOOST_UNORDERED)
 
 /***************************************************************************/
 

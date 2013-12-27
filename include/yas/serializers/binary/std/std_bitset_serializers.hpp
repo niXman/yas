@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -33,12 +33,9 @@
 #ifndef _yas__binary__std_bitset_serializer_hpp
 #define _yas__binary__std_bitset_serializer_hpp
 
-#include <stdexcept>
-
-#include <yas/detail/config/config.hpp>
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 #include <bitset>
 #include <vector>
@@ -58,15 +55,12 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const std::bitset<N>& bits) {
-		const yas::uint32_t size = N;
-		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
-		std::vector<yas::uint8_t> result((N + 7) >> 3);
+		ar.write((std::uint32_t)N);
+		std::vector<std::uint8_t> result((N + 7) >> 3);
 		for ( std::size_t idx = 0; idx < N; ++idx ) {
 			result[idx>>3] |= (bits[idx] << (idx & 7));
 		}
-		yas::uint8_t dsize = result.size();
-		ar.write(reinterpret_cast<const char*>(&dsize), sizeof(dsize));
-		ar.write(reinterpret_cast<const char*>(&result[0]), dsize);
+		ar & result;
 		return ar;
 	}
 };
@@ -81,17 +75,14 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, std::bitset<N>& bits) {
-		yas::uint32_t size = 0;
-		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
-		if ( size != N ) throw std::runtime_error("bitsets size is not equal");
+		std::uint32_t size = 0;
+		ar.read(size);
+		if ( size != N ) YAS_THROW_BAD_BITSET_SIZE();
 
-		std::vector<yas::uint8_t> buf;
-		yas::uint8_t storage = 0;
-		ar.read(reinterpret_cast<char*>(&storage), sizeof(storage));
-		buf.resize(storage);
-		ar.read(reinterpret_cast<char*>(&buf[0]), storage);
+		std::vector<std::uint8_t> buf;
+		ar & buf;
 
-		if ( buf.size() != ((N + 7) >> 3) ) throw std::runtime_error("bitsets storage size is not equal");
+		if ( buf.size() != ((N + 7) >> 3) ) YAS_THROW_BAD_BITSET_STORAGE_SIZE();
 		for ( std::size_t idx = 0; idx < N; ++idx ) {
 			bits[idx] = ((buf[idx>>3] >> (idx & 7)) & 1);
 		}

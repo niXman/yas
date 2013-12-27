@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -30,62 +30,30 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__text_file_stream_hpp
-#define _yas__text_file_stream_hpp
-
-#include <ostream>
-#include <istream>
-
-#include <yas/detail/type_traits/properties.hpp>
-
-namespace yas {
-namespace detail {
+#ifndef _yas_test__endian_hpp
+#define _yas_test__endian_hpp
 
 /***************************************************************************/
 
-template<archive_type::type>
-struct ofilestream;
+template<typename archive_traits>
+bool endian_test(const char* archive_type, const char* io_type) {
+	typename archive_traits::oarchive oa;
+	archive_traits::ocreate(oa, archive_type, io_type);
+	typename archive_traits::iarchive ia;
+	archive_traits::icreate(ia, oa, archive_type, io_type);
 
-template<>
-struct ofilestream<archive_type::text>: std::ostream {
-	ofilestream(std::ostream& file)
-		:std::ostream(file.rdbuf())
-	{}
-
-	std::streamsize write(const char* ptr, yas::uint32_t size) {
-		return (std::ostream::write(ptr, size).good())?size:0;
+	if ( ia->is_big_endian() != oa->is_big_endian() || oa->is_big_endian() != YAS_BIG_ENDIAN() ) {
+		std::cout << "ENDIAN test failed! endianness is not equal! [1]" << std::endl;
+		return false;
+	}
+	if ( ia->is_little_endian() != oa->is_little_endian() || oa->is_little_endian() != YAS_LITTLE_ENDIAN() ) {
+		std::cout << "ENDIAN test failed! endianness is not equal! [1]" << std::endl;
+		return false;
 	}
 
-	template<typename T>
-	std::streamsize write(const T* ptr, yas::uint32_t) {
-		std::ostream::operator <<(*ptr);
-		return 0;
-	}
-};
+	return true;
+}
 
 /***************************************************************************/
 
-template<archive_type::type>
-struct ifilestream;
-
-template<>
-struct ifilestream<archive_type::text>: std::istream {
-	ifilestream(std::istream& file)
-		:std::istream(file.rdbuf())
-	{}
-
-	inline std::streamsize read(char* ptr, yas::uint32_t size) {
-		return std::istream::read(ptr, size).gcount();
-	}
-	template<typename T>
-	inline std::streamsize read(T*, yas::uint32_t) {
-		return 0;
-	}
-};
-
-/***************************************************************************/
-
-} // ns detail
-} // ns yas
-
-#endif // _yas__text_file_stream_hpp
+#endif // _yas_test__endian_hpp

@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2012 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -40,72 +40,80 @@ bool pod_test(const char* archive_type, const char* io_type) {
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type, io_type);
 
-	char c = '1', cc;
-	signed char sc = '2', sc2;
-	unsigned char uc = '3', uc2;
-	short s = 4, ss;
-	int i = 5, ii;
-	long l = 6, ll;
+	std::int8_t c = '1', cc;
+	std::uint8_t uc = '2', uc2;
+	std::int16_t s = 3, ss;
+	std::uint16_t us = 4, us2;
+	std::int32_t i = 5, ii;
+	std::uint32_t l = 6, ll;
+	std::int64_t i64 = 7, ii64;
+	std::uint64_t ui64 = 8, uui64;
 	float f = 3.14f, ff;
 	double d = 3.14, dd;
 
 	enum {
 		binary_expected_size =
-			 sizeof(char)
-			+sizeof(signed char)
-			+sizeof(unsigned char)
-			+sizeof(short)
-			+sizeof(int)
-			+sizeof(long)
-			+sizeof(float)
-			+sizeof(double)
-		,text_expected_size = 22
+			 sizeof(c)
+			+sizeof(uc)
+			+sizeof(s)
+			+sizeof(us)
+			+sizeof(i)
+			+sizeof(l)
+			+sizeof(i64)
+			+sizeof(ui64)
+			+sizeof(f)
+			+sizeof(d)
+		,text_expected_size = 30
 		,json_expected_size = 0
 	};
 
 	oa & c
-		& sc
 		& uc
 		& s
+		& us
 		& i
 		& l
+		& i64
+		& ui64
 		& f
 		& d;
 
-	switch ( archive_traits::oarchive_type::_type ) {
+	switch ( archive_traits::oarchive_type::type() ) {
 		case yas::archive_type::binary:
-			if ( oa.size() != archive_traits::oarchive_type::_header_size+binary_expected_size ) {
+			if ( oa.size() != archive_traits::oarchive_type::header_size()+binary_expected_size ) {
 				std::cout << "POD serialization error! [1]" << std::endl;
 				return false;
 			}
 		break;
 		case yas::archive_type::text:
-			if ( oa.size() != archive_traits::oarchive_type::_header_size+text_expected_size ) {
+			if ( oa.size() != archive_traits::oarchive_type::header_size()+text_expected_size ) {
 				std::cout << "POD serialization error! [2]" << std::endl;
 				return false;
 			}
 		break;
 		case yas::archive_type::json:
-			std::cout << "unimplemented" << std::endl;
+			std::cout << "POD serialization unimplemented" << std::endl;
 			return false;
 		break;
 		default:
-			std::cout << "bad archive type!" << std::endl;
+			std::cout << "POD serialization bad archive type!" << std::endl;
 			return false;
 	}
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type, io_type);
 	ia & cc
-		& sc2
 		& uc2
 		& ss
+		& us2
 		& ii
 		& ll
+		& ii64
+		& uui64
 		& ff
 		& dd;
 
-	if ( c != cc || sc != sc2 || sc != sc2 || s != ss || i != ii || l != ll || f != ff || d != dd ) {
+	if ( c != cc || uc != uc2 || s != ss || us != us2 || i != ii || l != ll || i64 != ii64 || ui64 != uui64 || f != ff || d != dd ) {
 		std::cout << "POD deserialization error! [4]" << std::endl;
 		return false;
 	}

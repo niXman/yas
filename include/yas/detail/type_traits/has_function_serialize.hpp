@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -52,7 +52,7 @@ struct has_function_const_serialize<false, false, T, T2> {
 	typedef char (&no)  [2];
 
 	template<typename U, typename U2>
-	static yes check(YAS_DECLTYPE(serialize((*(U*)0),(*(const U2*)0)))*);
+	static yes check(decltype(serialize((*(U*)0),(*(const U2*)0)))*);
 
 	template<typename U, typename U2>
 	static no check(...);
@@ -73,7 +73,7 @@ struct has_function_serialize<false, false, T, T2> {
 	typedef char (&no)  [2];
 
 	template<typename U, typename U2>
-	static yes check(YAS_DECLTYPE(serialize((*(U*)0),(*(U2*)0)))*);
+	static yes check(decltype(serialize((*(U*)0),(*(U2*)0)))*);
 
 	template<typename U, typename U2>
 	static no check(...);

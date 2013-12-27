@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -59,11 +59,10 @@ struct serializer<
 {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const boost::fusion::pair<T1, T2>& pair) {
-		if ( std::is_fundamental<T2>::value ) {
-			ar.write(reinterpret_cast<const char*>(&pair.second), sizeof(T2));
-		} else {
+		if ( is_fundamental_and_sizeof_is<T2, 1>::value )
+			ar.write(&pair.second, 1);
+		else
 			ar & pair.second;
-		}
 		return ar;
 	}
 };
@@ -79,11 +78,10 @@ struct serializer<
 {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, boost::fusion::pair<T1, T2>& pair) {
-		if ( std::is_fundamental<T2>::value ) {
-			ar.read(reinterpret_cast<char*>(&pair.second), sizeof(T2));
-		} else {
+		if ( is_fundamental_and_sizeof_is<T2, 1>::value )
+			ar.read(&pair.second, 1);
+		else
 			ar & pair.second;
-		}
 		return ar;
 	}
 };

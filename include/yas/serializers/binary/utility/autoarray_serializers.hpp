@@ -1,4 +1,4 @@
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -32,14 +32,11 @@
 #ifndef _yas__binary__autoarray_serializer_hpp
 #define _yas__binary__autoarray_serializer_hpp
 
-#include <stdexcept>
-
 #include <yas/detail/config/config.hpp>
-#include <yas/detail/tools/utf8conv.hpp>
-#include <yas/detail/tools/static_assert.hpp>
+
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 namespace yas {
 namespace detail {
@@ -58,10 +55,9 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static Archive& apply(Archive& ar, const U(&v)[N], typename std::enable_if<is_any_of<U, char, signed char, unsigned char>::value>::type* = 0) {
-		const yas::uint32_t size = N-1;
-		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
-		ar.write(reinterpret_cast<const char*>(v), N-1);
+	static Archive& apply(Archive& ar, const U(&v)[N], typename enable_if_is_any_of<U, char, signed char, unsigned char, bool>::type* = 0) {
+		ar.write((std::uint32_t)N-1);
+		ar.write(v, N-1);
 		return ar;
 	}
 
@@ -69,10 +65,11 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static Archive& apply(Archive& ar, const U(&v)[N], typename std::enable_if<!is_any_of<U, char, signed char, unsigned char>::value>::type* = 0) {
-		const yas::uint32_t size = N*sizeof(T);
-		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
-		ar.write(reinterpret_cast<const char*>(v), N*sizeof(T));
+	static Archive& apply(Archive& ar, const U(&v)[N], typename disable_if_is_any_of<U, char, signed char, unsigned char, bool>::type* = 0) {
+		ar.write((std::uint32_t)N);
+		for ( const auto &it: v ) {
+			ar.write(it);
+		}
 		return ar;
 	}
 };
@@ -89,11 +86,11 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static Archive& apply(Archive& ar, U(&v)[N], typename std::enable_if<is_any_of<U, char, signed char, unsigned char>::value>::type* = 0) {
-		yas::uint32_t size = 0;
-		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
-		if ( size != N-1 ) throw std::runtime_error("bad array size");
-		ar.read(reinterpret_cast<char*>(v), size);
+	static Archive& apply(Archive& ar, U(&v)[N], typename enable_if_is_any_of<U, char, signed char, unsigned char, bool>::type* = 0) {
+		std::uint32_t size = 0;
+		ar.read(size);
+		if ( size != N-1 ) YAS_THROW_BAD_ARRAY_SIZE();
+		ar.read(v, size);
 		v[size] = 0;
 		return ar;
 	}
@@ -102,11 +99,13 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static Archive& apply(Archive& ar, U(&v)[N], typename std::enable_if<!is_any_of<U, char, signed char, unsigned char>::value>::type* = 0) {
-		yas::uint32_t size = 0;
-		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
-		if ( size != (N*sizeof(T)) ) throw std::runtime_error("bad array size");
-		ar.read(reinterpret_cast<char*>(v), size);
+	static Archive& apply(Archive& ar, U(&v)[N], typename disable_if_is_any_of<U, char, signed char, unsigned char, bool>::type* = 0) {
+		std::uint32_t size = 0;
+		ar.read(size);
+		if ( size != N ) YAS_THROW_BAD_ARRAY_SIZE();
+		for ( auto &it: v ) {
+			ar.read(it);
+		}
 		return ar;
 	}
 };
@@ -123,16 +122,13 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const T(&v)[N]) {
-		const yas::uint32_t size = N;
-		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
-		for ( size_t idx = 0; idx < N; ++idx ) {
-			ar & v[idx];
+		ar.write((std::uint32_t)N);
+		for ( const auto &it: v ) {
+			ar & it;
 		}
 		return ar;
 	}
 };
-
-/***************************************************************************/
 
 template<typename T, size_t N>
 struct serializer<
@@ -144,11 +140,11 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, T(&v)[N]) {
-		yas::uint32_t size = 0;
-		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
-		if ( size != N ) throw std::runtime_error("bad array size");
-		for ( size_t idx = 0; idx < N; ++idx ) {
-			ar & v[idx];
+		std::uint32_t size = 0;
+		ar.read(size);
+		if ( size != N ) YAS_THROW_BAD_ARRAY_SIZE();
+		for ( auto &it: v ) {
+			ar & it;
 		}
 		return ar;
 	}

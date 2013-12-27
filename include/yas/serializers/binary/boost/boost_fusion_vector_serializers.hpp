@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -59,14 +59,14 @@ namespace detail {
 /***************************************************************************/
 
 #define YAS__BINARY__WRITE_BOOST_FUSION_VECTOR_ITEM(unused, idx, type) \
-	if ( std::is_fundamental<YAS_PP_CAT(type, idx)>::value ) \
-		ar.write(reinterpret_cast<const char*>(&boost::fusion::at_c<idx>(vector)), sizeof(YAS_PP_CAT(type, idx))); \
+	if ( is_fundamental_and_sizeof_is<YAS_PP_CAT(type, idx), 1>::value ) \
+		ar.write(&boost::fusion::at_c<idx>(vector), sizeof(YAS_PP_CAT(type, idx))); \
 	else \
 		ar & boost::fusion::at_c<idx>(vector);
 
 #define YAS__BINARY__READ_BOOST_FUSION_VECTOR_ITEM(unused, idx, type) \
-	if ( std::is_fundamental<YAS_PP_CAT(type, idx)>::value ) \
-		ar.read(reinterpret_cast<char*>(&boost::fusion::at_c<idx>(vector)), sizeof(YAS_PP_CAT(type, idx))); \
+	if ( is_fundamental_and_sizeof_is<YAS_PP_CAT(type, idx), 1>::value ) \
+		ar.read(&boost::fusion::at_c<idx>(vector), sizeof(YAS_PP_CAT(type, idx))); \
 	else \
 		ar & boost::fusion::at_c<idx>(vector);
 
@@ -101,8 +101,7 @@ namespace detail {
 			const YAS_PP_CAT(boost::fusion::vector, YAS_PP_INC(count)) \
 				<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& vector) \
 		{ \
-			const yas::uint8_t size = YAS_PP_INC(count); \
-			ar.write(reinterpret_cast<const char*>(&size), sizeof(size)); \
+			ar.write((std::uint8_t)YAS_PP_INC(count)); \
 			YAS_PP_REPEAT( \
 				YAS_PP_INC(count), \
 				YAS__BINARY__WRITE_BOOST_FUSION_VECTOR_ITEM, \
@@ -133,9 +132,9 @@ namespace detail {
 			YAS_PP_CAT(boost::fusion::vector, YAS_PP_INC(count)) \
 				<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& vector) \
 		{ \
-			yas::uint8_t size = 0; \
-			ar.read(reinterpret_cast<char*>(&size), sizeof(size)); \
-			if ( size != YAS_PP_INC(count) ) throw std::runtime_error("size error on deserialize fusion::vector"); \
+			std::uint8_t size = 0; \
+			ar.read(size); \
+			if ( size != YAS_PP_INC(count) ) YAS_THROW_BAD_SIZE_ON_DESERIALIZE_FUSION("fusion::vector"); \
 			YAS_PP_REPEAT( \
 				YAS_PP_INC(count), \
 				YAS__BINARY__READ_BOOST_FUSION_VECTOR_ITEM, \
@@ -188,8 +187,7 @@ YAS__BINARY__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS(FUSION_MAX_VE
 		static Archive& apply(Archive& ar, \
 			const boost::fusion::vector<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& vector) \
 		{ \
-			const yas::uint8_t size = YAS_PP_INC(count); \
-			ar.write(reinterpret_cast<const char*>(&size), sizeof(size)); \
+			ar.write((std::uint8_t)YAS_PP_INC(count)); \
 			YAS_PP_REPEAT( \
 				YAS_PP_INC(count), \
 				YAS__BINARY__WRITE_BOOST_FUSION_VECTOR_ITEM, \
@@ -218,9 +216,9 @@ YAS__BINARY__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS(FUSION_MAX_VE
 			Archive& ar, \
 			boost::fusion::vector<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& vector) \
 		{ \
-			yas::uint8_t size = 0; \
-			ar.read(reinterpret_cast<char*>(&size), sizeof(size)); \
-			if ( size != YAS_PP_INC(count) ) throw std::runtime_error("size error on deserialize fusion::vector"); \
+			std::uint8_t size = 0; \
+			ar.read(size); \
+			if ( size != YAS_PP_INC(count) ) YAS_THROW_BAD_SIZE_ON_DESERIALIZE_FUSION("fusion::vector"); \
 			YAS_PP_REPEAT( \
 				YAS_PP_INC(count), \
 				YAS__BINARY__READ_BOOST_FUSION_VECTOR_ITEM, \

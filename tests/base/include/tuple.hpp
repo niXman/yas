@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2012 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -43,6 +43,39 @@
 
 template<typename archive_traits>
 bool tuple_test(const char* archive_type, const char* io_type) {
+	std::tuple<int, int> t5(4, 7), t6;
+
+	typename archive_traits::oarchive oa3;
+	archive_traits::ocreate(oa3, archive_type, io_type);
+	oa3 & t5;
+
+	typename archive_traits::iarchive ia3;
+	archive_traits::icreate(ia3, oa3, archive_type, io_type);
+	ia3 & t6;
+
+	if ( t5 != t6 ) {
+		std::cout << "TUPLE test failed! [3]" << std::endl;
+		return false;
+	}
+
+	std::tuple<std::vector<std::string>> t7, t8;
+	std::get<0>(t7).push_back("1");
+	std::get<0>(t7).push_back("2");
+	std::get<0>(t7).push_back("3");
+
+	typename archive_traits::oarchive oa4;
+	archive_traits::ocreate(oa4, archive_type, io_type);
+	oa4 & t7;
+
+	typename archive_traits::iarchive ia4;
+	archive_traits::icreate(ia4, oa4, archive_type, io_type);
+	ia4 & t8;
+
+	if ( t7 != t7 ) {
+		std::cout << "TUPLE test failed! [4]" << std::endl;
+		return false;
+	}
+
 #if defined(YAS_HAS_BOOST_TUPLE)
 	boost::tuples::tuple<int, int> t1(1, 3), t2;
 
@@ -77,41 +110,6 @@ bool tuple_test(const char* archive_type, const char* io_type) {
 		return false;
 	}
 #endif // defined(YAS_HAS_BOOST_TUPLE)
-
-#if defined(YAS_HAS_STD_TUPLE)
-	std::tuple<int, int> t5(4, 7), t6;
-
-	typename archive_traits::oarchive oa3;
-	archive_traits::ocreate(oa3, archive_type, io_type);
-	oa3 & t5;
-
-	typename archive_traits::iarchive ia3;
-	archive_traits::icreate(ia3, oa3, archive_type, io_type);
-	ia3 & t6;
-
-	if ( t5 != t6 ) {
-		std::cout << "TUPLE test failed! [3]" << std::endl;
-		return false;
-	}
-
-	std::tuple<std::vector<std::string>> t7, t8;
-	std::get<0>(t7).push_back("1");
-	std::get<0>(t7).push_back("2");
-	std::get<0>(t7).push_back("3");
-
-	typename archive_traits::oarchive oa4;
-	archive_traits::ocreate(oa4, archive_type, io_type);
-	oa4 & t7;
-
-	typename archive_traits::iarchive ia4;
-	archive_traits::icreate(ia4, oa4, archive_type, io_type);
-	ia4 & t8;
-
-	if ( t7 != t7 ) {
-		std::cout << "TUPLE test failed! [4]" << std::endl;
-		return false;
-	}
-#endif // defined(YAS_HAS_STD_TUPLE)
 	return true;
 }
 

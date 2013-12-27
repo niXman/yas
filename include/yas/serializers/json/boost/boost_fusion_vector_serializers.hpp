@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -124,9 +124,9 @@ namespace detail {
 			YAS_PP_CAT(boost::fusion::vector, YAS_PP_INC(count)) \
 				<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& vector) \
 		{ \
-			yas::int32_t size = 0; \
+			std::int32_t size = 0; \
 			ar & size; \
-			if ( size != YAS_PP_INC(count) ) throw std::runtime_error("size error on deserialize fusion::vector"); \
+			if ( size != YAS_PP_INC(count) ) YAS_THROW_BAD_SIZE_ON_DESERIALIZE_FUSION("fusion::vector"); \
 			YAS_PP_REPEAT( \
 				YAS_PP_INC(count), \
 				YAS__JSON__READ_BOOST_FUSION_VECTOR_ITEM, \
@@ -206,9 +206,9 @@ YAS__JSON__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS(FUSION_MAX_VECT
 			Archive& ar, \
 			boost::fusion::vector<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& vector) \
 		{ \
-			yas::int32_t size = 0; \
+			std::int32_t size = 0; \
 			ar & size; \
-			if ( size != YAS_PP_INC(count) ) throw std::runtime_error("size error on deserialize fusion::vector"); \
+			if ( size != YAS_PP_INC(count) ) YAS_THROW_BAD_SIZE_ON_DESERIALIZE_FUSION("fusion::vector"); \
 			YAS_PP_REPEAT( \
 				YAS_PP_INC(count), \
 				YAS__JSON__READ_BOOST_FUSION_VECTOR_ITEM, \

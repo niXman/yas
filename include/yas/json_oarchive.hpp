@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -38,9 +38,9 @@
 #include <yas/detail/type_traits/has_function_serialize.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 
-#include <yas/detail/io/json_mem_stream.hpp>
-#include <yas/detail/io/json_file_stream.hpp>
 #include <yas/detail/io/information.hpp>
+#include <yas/detail/io/streams.hpp>
+
 #include <yas/detail/base_object.hpp>
 
 #include <yas/serializers/serializer.hpp>
@@ -57,24 +57,25 @@ namespace yas {
 
 /***************************************************************************/
 
-struct json_mem_oarchive:
-	 detail::omemstream<archive_type::json>
-	,detail::archive_information<archive_type::json, direction::out>
+template<typename OS>
+struct json_oarchive
+	:detail::stream<archive_type::json, direction::out, OS>
+	,detail::archive_information<archive_type::json, direction::out, OS>
 	,private detail::noncopyable
 {
-	json_mem_oarchive(header_flag op = with_header)
-		:detail::omemstream<archive_type::json>()
-	{ init_header(this, op); }
-	json_mem_oarchive(char* ptr, size_t size, header_flag op = with_header)
-		:detail::omemstream<archive_type::json>(ptr, size)
-	{ init_header(this, op); }
+	using stream_type = OS;
+
+	json_oarchive(OS &os, header_flag op = with_header)
+		:detail::stream<archive_type::json, direction::out, OS>(os)
+		,detail::archive_information<archive_type::json, direction::out, OS>(os, op)
+	{}
 
 	template<typename T>
-	json_mem_oarchive& operator& (const T& v) {
+	json_oarchive& operator& (const T& v) {
 		using namespace detail;
 		return serializer<
 			type_properties<T>::value,
-			serialization_method<T, json_mem_oarchive>::value,
+			serialization_method<T, json_oarchive>::value,
 			archive_type::json,
 			direction::out,
 			T

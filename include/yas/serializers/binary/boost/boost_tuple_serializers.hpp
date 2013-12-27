@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -54,14 +54,14 @@ namespace detail {
 /***************************************************************************/
 
 #define YAS__BINARY__WRITE_BOOST_TUPLE_ITEM(unused, idx, type) \
-	if ( std::is_fundamental<YAS_PP_CAT(type, idx)>::value ) \
-		ar.write(reinterpret_cast<const char*>(&boost::tuples::get<idx>(tuple)), sizeof(YAS_PP_CAT(type, idx))); \
+	if ( is_fundamental_and_sizeof_is<YAS_PP_CAT(type, idx), 1>::value ) \
+		ar.write(&boost::tuples::get<idx>(tuple), sizeof(YAS_PP_CAT(type, idx))); \
 	else \
 		ar & boost::tuples::get<idx>(tuple);
 
 #define YAS__BINARY__READ_BOOST_TUPLE_ITEM(unused, idx, type) \
-	if ( std::is_fundamental<YAS_PP_CAT(type, idx)>::value ) \
-		ar.read(reinterpret_cast<char*>(&boost::tuples::get<idx>(tuple)), sizeof(YAS_PP_CAT(type, idx))); \
+	if ( is_fundamental_and_sizeof_is<YAS_PP_CAT(type, idx), 1>::value ) \
+		ar.read(&boost::tuples::get<idx>(tuple), sizeof(YAS_PP_CAT(type, idx))); \
 	else \
 		ar & boost::tuples::get<idx>(tuple);
 
@@ -92,8 +92,7 @@ namespace detail {
 	{ \
 		template<typename Archive> \
 		static Archive& apply(Archive& ar, const boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
-			const yas::uint8_t size = YAS_PP_INC(count); \
-			ar.write(reinterpret_cast<const char*>(&size), sizeof(size)); \
+			ar.write((std::uint8_t)YAS_PP_INC(count)); \
 			YAS_PP_REPEAT( \
 				YAS_PP_INC(count), \
 				YAS__BINARY__WRITE_BOOST_TUPLE_ITEM, \
@@ -120,9 +119,9 @@ namespace detail {
 	{ \
 		template<typename Archive> \
 		static Archive& apply(Archive& ar, boost::tuples::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
-			yas::uint8_t size = 0; \
-			ar.read(reinterpret_cast<char*>(&size), sizeof(size)); \
-			if ( size != YAS_PP_INC(count) ) throw std::runtime_error("size error on deserialize boost::tuple"); \
+			std::uint8_t size = 0; \
+			ar.read(size); \
+			if ( size != YAS_PP_INC(count) ) YAS_THROW_BAD_SIZE_ON_DESERIALIZE_FUSION("boost::tuple"); \
 			YAS_PP_REPEAT( \
 				YAS_PP_INC(count), \
 				YAS__BINARY__READ_BOOST_TUPLE_ITEM, \

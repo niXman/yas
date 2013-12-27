@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -33,12 +33,9 @@
 #ifndef _yas__text__std_array_serializer_hpp
 #define _yas__text__std_array_serializer_hpp
 
-#include <yas/detail/config/config.hpp>
-
-#if defined(YAS_HAS_STD_ARRAY)
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 #include <array>
 
@@ -58,10 +55,9 @@ struct serializer<
 {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const std::array<T, N>& array) {
-		typename std::array<T, N>::const_iterator it = array.begin();
-		ar & static_cast<yas::uint32_t>(N);
-		for ( ; it != array.end(); ++it ) {
-			ar & (*it);
+		ar & (std::uint32_t)N;
+		for ( const auto &it: array ) {
+			ar & it;
 		}
 		return ar;
 	}
@@ -78,12 +74,11 @@ struct serializer<
 {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, std::array<T, N>& array) {
-		yas::uint32_t size = 0;
+		std::uint32_t size = 0;
 		ar & size;
-		if ( size != N ) throw std::runtime_error("array size is not equal");
-		typename std::array<T, N>::iterator it = array.begin();
-		for ( ; it != array.end(); ++it ) {
-			ar & (*it);
+		if ( size != N ) YAS_THROW_BAD_ARRAY_SIZE();
+		for ( auto &it: array ) {
+			ar & it;
 		}
 		return ar;
 	}
@@ -93,7 +88,5 @@ struct serializer<
 
 } // namespace detail
 } // namespace yas
-
-#endif // defined(YAS_HAS_STD_ARRAY)
 
 #endif // _yas__text__std_array_serializer_hpp

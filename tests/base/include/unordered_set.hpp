@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2012 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -33,13 +33,12 @@
 #ifndef _yas_test__unordered_set_hpp__included_
 #define _yas_test__unordered_set_hpp__included_
 
-/***************************************************************************/
+#include <algorithm>
 
-#if defined(YAS_HAS_STD_UNORDERED) || defined(YAS_HAS_BOOST_UNORDERED)
+/***************************************************************************/
 
 template<typename archive_traits>
 bool unordered_set_test(const char* archive_type, const char* io_type) {
-#if defined(YAS_HAS_STD_UNORDERED)
 	std::unordered_set<int> set1, set2;
 	set1.insert(0);
 	set1.insert(1);
@@ -91,8 +90,6 @@ bool unordered_set_test(const char* archive_type, const char* io_type) {
 		std::cout << "UNORDERED_SET deserialization error! [2]" << std::endl;
 		return false;
 	}
-
-#endif // defined(YAS_HAS_STD_UNORDERED)
 
 #if defined(YAS_HAS_BOOST_UNORDERED)
 	boost::unordered_set<int> set5, set6;
@@ -148,8 +145,6 @@ bool unordered_set_test(const char* archive_type, const char* io_type) {
 #endif // defined(YAS_HAS_BOOST_UNORDERED)
 	return true;
 }
-
-#endif // #if defined(YAS_HAS_STD_UNORDERED) || defined(YAS_HAS_BOOST_UNORDERED)
 
 /***************************************************************************/
 

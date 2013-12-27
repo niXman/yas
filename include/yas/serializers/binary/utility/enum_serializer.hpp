@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -33,10 +33,9 @@
 #ifndef _yas__binary__enum_serializer_hpp
 #define _yas__binary__enum_serializer_hpp
 
-#include <yas/detail/type_traits/properties.hpp>
+#include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/selector.hpp>
-
-#include <stdexcept>
+#include <yas/detail/io/serialization_exception.hpp>
 
 namespace yas {
 namespace detail {
@@ -53,9 +52,8 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const T& v) {
-		const yas::uint8_t size = sizeof(T);
-		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
-		ar.write(reinterpret_cast<const char*>(&v), sizeof(v));
+		ar.write((std::uint8_t)sizeof(T));
+		ar.write(static_cast<typename std::underlying_type<T>::type>(v));
 		return ar;
 	}
 };
@@ -70,24 +68,13 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, T& v) {
-		yas::uint8_t size = 0;
-		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
-		switch ( size ) {
-			case sizeof(yas::uint8_t):
-				ar.read(reinterpret_cast<char*>(&v), sizeof(yas::uint8_t));
-			break;
-			case sizeof(yas::uint16_t):
-				ar.read(reinterpret_cast<char*>(&v), sizeof(yas::uint16_t));
-			break;
-			case sizeof(yas::uint32_t):
-				ar.read(reinterpret_cast<char*>(&v), sizeof(yas::uint32_t));
-			break;
-			case sizeof(yas::uint64_t):
-				ar.read(reinterpret_cast<char*>(&v), sizeof(yas::uint64_t));
-			break;
-			default:
-				throw std::runtime_error("bad size of enum");
-		}
+		std::uint8_t size = 0;
+		typename std::underlying_type<T>::type t;
+		ar.read(size);
+		if ( sizeof(t) != size ) YAS_THROW_BAD_SIZE_OF_ENUM();
+
+		ar.read(t);
+		v = static_cast<T>(t);
 		return ar;
 	}
 };

@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -38,9 +38,9 @@
 #include <yas/detail/type_traits/has_function_serialize.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 
-#include <yas/detail/io/json_mem_stream.hpp>
-#include <yas/detail/io/json_file_stream.hpp>
 #include <yas/detail/io/information.hpp>
+#include <yas/detail/io/streams.hpp>
+
 #include <yas/detail/base_object.hpp>
 
 #include <yas/serializers/serializer.hpp>
@@ -57,32 +57,25 @@ namespace yas {
 
 /***************************************************************************/
 
-struct json_mem_iarchive:
-	 detail::imemstream<archive_type::json>
-	,detail::archive_information<archive_type::json, direction::in>
+template<typename IS>
+struct json_iarchive
+	:detail::stream<archive_type::json, direction::in, IS>
+	,detail::archive_information<archive_type::json, direction::in, IS>
 	,private detail::noncopyable
 {
-	json_mem_iarchive(const intrusive_buffer& o, header_flag op = with_header)
-		:detail::imemstream<archive_type::json>(o)
-	{ init_header(this, op); }
+	using stream_type = IS;
 
-	json_mem_iarchive(const shared_buffer& o, header_flag op = with_header)
-		:detail::imemstream<archive_type::json>(o)
-	{ init_header(this, op); }
-
-	json_mem_iarchive(const std::string& o, header_flag op = with_header)
-		:detail::imemstream<archive_type::json>(o.c_str(), o.size())
-	{ init_header(this, op); }
-	json_mem_iarchive(const char* ptr, size_t size, header_flag op = with_header)
-		:detail::imemstream<archive_type::json>(ptr, size)
-	{ init_header(this, op); }
+	json_iarchive(IS &is, header_flag op = with_header)
+		:detail::stream<archive_type::json, direction::in, IS>(is)
+		,detail::archive_information<archive_type::json, direction::in, IS>(is, op)
+	{}
 
 	template<typename T>
-	json_mem_iarchive& operator& (T& v) {
+	json_iarchive& operator& (T& v) {
 		using namespace detail;
 		return serializer<
 			type_properties<T>::value,
-			serialization_method<T, json_mem_iarchive>::value,
+			serialization_method<T, json_iarchive<IS>>::value,
 			archive_type::json,
 			direction::in,
 			T

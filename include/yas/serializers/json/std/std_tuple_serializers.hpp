@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -35,7 +35,6 @@
 
 #include <yas/detail/config/config.hpp>
 
-#if defined(YAS_HAS_STD_TUPLE)
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
@@ -107,9 +106,9 @@ namespace detail {
 	> { \
 		template<typename Archive> \
 		static Archive& apply(Archive& ar, std::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
-			yas::int32_t size = 0; \
+			std::int32_t size = 0; \
 			ar & size; \
-			if ( size != YAS_PP_INC(count) ) throw std::runtime_error("size error on deserialize boost::tuple"); \
+			if ( size != YAS_PP_INC(count) ) YAS_THROW_BAD_SIZE_ON_DESERIALIZE_FUSION("boost::tuple"); \
 			YAS_PP_REPEAT( \
 				YAS_PP_INC(count), \
 				YAS__JSON__READ_STD_TUPLE_ITEM, \
@@ -140,7 +139,5 @@ YAS__JSON__GENERATE_LOAD_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(10)
 
 } // namespace detail
 } // namespace yas
-
-#endif // defined(YAS_HAS_STD_TUPLE)
 
 #endif // _yas__json__std_tuple_serializer_hpp

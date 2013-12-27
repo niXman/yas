@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -43,7 +43,7 @@ namespace yas {
 /***************************************************************************/
 
 struct intrusive_buffer {
-	intrusive_buffer(const char* data, yas::uint32_t size)
+	intrusive_buffer(const char* data, std::size_t size)
 		:data(data)
 		,size(size)
 	{}
@@ -53,7 +53,7 @@ struct intrusive_buffer {
 	{}
 
 	const char* data;
-	const yas::uint32_t size;
+	const std::size_t size;
 
 private:
 	intrusive_buffer();
@@ -67,18 +67,18 @@ struct shared_buffer {
 	shared_buffer()
 		:size(0)
 	{}
-	shared_buffer(yas::uint32_t size)
+	shared_buffer(std::size_t size)
 		:size(size)
 	{
 		data.reset(new char[size], &deleter);
 	}
-	shared_buffer(const void* ptr, yas::uint32_t size)
+	shared_buffer(const void* ptr, std::size_t size)
 		:size(size)
 	{
 		data.reset(new char[size], &deleter);
 		std::memcpy(data.get(), ptr, size);
 	}
-	shared_buffer(const shared_array_type& buf, yas::uint32_t size)
+	shared_buffer(const shared_array_type& buf, std::size_t size)
 		:data(buf)
 		,size(size)
 	{}
@@ -88,7 +88,7 @@ struct shared_buffer {
 	{}
 
 	shared_array_type data;
-	yas::uint32_t size;
+	std::size_t size;
 
 	static void deleter(char *ptr) { delete []ptr; }
 };

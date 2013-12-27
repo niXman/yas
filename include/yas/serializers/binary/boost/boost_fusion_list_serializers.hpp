@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -117,8 +117,7 @@ struct binary_list_deserializer {
 		static Archive& apply(Archive& ar, \
 			const boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& list) \
 		{ \
-			const yas::uint8_t size = YAS_PP_INC(count); \
-			ar.write(reinterpret_cast<const char*>(&size), sizeof(size)); \
+			ar.write((std::uint8_t)YAS_PP_INC(count)); \
 			boost::fusion::for_each(list, detail::binary_list_serializer<Archive>(ar)); \
 			return ar; \
 		} \
@@ -141,9 +140,9 @@ struct binary_list_deserializer {
 		static Archive& apply(Archive& ar, \
 			boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& list) \
 		{ \
-			yas::uint8_t size = 0; \
-			ar.read(reinterpret_cast<char*>(&size), sizeof(size)); \
-			if ( size != YAS_PP_INC(count) ) throw std::runtime_error("size error on deserialize fusion::list"); \
+			std::uint8_t size = 0; \
+			ar.read(size); \
+			if ( size != YAS_PP_INC(count) ) YAS_THROW_BAD_SIZE_ON_DESERIALIZE_FUSION("fusion::list"); \
 			boost::fusion::for_each(list, detail::binary_list_deserializer<Archive>(ar)); \
 			return ar; \
 		} \

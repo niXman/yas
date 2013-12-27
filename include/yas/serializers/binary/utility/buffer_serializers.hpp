@@ -1,4 +1,4 @@
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -32,11 +32,8 @@
 #ifndef _yas__binary__buffer_serializer_hpp
 #define _yas__binary__buffer_serializer_hpp
 
-#include <cassert>
-
-#include <yas/detail/config/config.hpp>
 #include <yas/detail/tools/buffers.hpp>
-#include <yas/detail/type_traits/properties.hpp>
+#include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 
 namespace yas {
@@ -54,8 +51,8 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const intrusive_buffer& buf) {
-		ar.write(reinterpret_cast<const char*>(&buf.size), sizeof(buf.size));
-		ar.write(reinterpret_cast<const char*>(buf.data), buf.size);
+		ar.write((std::uint32_t)buf.size);
+		ar.write(buf.data, buf.size);
 		return ar;
 	}
 };
@@ -72,8 +69,8 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const shared_buffer& buf) {
-		ar.write(reinterpret_cast<const char*>(&buf.size), sizeof(yas::uint32_t));
-		ar.write(reinterpret_cast<const char*>(buf.data.get()), buf.size);
+		ar.write((std::uint32_t)buf.size);
+		ar.write(buf.data.get(), buf.size);
 		return ar;
 	}
 };
@@ -88,10 +85,10 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, shared_buffer& buf) {
-		yas::uint32_t size = 0;
-		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
+		std::uint32_t size = 0;
+		ar.read(size);
 		buf.data.reset(new char[size+1], &shared_buffer::deleter);
-		ar.read(reinterpret_cast<char*>(buf.data.get()), size);
+		ar.read(buf.data.get(), size);
 		buf.size = size;
 		buf.data.get()[size] = 0;
 		return ar;

@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -88,9 +88,9 @@ struct serializer<
 		,typename U
 	>
 	static Archive& apply(Archive& ar, U(&v)[N], typename std::enable_if<is_any_of<U, char, signed char, unsigned char>::value>::type* = 0) {
-		yas::uint32_t size = 0;
+		std::uint32_t size = 0;
 		ar & size;
-		if ( size != N-1 ) throw std::runtime_error("bad array size");
+		if ( size != N-1 ) YAS_THROW_BAD_ARRAY_SIZE();
 		ar.read(reinterpret_cast<char*>(v), size);
 		v[size] = 0;
 	}
@@ -100,9 +100,9 @@ struct serializer<
 		,typename U
 	>
 	static Archive& apply(Archive& ar, U(&v)[N], typename std::enable_if<!is_any_of<U, char, signed char, unsigned char>::value>::type* = 0) {
-		yas::uint32_t size = 0;
+		std::uint32_t size = 0;
 		ar & size;
-		if ( size != N ) throw std::runtime_error("bad array size");
+		if ( size != N ) YAS_THROW_BAD_ARRAY_SIZE();
 		for ( size_t idx = 0; idx < N; ++idx ) {
 			ar & v[idx];
 		}
@@ -140,9 +140,9 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, T(&v)[N]) {
-		yas::uint32_t size = 0;
+		std::uint32_t size = 0;
 		(ar & size).snextc();
-		if ( size != N ) throw std::runtime_error("bad array size");
+		if ( size != N ) YAS_THROW_BAD_ARRAY_SIZE();
 		for ( size_t idx = 0; idx < N; ++idx ) {
 			(ar & v[idx]).snextc();
 		}

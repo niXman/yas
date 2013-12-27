@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -35,60 +35,35 @@
 
 /***************************************************************************/
 
-#if !(_MSC_VER >= 1700 || __cplusplus == 201103L)
-#	error "C++11 support required"
-#endif
+#if YAS_LITTLE_ENDIAN()
+#	define YAS_LOCAL_TO_NETWORK16(dst, src) \
+	(dst) = ((((src) >> 8) & 0xff) | (((src) & 0xff) << 8))
 
-#define YAS_HAS_STD_FORWARD_LIST 1
-#define YAS_HAS_STD_UNORDERED 1
-#define YAS_HAS_STD_ARRAY 1
-#define YAS_HAS_STD_TUPLE 1
-#define YAS_HAS_STATIC_ASSERT 1
-#define YAS_HAS_ENUM_CLASS 0
-#define YAS_DECLTYPE(T) decltype(T)
-#define YAS_MOVE(expr) std::move(expr)
+#	define YAS_LOCAL_TO_NETWORK32(dst, src) \
+	(dst) = ((((src) & 0xff000000) >> 24) | (((src) & 0x00ff0000) >> 8) | \
+			  (((src) & 0x0000ff00) <<  8) | (((src) & 0x000000ff) << 24))
 
-#ifdef YAS_SERIALIZE_BOOST_TYPES
-#  define YAS_HAS_BOOST_UNORDERED 1
-#  define YAS_HAS_BOOST_ARRAY 1
-#  define YAS_HAS_BOOST_TUPLE 1
-#  define YAS_HAS_BOOST_FUSION 1
-#endif
+#	define YAS_LOCAL_TO_NETWORK64(dst, src) \
+	(dst) = ((((src) & 0xff00000000000000ull) >> 56)  \
+			 | (((src) & 0x00ff000000000000ull) >> 40) \
+			 | (((src) & 0x0000ff0000000000ull) >> 24) \
+			 | (((src) & 0x000000ff00000000ull) >> 8)  \
+			 | (((src) & 0x00000000ff000000ull) << 8)  \
+			 | (((src) & 0x0000000000ff0000ull) << 24) \
+			 | (((src) & 0x000000000000ff00ull) << 40) \
+			 | (((src) & 0x00000000000000ffull) << 56))
 
-/***************************************************************************/
-
-namespace yas {
-
-#if defined(_WIN64)
-#define YAS_PLATFORM_BITS_IS_32() (0)
-#define YAS_PLATFORM_BITS_IS_64() (1)
-
-typedef char int8_t;
-typedef unsigned char uint8_t;
-typedef short int16_t;
-typedef unsigned short uint16_t;
-typedef int int32_t;
-typedef unsigned int uint32_t;
-typedef __int64 int64_t;
-typedef unsigned __int64 uint64_t;
-
-#else // !_WIN64 /******************************************************/
-
-#define YAS_PLATFORM_BITS_IS_32() (1)
-#define YAS_PLATFORM_BITS_IS_64() (0)
-
-typedef char int8_t;
-typedef unsigned char uint8_t;
-typedef short int16_t;
-typedef unsigned short uint16_t;
-typedef int int32_t;
-typedef unsigned int uint32_t;
-typedef __int64 int64_t;
-typedef unsigned __int64 uint64_t;
-
-#endif // _WIN64
-
-} // namespace yas
+#	define YAS_NETWORK_TO_LOCAL16(dst, src) YAS_LOCAL_TO_NETWORK16((dst), (src))
+#	define YAS_NETWORK_TO_LOCAL32(dst, src) YAS_LOCAL_TO_NETWORK32((dst), (src))
+#	define YAS_NETWORK_TO_LOCAL64(dst, src) YAS_LOCAL_TO_NETWORK64((dst), (src))
+#else // ! ifdef YAS_LITTLE_ENDIAN
+#	define YAS_LOCAL_TO_NETWORK16(dst, src) (dst) = (src)
+#	define YAS_LOCAL_TO_NETWORK32(dst, src) (dst) = (src)
+#	define YAS_LOCAL_TO_NETWORK64(dst, src) (dst) = (src)
+#	define YAS_NETWORK_TO_LOCAL16(dst, src) (dst) = (src)
+#	define YAS_NETWORK_TO_LOCAL32(dst, src) (dst) = (src)
+#	define YAS_NETWORK_TO_LOCAL64(dst, src) (dst) = (src)
+#endif // ifdef YAS_LITTLE_ENDIAN
 
 /***************************************************************************/
 

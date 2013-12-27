@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -34,8 +34,8 @@
 #define _yas__binary__std_vector_serializer_hpp
 
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 #include <vector>
 
@@ -54,14 +54,12 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const std::vector<T>& vector) {
-		const yas::uint32_t size = vector.size();
-		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
-		if ( std::is_fundamental<T>::value ) {
-			ar.write(reinterpret_cast<const char*>(&vector[0]), sizeof(T)*vector.size());
+		ar.write((std::uint32_t)vector.size());
+		if ( std::is_fundamental<T>::value && sizeof(T) == 1 ) {
+			ar.write(&vector[0], vector.size());
 		} else {
-			typename std::vector<T>::const_iterator it = vector.begin();
-			for ( ; it != vector.end(); ++it ) {
-				ar & (*it);
+			for ( const auto &it: vector ) {
+				ar & it;
 			}
 		}
 		return ar;
@@ -78,15 +76,14 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, std::vector<T>& vector) {
-		yas::uint32_t size = 0;
-		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
+		std::uint32_t size = 0;
+		ar.read(size);
 		vector.resize(size);
-		if ( std::is_fundamental<T>::value ) {
-			ar.read(reinterpret_cast<char*>(&vector[0]), sizeof(T)*size);
+		if ( std::is_fundamental<T>::value && sizeof(T) == 1 ) {
+			ar.read(&vector[0], size);
 		} else {
-			typename std::vector<T>::iterator it = vector.begin();
-			for ( ; it != vector.end(); ++it ) {
-				ar & (*it);
+			for ( auto &it: vector ) {
+				ar & it;
 			}
 		}
 		return ar;

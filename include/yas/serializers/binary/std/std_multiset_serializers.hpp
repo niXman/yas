@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -34,8 +34,8 @@
 #define _yas__binary__std_multiset_serializer_hpp
 
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 #include <set>
 
@@ -54,17 +54,9 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const std::multiset<K>& set) {
-		const yas::uint32_t size = set.size();
-		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
-		typename std::multiset<K>::const_iterator it = set.begin();
-		if ( std::is_fundamental<K>::value ) {
-			for ( ; it != set.end(); ++it ) {
-				ar.write(reinterpret_cast<const char*>(&(*it)), sizeof(K));
-			}
-		} else {
-			for ( ; it != set.end(); ++it ) {
-				ar & (*it);
-			}
+		ar.write((std::uint32_t)set.size());
+		for ( const auto &it: set ) {
+			ar & it;
 		}
 		return ar;
 	}
@@ -80,20 +72,12 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, std::multiset<K>& set) {
-		yas::uint32_t size = 0;
-		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
-		if ( std::is_fundamental<K>::value ) {
-			K key;
-			for ( ; size; --size ) {
-				ar.read(reinterpret_cast<char*>(&key), sizeof(K));
-				set.insert(key);
-			}
-		} else {
+		std::uint32_t size = 0;
+		ar.read(size);
+		for ( ; size; --size ) {
 			K key = K();
-			for ( ; size; --size ) {
-				ar & key;
-				set.insert(key);
-			}
+			ar & key;
+			set.insert(std::move(key));
 		}
 		return ar;
 	}

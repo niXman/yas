@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2012 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -56,22 +56,22 @@ bool version_test(const char* archive_type, const char* io_type) {
 	}
 
 	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
-		if ( oa->header_size() != archive_traits::oarchive_type::_header_size ||
-			  archive_traits::oarchive_type::_header_size != sizeof(yas::uint32_t)
+		if ( oa->header_size() != archive_traits::oarchive_type::header_size() ||
+			  archive_traits::oarchive_type::header_size() != sizeof(std::uint32_t)
 		) {
 			std::cout << "VERSION test failed! bad archive header size! [4]" << std::endl;
 			return false;
 		}
 	} else if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
-		if ( oa->header_size() != archive_traits::oarchive_type::_header_size ||
-			  archive_traits::oarchive_type::_header_size != 5 /** see information.hpp */
+		if ( oa->header_size() != archive_traits::oarchive_type::header_size() ||
+			  archive_traits::oarchive_type::header_size() != 5 /** see information.hpp */
 		) {
 			std::cout << "VERSION test failed! bad archive header size! [5]" << std::endl;
 			return false;
 		}
 	} else if ( yas::is_json_archive<typename archive_traits::oarchive_type>::value ) {
-		if ( oa->header_size() != archive_traits::oarchive_type::_header_size ||
-			  archive_traits::oarchive_type::_header_size != 16 /** see information.hpp */
+		if ( oa->header_size() != archive_traits::oarchive_type::header_size() ||
+			  archive_traits::oarchive_type::header_size() != 16 /** see information.hpp */
 		) {
 			std::cout << "VERSION test failed! bad archive header size! [6]" << std::endl;
 			return false;

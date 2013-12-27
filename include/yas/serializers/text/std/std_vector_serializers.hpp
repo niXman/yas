@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -34,8 +34,8 @@
 #define _yas__text__std_vector_serializer_hpp
 
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 #include <vector>
 
@@ -55,10 +55,9 @@ struct serializer<
 {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const std::vector<T>& vector) {
-		ar & vector.size();
-		typename std::vector<T>::const_iterator it = vector.begin();
-		for ( ; it != vector.end(); ++it ) {
-			ar & (*it);
+		ar & (std::uint32_t)vector.size();
+		for ( const auto &it: vector ) {
+			ar & it;
 		}
 		return ar;
 	}
@@ -75,12 +74,11 @@ struct serializer<
 {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, std::vector<T>& vector) {
-		yas::uint32_t size = 0;
+		std::uint32_t size = 0;
 		ar & size;
 		vector.resize(size);
-		typename std::vector<T>::iterator it = vector.begin();
-		for ( ; it != vector.end(); ++it ) {
-			ar & (*it);
+		for ( auto &it: vector ) {
+			ar & it;
 		}
 		return ar;
 	}

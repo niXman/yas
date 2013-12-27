@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -37,8 +37,8 @@
 
 #if defined(YAS_HAS_BOOST_UNORDERED)
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 #include <boost/unordered_map.hpp>
 
@@ -57,29 +57,10 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const boost::unordered_map<K, V>& map) {
-		yas::uint32_t size = map.size();
-		ar.write(reinterpret_cast<const char*>(&size), sizeof(size));
-		typename boost::unordered_map<K, V>::const_iterator it = map.begin();
-		if ( std::is_fundamental<K>::value && std::is_fundamental<V>::value ) {
-			for ( ; it != map.end(); ++it ) {
-				ar.write(reinterpret_cast<const char*>(&it->first), sizeof(K));
-				ar.write(reinterpret_cast<const char*>(&it->second), sizeof(V));
-			}
-		} else if ( std::is_fundamental<K>::value ) {
-			for ( ; it != map.end(); ++it ) {
-				ar.write(reinterpret_cast<const char*>(&it->first), sizeof(K));
-				ar & it->second;
-			}
-		} else if ( std::is_fundamental<V>::value ) {
-			for ( ; it != map.end(); ++it ) {
-				ar & it->first;
-				ar.write(reinterpret_cast<const char*>(&it->second), sizeof(V));
-			}
-		} else {
-			for ( ; it != map.end(); ++it ) {
-				ar & it->first
-					& it->second;
-			}
+		ar.write((std::uint32_t)map.size());
+		for ( const auto &it: map ) {
+			ar & it.first
+				& it.second;
 		}
 		return ar;
 	}
@@ -95,40 +76,14 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, boost::unordered_map<K, V>& map) {
-		yas::uint32_t size = 0;
-		ar.read(reinterpret_cast<char*>(&size), sizeof(size));
-		if ( std::is_fundamental<K>::value && std::is_fundamental<V>::value ) {
-			K key;
-			V val;
-			for ( ; size; --size ) {
-				ar.read(reinterpret_cast<char*>(&key), sizeof(K));
-				ar.read(reinterpret_cast<char*>(&val), sizeof(V));
-				map[key] = val;
-			}
-		} else if ( std::is_fundamental<K>::value ) {
-			K key;
-			V val = V();
-			for ( ; size; --size ) {
-				ar.read(reinterpret_cast<char*>(&key), sizeof(K));
-				ar & val;
-				map[key] = val;
-			}
-		} else if ( std::is_fundamental<V>::value ) {
-			K key = K();
-			V val;
-			for ( ; size; --size ) {
-				ar & key;
-				ar.read(reinterpret_cast<char*>(&val), sizeof(V));
-				map[key] = val;
-			}
-		} else {
+		std::uint32_t size = 0;
+		ar.read(size);
+		for ( ; size; --size ) {
 			K key = K();
 			V val = V();
-			for ( ; size; --size ) {
-				ar & key
-					& val;
-				map[key] = val;
-			}
+			ar & key
+				& val;
+			map.insert(std::make_pair(std::move(key), std::move(val)));
 		}
 		return ar;
 	}

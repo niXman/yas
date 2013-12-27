@@ -1,4 +1,5 @@
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -39,9 +40,9 @@
 #include <yas/detail/type_traits/has_function_serialize.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 
-#include <yas/detail/io/binary_mem_stream.hpp>
-#include <yas/detail/io/binary_file_stream.hpp>
 #include <yas/detail/io/information.hpp>
+#include <yas/detail/io/streams.hpp>
+
 #include <yas/detail/base_object.hpp>
 
 #include <yas/serializers/serializer.hpp>
@@ -58,60 +59,28 @@ namespace yas {
 
 /***************************************************************************/
 
-struct binary_mem_iarchive:
-	 detail::imemstream<archive_type::binary>
-	,detail::archive_information<archive_type::binary, direction::in>
+template<typename IS>
+struct binary_iarchive
+	:detail::stream<archive_type::binary, direction::in, IS>
+	,detail::archive_information<archive_type::binary, direction::in, IS>
 	,private detail::noncopyable
 {
-	binary_mem_iarchive(const intrusive_buffer& o, header_flag op = with_header)
-		:detail::imemstream<archive_type::binary>(o)
-	{ init_header(this, op); }
+	using stream_type = IS;
 
-	binary_mem_iarchive(const shared_buffer& o, header_flag op = with_header)
-		:detail::imemstream<archive_type::binary>(o)
-	{ init_header(this, op); }
-
-	binary_mem_iarchive(const std::string& o, header_flag op = with_header)
-		:detail::imemstream<archive_type::binary>(o.c_str(), o.size())
-	{ init_header(this, op); }
-
-	binary_mem_iarchive(const char* ptr, size_t size, header_flag op = with_header)
-		:detail::imemstream<archive_type::binary>(ptr, size)
-	{ init_header(this, op); }
+	binary_iarchive(IS &is, header_flag op = with_header)
+		:detail::stream<archive_type::binary, direction::in, IS>(is)
+		,detail::archive_information<archive_type::binary, direction::in, IS>(is, op)
+	{}
 
 	template<typename T>
-	binary_mem_iarchive& operator& (T& v) {
+	binary_iarchive& operator& (T& v) {
 		using namespace detail;
 		return serializer<
-			type_properties<T>::value,
-			serialization_method<T, binary_mem_iarchive>::value,
-			archive_type::binary,
-			direction::in,
-			T
-		>::apply(*this, v);
-	}
-};
-
-/***************************************************************************/
-
-struct binary_file_iarchive:
-	 detail::ifilestream<archive_type::binary>
-	,detail::archive_information<archive_type::binary, direction::in>
-	,private detail::noncopyable
-{
-	binary_file_iarchive(std::istream& file, header_flag op = with_header)
-		:detail::ifilestream<archive_type::binary>(file)
-	{ init_header(this, op); }
-
-	template<typename T>
-	binary_file_iarchive& operator& (T& v) {
-		using namespace detail;
-		return serializer<
-			type_properties<T>::value,
-			serialization_method<T, binary_file_iarchive>::value,
-			archive_type::binary,
-			direction::in,
-			T
+			 type_properties<T>::value
+			,serialization_method<T, binary_iarchive<IS>>::value
+			,archive_type::binary
+			,direction::in
+			,T
 		>::apply(*this, v);
 	}
 };

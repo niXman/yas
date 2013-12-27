@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -33,13 +33,11 @@
 #ifndef _yas__version_hpp
 #define _yas__version_hpp
 
-#include <yas/detail/config/config.hpp>
-
 namespace yas {
 namespace detail {
 
 enum yas_version {
-	archive_version = 1
+	archive_version = 2
 };
 
 } // namespace detail

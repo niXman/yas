@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -40,9 +40,9 @@
 #include <yas/detail/type_traits/has_function_serialize.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 
-#include <yas/detail/io/text_mem_stream.hpp>
-#include <yas/detail/io/text_file_stream.hpp>
 #include <yas/detail/io/information.hpp>
+#include <yas/detail/io/streams.hpp>
+
 #include <yas/detail/base_object.hpp>
 
 #include <yas/serializers/serializer.hpp>
@@ -59,56 +59,25 @@ namespace yas {
 
 /***************************************************************************/
 
-struct text_mem_iarchive:
-	 detail::imemstream<archive_type::text>
-	,detail::archive_information<archive_type::text, direction::in>
+template<typename IS>
+struct text_iarchive
+	:detail::stream<archive_type::text, direction::in, IS>
+	,detail::archive_information<archive_type::text, direction::in, IS>
 	,private detail::noncopyable
 {
-	text_mem_iarchive(const intrusive_buffer& o, header_flag op = with_header)
-		:detail::imemstream<archive_type::text>(o)
-	{ init_header(this, op); }
+	using stream_type = IS;
 
-	text_mem_iarchive(const shared_buffer& o, header_flag op = with_header)
-		:detail::imemstream<archive_type::text>(o)
-	{ init_header(this, op); }
-
-	text_mem_iarchive(const std::string& o, header_flag op = with_header)
-		:detail::imemstream<archive_type::text>(o.c_str(), o.size())
-	{ init_header(this, op); }
-	text_mem_iarchive(const char* ptr, size_t size, header_flag op = with_header)
-		:detail::imemstream<archive_type::text>(ptr, size)
-	{ init_header(this, op); }
+	text_iarchive(IS &is, header_flag op = with_header)
+		:detail::stream<archive_type::text, direction::in, IS>(is)
+		,detail::archive_information<archive_type::text, direction::in, IS>(is, op)
+	{}
 
 	template<typename T>
-	text_mem_iarchive& operator& (T& v) {
+	text_iarchive& operator& (T& v) {
 		using namespace detail;
 		return serializer<
 			type_properties<T>::value,
-			serialization_method<T, text_mem_iarchive>::value,
-			archive_type::text,
-			direction::in,
-			T
-		>::apply(*this, v);
-	}
-};
-
-/***************************************************************************/
-
-struct text_file_iarchive:
-	 detail::ifilestream<archive_type::text>
-	,detail::archive_information<archive_type::text, direction::in>
-	,private detail::noncopyable
-{
-	text_file_iarchive(std::istream& file, header_flag op = with_header)
-		:detail::ifilestream<archive_type::text>(file)
-	{ init_header(this, op); }
-
-	template<typename T>
-	text_file_iarchive& operator& (T& v) {
-		using namespace detail;
-		return serializer<
-			type_properties<T>::value,
-			serialization_method<T, text_file_iarchive>::value,
+			serialization_method<T, text_iarchive<IS>>::value,
 			archive_type::text,
 			direction::in,
 			T

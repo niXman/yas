@@ -6,19 +6,14 @@ TEMPLATE = app
 
 DEFINES += \
 	YAS_SERIALIZE_BOOST_TYPES=1 \
-	YAS_SHARED_BUFFER_USE_STD_SHARED_PTR=1 \
-	YAS_SHARED_BUFFER_USE_BOOST_SHARED_PTR=1 \
 	YAS_HAS_BOOST_TUPLE=1 \
-	YAS_HAS_STD_TUPLE=1 \
-	YAS_HAS_STD_FORWARD_LIST=1 \
 	YAS_HAS_BOOST_FUSION=1 \
-	YAS_HAS_STD_ARRAY=1 \
 	YAS_HAS_BOOST_ARRAY=1
 
 #QMAKE_CXX = clang++
 
 QMAKE_CXXFLAGS += \
-	-std=c++0x
+	-std=c++11
 
 INCLUDEPATH += \
 	../../../include \
@@ -72,14 +67,8 @@ HEADERS += \
 	 ../../../include/yas/detail/config/compiler/intel.hpp \
 	 ../../../include/yas/detail/config/compiler/gcc.hpp \
 	 ../../../include/yas/detail/config/compiler/clang.hpp \
-	 ../../../include/yas/detail/io/text_mem_stream.hpp \
-	 ../../../include/yas/detail/io/text_file_stream.hpp \
-	 ../../../include/yas/detail/io/json_mem_stream.hpp \
-	 ../../../include/yas/detail/io/json_file_stream.hpp \
 	 ../../../include/yas/detail/io/information.hpp \
 	 ../../../include/yas/detail/io/exceptions.hpp \
-	 ../../../include/yas/detail/io/binary_mem_stream.hpp \
-	 ../../../include/yas/detail/io/binary_file_stream.hpp \
 	 ../../../include/yas/detail/preprocessor/vsize.hpp \
 	 ../../../include/yas/detail/preprocessor/velem.hpp \
 	 ../../../include/yas/detail/preprocessor/telem.hpp \
@@ -104,7 +93,6 @@ HEADERS += \
 	 ../../../include/yas/detail/preprocessor/bool.hpp \
 	 ../../../include/yas/detail/preprocessor/auto_rec.hpp \
 	 ../../../include/yas/detail/tools/utf8conv.hpp \
-	 ../../../include/yas/detail/tools/static_assert.hpp \
 	 ../../../include/yas/detail/tools/noncopyable.hpp \
 	 ../../../include/yas/detail/tools/hexdumper.hpp \
 	 ../../../include/yas/detail/tools/buffers.hpp \
@@ -328,4 +316,14 @@ HEADERS += \
 	 ../../../include/yas/serializers/binary/utility/enum_serializer.hpp \
 	 ../../../include/yas/serializers/text/utility/enum_serializer.hpp \
 	 ../../../include/yas/serializers/json/utility/enum_serializer.hpp \
-    ../../../include/yas/serializers/serializer.hpp
+	 ../../../include/yas/serializers/serializer.hpp \
+	 ../../../include/yas/detail/config/compiler/endian.hpp \
+	 ../../../include/yas/detail/preprocessor/stringize.hpp \
+	 ../include/endian.hpp \
+	 ../../../include/yas/file_streams.hpp \
+	 ../../../include/yas/mem_streams.hpp \
+	 ../../../include/yas/detail/io/streams.hpp \
+	 ../../../include/yas/detail/io/exceptions_base.hpp \
+	 ../../../include/yas/detail/io/io_exceptions.hpp \
+	 ../../../include/yas/detail/io/serialization_exception.hpp \
+    ../../../include/yas/detail/io/convertors.hpp

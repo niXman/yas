@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -34,8 +34,8 @@
 #define _yas__text__std_set_serializer_hpp
 
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 #include <set>
 
@@ -54,10 +54,9 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const std::set<K>& set) {
-		ar & static_cast<yas::uint32_t>(set.size());
-		typename std::set<K>::const_iterator it = set.begin();
-		for ( ; it != set.end(); ++it ) {
-			ar & (*it);
+		ar & (std::uint32_t)set.size();
+		for ( const auto &it: set ) {
+			ar & it;
 		}
 		return ar;
 	}
@@ -72,12 +71,12 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, std::set<K>& set) {
-		yas::uint32_t size = 0;
+		std::uint32_t size = 0;
 		ar & size;
-		K key = K();
 		for ( ; size; --size ) {
+			K key = K();
 			ar & key;
-			set.insert(key);
+			set.insert(std::move(key));
 		}
 		return ar;
 	}

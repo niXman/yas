@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2012 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -35,11 +35,8 @@
 
 /***************************************************************************/
 
-#if defined(YAS_HAS_STD_ARRAY) || defined(YAS_HAS_BOOST_ARRAY)
-
 template<typename archive_traits>
 bool array_test(const char* archive_type, const char* io_type) {
-#if defined(YAS_HAS_STD_ARRAY)
 	std::array<int, 10> arr1 = {
 		{0,1,2,3,4,5,6,7,8,9}
 	}, arr2;
@@ -73,8 +70,6 @@ bool array_test(const char* archive_type, const char* io_type) {
 		std::cout << "ARRAY deserialization error! [2]" << std::endl;
 		return false;
 	}
-
-#endif // defined(YAS_HAS_STD_ARRAY)
 
 #if defined(YAS_HAS_BOOST_ARRAY)
 	boost::array<int, 10> arr5 = {
@@ -113,8 +108,6 @@ bool array_test(const char* archive_type, const char* io_type) {
 #endif // defined(YAS_HAS_BOOST_ARRAY)
 	return true;
 }
-
-#endif // defined(YAS_HAS_STD_ARRAY) || defined(YAS_HAS_BOOST_ARRAY)
 
 /***************************************************************************/
 

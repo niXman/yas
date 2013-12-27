@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -57,7 +57,7 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const boost::array<T, N>& array) {
-		ar & static_cast<yas::uint32_t>(N);
+		ar & static_cast<std::uint32_t>(N);
 		typename boost::array<T, N>::const_iterator it = array.begin();
 		for ( ; it != array.end(); ++it ) {
 			ar & (*it);
@@ -76,9 +76,9 @@ struct serializer<
 {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, boost::array<T, N>& array) {
-		yas::uint32_t size = 0;
+		std::uint32_t size = 0;
 		ar & size;
-		if ( size != N ) throw std::runtime_error("array size is not equal");
+		if ( size != N ) YAS_THROW_BAD_ARRAY_SIZE();
 		typename boost::array<T, N>::iterator it = array.begin();
 		for ( ; it != array.end(); ++it ) {
 			ar & (*it);

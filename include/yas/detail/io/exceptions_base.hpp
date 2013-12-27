@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2013 niXman (i dot nixman dog gmail dot com)
+// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -30,52 +30,33 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__binary_file_stream_hpp
-#define _yas__binary_file_stream_hpp
+#ifndef _yas__exceptions_base_hpp
+#define _yas__exceptions_base_hpp
 
-#include <ostream>
-#include <istream>
-
-#include <yas/detail/type_traits/properties.hpp>
+#include <yas/detail/preprocessor/stringize.hpp>
 
 namespace yas {
-namespace detail {
 
 /***************************************************************************/
 
-template<archive_type::type>
-struct ofilestream;
-
-template<>
-struct ofilestream<archive_type::binary>: std::ostream {
-	ofilestream(std::ostream& file)
-		:std::ostream(file.rdbuf())
-	{}
-
-	inline std::streamsize write(const void* ptr, yas::uint32_t size) {
-		return std::ostream::write(static_cast<const char*>(ptr), size).good() ? size : -1;
+#define YAS_DECLARE_EXCEPTION_TYPE(type) \
+	struct type: std::exception { \
+		type(const char *msg) noexcept \
+			:msg(msg) \
+		{} \
+		virtual ~type() noexcept {} \
+		\
+		virtual const char* what() const noexcept { return msg; } \
+		\
+	private: \
+		const char *msg; \
 	}
-};
+
+#define YAS_EXCEPTION_MAKE_MSG(text) \
+	__FILE__ "(" YAS_PP_STRINGIZE(__LINE__) "): " text
 
 /***************************************************************************/
 
-template<archive_type::type>
-struct ifilestream;
-
-template<>
-struct ifilestream<archive_type::binary>: std::istream {
-	ifilestream(std::istream& file)
-		:std::istream(file.rdbuf())
-	{}
-
-	inline std::streamsize read(void* ptr, yas::uint32_t size) {
-		return std::istream::read(static_cast<char*>(ptr), size).gcount();
-	}
-};
-
-/***************************************************************************/
-
-} // ns detail
 } // ns yas
 
-#endif // _yas__binary_file_stream_hpp
+#endif // _yas__exceptions_base_hpp
