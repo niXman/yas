@@ -58,28 +58,7 @@ struct mem_ostream: private detail::noncopyable {
 	{}
 
 	template<typename T>
-	std::size_t write(const T *ptr) {
-		enum { T_size = sizeof(T) };
-		if ( cur+sizeof(T) > end ) {
-			shared_buffer::shared_array_type prev = buf.data;
-			const std::size_t olds = cur - beg;
-			const std::size_t news = T_size + (olds * ((1 + std::sqrt(5)) / 1.5));
-
-			buf = shared_buffer(news);
-			std::memcpy(buf.data.get(), prev.get(), olds);
-
-			beg = buf.data.get();
-			cur = beg+olds;
-			end = beg+news;
-		}
-		*((T*)cur) = *ptr;
-		cur += T_size;
-
-		return T_size;
-	}
-
-	template<typename T>
-	std::size_t write(const T *p, const std::size_t size) {
+	std::size_t write(const T *ptr, const std::size_t size) {
 		if ( cur+size > end ) {
 			shared_buffer::shared_array_type prev = buf.data;
 			const std::size_t olds = cur - beg;
@@ -92,47 +71,27 @@ struct mem_ostream: private detail::noncopyable {
 			cur = beg+olds;
 			end = beg+news;
 		}
-		std::memcpy(cur, p, size);
 
+		switch ( size ) {
+			case sizeof(std::int8_t):
+				*cur = *((std::int8_t*)ptr);
+			break;
+			case sizeof(std::int16_t):
+				*((std::int16_t*)cur) = *((std::int16_t*)ptr);
+			break;
+			case sizeof(std::int32_t):
+				*((std::int32_t*)cur) = *((std::int32_t*)ptr);
+			break;
+			case sizeof(std::int64_t):
+				*((std::int64_t*)cur) = *((std::int64_t*)ptr);
+			break;
+			default:
+				std::memcpy(cur, ptr, size);
+		}
 		cur += size;
 
 		return size;
 	}
-
-//	std::size_t write(const void *ptr, std::size_t size) {
-//		if ( cur+size > end ) {
-//			shared_buffer::shared_array_type prev = buf.data;
-//			const std::size_t olds = cur - beg;
-//			const std::size_t news = size + (olds * ((1 + std::sqrt(5)) / 1.5));
-
-//			buf = shared_buffer(news);
-//			std::memcpy(buf.data.get(), prev.get(), olds);
-
-//			beg = buf.data.get();
-//			cur = beg+olds;
-//			end = beg+news;
-//		}
-
-//		switch ( size ) {
-//			case sizeof(std::int8_t):
-//				*cur = *((std::int8_t*)ptr);
-//			break;
-//			case sizeof(std::int16_t):
-//				*((std::int16_t*)cur) = *((std::int16_t*)ptr);
-//			break;
-//			case sizeof(std::int32_t):
-//				*((std::int32_t*)cur) = *((std::int32_t*)ptr);
-//			break;
-//			case sizeof(std::int64_t):
-//				*((std::int64_t*)cur) = *((std::int64_t*)ptr);
-//			break;
-//			default:
-//				std::memcpy(cur, ptr, size);
-//		}
-//		cur += size;
-
-//		return size;
-//	}
 
 	shared_buffer get_shared_buffer() const { return shared_buffer(beg, cur-beg); }
 	intrusive_buffer get_intrusive_buffer() const { return intrusive_buffer(beg, cur-beg); }
@@ -161,7 +120,8 @@ struct mem_istream: private detail::noncopyable {
 		,end(buf.data.get()+buf.size)
 	{}
 
-	std::size_t read(void *ptr, std::size_t size) {
+	template<typename T>
+	std::size_t read(T *ptr, const std::size_t size) {
 		const std::size_t copy = std::min(((std::size_t)(end-cur)), size);
 		switch ( copy ) {
 			case sizeof(std::int8_t):

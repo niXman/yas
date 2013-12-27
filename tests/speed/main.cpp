@@ -61,6 +61,7 @@ struct pod_type {
 	std::int16_t c;
 	std::int32_t d;
 	std::int64_t e;
+	std::size_t f;
 	float g;
 	double h;
 
@@ -72,6 +73,7 @@ struct pod_type {
 			& c
 			& d
 			& e
+			& f
 			& g
 			& h;
 	}
@@ -83,6 +85,7 @@ struct pod_type {
 			& c
 			& d
 			& e
+			& f
 			& g
 			& h;
 	}
@@ -98,12 +101,9 @@ struct test_result {
 
 /***************************************************************************/
 
-test_result boost_binary_test(const std::size_t iterations) {
-	test_result res;
+template<typename OA>
+std::chrono::milliseconds save(OA &oa, const std::size_t iterations) {
 	pod_type pt;
-	std::ostringstream os;
-	boost::archive::binary_oarchive oa(os, boost::archive::no_header);
-
 	auto s1 = std::chrono::system_clock::now();
 	for ( size_t idx = 0; idx < iterations; ++idx ) {
 		pt.a = idx;
@@ -111,57 +111,53 @@ test_result boost_binary_test(const std::size_t iterations) {
 		pt.c = idx;
 		pt.d = idx;
 		pt.e = idx;
+		pt.f = idx;
 		pt.g = idx;
 		pt.h = idx;
 		oa & pt;
 	}
-	res.save = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - s1);
+	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - s1);
+}
+
+template<typename IA>
+std::chrono::milliseconds load(IA &ia, const std::size_t iterations) {
+	pod_type pt;
+	auto s1 = std::chrono::system_clock::now();
+	for ( size_t idx = 0; idx < iterations; ++idx ) {
+		ia & pt;
+		ASSERT(pt.f == idx, "boost::binary", "load");
+	}
+	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - s1);
+}
+
+/***************************************************************************/
+
+test_result boost_binary_test(const std::size_t iterations) {
+	test_result res;
+	std::ostringstream os;
+	boost::archive::binary_oarchive oa(os, boost::archive::no_header);
+	res.save = save(oa, iterations);
+
 	res.size = os.str().length();
 
 	std::istringstream is(os.str());
 	boost::archive::binary_iarchive ia(is, boost::archive::no_header);
-	s1 = std::chrono::system_clock::now();
-	for ( size_t idx = 0; idx < iterations; ++idx ) {
-		ia & pt;
-		ASSERT(pt.e == idx, "boost::binary", "load");
-	}
-	res.load = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - s1);
+	res.load = load(ia, iterations);
 
 	return res;
 }
 
 test_result boost_text_test(const std::size_t iterations) {
 	test_result res;
-	pod_type pt;
 	std::ostringstream os;
 	boost::archive::text_oarchive oa(os, boost::archive::no_header);
+	res.save = save(oa, iterations);
 
-	auto s1 = std::chrono::system_clock::now();
-	for ( size_t idx = 0; idx < iterations; ++idx ) {
-		pt.a = idx;
-		pt.b = idx;
-		pt.c = idx;
-		pt.d = idx;
-		pt.e = idx;
-		pt.g = idx;
-		pt.h = idx;
-		oa & pt;
-//		if ( idx == 0 || idx == 1 ) {
-//			const std::string &str = os.str();
-//			std::cout << yas::hex_dump(str) << std::endl;
-//		}
-	}
-	res.save = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - s1);
 	res.size = os.str().length();
 
 	std::istringstream is(os.str());
 	boost::archive::text_iarchive ia(is, boost::archive::no_header);
-	s1 = std::chrono::system_clock::now();
-	for ( size_t idx = 0; idx < iterations; ++idx ) {
-		ia & pt;
-		ASSERT(pt.e == idx, "boost::text", "load");
-	}
-	res.load = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - s1);
+	res.load = load(ia, iterations);
 
 	return res;
 }
@@ -170,70 +166,32 @@ test_result boost_text_test(const std::size_t iterations) {
 
 test_result yas_binary_test(const std::size_t iterations) {
 	test_result res;
-	pod_type pt;
 	yas::mem_ostream os;
 	yas::binary_oarchive<yas::mem_ostream> oa(os, yas::no_header);
+	res.save = save(oa, iterations);
 
-	auto s1 = std::chrono::system_clock::now();
-	for ( size_t idx = 0; idx < iterations; ++idx ) {
-		pt.a = idx;
-		pt.b = idx;
-		pt.c = idx;
-		pt.d = idx;
-		pt.e = idx;
-		pt.g = idx;
-		pt.h = idx;
-		oa & pt;
-	}
-	res.save = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - s1);
 	res.size = os.get_intrusive_buffer().size;
 
 	const yas::intrusive_buffer buf = os.get_intrusive_buffer();
 	yas::mem_istream is(buf.data, buf.size);
 	yas::binary_iarchive<yas::mem_istream> ia(is, yas::no_header);
-	s1 = std::chrono::system_clock::now();
-	for ( size_t idx = 0; idx < iterations; ++idx ) {
-		ia & pt;
-		ASSERT(pt.e == idx, "yas::binary", "load");
-	}
-	res.load = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - s1);
+	res.load = load(ia, iterations);
 
 	return res;
 }
 
 test_result yas_text_test(const std::size_t iterations) {
 	test_result res;
-	pod_type pt;
 	yas::mem_ostream os;
 	yas::text_oarchive<yas::mem_ostream> oa(os, yas::no_header);
+	res.save = save(oa, iterations);
 
-	auto s1 = std::chrono::system_clock::now();
-	for ( size_t idx = 0; idx < iterations; ++idx ) {
-		pt.a = idx;
-		pt.b = idx+'0';
-		pt.c = idx;
-		pt.d = idx;
-		pt.e = idx;
-		pt.g = idx;
-		pt.h = idx;
-		oa & pt;
-//		if (idx == 0 || idx == 1 ) {
-//			const yas::intrusive_buffer buf = os.get_intrusive_buffer();
-//			std::cout << yas::hex_dump(buf.data, buf.size) << std::endl;
-//		}
-	}
-	res.save = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - s1);
 	res.size = os.get_intrusive_buffer().size;
 
 	const yas::intrusive_buffer buf = os.get_intrusive_buffer();
 	yas::mem_istream is(buf.data, buf.size);
 	yas::text_iarchive<yas::mem_istream> ia(is, yas::no_header);
-	s1 = std::chrono::system_clock::now();
-	for ( size_t idx = 0; idx < iterations; ++idx ) {
-		ia & pt;
-		ASSERT(pt.e == idx, "yas::text", "load");
-	}
-	res.load = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - s1);
+	res.load = load(ia, iterations);
 
 	return res;
 }
@@ -244,7 +202,7 @@ int main() {
 	setvbuf(stdout, 0, _IONBF, 0);
 	std::cout << "platform bits: " << (YAS_PLATFORM_BITS()) << std::endl;
 
-	static const std::size_t iterations = 1024*1024*10;
+	static const std::size_t iterations = 1024*1024;
 
 	try {
 		test_result bb, bt, yb, yt;

@@ -114,28 +114,28 @@ struct stream<yas::archive_type::binary, yas::direction::out, OS> {
 	// for chars & bools
 	template<typename T>
 	void write(T v, typename enable_if_is_any_of<T, char, signed char, unsigned char, bool>::type* = 0) {
-		YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v));
+		YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
 	}
 
 	// for shorts
 	template<typename T>
 	void write(T v, typename enable_if_is_any_of<T, std::int16_t, std::uint16_t>::type* = 0) {
 		YAS_LOCAL_TO_NETWORK16(v, v);
-		YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v));
+		YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
 	}
 
 	// for 32-bit ints but not for floats
 	template<typename T>
 	void write(T v, typename enable_if_is_any_of<T, std::int32_t, std::uint32_t>::type* = 0) {
 		YAS_LOCAL_TO_NETWORK32(v, v);
-		YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v));
+		YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
 	}
 
 	// for 64-bit ibts but not for floats
 	template<typename T>
 	void write(T v, typename enable_if_is_any_of<T, std::int64_t, std::uint64_t>::type* = 0) {
 		YAS_LOCAL_TO_NETWORK64(v, v);
-		YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v));
+		YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
 	}
 
 	// for floats and doubles
@@ -247,14 +247,14 @@ struct stream<yas::archive_type::text, yas::direction::out, OS> {
 	// for chars only
 	template<typename T>
 	void write(const T &v, typename enable_if_is_any_of<T, char, signed char, unsigned char>::type* = 0) {
-		YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v));
+		YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
 	}
 
 	// for bools only
 	template<typename T>
 	void write(const T &v, typename enable_if_is_any_of<T, bool>::type* = 0) {
 		const char c = v ? '1' : '0';
-		YAS_THROW_ON_WRITE_ERROR(sizeof(c), !=, os.write(&c));
+		YAS_THROW_ON_WRITE_ERROR(sizeof(c), !=, os.write(&c, sizeof(v)));
 	}
 
 	// for 16-bits/32-bits/64-bits
