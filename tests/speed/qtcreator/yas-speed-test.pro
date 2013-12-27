@@ -291,4 +291,5 @@ HEADERS += \
 	 ../../../include/yas/detail/io/io_exceptions.hpp \
 	 ../../../include/yas/detail/io/serialization_exception.hpp \
 	 ../../../include/yas/detail/io/streams.hpp \
-	 ../../../include/yas/detail/preprocessor/stringize.hpp
+	 ../../../include/yas/detail/preprocessor/stringize.hpp \
+    ../../../include/yas/detail/io/convertors.hpp

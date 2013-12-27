@@ -96,26 +96,6 @@ struct disable_if_is_any_of
 	:std::enable_if<!is_any_of<Types...>::value>
 {};
 
-//template<typename T, std::size_t N>
-//struct enable_if_is_fundamental_and_sizeof_is
-//	:std::enable_if<is_fundamental_and_sizeof_is<T, N>::value>
-//{};
-
-//template<typename T, std::size_t N>
-//struct disable_if_is_fundamental_and_sizeof_is
-//	:std::enable_if<!is_fundamental_and_sizeof_is<T, N>::value>
-//{};
-
-//template<typename T, std::size_t N, typename... Types>
-//struct enable_if_is_fundamental_and_sizeof_is_but_not_any_of
-//	:std::enable_if<is_fundamental_and_sizeof_is<T, N>::value && !is_any_of<T, Types...>::value>
-//{};
-
-//template<typename T, std::size_t N, typename... Types>
-//struct disable_if_is_fundamental_and_sizeof_is_but_not_any_of
-//	:std::enable_if<!(is_fundamental_and_sizeof_is<T, N>::value && !is_any_of<T, Types...>::value)>
-//{};
-
 /***************************************************************************/
 
 static constexpr const char space_sep = ' ';

@@ -291,7 +291,7 @@ std::uint32_t itoa(T v, char *buf) {
 /***************************************************************************/
 
 template<typename T>
-inline T atod(const char *p) {
+T atod(const char *p) {
 	T r = 0.0;
 	bool neg = false;
 	if (*p == '-') {
@@ -313,9 +313,8 @@ inline T atod(const char *p) {
 		}
 		r += f / std::pow(10.0, n);
 	}
-	if (neg) r = -r;
 
-	return r;
+	return neg ? -r : r;
 }
 
 inline void strreverse(char* begin, char* end) {
@@ -326,7 +325,7 @@ inline void strreverse(char* begin, char* end) {
 
 // from https://code.google.com/p/stringencoders/wiki/NumToA
 template<typename T>
-inline size_t modp_dtoa(T value, char* str, int prec) {
+size_t modp_dtoa(T value, char* str, int prec) {
 	static const double powers_of_10[] = {1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000};
 	 /* Hacky test for NaN
 	  * under -fast-math this won't work, but then you also won't
