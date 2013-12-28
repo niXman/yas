@@ -50,8 +50,8 @@
 
 /***************************************************************************/
 
-#define ASSERT(expr, type, dir) \
-	if ( !(expr) ) throw std::runtime_error(__FILE__ "(" YAS_PP_STRINGIZE(__LINE__) "):[" type ":" dir "]: " #expr)
+#define ASSERT(expr) \
+	if ( !(expr) ) throw std::runtime_error(__FILE__ "(" YAS_PP_STRINGIZE(__LINE__) "): \"" #expr "\"")
 
 /***************************************************************************/
 
@@ -125,7 +125,7 @@ std::chrono::milliseconds load(IA &ia, const std::size_t iterations) {
 	auto s1 = std::chrono::system_clock::now();
 	for ( size_t idx = 0; idx < iterations; ++idx ) {
 		ia & pt;
-		ASSERT(pt.f == idx, "boost::binary", "load");
+		ASSERT(pt.f == idx);
 	}
 	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - s1);
 }
