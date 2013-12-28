@@ -46,7 +46,7 @@ struct my_ostream: yas::detail::noncopyable {
 	}
 
 	std::size_t write(const void *ptr, std::size_t size) {
-		std::strncpy(cur, ((const char*)ptr), size);
+		std::memcpy(cur, ((const char*)ptr), size);
 		cur += size;
 		*cur = 0;
 		return size;
