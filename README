@@ -49,21 +49,21 @@ Planned the support for the following serializable types:
  - std::array
  - std::bitset
  - std::complex
- - std::string
- - std::wstring
- - std::pair
- - std::tuple
- - std::vector
- - std::list
  - std::forward_list
+ - std::list
  - std::map
  - std::multimap
- - std::set
  - std::multiset
+ - std::pair
+ - std::set
+ - std::string
+ - std::tuple
  - std::unordered_map
  - std::unordered_multimap
- - std::unordered_set
  - std::unordered_multiset
+ - std::unordered_set
+ - std::vector
+ - std::wstring
  - boost::array
  - boost::unordered_map
  - boost::unordered_multimap
