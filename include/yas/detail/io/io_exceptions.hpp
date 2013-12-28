@@ -35,8 +35,6 @@
 
 #include <yas/detail/io/exceptions_base.hpp>
 
-#include <stdexcept>
-
 namespace yas {
 
 /***************************************************************************/

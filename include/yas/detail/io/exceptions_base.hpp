@@ -35,6 +35,8 @@
 
 #include <yas/detail/preprocessor/stringize.hpp>
 
+#include <stdexcept>
+
 namespace yas {
 
 /***************************************************************************/
