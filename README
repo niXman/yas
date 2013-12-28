@@ -26,7 +26,7 @@ Text serialization:
 Yas is header only library. You do not need to link it with your code.
 Yas does not depend on third-party libraries or boost.
 Yas require C++11 support.
-Yas binary arcrhives is endian independent.
+Yas binary archives is endian independent.
 
 ===
 Supported the following types of archives:
