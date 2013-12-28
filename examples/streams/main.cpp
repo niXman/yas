@@ -33,6 +33,7 @@
 #include <iostream>
 
 #include <yas/text_oarchive.hpp>
+#include <yas/text_iarchive.hpp>
 
 /***************************************************************************/
 
@@ -56,14 +57,39 @@ struct my_ostream: yas::detail::noncopyable {
 	char *cur;
 };
 
+struct my_istream: yas::detail::noncopyable {
+	my_istream(const char *ptr, std::size_t size)
+		:cur(ptr)
+		,end(ptr+size)
+	{}
+
+	std::size_t read(void *ptr, std::size_t size) {
+		if ( cur+size > end ) return 0;
+		std::memcpy(ptr, cur, size);
+		cur += size;
+		return size;
+	}
+
+	const char *cur;
+	const char *end;
+};
+
 /***************************************************************************/
 
 int main() {
+	std::uint32_t v0 = 444, v1 = 0;
 	my_ostream os;
 	yas::text_oarchive<my_ostream> oa(os);
-	oa & 444;
+	oa & v0;
 
 	std::cout << "buf:" << os.buf << std::endl;
+
+	my_istream is(os.buf, os.cur-os.buf);
+	yas::text_iarchive<my_istream> ia(is);
+	ia & v1;
+
+	if ( v0 != v1 )
+		throw std::runtime_error("bad value");
 }
 
 /***************************************************************************/
