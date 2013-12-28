@@ -34,7 +34,6 @@
 #define _yas__detail__io__convertors_hpp
 
 #include <yas/detail/config/config.hpp>
-
 #include <yas/detail/type_traits/type_traits.hpp>
 
 #include <cstring>
@@ -42,72 +41,6 @@
 
 namespace yas {
 namespace detail {
-
-/***************************************************************************/
-
-#if YAS_LITTLE_ENDIAN()
-
-template<typename T>
-struct storage_type {
-	enum {
-		 is_float  = std::is_same<T, float>::value
-		,is_double = std::is_same<T, double>::value
-	};
-	static_assert(is_float||is_double,"only double or float types is allowed");
-
-	using type = typename std::conditional<
-		 is_float
-		,std::uint32_t
-		,std::uint64_t
-	>::type;
-
-	template<typename U>
-	static void bswab(U &u, typename std::enable_if<std::is_same<U, std::uint32_t>::value>::type* = 0) {
-		YAS_NETWORK_TO_LOCAL32(u, u);
-	}
-	template<typename U>
-	static void bswab(U &u, typename std::enable_if<std::is_same<U, std::uint64_t>::value>::type* = 0) {
-		YAS_NETWORK_TO_LOCAL64(u, u);
-	}
-};
-
-template<typename T>
-void to_network(std::uint8_t *dst, const T &v) {
-	union {
-		typename storage_type<T>::type u;
-		T v;
-	} u;
-	u.v = v;
-
-	storage_type<T>::bswab(u.u);
-	std::memcpy(dst, &u.u, sizeof(T));
-}
-
-template<typename T>
-void from_network(T &v, const std::uint8_t *src) {
-	union {
-		typename storage_type<T>::type u;
-		T v;
-	} u;
-
-	std::memcpy(&u.u, src, sizeof(v));
-	storage_type<T>::bswab(u.u);
-	v = u.v;
-}
-
-#else
-
-template<typename T>
-void to_network(std::uint8_t *dst, const T &v) {
-	*((T*)dst) = v;
-}
-
-template<typename T>
-void from_network(T &v, const std::uint8_t *src) {
-	v = *((T*)src);
-}
-
-#endif
 
 /***************************************************************************/
 

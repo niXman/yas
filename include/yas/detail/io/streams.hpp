@@ -37,6 +37,7 @@
 
 #include <yas/detail/io/io_exceptions.hpp>
 #include <yas/detail/io/convertors.hpp>
+#include <yas/detail/io/endian_conv.hpp>
 #include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/type_traits.hpp>
 
@@ -93,7 +94,7 @@ struct stream<yas::archive_type::binary, yas::direction::in, IS> {
 	void read(T &v, typename enable_if_is_any_of<T, float, double>::type* = 0) {
 		std::uint8_t buf[sizeof(T)];
 		YAS_THROW_ON_READ_ERROR(sizeof(T), !=, is.read(buf, sizeof(buf)));
-		from_network(v, buf);
+		endian_convertor<YAS_LITTLE_ENDIAN()>::from_network(v, buf);
 	}
 
 private:
@@ -142,7 +143,7 @@ struct stream<yas::archive_type::binary, yas::direction::out, OS> {
 	template<typename T>
 	void write(const T &v, typename enable_if_is_any_of<T, float, double>::type* = 0) {
 		std::uint8_t buf[sizeof(T)];
-		to_network(buf, v);
+		endian_convertor<YAS_LITTLE_ENDIAN()>::to_network(buf, v);
 		YAS_THROW_ON_WRITE_ERROR(sizeof(buf), !=, os.write(buf, sizeof(buf)));
 	}
 
@@ -162,7 +163,7 @@ private:
 			break; \
 		} else { \
 			++cnt; \
-		}\
+		} \
 	}
 
 template<typename IS>
