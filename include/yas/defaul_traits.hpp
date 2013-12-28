@@ -49,9 +49,9 @@ struct default_traits {
 	static void atoi(T &v, const char *str, std::size_t size);
 
 	template<typename T>
-	static void utoa(char *str, std::size_t &size, T v);
+	static void utoa(char *buf, const std::size_t bufsize, std::size_t &len, T v);
 	template<typename T>
-	static void itoa(char *str, std::size_t &size, T v);
+	static void itoa(char *buf, const std::size_t bufsize, std::size_t &len, T v);
 
 	template<typename T>
 	static void atof(T &v, const char *str, std::size_t size);
@@ -59,9 +59,9 @@ struct default_traits {
 	static void atod(T &v, const char *str, std::size_t size);
 
 	template<typename T>
-	static void ftoa(char *str, std::size_t &size, T v);
+	static void ftoa(char *buf, const std::size_t bufsize, std::size_t &len, T v);
 	template<typename T>
-	static void dtoa(char *str, std::size_t &size, T v);
+	static void dtoa(char *buf, const std::size_t bufsize, std::size_t &len, T v);
 }; // struct default_traits
 
 /***************************************************************************/
@@ -129,18 +129,18 @@ void default_traits::atoi(T &v, const char *str, std::size_t size) {
 /***************************************************************************/
 
 template<typename T>
-void default_traits::utoa(char *str, std::size_t &size, T v) {
-	size = 1;
+void default_traits::utoa(char *buf, const std::size_t, std::size_t &len, T v) {
+	len = 1;
 	T t = v;
-	if ( t >= 10000000000000000ull ) { size += 16; t /= 10000000000000000ull; }
-	if ( t >= 100000000 ) { size += 8; t /= 100000000; }
-	if ( t >= 10000 ) { size += 4; t /= 10000; }
-	if ( t >= 100 ) { size += 2; t /= 100; }
-	if ( t >= 10 ) { size += 1; }
+	if ( t >= 10000000000000000ull ) { len += 16; t /= 10000000000000000ull; }
+	if ( t >= 100000000 ) { len += 8; t /= 100000000; }
+	if ( t >= 10000 ) { len += 4; t /= 10000; }
+	if ( t >= 100 ) { len += 2; t /= 100; }
+	if ( t >= 10 ) { len += 1; }
 
-	*(str+size) = 0;
-	char *p = str+size-1;
-	switch ( size ) {
+	*(buf+len) = 0;
+	char *p = buf+len-1;
+	switch ( len ) {
 		case 20: *p-- = '0' + (v % 10); v /= 10;
 		case 19: *p-- = '0' + (v % 10); v /= 10;
 		case 18: *p-- = '0' + (v % 10); v /= 10;
@@ -164,20 +164,20 @@ void default_traits::utoa(char *str, std::size_t &size, T v) {
 	}
 }
 template<typename T>
-void default_traits::itoa(char *str, std::size_t &size, T v) {
-	if ( v < 0 ) { *str++ = '-'; }
+void default_traits::itoa(char *buf, const std::size_t, std::size_t &len, T v) {
+	if ( v < 0 ) { *buf++ = '-'; }
 	T t = v = std::abs(v);
 
-	size = 1;
-	if ( t >= 10000000000000000ll ) { size += 16; t /= 10000000000000000ll; }
-	if ( t >= 100000000 ) { size += 8; t /= 100000000; }
-	if ( t >= 10000 ) { size += 4; t /= 10000; }
-	if ( t >= 100 ) { size += 2; t /= 100; }
-	if ( t >= 10 ) { size += 1; }
+	len = 1;
+	if ( t >= 10000000000000000ll ) { len += 16; t /= 10000000000000000ll; }
+	if ( t >= 100000000 ) { len += 8; t /= 100000000; }
+	if ( t >= 10000 ) { len += 4; t /= 10000; }
+	if ( t >= 100 ) { len += 2; t /= 100; }
+	if ( t >= 10 ) { len += 1; }
 
-	*(str+size) = 0;
-	char *p = str+size-1;
-	switch ( size ) {
+	*(buf+len) = 0;
+	char *p = buf+len-1;
+	switch ( len ) {
 		case 19: *p-- = '0' + (v % 10); v /= 10;
 		case 18: *p-- = '0' + (v % 10); v /= 10;
 		case 17: *p-- = '0' + (v % 10); v /= 10;
@@ -237,8 +237,8 @@ void default_traits::atod(T &v, const char *str, std::size_t size) {
 /***************************************************************************/
 
 template<typename T>
-void default_traits::ftoa(char *str, std::size_t &size, T v) {
-	default_traits::dtoa(str, size, v);
+void default_traits::ftoa(char *buf, const std::size_t bufsize, std::size_t &len, T v) {
+	default_traits::dtoa(buf, bufsize, len, v);
 }
 
 inline void strreverse(char* begin, char* end) {
@@ -250,7 +250,7 @@ inline void strreverse(char* begin, char* end) {
 }
 
 template<typename T>
-void default_traits::dtoa(char *str, std::size_t &size, T v) {
+void default_traits::dtoa(char *buf, const std::size_t, std::size_t &len, T v) {
 	std::size_t prec = 3;
 	// from: https://code.google.com/p/stringencoders/wiki/NumToA
 	static const double powers_of_10[] = {1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000};
@@ -260,14 +260,14 @@ void default_traits::dtoa(char *str, std::size_t &size, T v) {
 	  * to link with libmath (bad) or hack IEEE double bits (bad)
 	  */
 	if (! (v == v)) {
-		str[0] = 'n'; str[1] = 'a'; str[2] = 'n'; str[3] = '\0';
-		size = 3;
+		buf[0] = 'n'; buf[1] = 'a'; buf[2] = 'n'; buf[3] = '\0';
+		len = 3;
 	}
 	/* if input is larger than thres_max, revert to exponential */
 	const double thres_max = (double)(0x7FFFFFFF);
 
 	double diff = 0.0;
-	char* wstr = str;
+	char* wstr = buf;
 
 	if (prec < 0) {
 		prec = 0;
@@ -311,8 +311,8 @@ void default_traits::dtoa(char *str, std::size_t &size, T v) {
 		which can be 100s of characters overflowing your buffers == bad
 	 */
 	if (v > thres_max) {
-		sprintf(str, "%e", neg ? -v : v);
-		size = strlen(str);
+		sprintf(buf, "%e", neg ? -v : v);
+		len = strlen(buf);
 	}
 
 	if (prec == 0) {
@@ -346,8 +346,8 @@ void default_traits::dtoa(char *str, std::size_t &size, T v) {
 		*wstr++ = '-';
 	}
 	*wstr='\0';
-	strreverse(str, wstr-1);
-	size = (wstr - str);
+	strreverse(buf, wstr-1);
+	len = (wstr - buf);
 }
 
 /***************************************************************************/
