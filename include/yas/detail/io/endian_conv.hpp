@@ -36,6 +36,8 @@
 #include <yas/detail/config/config.hpp>
 #include <yas/detail/type_traits/type_traits.hpp>
 
+#include <cstring>
+
 namespace yas {
 namespace detail {
 

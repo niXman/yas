@@ -41,7 +41,8 @@
 #include <yas/detail/type_traits/selector.hpp>
 
 #include <yas/detail/io/information.hpp>
-#include <yas/detail/io/streams.hpp>
+#include <yas/detail/io/text_streams.hpp>
+#include <yas/defaul_traits.hpp>
 
 #include <yas/detail/base_object.hpp>
 
@@ -59,16 +60,17 @@ namespace yas {
 
 /***************************************************************************/
 
-template<typename IS>
+template<typename IS, typename Trait = yas::detail::default_traits>
 struct text_iarchive
-	:detail::stream<archive_type::text, direction::in, IS>
+	:detail::text_istream<IS, Trait>
 	,detail::archive_information<archive_type::text, direction::in, IS>
 	,private detail::noncopyable
 {
 	using stream_type = IS;
+	using this_type = text_iarchive<IS, Trait>;
 
 	text_iarchive(IS &is, header_flag op = with_header)
-		:detail::stream<archive_type::text, direction::in, IS>(is)
+		:detail::text_istream<IS, Trait>(is)
 		,detail::archive_information<archive_type::text, direction::in, IS>(is, op)
 	{}
 
@@ -77,7 +79,7 @@ struct text_iarchive
 		using namespace detail;
 		return serializer<
 			type_properties<T>::value,
-			serialization_method<T, text_iarchive<IS>>::value,
+			serialization_method<T, this_type>::value,
 			archive_type::text,
 			direction::in,
 			T

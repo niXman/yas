@@ -63,7 +63,7 @@ bool pod_test(const char* archive_type, const char* io_type) {
 			+sizeof(ui64)
 			+sizeof(f)
 			+sizeof(d)
-		,text_expected_size = 30
+		,text_expected_size = 28
 		,json_expected_size = 0
 	};
 

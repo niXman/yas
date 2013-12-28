@@ -322,13 +322,15 @@ HEADERS += \
 	 ../include/endian.hpp \
 	 ../../../include/yas/file_streams.hpp \
 	 ../../../include/yas/mem_streams.hpp \
-	 ../../../include/yas/detail/io/streams.hpp \
 	 ../../../include/yas/detail/io/exceptions_base.hpp \
 	 ../../../include/yas/detail/io/io_exceptions.hpp \
 	 ../../../include/yas/detail/io/serialization_exception.hpp \
-    ../../../include/yas/detail/io/convertors.hpp \
-    ../include/complex.hpp \
-    ../../../include/yas/serializers/binary/std/std_complex_serializers.hpp \
-    ../../../include/yas/serializers/json/std/std_complex_serializers.hpp \
-    ../../../include/yas/serializers/text/std/std_complex_serializers.hpp \
-    ../../../include/yas/detail/io/endian_conv.hpp
+	 ../include/complex.hpp \
+	 ../../../include/yas/serializers/binary/std/std_complex_serializers.hpp \
+	 ../../../include/yas/serializers/json/std/std_complex_serializers.hpp \
+	 ../../../include/yas/serializers/text/std/std_complex_serializers.hpp \
+	 ../../../include/yas/detail/io/endian_conv.hpp \
+	 ../../../include/yas/detail/io/binary_streams.hpp \
+	 ../../../include/yas/detail/io/json_streams.hpp \
+	 ../../../include/yas/detail/io/text_streams.hpp \
+	 ../../../include/yas/defaul_traits.hpp

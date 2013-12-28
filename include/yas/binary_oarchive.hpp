@@ -41,7 +41,7 @@
 #include <yas/detail/type_traits/selector.hpp>
 
 #include <yas/detail/io/information.hpp>
-#include <yas/detail/io/streams.hpp>
+#include <yas/detail/io/binary_streams.hpp>
 
 #include <yas/detail/base_object.hpp>
 
@@ -61,14 +61,15 @@ namespace yas {
 
 template<typename OS>
 struct binary_oarchive
-	:detail::stream<archive_type::binary, direction::out, OS>
+	:detail::binary_ostream<OS>
 	,detail::archive_information<archive_type::binary, direction::out, OS>
 	,private detail::noncopyable
 {
 	using stream_type = OS;
+	using this_type = binary_oarchive<OS>;
 
 	binary_oarchive(OS &os, header_flag op = with_header)
-		:detail::stream<archive_type::binary, direction::out, OS>(os)
+		:detail::binary_ostream<OS>(os)
 		,detail::archive_information<archive_type::binary, direction::out, OS>(os, op)
 	{}
 
@@ -77,7 +78,7 @@ struct binary_oarchive
 		using namespace detail;
 		return serializer<
 			type_properties<T>::value,
-			serialization_method<T, binary_oarchive<OS>>::value,
+			serialization_method<T, this_type>::value,
 			archive_type::binary,
 			direction::out,
 			T

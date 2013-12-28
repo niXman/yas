@@ -39,8 +39,6 @@
 #include <yas/detail/config/config.hpp>
 
 #include <yas/detail/io/io_exceptions.hpp>
-#include <yas/detail/io/streams.hpp>
-
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/preprocessor/preprocessor.hpp>

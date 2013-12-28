@@ -30,63 +30,33 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__json_iarchive_hpp
-#define _yas__json_iarchive_hpp
+#ifndef _yas__detail__io__json_streams_hpp
+#define _yas__detail__io__json_streams_hpp
 
-#include <yas/detail/type_traits/properties.hpp>
-#include <yas/detail/type_traits/has_method_serialize.hpp>
-#include <yas/detail/type_traits/has_function_serialize.hpp>
-#include <yas/detail/type_traits/selector.hpp>
-
-#include <yas/detail/io/information.hpp>
-#include <yas/detail/io/json_streams.hpp>
-
-#include <yas/detail/base_object.hpp>
-#include <yas/defaul_traits.hpp>
-
-#include <yas/serializers/serializer.hpp>
-#include <yas/serializers/json/utility/pod_serializers.hpp>
-#include <yas/serializers/json/utility/enum_serializer.hpp>
-#include <yas/serializers/json/utility/usertype_serializers.hpp>
-#include <yas/serializers/json/utility/autoarray_serializers.hpp>
-#include <yas/serializers/json/utility/buffer_serializers.hpp>
-
-#include <yas/detail/tools/buffers.hpp>
-#include <yas/detail/tools/noncopyable.hpp>
+#include <yas/detail/io/text_streams.hpp>
 
 namespace yas {
+namespace detail {
 
 /***************************************************************************/
 
 template<typename IS, typename Trait>
-struct json_iarchive
-	:detail::json_istream<IS, Trait>
-	,detail::archive_information<archive_type::json, direction::in, IS>
-	,private detail::noncopyable
-{
-	using stream_type = IS;
-	using this_type = json_iarchive<IS, Trait>;
-
-	json_iarchive(IS &is, header_flag op = with_header)
-		:detail::json_istream<IS, Trait>(is)
-		,detail::archive_information<archive_type::json, direction::in, IS>(is, op)
+struct json_istream: text_istream<IS, Trait> {
+	json_istream(IS &is)
+		:text_istream<IS, Trait>(is)
 	{}
+};
 
-	template<typename T>
-	json_iarchive& operator& (T& v) {
-		using namespace detail;
-		return serializer<
-			type_properties<T>::value,
-			serialization_method<T, this_type>::value,
-			archive_type::json,
-			direction::in,
-			T
-		>::apply(*this, v);
-	}
+template<typename OS, typename Trait>
+struct json_ostream: text_ostream<OS, Trait> {
+	json_ostream(OS &os)
+		:text_ostream<OS, Trait>(os)
+	{}
 };
 
 /***************************************************************************/
 
-} // namespace yas
+} // ns detail
+} // ns yas
 
-#endif // _yas__json_iarchive_hpp
+#endif // _yas__detail__io__json_streams_hpp

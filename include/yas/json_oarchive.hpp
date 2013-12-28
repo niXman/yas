@@ -39,9 +39,10 @@
 #include <yas/detail/type_traits/selector.hpp>
 
 #include <yas/detail/io/information.hpp>
-#include <yas/detail/io/streams.hpp>
+#include <yas/detail/io/json_streams.hpp>
 
 #include <yas/detail/base_object.hpp>
+#include <yas/defaul_traits.hpp>
 
 #include <yas/serializers/serializer.hpp>
 #include <yas/serializers/json/utility/pod_serializers.hpp>
@@ -57,16 +58,17 @@ namespace yas {
 
 /***************************************************************************/
 
-template<typename OS>
+template<typename OS, typename Trait = yas::detail::default_traits>
 struct json_oarchive
-	:detail::stream<archive_type::json, direction::out, OS>
+	:detail::json_ostream<OS, Trait>
 	,detail::archive_information<archive_type::json, direction::out, OS>
 	,private detail::noncopyable
 {
 	using stream_type = OS;
+	using this_type = json_oarchive<OS, Trait>;
 
 	json_oarchive(OS &os, header_flag op = with_header)
-		:detail::stream<archive_type::json, direction::out, OS>(os)
+		:detail::json_ostream<OS, Trait>(os)
 		,detail::archive_information<archive_type::json, direction::out, OS>(os, op)
 	{}
 
@@ -75,7 +77,7 @@ struct json_oarchive
 		using namespace detail;
 		return serializer<
 			type_properties<T>::value,
-			serialization_method<T, json_oarchive>::value,
+			serialization_method<T, this_type>::value,
 			archive_type::json,
 			direction::out,
 			T
