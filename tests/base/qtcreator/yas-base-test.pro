@@ -326,4 +326,8 @@ HEADERS += \
 	 ../../../include/yas/detail/io/exceptions_base.hpp \
 	 ../../../include/yas/detail/io/io_exceptions.hpp \
 	 ../../../include/yas/detail/io/serialization_exception.hpp \
-    ../../../include/yas/detail/io/convertors.hpp
+    ../../../include/yas/detail/io/convertors.hpp \
+    ../include/complex.hpp \
+    ../../../include/yas/serializers/binary/std/std_complex_serializers.hpp \
+    ../../../include/yas/serializers/json/std/std_complex_serializers.hpp \
+    ../../../include/yas/serializers/text/std/std_complex_serializers.hpp

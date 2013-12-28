@@ -43,6 +43,10 @@
 #include <yas/serializers/text/std/std_bitset_serializers.hpp>
 #include <yas/serializers/json/std/std_bitset_serializers.hpp>
 
+#include <yas/serializers/binary/std/std_complex_serializers.hpp>
+#include <yas/serializers/text/std/std_complex_serializers.hpp>
+#include <yas/serializers/json/std/std_complex_serializers.hpp>
+
 #include <yas/serializers/binary/std/std_string_serializers.hpp>
 #include <yas/serializers/text/std/std_string_serializers.hpp>
 #include <yas/serializers/json/std/std_string_serializers.hpp>

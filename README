@@ -48,6 +48,7 @@ Planned the support for the following serializable types:
  - enum`s and 'enum class'es
  - std::array
  - std::bitset
+ - std::complex
  - std::string
  - std::wstring
  - std::pair
