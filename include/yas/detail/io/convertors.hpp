@@ -53,7 +53,7 @@ struct storage_type {
 		 is_float  = std::is_same<T, float>::value
 		,is_double = std::is_same<T, double>::value
 	};
-	static_assert(is_float||is_double,"only double or float types allowed");
+	static_assert(is_float||is_double,"only double or float types is allowed");
 
 	using type = typename std::conditional<
 		 is_float
@@ -104,7 +104,7 @@ void to_network(std::uint8_t *dst, const T &v) {
 
 template<typename T>
 void from_network(T &v, const std::uint8_t *src) {
-	v = ((T*)src);
+	v = *((T*)src);
 }
 
 #endif
