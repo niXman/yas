@@ -88,8 +88,6 @@ struct binary_list_deserializer {
 
 /***************************************************************************/
 
-#define YAS__BINARY__READ_AND_CHECK_FUSION_LIST_SIZE(count) \
-
 #define YAS__BINARY__GENERATE_EMPTY_SAVE_SERIALIZE_LIST_SPEC_VARIADIC() \
 	template<> \
 	struct serializer<type_prop::not_a_pod, ser_method::use_internal_serializer, \
@@ -114,8 +112,7 @@ struct binary_list_deserializer {
 		archive_type::binary, direction::out, boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
 	{ \
 		template<typename Archive> \
-		static Archive& apply(Archive& ar, \
-			const boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& list) \
+		static Archive& apply(Archive& ar, const boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& list) \
 		{ \
 			ar.write((std::uint8_t)YAS_PP_INC(count)); \
 			boost::fusion::for_each(list, detail::binary_list_serializer<Archive>(ar)); \
@@ -137,8 +134,7 @@ struct binary_list_deserializer {
 		archive_type::binary, direction::in, boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
 	{ \
 		template<typename Archive> \
-		static Archive& apply(Archive& ar, \
-			boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& list) \
+		static Archive& apply(Archive& ar, boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& list) \
 		{ \
 			std::uint8_t size = 0; \
 			ar.read(size); \

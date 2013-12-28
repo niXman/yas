@@ -33,7 +33,6 @@
 #ifndef _yas__hexdumper_hpp
 #define _yas__hexdumper_hpp
 
-#include <iostream>
 #include <sstream>
 #include <iomanip>
 

@@ -292,4 +292,10 @@ HEADERS += \
 	 ../../../include/yas/detail/io/serialization_exception.hpp \
 	 ../../../include/yas/detail/io/streams.hpp \
 	 ../../../include/yas/detail/preprocessor/stringize.hpp \
-    ../../../include/yas/detail/io/convertors.hpp
+    ../../../include/yas/detail/io/binary_streams.hpp \
+    ../../../include/yas/detail/io/endian_conv.hpp \
+    ../../../include/yas/detail/io/json_streams.hpp \
+    ../../../include/yas/detail/io/text_streams.hpp \
+    ../../../include/yas/serializers/binary/std/std_complex_serializers.hpp \
+    ../../../include/yas/serializers/json/std/std_complex_serializers.hpp \
+    ../../../include/yas/serializers/text/std/std_complex_serializers.hpp
