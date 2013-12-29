@@ -57,6 +57,9 @@ namespace yas {
 #define YAS_EXCEPTION_MAKE_MSG(text) \
 	__FILE__ "(" YAS_PP_STRINGIZE(__LINE__) "): " text
 
+#define YAS_THROW_EXCEPTION(type, msg) \
+	throw type(YAS_EXCEPTION_MAKE_MSG(msg))
+
 /***************************************************************************/
 
 } // ns yas
