@@ -47,8 +47,9 @@ struct my_ostream: yas::mem_ostream {
 	{}
 
 	std::size_t write(const void *ptr, std::size_t size) {
+		const char *sp = ((const char*)ptr);
 		for ( std::size_t idx = 0; idx < size; ++idx ) {
-			const char ch = *((const char*)ptr) ^ key;
+			const char ch = *sp++ ^ key;
 			yas::mem_ostream::write(&ch, sizeof(ch));
 		}
 		return size;
@@ -69,7 +70,8 @@ struct my_istream: yas::mem_istream {
 		for ( std::size_t idx = 0; idx < size; ++idx ) {
 			char ch = 0;
 			yas::mem_istream::read(&ch, sizeof(ch));
-			*sp++ = ch ^ key;
+			ch ^= key;
+			*sp++ = ch;
 		}
 		return size;
 	}
