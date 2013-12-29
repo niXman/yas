@@ -43,18 +43,26 @@ struct my_traits {
 		size = std::snprintf(buf, bufsize, "%d", v);
 	}
 };
+struct my_traits2 {
+	static void atoi(std::int32_t &v, const char *str, std::size_t) {
+		v = std::strtol(str, 0, 10);
+	}
+};
 
 /***************************************************************************/
 
 int main() {
+	std::int32_t src = 33, dst = 0;
 	yas::mem_ostream os;
 	yas::text_oarchive<yas::mem_ostream, my_traits> oa(os);
-	oa & 33;
+	oa & src;
 
-	const yas::intrusive_buffer buf = os.get_intrusive_buffer();
-	std::cout << "buf:";
-	std::cout.write(buf.data, buf.size);
-	std::cout << std::endl;
+	yas::mem_istream is(os.get_intrusive_buffer());
+	yas::text_iarchive<yas::mem_istream, my_traits2> ia(is);
+	ia & dst;
+
+	if ( src != dst )
+		throw std::runtime_error(YAS_EXCEPTION_MAKE_MSG("bad data"));
 }
 
 /***************************************************************************/
