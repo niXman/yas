@@ -333,4 +333,5 @@ HEADERS += \
 	 ../../../include/yas/detail/io/binary_streams.hpp \
 	 ../../../include/yas/detail/io/json_streams.hpp \
 	 ../../../include/yas/detail/io/text_streams.hpp \
-	 ../../../include/yas/defaul_traits.hpp
+	 ../../../include/yas/defaul_traits.hpp \
+    ../../../include/yas/std_traits.hpp
