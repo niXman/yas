@@ -55,7 +55,7 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static Archive& apply(Archive& ar, const U(&v)[N], typename enable_if_is_any_of<U, char, signed char, unsigned char>::type* = 0) {
+	static Archive& apply(Archive& ar, const U(&v)[N], ENABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char)) {
 		ar.write((std::uint32_t)N-1);
 		ar.write(space_sep);
 		ar.write(v, N-1);
@@ -67,7 +67,7 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static Archive& apply(Archive& ar, const U(&v)[N], typename enable_if_is_any_of<U, bool>::type* = 0) {
+	static Archive& apply(Archive& ar, const U(&v)[N], ENABLE_IF_IS_ANY_OF(U, bool)) {
 		ar.write((std::uint32_t)N-1);
 		ar.write(space_sep);
 		for ( const auto &it: v ) {
@@ -81,7 +81,7 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static Archive& apply(Archive& ar, const U(&v)[N], typename disable_if_is_any_of<U, char, signed char, unsigned char, bool>::type* = 0) {
+	static Archive& apply(Archive& ar, const U(&v)[N], DISABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char, bool)) {
 		ar.write((std::uint32_t)N);
 		ar.write(space_sep);
 		for ( const auto &it: v ) {
@@ -104,7 +104,7 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static Archive& apply(Archive& ar, U(&v)[N], typename enable_if_is_any_of<U, char, signed char, unsigned char>::type* = 0) {
+	static Archive& apply(Archive& ar, U(&v)[N], ENABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char)) {
 		std::uint32_t size = 0;
 		ar.read(size);
 		if ( size != N-1 ) YAS_THROW_BAD_ARRAY_SIZE();
@@ -119,7 +119,7 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static Archive& apply(Archive& ar, U(&v)[N], typename enable_if_is_any_of<U, bool>::type* = 0) {
+	static Archive& apply(Archive& ar, U(&v)[N], ENABLE_IF_IS_ANY_OF(U, bool)) {
 		std::uint32_t size = 0;
 		ar.read(size);
 		if ( size != N ) YAS_THROW_BAD_ARRAY_SIZE();
@@ -135,7 +135,7 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static Archive& apply(Archive& ar, U(&v)[N], typename disable_if_is_any_of<U, char, signed char, unsigned char, bool>::type* = 0) {
+	static Archive& apply(Archive& ar, U(&v)[N], DISABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char, bool)) {
 		std::uint32_t size = 0;
 		ar.read(size);
 		if ( size != N ) YAS_THROW_BAD_ARRAY_SIZE();

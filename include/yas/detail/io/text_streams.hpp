@@ -91,13 +91,13 @@ struct text_istream {
 
 	// for chars only
 	template<typename T>
-	void read(T &v, typename enable_if_is_any_of<T, char, signed char, unsigned char>::type* = 0) {
+	void read(T &v, ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char)) {
 		YAS_THROW_ON_READ_ERROR(sizeof(v), !=, is.read(&v, sizeof(v)));
 	}
 
 	// for bools only
 	template<typename T>
-	void read(T &v, typename enable_if_is_any_of<T, bool>::type* = 0) {
+	void read(T &v, ENABLE_IF_IS_ANY_OF(T, bool)) {
 		const char ch = getch();
 		if ( ch == EOF ) return;
 		v = (ch == '1' ? true : false);
@@ -105,7 +105,7 @@ struct text_istream {
 
 	// for signed 16/32/64 bits
 	template<typename T>
-	void read(T &v, typename enable_if_is_any_of<T, std::int16_t, std::int32_t, std::int64_t>::type* = 0) {
+	void read(T &v, ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t)) {
 		char buf[sizeof(T)*4] = "\0";
 		std::size_t cnt = 0;
 		YAS_READ_BY_CHAR(buf, cnt)
@@ -114,7 +114,7 @@ struct text_istream {
 
 	// for unsigned 16/32/64 bits
 	template<typename T>
-	void read(T &v, typename enable_if_is_any_of<T, std::uint16_t, std::uint32_t, std::uint64_t>::type* = 0) {
+	void read(T &v, ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
 		char buf[sizeof(T)*4] = "\0";
 		std::size_t cnt = 0;
 		YAS_READ_BY_CHAR(buf, cnt)
@@ -123,7 +123,7 @@ struct text_istream {
 
 	// for floats
 	template<typename T>
-	void read(T &v, typename enable_if_is_any_of<T, float>::type* = 0) {
+	void read(T &v, ENABLE_IF_IS_ANY_OF(T, float)) {
 		char buf[std::numeric_limits<T>::max_exponent10+20] = "\0";
 		std::size_t cnt = 0;
 		YAS_READ_BY_CHAR(buf, cnt)
@@ -132,7 +132,7 @@ struct text_istream {
 
 	// for doubles
 	template<typename T>
-	void read(T &v, typename enable_if_is_any_of<T, double>::type* = 0) {
+	void read(T &v, ENABLE_IF_IS_ANY_OF(T, double)) {
 		char buf[std::numeric_limits<T>::max_exponent10+20] = "\0";
 		std::size_t cnt = 0;
 		YAS_READ_BY_CHAR(buf, cnt)
@@ -159,20 +159,20 @@ struct text_ostream {
 
 	// for chars only
 	template<typename T>
-	void write(const T &v, typename enable_if_is_any_of<T, char, signed char, unsigned char>::type* = 0) {
+	void write(const T &v, ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char)) {
 		YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
 	}
 
 	// for bools only
 	template<typename T>
-	void write(const T &v, typename enable_if_is_any_of<T, bool>::type* = 0) {
+	void write(const T &v, ENABLE_IF_IS_ANY_OF(T, bool)) {
 		const char c = v ? '1' : '0';
 		YAS_THROW_ON_WRITE_ERROR(sizeof(c), !=, os.write(&c, sizeof(v)));
 	}
 
 	// for signed 16/32/64 bits
 	template<typename T>
-	void write(const T &v, typename enable_if_is_any_of<T, std::int16_t, std::int32_t, std::int64_t>::type* = 0) {
+	void write(const T &v, ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t)) {
 		char buf[sizeof(T)*4] = "\0";
 		std::size_t len = 0;
 		Trait::itoa(buf, sizeof(buf), len, v);
@@ -181,7 +181,7 @@ struct text_ostream {
 
 	// for unsigned 16/32/64 bits
 	template<typename T>
-	void write(const T &v, typename enable_if_is_any_of<T, std::uint16_t, std::uint32_t, std::uint64_t>::type* = 0) {
+	void write(const T &v, ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
 		char buf[sizeof(T)*4] = "\0";
 		std::size_t len = 0;
 		Trait::utoa(buf, sizeof(buf), len, v);
@@ -190,7 +190,7 @@ struct text_ostream {
 
 	// for floats
 	template<typename T>
-	void write(const T &v, typename enable_if_is_any_of<T, float>::type* = 0) {
+	void write(const T &v, ENABLE_IF_IS_ANY_OF(T, float)) {
 		char buf[std::numeric_limits<T>::max_exponent10 + 20] = "\0";
 		std::size_t len = 0;
 		Trait::ftoa(buf, sizeof(buf), len, v);
@@ -199,7 +199,7 @@ struct text_ostream {
 
 	// for doubles
 	template<typename T>
-	void write(const T &v, typename enable_if_is_any_of<T, double>::type* = 0) {
+	void write(const T &v, ENABLE_IF_IS_ANY_OF(T, double)) {
 		char buf[std::numeric_limits<T>::max_exponent10 + 20] = "\0";
 		std::size_t len = 0;
 		Trait::dtoa(buf, sizeof(buf), len, v);

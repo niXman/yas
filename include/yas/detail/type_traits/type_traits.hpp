@@ -96,6 +96,12 @@ struct disable_if_is_any_of
 	:std::enable_if<!is_any_of<Types...>::value>
 {};
 
+#define ENABLE_IF_IS_ANY_OF(T, ...) \
+	typename ::yas::detail::enable_if_is_any_of<T, __VA_ARGS__>::type* = 0
+
+#define DISABLE_IF_IS_ANY_OF(T, ...) \
+	typename ::yas::detail::disable_if_is_any_of<T, __VA_ARGS__>::type* = 0
+
 /***************************************************************************/
 
 static constexpr const char space_sep = ' ';
