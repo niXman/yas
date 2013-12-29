@@ -75,7 +75,7 @@ int main() {
 
 
 	if ( t2.d != 141733920801 )
-		throw std::runtime_error("bad data");
+		YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
 }
 
 /***************************************************************************/

@@ -77,7 +77,7 @@ int main() {
 
 	type t3;
 	if ( t2.i != t3.i || t2.d != t3.d || t2.s != t3.s || t2.v != t3.v )
-		throw std::runtime_error("bad data");
+		YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
 }
 
 /***************************************************************************/

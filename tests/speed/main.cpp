@@ -51,7 +51,7 @@
 /***************************************************************************/
 
 #define ASSERT(expr) \
-	if ( !(expr) ) throw std::runtime_error(__FILE__ "(" YAS_PP_STRINGIZE(__LINE__) "): \"" #expr "\"")
+	if ( !(expr) ) YAS_THROW_EXCEPTION(std::runtime_error, #expr)
 
 /***************************************************************************/
 

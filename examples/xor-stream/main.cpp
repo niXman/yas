@@ -94,7 +94,7 @@ int main() {
 	ia & dst;
 
 	if ( src != dst )
-		throw std::runtime_error("bad data");
+		YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
 }
 
 /***************************************************************************/

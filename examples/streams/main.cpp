@@ -89,7 +89,7 @@ int main() {
 	ia & v1;
 
 	if ( v0 != v1 )
-		throw std::runtime_error("bad value");
+		YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
 }
 
 /***************************************************************************/
