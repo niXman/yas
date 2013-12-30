@@ -1,4 +1,3 @@
-
 // Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
@@ -53,7 +52,7 @@ struct my_ostream: yas::detail::noncopyable {
 		return size;
 	}
 
-	char buf[1024];
+	char buf[bufsize];
 	char *cur;
 };
 
