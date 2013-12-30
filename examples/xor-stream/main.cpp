@@ -1,4 +1,3 @@
-
 // Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
@@ -70,8 +69,7 @@ struct my_istream: yas::mem_istream {
 		for ( std::size_t idx = 0; idx < size; ++idx ) {
 			char ch = 0;
 			yas::mem_istream::read(&ch, sizeof(ch));
-			ch ^= key;
-			*sp++ = ch;
+			*sp++ = (ch ^ key);
 		}
 		return size;
 	}
