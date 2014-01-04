@@ -57,34 +57,34 @@ struct binary_istream {
 
 	// for chars & bools
 	template<typename T>
-	void read(T &v, ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char, bool)) {
+	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char, bool)) {
 		YAS_THROW_ON_READ_ERROR(sizeof(v), !=, is.read(&v, sizeof(v)));
 	}
 
 	// for shorts
 	template<typename T>
-	void read(T &v, ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::uint16_t)) {
+	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::uint16_t)) {
 		YAS_THROW_ON_READ_ERROR(sizeof(v), !=, is.read(&v, sizeof(v)));
 		YAS_NETWORK_TO_LOCAL16(v, v);
 	}
 
 	// for 32-bit ints but not for floats
 	template<typename T>
-	void read(T &v, ENABLE_IF_IS_ANY_OF(T, std::int32_t, std::uint32_t)) {
+	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t, std::uint32_t)) {
 		YAS_THROW_ON_READ_ERROR(sizeof(v), !=, is.read(&v, sizeof(v)));
 		YAS_NETWORK_TO_LOCAL32(v, v);
 	}
 
 	// for 64-bit ints but not for floats
 	template<typename T>
-	void read(T &v, ENABLE_IF_IS_ANY_OF(T, std::int64_t, std::uint64_t)) {
+	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t, std::uint64_t)) {
 		YAS_THROW_ON_READ_ERROR(sizeof(v), !=, is.read(&v, sizeof(v)));
 		YAS_NETWORK_TO_LOCAL64(v, v);
 	}
 
 	// for floats and doubles
 	template<typename T>
-	void read(T &v, ENABLE_IF_IS_ANY_OF(T, float, double)) {
+	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, float, double)) {
 		std::uint8_t buf[sizeof(T)];
 		YAS_THROW_ON_READ_ERROR(sizeof(T), !=, is.read(buf, sizeof(buf)));
 		endian_convertor<YAS_LITTLE_ENDIAN()>::from_network(v, buf);
@@ -107,34 +107,34 @@ struct binary_ostream {
 
 	// for chars & bools
 	template<typename T>
-	void write(T v, ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char, bool)) {
+	void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char, bool)) {
 		YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
 	}
 
 	// for shorts
 	template<typename T>
-	void write(T v, ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::uint16_t)) {
+	void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::uint16_t)) {
 		YAS_LOCAL_TO_NETWORK16(v, v);
 		YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
 	}
 
 	// for 32-bit ints but not for floats
 	template<typename T>
-	void write(T v, ENABLE_IF_IS_ANY_OF(T, std::int32_t, std::uint32_t)) {
+	void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t, std::uint32_t)) {
 		YAS_LOCAL_TO_NETWORK32(v, v);
 		YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
 	}
 
 	// for 64-bit ibts but not for floats
 	template<typename T>
-	void write(T v, ENABLE_IF_IS_ANY_OF(T, std::int64_t, std::uint64_t)) {
+	void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t, std::uint64_t)) {
 		YAS_LOCAL_TO_NETWORK64(v, v);
 		YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
 	}
 
 	// for floats and doubles
 	template<typename T>
-	void write(const T &v, ENABLE_IF_IS_ANY_OF(T, float, double)) {
+	void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, float, double)) {
 		std::uint8_t buf[sizeof(T)];
 		endian_convertor<YAS_LITTLE_ENDIAN()>::to_network(buf, v);
 		YAS_THROW_ON_WRITE_ERROR(sizeof(buf), !=, os.write(buf, sizeof(buf)));

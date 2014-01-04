@@ -55,7 +55,7 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static Archive& apply(Archive& ar, const U(&v)[N], ENABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char, bool)) {
+	static Archive& apply(Archive& ar, const U(&v)[N], YAS_ENABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char, bool)) {
 		ar.write((std::uint32_t)N-1);
 		ar.write(v, N-1);
 		return ar;
@@ -65,7 +65,7 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static Archive& apply(Archive& ar, const U(&v)[N], DISABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char, bool)) {
+	static Archive& apply(Archive& ar, const U(&v)[N], YAS_DISABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char, bool)) {
 		ar.write((std::uint32_t)N);
 		for ( const auto &it: v ) {
 			ar.write(it);
@@ -86,7 +86,7 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static Archive& apply(Archive& ar, U(&v)[N], ENABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char, bool)) {
+	static Archive& apply(Archive& ar, U(&v)[N], YAS_ENABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char, bool)) {
 		std::uint32_t size = 0;
 		ar.read(size);
 		if ( size != N-1 ) YAS_THROW_BAD_ARRAY_SIZE();
@@ -99,7 +99,7 @@ struct serializer<
 		 typename Archive
 		,typename U
 	>
-	static Archive& apply(Archive& ar, U(&v)[N], DISABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char, bool)) {
+	static Archive& apply(Archive& ar, U(&v)[N], YAS_DISABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char, bool)) {
 		std::uint32_t size = 0;
 		ar.read(size);
 		if ( size != N ) YAS_THROW_BAD_ARRAY_SIZE();
