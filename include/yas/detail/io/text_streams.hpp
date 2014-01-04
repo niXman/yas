@@ -45,6 +45,20 @@ namespace detail {
 
 /***************************************************************************/
 
+#if 0
+#define YAS_READ_BY_CHAR(buf, cnt) \
+	for ( char *cur = &buf[0], *end = &buf[sizeof(buf)-1]; cur != end; ++cur ) { \
+		*cur = getch(); \
+		if ( *cur == space_sep || *cur == EOF) { \
+			if ( *cur == space_sep ) \
+				ungetch(*cur); \
+			*cur = 0; \
+			break; \
+		} else { \
+			++cnt; \
+		} \
+	}
+#else
 #define YAS_READ_BY_CHAR(buf, cnt) \
 	for ( char *cur = &buf[0], *end = &buf[sizeof(buf)-1]; cur != end; ++cur ) { \
 		*cur = getch(); \
@@ -58,6 +72,7 @@ namespace detail {
 				++cnt; \
 		} \
 	}
+#endif
 
 template<typename IS, typename Trait>
 struct text_istream {
