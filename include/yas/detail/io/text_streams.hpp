@@ -48,13 +48,14 @@ namespace detail {
 #define YAS_READ_BY_CHAR(buf, cnt) \
 	for ( char *cur = &buf[0], *end = &buf[sizeof(buf)-1]; cur != end; ++cur ) { \
 		*cur = getch(); \
-		if ( *cur == space_sep || *cur == EOF) { \
-			if ( *cur == space_sep ) \
+		switch ( *cur ) { \
+			case space_sep: \
 				ungetch(*cur); \
-			*cur = 0; \
-			break; \
-		} else { \
-			++cnt; \
+			case EOF: \
+				*cur = 0; \
+				break; \
+			default: \
+				++cnt; \
 		} \
 	}
 
