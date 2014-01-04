@@ -45,7 +45,7 @@ namespace detail {
 
 /***************************************************************************/
 
-#if 0
+#if 1
 #define YAS_READ_BY_CHAR(buf, cnt) \
 	for ( char *cur = &buf[0], *end = &buf[sizeof(buf)-1]; cur != end; ++cur ) { \
 		*cur = getch(); \
