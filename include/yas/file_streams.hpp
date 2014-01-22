@@ -117,6 +117,10 @@ struct file_istream: private detail::noncopyable {
 	std::size_t read(void *ptr, std::size_t size) {
 		return std::fread(ptr, 1, size, file);
 	}
+	
+	bool eof() const {
+		return feof(file);
+	}
 
 private:
 	FILE *file;

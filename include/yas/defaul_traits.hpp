@@ -103,7 +103,7 @@ void default_traits::atoi(T &v, const char *str, std::size_t size) {
 	}
 
 	switch ( size ) {
-		case 19: v += (str[size-19] - '0') * 1000000000000000000ll;
+		case 19:	v += (str[size-19] - '0') * 1000000000000000000ll;
 		case 18:	v += (str[size-18] - '0') * 100000000000000000ll;
 		case 17:	v += (str[size-17] - '0') * 10000000000000000ll;
 		case 16:	v += (str[size-16] - '0') * 1000000000000000ll;
