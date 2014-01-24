@@ -186,7 +186,7 @@ struct concrete_archive_traits<false, OA, IA> {
 		oa.fname += "_";
 		oa.fname += std::to_string(oa_cnt);
 		oa.fname += ".bin";
-		oa.stream = new typename oarchive_type::stream_type(oa.fname, yas::file_trunc);
+		oa.stream = new typename oarchive_type::stream_type(oa.fname.c_str(), yas::file_trunc);
 		oa.oa = new oarchive_type(*(oa.stream));
 	}
 
@@ -208,7 +208,7 @@ struct concrete_archive_traits<false, OA, IA> {
 		((void)io_type);
 		oa.stream->flush();
 		ia.fname = oa.fname;
-		ia.stream = new typename iarchive_type::stream_type(oa.fname);
+		ia.stream = new typename iarchive_type::stream_type(oa.fname.c_str());
 		ia.ia = new iarchive_type(*(ia.stream));
 	}
 };

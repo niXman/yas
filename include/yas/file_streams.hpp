@@ -48,16 +48,16 @@ enum file_mode { file_none, file_append, file_trunc };
 /***************************************************************************/
 
 struct file_ostream: private detail::noncopyable {
-	file_ostream(const std::string &fname, file_mode m = file_mode::file_none)
+	file_ostream(const char *fname, file_mode m = file_mode::file_none)
 		:file(0)
 	{
-		bool exists = file_exists(fname.c_str());
+		const bool exists = file_exists(fname);
 		if ( m == file_mode::file_none && exists )
 			YAS_THROW_FILE_ALREADY_EXISTS();
 		if ( m == file_mode::file_append && !exists )
 			YAS_THROW_FILE_IS_NOT_EXISTS();
 
-		file = std::fopen(fname.c_str(), file_mode_str(m));
+		file = std::fopen(fname, file_mode_str(m));
 		if ( !file )
 			YAS_THROW_ERROR_OPENING_FILE();
 	}
@@ -103,8 +103,8 @@ private:
 /***************************************************************************/
 
 struct file_istream: private detail::noncopyable {
-	file_istream(const std::string &fname)
-		:file(std::fopen(fname.c_str(), "rb"))
+	file_istream(const char *fname)
+		:file(std::fopen(fname, "rb"))
 	{
 		if ( !file )
 			YAS_THROW_ERROR_OPENING_FILE();
@@ -116,7 +116,7 @@ struct file_istream: private detail::noncopyable {
 	std::size_t read(void *ptr, std::size_t size) {
 		return std::fread(ptr, 1, size, file);
 	}
-	
+
 	bool eof() const {
 		return std::feof(file);
 	}
