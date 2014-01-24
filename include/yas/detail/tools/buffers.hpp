@@ -30,8 +30,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__const_buffer_hpp
-#define _yas__const_buffer_hpp
+#ifndef _yas__buffers_hpp
+#define _yas__buffers_hpp
 
 #include <yas/detail/config/config.hpp>
 
@@ -43,7 +43,7 @@ namespace yas {
 /***************************************************************************/
 
 struct intrusive_buffer {
-	intrusive_buffer(const char* data, std::size_t size)
+	intrusive_buffer(const char *data, std::size_t size)
 		:data(data)
 		,size(size)
 	{}
@@ -52,7 +52,7 @@ struct intrusive_buffer {
 		,size(o.size)
 	{}
 
-	const char* data;
+	const char *data;
 	const std::size_t size;
 
 private:
@@ -72,7 +72,7 @@ struct shared_buffer {
 	{
 		data.reset(new char[size], &deleter);
 	}
-	shared_buffer(const void* ptr, std::size_t size)
+	shared_buffer(const void *ptr, std::size_t size)
 		:size(size)
 	{
 		data.reset(new char[size], &deleter);
@@ -90,6 +90,7 @@ struct shared_buffer {
 	shared_array_type data;
 	std::size_t size;
 
+private:
 	static void deleter(char *ptr) { delete []ptr; }
 };
 
@@ -97,4 +98,4 @@ struct shared_buffer {
 
 } // namespace yas
 
-#endif // _yas__const_buffer_hpp
+#endif // _yas__buffers_hpp
