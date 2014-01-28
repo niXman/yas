@@ -1,4 +1,3 @@
-
 // Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
@@ -30,8 +29,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__binary_mem_streams_hpp
-#define _yas__binary_mem_streams_hpp
+#ifndef _yas__mem_streams_hpp
+#define _yas__mem_streams_hpp
 
 #include <yas/detail/config/config.hpp>
 #include <yas/detail/tools/noncopyable.hpp>
@@ -99,7 +98,7 @@ struct mem_ostream: private detail::noncopyable {
 private:
 	shared_buffer buf;
 	char *beg, *cur, *end;
-}; // struct binary_mem_ostream
+}; // struct mem_ostream
 
 /***************************************************************************/
 
@@ -146,10 +145,10 @@ struct mem_istream: private detail::noncopyable {
 
 private:
 	const char *beg, *cur, *end;
-}; // struct binary_mem_istream
+}; // struct mem_istream
 
 /***************************************************************************/
 
 } // ns yas
 
-#endif // _yas__binary_mem_streams_hpp
+#endif // _yas__mem_streams_hpp
