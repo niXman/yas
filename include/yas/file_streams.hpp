@@ -1,3 +1,4 @@
+
 // Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
@@ -29,8 +30,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__binary_file_streams_hpp
-#define _yas__binary_file_streams_hpp
+#ifndef _yas__file_streams_hpp
+#define _yas__file_streams_hpp
 
 #include <yas/detail/config/config.hpp>
 #include <yas/detail/tools/noncopyable.hpp>
@@ -65,10 +66,6 @@ struct file_ostream: private detail::noncopyable {
 		std::fclose(file);
 	}
 
-	template<typename T>
-	std::size_t write(const T *ptr) {
-		return std::fwrite(ptr, 1, sizeof(T), file);
-	}
 	std::size_t write(const void *ptr, std::size_t size) {
 		return std::fwrite(ptr, 1, size, file);
 	}
@@ -98,7 +95,7 @@ private:
 		return false;
 	}
 
-}; // struct binary_file_ostream
+}; // struct file_ostream
 
 /***************************************************************************/
 
@@ -123,10 +120,10 @@ struct file_istream: private detail::noncopyable {
 
 private:
 	FILE *file;
-}; // struct binary_file_istream
+}; // struct file_istream
 
 /***************************************************************************/
 
 } // ns yas
 
-#endif // _yas__binary_file_streams_hpp
+#endif // _yas__file_streams_hpp
