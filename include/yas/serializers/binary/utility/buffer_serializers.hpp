@@ -87,10 +87,9 @@ struct serializer<
 	static Archive& apply(Archive& ar, shared_buffer& buf) {
 		std::uint32_t size = 0;
 		ar.read(size);
-		buf.data.reset(new char[size+1], &shared_buffer::deleter);
-		ar.read(buf.data.get(), size);
 		buf.size = size;
-		buf.data.get()[size] = 0;
+		buf.data.reset(new char[size], &shared_buffer::deleter);
+		ar.read(buf.data.get(), size);
 		return ar;
 	}
 };
