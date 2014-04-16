@@ -64,6 +64,22 @@ Planned the support for the following serializable types:
  - std::vector
  - std::wstring
  - boost::array
+ - boost::container::deque
+ - boost::container::string
+ - boost::container::wstring
+ - boost::container::vector
+ - boost::container::static_vector
+ - boost::container::stable_vector
+ - boost::container::list
+ - boost::container::slist
+ - boost::container::map
+ - boost::container::multimap
+ - boost::container::set
+ - boost::container::multiset
+ - boost::container::flat_map
+ - boost::container::flat_multimap
+ - boost::container::flat_set
+ - boost::container::flat_multiset
  - boost::unordered_map
  - boost::unordered_multimap
  - boost::unordered_set
