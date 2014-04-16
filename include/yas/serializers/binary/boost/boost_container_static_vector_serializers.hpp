@@ -30,52 +30,65 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__text__std_wstring_serializer_hpp
-#define _yas__text__std_wstring_serializer_hpp
-
-#include <yas/detail/tools/utf8conv.hpp>
+#ifndef _yas__binary__boost_cont_static_vector_serializer_hpp
+#define _yas__binary__boost_cont_static_vector_serializer_hpp
 
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 #include <yas/detail/io/serialization_exception.hpp>
+
+#include <boost/container/static_vector.hpp>
 
 namespace yas {
 namespace detail {
 
 /***************************************************************************/
 
-template<>
+template<typename T, std::size_t N>
 struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
-	archive_type::text,
+	archive_type::binary,
 	direction::out,
-	std::wstring
->
-{
+	boost::container::static_vector<T, N>
+> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::wstring& wstring) {
-		std::string dst;
-		detail::TypeConverter<std::string, std::wstring>::Convert(dst, wstring);
-		ar & dst;
+	static Archive& apply(Archive &ar, const boost::container::static_vector<T, N> &vector) {
+		ar.write((std::uint32_t)N);
+		ar.write((std::uint32_t)vector.size());
+		if ( std::is_fundamental<T>::value && sizeof(T) == 1 ) {
+			ar.write(&vector[0], vector.size());
+		} else {
+			for ( const auto &it: vector ) {
+				ar & it;
+			}
+		}
 		return ar;
 	}
 };
 
-template<>
+template<typename T, std::size_t N>
 struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
-	archive_type::text,
+	archive_type::binary,
 	direction::in,
-	std::wstring
->
-{
+	boost::container::static_vector<T, N>
+> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, std::wstring& wstring) {
-		std::string string;
-		ar & string;
-		detail::TypeConverter<std::wstring, std::string>::Convert(wstring, string);
+	static Archive& apply(Archive &ar, boost::container::static_vector<T, N> &vector) {
+		std::uint32_t capacity = 0, size = 0;
+		ar.read(capacity);
+		ar.read(size);
+		if ( capacity != N || size > N ) YAS_THROW_BAD_ARRAY_SIZE();
+		vector.resize(size);
+		if ( std::is_fundamental<T>::value && sizeof(T) == 1 ) {
+			ar.read(&vector[0], size);
+		} else {
+			for ( auto &it: vector ) {
+				ar & it;
+			}
+		}
 		return ar;
 	}
 };
@@ -85,4 +98,4 @@ struct serializer<
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__text__std_wstring_serializer_hpp
+#endif // _yas__binary__boost_cont_static_vector_serializer_hpp

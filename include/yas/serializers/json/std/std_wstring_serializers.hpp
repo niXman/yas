@@ -54,7 +54,10 @@ struct serializer<
 {
 	template<typename Archive>
 	static Archive& apply(Archive& ar, const std::wstring& wstring) {
-		ar & detail::TypeConverter<std::string, std::wstring>::Convert(wstring);
+		std::string dst;
+		detail::TypeConverter<std::string, std::wstring>::Convert(dst, wstring);
+		ar & dst;
+		return ar;
 	}
 };
 
@@ -71,7 +74,8 @@ struct serializer<
 	static Archive& apply(Archive& ar, std::wstring& wstring) {
 		std::string string;
 		ar & string;
-		wstring = detail::TypeConverter<std::wstring, std::string>::Convert(string);
+		detail::TypeConverter<std::wstring, std::string>::Convert(wstring, string);
+		return ar;
 	}
 };
 

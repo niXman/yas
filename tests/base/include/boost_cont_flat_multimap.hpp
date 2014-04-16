@@ -30,17 +30,16 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__map_hpp__included_
-#define _yas_test__map_hpp__included_
+#ifndef _yas_test__boost_cont_flat_multimap_hpp
+#define _yas_test__boost_cont_flat_multimap_hpp
 
 /***************************************************************************/
 
 template<typename archive_traits>
-bool map_test(const char* archive_type, const char* io_type) {
-	std::map<int, int> pod_map, pod_map2;
+bool boost_cont_flat_multimap_test(const char* archive_type, const char* io_type) {
+	boost::container::flat_multimap<int, int> pod_map, pod_map2;
 	pod_map.emplace(1, 2);
-	pod_map.emplace(1, 2);
-	pod_map.emplace(2, 3);
+	pod_map.emplace(3, 3);
 	pod_map.emplace(3, 4);
 
 	typename archive_traits::oarchive oa;
@@ -52,14 +51,14 @@ bool map_test(const char* archive_type, const char* io_type) {
 	ia & pod_map2;
 
 	if ( pod_map != pod_map2 ) {
-		std::cout << "MAP deserialization error![1]" << std::endl;
+		std::cout << "BOOST::CONTAINER::FLAT_MULTIMAP deserialization error![1]" << std::endl;
 		return false;
 	}
 
-	std::map<int, std::string> map, map2;
-	map.emplace(1, "1");
-	map.emplace(2, "2");
+	boost::container::flat_multimap<int, std::string> map, map2;
+	map.emplace(1, "2");
 	map.emplace(3, "3");
+	map.emplace(3, "4");
 
 	typename archive_traits::oarchive oa2;
 	archive_traits::ocreate(oa2, archive_type, io_type);
@@ -70,14 +69,14 @@ bool map_test(const char* archive_type, const char* io_type) {
 	ia2 & map2;
 
 	if ( map != map2 ) {
-		std::cout << "MAP deserialization error![2]" << std::endl;
+		std::cout << "BOOST::CONTAINER::FLAT_MULTIMAP deserialization error![2]" << std::endl;
 		return false;
 	}
 
-	std::map<std::string, int> map3, map4;
+	boost::container::flat_multimap<std::string, int> map3, map4;
 	map3.emplace("1", 1);
 	map3.emplace("2", 2);
-	map3.emplace("3", 3);
+	map3.emplace("3", 4);
 
 	typename archive_traits::oarchive oa3;
 	archive_traits::ocreate(oa3, archive_type, io_type);
@@ -88,7 +87,7 @@ bool map_test(const char* archive_type, const char* io_type) {
 	ia3 & map4;
 
 	if ( map3 != map4 ) {
-		std::cout << "MAP deserialization error![3]" << std::endl;
+		std::cout << "BOOST::CONTAINER::FLAT_MULTIMAP deserialization error![3]" << std::endl;
 		return false;
 	}
 
@@ -97,4 +96,4 @@ bool map_test(const char* archive_type, const char* io_type) {
 
 /***************************************************************************/
 
-#endif // _yas_test__map_hpp__included_
+#endif // _yas_test__boost_cont_flat_multimap_hpp

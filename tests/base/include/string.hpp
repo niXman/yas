@@ -40,17 +40,14 @@ bool string_test(const char* archive_type, const char* io_type) {
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type, io_type);
 	std::string s("string string"), ss;
-	std::wstring ws(L"string string"), wss;
-	oa & s
-		& ws;
+	oa & s;
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type, io_type);
-	ia & ss
-		& wss;
+	ia & ss;
 
-	if ( ss != s || ws != wss) {
-		std::cout << "STRING deserialization error!" << std::endl;
+	if ( ss != s ) {
+		std::cout << "STD::STRING deserialization error!" << std::endl;
 		return false;
 	}
 

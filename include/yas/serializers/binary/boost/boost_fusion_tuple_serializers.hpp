@@ -35,7 +35,6 @@
 
 #include <yas/detail/config/config.hpp>
 
-#if defined(YAS_HAS_BOOST_FUSION)
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 #include <yas/detail/io/serialization_exception.hpp>
@@ -146,7 +145,5 @@ YAS__BINARY__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_TUPLE_FUNCTIONS_SPEC(FUSION_MA
 
 } // namespace detail
 } // namespace yas
-
-#endif // defined(YAS_HAS_BOOST_FUSION)
 
 #endif // _yas__binary__fusion_tuple_serializer_hpp

@@ -1,4 +1,4 @@
-// Copyright (c) 2009-2011 Avanesov Tigran:
+// Based on the code from Avanesov Tigran, 2009-2011:
 // http://forum.vingrad.ru/index.php?showtopic=249965&view=findpost&p=1803380
 // http://forum.vingrad.ru/index.php?showtopic=249965&view=findpost&p=1803439
 
@@ -6,128 +6,109 @@
 #define _yas__utf8conv_hpp
 
 #include <string>
-#include <sstream>
-#include <typeinfo>
+
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
+#	include <boost/container/container_fwd.hpp>
+#endif
 
 namespace yas {
 namespace detail {
 
 /***************************************************************************/
 
-template <class To, class From>
-class TypeConverter {
-public:
-	static To Convert(const From& from) {
-		std::stringstream stream;
-		stream << from;
-		To value;
-		//Check if stream is bad
-		if ( stream.bad() )
-		{
-			throw std::bad_exception();
+template<typename D, typename S>
+void to_utf8(D &dst, const S &src) {
+	for ( auto it = src.begin(); it != src.end(); ++it ) {
+		std::wstring::value_type nchar = *it;
+		if (nchar <= 0x7F) {
+			dst += (std::string::value_type)nchar;
+		} else if (nchar <= 0x07FF) {
+			dst += (0xC0 | (nchar >> 6));
+			dst += (0x80 | (nchar & 0x3F));
 		}
-		//Check if stream contains variable type you want to get
-		if ((stream >> value).fail() || !stream.eof())
-		{
-			throw std::bad_cast();
+#if WCHAR_MAX > 0xFFFF
+		else if (nchar <= 0xFFFF) {
+			dst += (0xE0 | (nchar >> 12));
+			dst += (0x80 | ((nchar >> 6) & 0x3F));
+			dst += (0x80 | (nchar & 0x3F));
+		} else if (nchar  <= 0x1FFFFF) {
+			dst += (0xF0 | (nchar >> 18));
+			dst += (0x80 | ((nchar >> 12) & 0x3F));
+			dst += (0x80 | ((nchar >> 6) & 0x3F));
+			dst += (0x80 | (nchar & 0x3F));
 		}
-		return value;
-	}
-};
-template <class From>
-class TypeConverter<std::string, From>
-{
-public:
-	static std::string Convert(const From& from) {
-		std::stringstream stream;
-		stream << from;
-		return stream.str();
-	}
-};
-template <>
-class TypeConverter<std::string, std::string>
-{
-public:
-	static std::string Convert(const std::string& from) {
-		return from;
-	}
-};
-template <>
-class TypeConverter<std::string, std::wstring>
-{
-public:
-	static std::string Convert(const std::wstring& from) {
-		std::string result;
-		for (std::wstring::const_iterator it = from.begin(); it != from.end(); ++it)
-		{
-			std::wstring::value_type nchar = *it;
-			if (nchar <= 0x7F) {
-				result += (char)*it;
-			} else if (nchar <= 0x07FF) {
-				result += (0xC0 | (nchar >> 6));
-				result += (0x80 | (nchar & 0x3F));
-			}
-#if WCHAR_MAX > 0xffff
-			else if (nchar <= 0xFFFF) {
-				result += (0xE0 | (nchar >> 12));
-				result += (0x80 | ((nchar >> 6) & 0x3F));
-				result += (0x80 | (nchar & 0x3F));
-			}
-			else if (nchar  <= 0x1FFFFF) {
-				result += (0xF0 | (nchar >> 18));
-				result += (0x80 | ((nchar >> 12) & 0x3F));
-				result += (0x80 | ((nchar >> 6) & 0x3F));
-				result += (0x80 | (nchar & 0x3F));
-			}
 #endif
+	}
+}
+
+template<typename D, typename S>
+void from_utf8(D &dst, const S &src) {
+	std::wstring::value_type tmp = 0;
+	for ( auto it = src.begin(); it != src.end(); ++it ) {
+		unsigned char nchar = (unsigned char)*it;
+		if (nchar <= 0x7F) {
+			tmp = nchar;
+		} else if ((nchar & 0xE0) == 0xC0) {
+			tmp = (nchar & 0x1F) << 6;
+			nchar = (unsigned char)*(++it);
+			tmp |= nchar & 0x3F;
+		} else if ((nchar & 0xF0) == 0xE0) {
+			tmp = (nchar & 0x0F) << 12;
+			nchar = (unsigned char)*(++it);
+			tmp |= (nchar & 0x3F) << 6;
+			nchar = (unsigned char)*(++it);
+			tmp |= (nchar & 0x3F);
+		} else if ((nchar & 0xF8) == 0xF0) {
+			tmp = (nchar & 0x0F) << 18;
+			nchar = (unsigned char)*(++it);
+			tmp |= (nchar & 0x3F) << 12;
+			nchar = (unsigned char)*(++it);
+			tmp |= (nchar & 0x3F) << 6;
+			nchar = (unsigned char)*(++it);
+			tmp |= (nchar & 0x3F);
 		}
-		return result;
+		dst += tmp;
+	}
+}
+
+/***************************************************************************/
+
+template<typename To, typename From>
+struct TypeConverter;
+
+template<>
+struct TypeConverter<std::string, std::wstring> {
+	static void Convert(std::string &dst, const std::wstring &src) {
+		to_utf8(dst, src);
 	}
 };
 
-template <>
-class TypeConverter<std::wstring, std::string>
-{
-public:
-	 static std::wstring Convert(const std::string& from) {
-		  std::wstring result;
-		  unsigned char nchar;
-		  wchar_t tmp = 0;
-		  for (std::string::const_iterator it = from.begin(); it != from.end(); ++it)
-		  {
-				nchar = (unsigned char)*it;
-				if (nchar <= 0x7F) {
-					 tmp = nchar;
-				} else if ((nchar & 0xE0) == 0xC0) {
-					 tmp = (nchar & 0x1F) << 6;
-					 nchar = (unsigned char)*(++it);
-					 tmp |= nchar & 0x3F;
-				} else if ((nchar & 0xF0) == 0xE0) {
-					 tmp = (nchar & 0x0F) << 12;
-					 nchar = (unsigned char)*(++it);
-					 tmp |= (nchar & 0x3F) << 6;
-					 nchar = (unsigned char)*(++it);
-					 tmp |= (nchar & 0x3F);
-				} else if ((nchar & 0xF8) == 0xF0) {
-					 tmp = (nchar & 0x0F) << 18;
-					 nchar = (unsigned char)*(++it);
-					 tmp |= (nchar & 0x3F) << 12;
-					 nchar = (unsigned char)*(++it);
-					 tmp |= (nchar & 0x3F) << 6;
-					 nchar = (unsigned char)*(++it);
-					 tmp |= (nchar & 0x3F);
-				}
-				result += tmp;
-		  }
-		  return result;
-	 }
+template<>
+struct TypeConverter<std::wstring, std::string> {
+	static void Convert(std::wstring &dst, const std::string &src) {
+		from_utf8(dst, src);
+	}
 };
 
-//lexical_cast function for all types which supports stream I/O
-template <class T, class U>
-T lexical_cast(const U& from) {
-	return TypeConverter<T, U>::Convert( from );
-}
+/***************************************************************************/
+
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
+
+template<>
+struct TypeConverter<boost::container::basic_string<char>, boost::container::basic_string<wchar_t>> {
+	static void Convert(boost::container::basic_string<char> &dst, const boost::container::basic_string<wchar_t> &src) {
+		to_utf8(dst, src);
+	}
+};
+
+template<>
+struct TypeConverter<boost::container::basic_string<wchar_t>, boost::container::basic_string<char>> {
+	static void Convert(boost::container::basic_string<wchar_t> &dst, const boost::container::basic_string<char> &src) {
+		from_utf8(dst, src);
+	}
+};
+
+#endif // YAS_SERIALIZE_BOOST_TYPES
 
 /***************************************************************************/
 

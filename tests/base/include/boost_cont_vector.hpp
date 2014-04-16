@@ -30,59 +30,41 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__text__std_wstring_serializer_hpp
-#define _yas__text__std_wstring_serializer_hpp
-
-#include <yas/detail/tools/utf8conv.hpp>
-
-#include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/selector.hpp>
-#include <yas/detail/io/serialization_exception.hpp>
-
-namespace yas {
-namespace detail {
+#ifndef _yas_test__boost_cont_vector_hpp__included_
+#define _yas_test__boost_cont_vector_hpp__included_
 
 /***************************************************************************/
 
-template<>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::text,
-	direction::out,
-	std::wstring
->
-{
-	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::wstring& wstring) {
-		std::string dst;
-		detail::TypeConverter<std::string, std::wstring>::Convert(dst, wstring);
-		ar & dst;
-		return ar;
-	}
-};
+template<typename archive_traits>
+bool boost_cont_vector_test(const char* archive_type, const char* io_type) {
+	boost::container::vector<int> v, vv;
+	v.push_back(0);
+	v.push_back(1);
+	v.push_back(2);
+	v.push_back(3);
+	v.push_back(4);
+	v.push_back(5);
+	v.push_back(6);
+	v.push_back(7);
+	v.push_back(8);
+	v.push_back(9);
 
-template<>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::text,
-	direction::in,
-	std::wstring
->
-{
-	template<typename Archive>
-	static Archive& apply(Archive& ar, std::wstring& wstring) {
-		std::string string;
-		ar & string;
-		detail::TypeConverter<std::wstring, std::string>::Convert(wstring, string);
-		return ar;
+	typename archive_traits::oarchive oa;
+	archive_traits::ocreate(oa, archive_type, io_type);
+	oa & v;
+
+	typename archive_traits::iarchive ia;
+	archive_traits::icreate(ia, oa, archive_type, io_type);
+	ia & vv;
+
+	if ( v != vv ) {
+		std::cout << "BOOST::CONTAINER::VECTOR deserialization error!" << std::endl;
+		return false;
 	}
-};
+
+	return true;
+}
 
 /***************************************************************************/
 
-} // namespace detail
-} // namespace yas
-
-#endif // _yas__text__std_wstring_serializer_hpp
+#endif // _yas_test__boost_cont_vector_hpp__included_

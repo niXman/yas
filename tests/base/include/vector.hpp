@@ -58,7 +58,7 @@ bool vector_test(const char* archive_type, const char* io_type) {
 	ia & vv;
 
 	if ( v != vv ) {
-		std::cout << "VECTOR deserialization error!" << std::endl;
+		std::cout << "STD::VECTOR deserialization error!" << std::endl;
 		return false;
 	}
 

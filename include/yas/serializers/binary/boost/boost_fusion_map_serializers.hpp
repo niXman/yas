@@ -35,8 +35,6 @@
 
 #include <yas/detail/config/config.hpp>
 
-#if defined(YAS_HAS_BOOST_FUSION)
-
 namespace yas {
 namespace detail {
 
@@ -48,7 +46,5 @@ namespace detail {
 
 } // namespace detail
 } // namespace yas
-
-#endif // defined(YAS_HAS_BOOST_FUSION)
 
 #endif // _yas__binary__fusion_map_serializer_hpp

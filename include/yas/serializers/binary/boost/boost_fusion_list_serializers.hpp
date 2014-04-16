@@ -35,8 +35,6 @@
 
 #include <yas/detail/config/config.hpp>
 
-#if defined(YAS_HAS_BOOST_FUSION)
-
 #include <stdexcept>
 
 #include <yas/detail/type_traits/type_traits.hpp>
@@ -161,7 +159,5 @@ YAS__BINARY__GENERATE_LOAD_SERIALIZE_LIST_SPEC_VARIADICS(FUSION_MAX_LIST_SIZE)
 
 } // namespace detail
 } // namespace yas
-
-#endif // defined(YAS_HAS_BOOST_FUSION)
 
 #endif // _yas__binary__boost_fusion_binary_list_serializer_hpp

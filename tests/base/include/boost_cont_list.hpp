@@ -30,59 +30,58 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__text__std_wstring_serializer_hpp
-#define _yas__text__std_wstring_serializer_hpp
-
-#include <yas/detail/tools/utf8conv.hpp>
-
-#include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/selector.hpp>
-#include <yas/detail/io/serialization_exception.hpp>
-
-namespace yas {
-namespace detail {
+#ifndef _yas_test__boost_cont_list_hpp__included_
+#define _yas_test__boost_cont_list_hpp__included_
 
 /***************************************************************************/
 
-template<>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::text,
-	direction::out,
-	std::wstring
->
-{
-	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::wstring& wstring) {
-		std::string dst;
-		detail::TypeConverter<std::string, std::wstring>::Convert(dst, wstring);
-		ar & dst;
-		return ar;
-	}
-};
+template<typename archive_traits>
+bool boost_cont_list_test(const char* archive_type, const char* io_type) {
+	boost::container::list<int> ilist1, ilist2;
+	ilist1.push_back(2);
+	ilist1.push_back(3);
+	ilist1.push_back(6);
+	ilist1.push_back(8);
+	ilist1.push_back(11);
+	ilist1.push_back(4);
+	ilist1.push_back(54);
 
-template<>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::text,
-	direction::in,
-	std::wstring
->
-{
-	template<typename Archive>
-	static Archive& apply(Archive& ar, std::wstring& wstring) {
-		std::string string;
-		ar & string;
-		detail::TypeConverter<std::wstring, std::string>::Convert(wstring, string);
-		return ar;
+	typename archive_traits::oarchive oa1;
+	archive_traits::ocreate(oa1, archive_type, io_type);
+	oa1 & ilist1;
+
+	typename archive_traits::iarchive ia1;
+	archive_traits::icreate(ia1, oa1, archive_type, io_type);
+	ia1 & ilist2;
+
+	if ( ilist1 != ilist2 ) {
+		std::cout << "BOOST::CONTAINER::LIST deserialization error! [1]" << std::endl;
+		return false;
 	}
-};
+
+	boost::container::list<boost::container::string> slist1, slist2;
+	slist1.push_back("23");
+	slist1.push_back("54");
+	slist1.push_back("91");
+	slist1.push_back("246");
+	slist1.push_back("976");
+
+	typename archive_traits::oarchive oa2;
+	archive_traits::ocreate(oa2, archive_type, io_type);
+	oa2 & slist1;
+
+	typename archive_traits::iarchive ia2;
+	archive_traits::icreate(ia2, oa2, archive_type, io_type);
+	ia2 & slist2;
+
+	if ( slist1 != slist2 ) {
+		std::cout << "BOOST::CONTAINER::LIST deserialization error! [2]" << std::endl;
+		return false;
+	}
+
+	return true;
+}
 
 /***************************************************************************/
 
-} // namespace detail
-} // namespace yas
-
-#endif // _yas__text__std_wstring_serializer_hpp
+#endif // _yas_test__boost_cont_list_hpp__included_

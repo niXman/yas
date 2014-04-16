@@ -30,59 +30,59 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__text__std_wstring_serializer_hpp
-#define _yas__text__std_wstring_serializer_hpp
-
-#include <yas/detail/tools/utf8conv.hpp>
-
-#include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/selector.hpp>
-#include <yas/detail/io/serialization_exception.hpp>
-
-namespace yas {
-namespace detail {
+#ifndef _yas_test__boost_cont_set_hpp
+#define _yas_test__boost_cont_set_hpp
 
 /***************************************************************************/
 
-template<>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::text,
-	direction::out,
-	std::wstring
->
-{
-	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::wstring& wstring) {
-		std::string dst;
-		detail::TypeConverter<std::string, std::wstring>::Convert(dst, wstring);
-		ar & dst;
-		return ar;
-	}
-};
+template<typename archive_traits>
+bool boost_cont_set_test(const char* archive_type, const char* io_type) {
+	boost::container::set<int> set1, set2;
+	set1.emplace(0);
+	set1.emplace(1);
+	set1.emplace(2);
+	set1.emplace(3);
+	set1.emplace(4);
+	set1.emplace(5);
+	set1.emplace(6);
+	set1.emplace(7);
+	set1.emplace(8);
+	set1.emplace(9);
 
-template<>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::text,
-	direction::in,
-	std::wstring
->
-{
-	template<typename Archive>
-	static Archive& apply(Archive& ar, std::wstring& wstring) {
-		std::string string;
-		ar & string;
-		detail::TypeConverter<std::wstring, std::string>::Convert(wstring, string);
-		return ar;
+	typename archive_traits::oarchive oa;
+	archive_traits::ocreate(oa, archive_type, io_type);
+	oa & set1;
+
+	typename archive_traits::iarchive ia;
+	archive_traits::icreate(ia, oa, archive_type, io_type);
+	ia & set2;
+
+	if ( set1 != set2 ) {
+		std::cout << "BOOST::CONTAINER::SET deserialization error![1]" << std::endl;
+		return false;
 	}
-};
+
+	boost::container::set<std::string> set3, set4;
+	set3.emplace("1");
+	set3.emplace("2");
+	set3.emplace("3");
+
+	typename archive_traits::oarchive oa2;
+	archive_traits::ocreate(oa2, archive_type, io_type);
+	oa2 & set3;
+
+	typename archive_traits::iarchive ia2;
+	archive_traits::icreate(ia2, oa2, archive_type, io_type);
+	ia2 & set4;
+
+	if ( set3 != set4 ) {
+		std::cout << "BOOST::CONTAINER::SET deserialization error![2]" << std::endl;
+		return false;
+	}
+
+	return true;
+}
 
 /***************************************************************************/
 
-} // namespace detail
-} // namespace yas
-
-#endif // _yas__text__std_wstring_serializer_hpp
+#endif // _yas_test__boost_cont_set_hpp

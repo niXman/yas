@@ -30,52 +30,54 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__text__std_wstring_serializer_hpp
-#define _yas__text__std_wstring_serializer_hpp
-
-#include <yas/detail/tools/utf8conv.hpp>
+#ifndef _yas__text__boost_cont_flat_set_serializer_hpp
+#define _yas__text__boost_cont_flat_set_serializer_hpp
 
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 #include <yas/detail/io/serialization_exception.hpp>
+
+#include <boost/container/flat_set.hpp>
 
 namespace yas {
 namespace detail {
 
 /***************************************************************************/
 
-template<>
+template<typename K>
 struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::text,
 	direction::out,
-	std::wstring
->
-{
+	boost::container::flat_set<K>
+> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::wstring& wstring) {
-		std::string dst;
-		detail::TypeConverter<std::string, std::wstring>::Convert(dst, wstring);
-		ar & dst;
+	static Archive& apply(Archive &ar, const boost::container::flat_set<K> &set) {
+		ar & (std::uint32_t)set.size();
+		for ( const auto &it: set ) {
+			ar & it;
+		}
 		return ar;
 	}
 };
-
-template<>
+template<typename K>
 struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::text,
 	direction::in,
-	std::wstring
->
-{
+	boost::container::flat_set<K>
+> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, std::wstring& wstring) {
-		std::string string;
-		ar & string;
-		detail::TypeConverter<std::wstring, std::string>::Convert(wstring, string);
+	static Archive& apply(Archive &ar, boost::container::flat_set<K> &set) {
+		std::uint32_t size = 0;
+		ar & size;
+		for ( ; size; --size ) {
+			K key = K();
+			ar & key;
+			set.insert(std::move(key));
+		}
 		return ar;
 	}
 };
@@ -85,4 +87,4 @@ struct serializer<
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__text__std_wstring_serializer_hpp
+#endif // _yas__text__boost_cont_flat_set_serializer_hpp

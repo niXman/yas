@@ -30,59 +30,71 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__text__std_wstring_serializer_hpp
-#define _yas__text__std_wstring_serializer_hpp
-
-#include <yas/detail/tools/utf8conv.hpp>
-
-#include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/selector.hpp>
-#include <yas/detail/io/serialization_exception.hpp>
-
-namespace yas {
-namespace detail {
+#ifndef _yas_test__boost_cont_multimap_hpp__included_
+#define _yas_test__boost_cont_multimap_hpp__included_
 
 /***************************************************************************/
 
-template<>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::text,
-	direction::out,
-	std::wstring
->
-{
-	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::wstring& wstring) {
-		std::string dst;
-		detail::TypeConverter<std::string, std::wstring>::Convert(dst, wstring);
-		ar & dst;
-		return ar;
-	}
-};
+template<typename archive_traits>
+bool boost_cont_multimap_test(const char* archive_type, const char* io_type) {
+	boost::container::multimap<int, int> pod_map, pod_map2;
+	pod_map.emplace(1, 2);
+	pod_map.emplace(3, 3);
+	pod_map.emplace(3, 4);
 
-template<>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::text,
-	direction::in,
-	std::wstring
->
-{
-	template<typename Archive>
-	static Archive& apply(Archive& ar, std::wstring& wstring) {
-		std::string string;
-		ar & string;
-		detail::TypeConverter<std::wstring, std::string>::Convert(wstring, string);
-		return ar;
+	typename archive_traits::oarchive oa;
+	archive_traits::ocreate(oa, archive_type, io_type);
+	oa & pod_map;
+
+	typename archive_traits::iarchive ia;
+	archive_traits::icreate(ia, oa, archive_type, io_type);
+	ia & pod_map2;
+
+	if ( pod_map != pod_map2 ) {
+		std::cout << "BOOST::CONTAINER::MULTIMAP deserialization error![1]" << std::endl;
+		return false;
 	}
-};
+
+	boost::container::multimap<int, std::string> map, map2;
+	map.emplace(1, "2");
+	map.emplace(3, "3");
+	map.emplace(3, "4");
+
+	typename archive_traits::oarchive oa2;
+	archive_traits::ocreate(oa2, archive_type, io_type);
+	oa2 & map;
+
+	typename archive_traits::iarchive ia2;
+	archive_traits::icreate(ia2, oa2, archive_type, io_type);
+	ia2 & map2;
+
+	if ( map != map2 ) {
+		std::cout << "BOOST::CONTAINER::MULTIMAP deserialization error![2]" << std::endl;
+		return false;
+	}
+
+	boost::container::multimap<std::string, int> map3, map4;
+	map3.emplace("1", 1);
+	map3.emplace("2", 2);
+	map3.emplace("3", 4);
+
+	typename archive_traits::oarchive oa3;
+	archive_traits::ocreate(oa3, archive_type, io_type);
+	oa3 & map3;
+
+	typename archive_traits::iarchive ia3;
+	archive_traits::icreate(ia3, oa3, archive_type, io_type);
+	ia3 & map4;
+
+	if ( map3 != map4 ) {
+		std::cout << "BOOST::CONTAINER::MULTIMAP deserialization error![3]" << std::endl;
+		return false;
+	}
+
+	return true;
+}
 
 /***************************************************************************/
 
-} // namespace detail
-} // namespace yas
+#endif // _yas_test__boost_cont_multimap_hpp__included_
 
-#endif // _yas__text__std_wstring_serializer_hpp

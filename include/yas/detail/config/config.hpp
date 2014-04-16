@@ -72,14 +72,13 @@
 
 #include YAS_COMPILER_CONFIG
 
-/***************************************************************************/
-
 #ifdef YAS_SERIALIZE_BOOST_TYPES
-#  define YAS_HAS_BOOST_UNORDERED 1
-#  define YAS_HAS_BOOST_ARRAY 1
-#  define YAS_HAS_BOOST_TUPLE 1
-#  define YAS_HAS_BOOST_FUSION 1
+# define YAS_HAS_BOOST_UNORDERED 1
+# define YAS_HAS_BOOST_ARRAY 1
+# define YAS_HAS_BOOST_TUPLE 1
+# define YAS_HAS_BOOST_FUSION 1
 #endif
+
 
 /***************************************************************************/
 

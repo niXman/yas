@@ -30,14 +30,14 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__text__std_wstring_serializer_hpp
-#define _yas__text__std_wstring_serializer_hpp
-
-#include <yas/detail/tools/utf8conv.hpp>
+#ifndef _yas__text__boost_cont_string_serializer_hpp
+#define _yas__text__boost_cont_string_serializer_hpp
 
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 #include <yas/detail/io/serialization_exception.hpp>
+
+#include <boost/container/string.hpp>
 
 namespace yas {
 namespace detail {
@@ -50,14 +50,13 @@ struct serializer<
 	ser_method::use_internal_serializer,
 	archive_type::text,
 	direction::out,
-	std::wstring
->
-{
+	boost::container::string
+> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::wstring& wstring) {
-		std::string dst;
-		detail::TypeConverter<std::string, std::wstring>::Convert(dst, wstring);
-		ar & dst;
+	static Archive& apply(Archive &ar, const boost::container::string &string) {
+		ar & (std::uint32_t)string.length();
+		ar.write(space_sep);
+		ar.write(&string[0], string.length());
 		return ar;
 	}
 };
@@ -68,14 +67,15 @@ struct serializer<
 	ser_method::use_internal_serializer,
 	archive_type::text,
 	direction::in,
-	std::wstring
->
-{
+	boost::container::string
+> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, std::wstring& wstring) {
-		std::string string;
-		ar & string;
-		detail::TypeConverter<std::wstring, std::string>::Convert(wstring, string);
+	static Archive& apply(Archive &ar, boost::container::string &string) {
+		std::uint32_t size = 0;
+		ar & size;
+		string.resize(size);
+		if ( ar.getch() != space_sep ) YAS_THROW_SPACE_IS_EXPECTED();
+		ar.read(&string[0], size);
 		return ar;
 	}
 };
@@ -85,4 +85,4 @@ struct serializer<
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__text__std_wstring_serializer_hpp
+#endif // _yas__text__boost_cont_string_serializer_hpp

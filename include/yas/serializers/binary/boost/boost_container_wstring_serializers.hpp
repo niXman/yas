@@ -30,14 +30,15 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__text__std_wstring_serializer_hpp
-#define _yas__text__std_wstring_serializer_hpp
-
-#include <yas/detail/tools/utf8conv.hpp>
+#ifndef _yas__binary__boost_cont_wstring_serializer_hpp
+#define _yas__binary__boost_cont_wstring_serializer_hpp
 
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 #include <yas/detail/io/serialization_exception.hpp>
+
+#include <boost/container/string.hpp>
+#include <yas/detail/tools/utf8conv.hpp>
 
 namespace yas {
 namespace detail {
@@ -48,15 +49,14 @@ template<>
 struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
-	archive_type::text,
+	archive_type::binary,
 	direction::out,
-	std::wstring
->
-{
+	boost::container::wstring
+> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::wstring& wstring) {
-		std::string dst;
-		detail::TypeConverter<std::string, std::wstring>::Convert(dst, wstring);
+	static Archive& apply(Archive& ar, const boost::container::wstring& string) {
+		boost::container::string dst;
+		detail::TypeConverter<boost::container::string, boost::container::wstring>::Convert(dst, string);
 		ar & dst;
 		return ar;
 	}
@@ -66,16 +66,15 @@ template<>
 struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
-	archive_type::text,
+	archive_type::binary,
 	direction::in,
-	std::wstring
->
-{
+	boost::container::wstring
+> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, std::wstring& wstring) {
-		std::string string;
-		ar & string;
-		detail::TypeConverter<std::wstring, std::string>::Convert(wstring, string);
+	static Archive& apply(Archive& ar, boost::container::wstring& string) {
+		boost::container::string src;
+		ar & src;
+		detail::TypeConverter<boost::container::wstring, boost::container::string>::Convert(string, src);
 		return ar;
 	}
 };
@@ -85,4 +84,4 @@ struct serializer<
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__text__std_wstring_serializer_hpp
+#endif // _yas__binary__boost_cont_wstring_serializer_hpp

@@ -299,4 +299,36 @@ HEADERS += \
     ../../../include/yas/serializers/binary/std/std_complex_serializers.hpp \
     ../../../include/yas/serializers/json/std/std_complex_serializers.hpp \
     ../../../include/yas/serializers/text/std/std_complex_serializers.hpp \
-    ../../../include/yas/std_traits.hpp
+    ../../../include/yas/std_traits.hpp \
+    ../../../include/yas/serializers/binary/boost/boost_container_deque_serializers.hpp \
+    ../../../include/yas/serializers/binary/boost/boost_container_flat_map_serializers.hpp \
+    ../../../include/yas/serializers/binary/boost/boost_container_flat_multimap_serializers.hpp \
+    ../../../include/yas/serializers/binary/boost/boost_container_flat_multiset_serializers.hpp \
+    ../../../include/yas/serializers/binary/boost/boost_container_flat_set_serializers.hpp \
+    ../../../include/yas/serializers/binary/boost/boost_container_list_serializers.hpp \
+    ../../../include/yas/serializers/binary/boost/boost_container_map_serializers.hpp \
+    ../../../include/yas/serializers/binary/boost/boost_container_multimap_serializers.hpp \
+    ../../../include/yas/serializers/binary/boost/boost_container_multiset_serializers.hpp \
+    ../../../include/yas/serializers/binary/boost/boost_container_set_serializers.hpp \
+    ../../../include/yas/serializers/binary/boost/boost_container_slist_serializers.hpp \
+    ../../../include/yas/serializers/binary/boost/boost_container_stable_vector_serializers.hpp \
+    ../../../include/yas/serializers/binary/boost/boost_container_static_vector_serializers.hpp \
+    ../../../include/yas/serializers/binary/boost/boost_container_string_serializers.hpp \
+    ../../../include/yas/serializers/binary/boost/boost_container_vector_serializers.hpp \
+    ../../../include/yas/serializers/binary/boost/boost_container_wstring_serializers.hpp \
+    ../../../include/yas/serializers/text/boost/boost_container_deque_serializers.hpp \
+    ../../../include/yas/serializers/text/boost/boost_container_flat_map_serializers.hpp \
+    ../../../include/yas/serializers/text/boost/boost_container_flat_multimap_serializers.hpp \
+    ../../../include/yas/serializers/text/boost/boost_container_flat_multiset_serializers.hpp \
+    ../../../include/yas/serializers/text/boost/boost_container_flat_set_serializers.hpp \
+    ../../../include/yas/serializers/text/boost/boost_container_list_serializers.hpp \
+    ../../../include/yas/serializers/text/boost/boost_container_map_serializers.hpp \
+    ../../../include/yas/serializers/text/boost/boost_container_multimap_serializers.hpp \
+    ../../../include/yas/serializers/text/boost/boost_container_multiset_serializers.hpp \
+    ../../../include/yas/serializers/text/boost/boost_container_set_serializers.hpp \
+    ../../../include/yas/serializers/text/boost/boost_container_slist_serializers.hpp \
+    ../../../include/yas/serializers/text/boost/boost_container_stable_vector_serializers.hpp \
+    ../../../include/yas/serializers/text/boost/boost_container_static_vector_serializers.hpp \
+    ../../../include/yas/serializers/text/boost/boost_container_string_serializers.hpp \
+    ../../../include/yas/serializers/text/boost/boost_container_vector_serializers.hpp \
+    ../../../include/yas/serializers/text/boost/boost_container_wstring_serializers.hpp
