@@ -90,6 +90,7 @@
 #include "include/boost_cont_flat_multimap.hpp"
 #include "include/boost_cont_flat_set.hpp"
 #include "include/boost_cont_flat_multiset.hpp"
+#include "include/boost_cont_deque.hpp"
 #include "include/list.hpp"
 #include "include/map.hpp"
 #include "include/multimap.hpp"
@@ -333,6 +334,7 @@ void tests(std::uint32_t& p, std::uint32_t& e) {
 	YAS_RUN_TEST(boost_cont_flat_multimap	, p, e);
 	YAS_RUN_TEST(boost_cont_flat_set		, p, e);
 	YAS_RUN_TEST(boost_cont_flat_multiset	, p, e);
+	YAS_RUN_TEST(boost_cont_deque			, p, e);
 #endif // YAS_SERIALIZE_BOOST_TYPES
 	YAS_RUN_TEST(one_function				, p, e);
 	YAS_RUN_TEST(split_functions			, p, e);

@@ -30,3 +30,62 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+#ifndef _yas__binary__boost_cont_deque_serializer_hpp
+#define _yas__binary__boost_cont_deque_serializer_hpp
+
+#include <yas/detail/type_traits/type_traits.hpp>
+#include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
+
+#include <boost/container/deque.hpp>
+
+namespace yas {
+namespace detail {
+
+/***************************************************************************/
+
+template<typename V>
+struct serializer<
+	type_prop::not_a_pod,
+	ser_method::use_internal_serializer,
+	archive_type::binary,
+	direction::out,
+	boost::container::deque<V>
+> {
+	template<typename Archive>
+	static Archive& apply(Archive& ar, const boost::container::deque<V> &deque) {
+		ar.write((std::uint32_t)deque.size());
+		for ( const auto &it: deque ) {
+			ar & it;
+		}
+		return ar;
+	}
+};
+
+template<typename V>
+struct serializer<
+	type_prop::not_a_pod,
+	ser_method::use_internal_serializer,
+	archive_type::binary,
+	direction::in,
+	boost::container::deque<V>
+> {
+	template<typename Archive>
+	static Archive& apply(Archive& ar, boost::container::deque<V> &deque) {
+		std::uint32_t size = 0;
+		ar.read(size);
+		for ( ; size; --size ) {
+			V val = V();
+			ar & val;
+			deque.push_back(std::move(val));
+		}
+		return ar;
+	}
+};
+
+/***************************************************************************/
+
+} // namespace detail
+} // namespace yas
+
+#endif // _yas__binary__boost_cont_deque_serializer_hpp
