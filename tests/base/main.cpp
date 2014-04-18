@@ -97,6 +97,7 @@
 #include "include/multiset.hpp"
 #include "include/pair.hpp"
 #include "include/pod.hpp"
+#include "include/deque.hpp"
 #include "include/set.hpp"
 #include "include/string.hpp"
 #include "include/tuple.hpp"
@@ -303,6 +304,7 @@ void tests(std::uint32_t& p, std::uint32_t& e) {
 	YAS_RUN_TEST(list						, p, e);
 	YAS_RUN_TEST(forward_list				, p, e);
 	YAS_RUN_TEST(map						, p, e);
+	YAS_RUN_TEST(deque						, p, e);
 	YAS_RUN_TEST(set						, p, e);
 	YAS_RUN_TEST(multimap					, p, e);
 	YAS_RUN_TEST(multiset					, p, e);

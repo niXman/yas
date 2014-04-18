@@ -75,6 +75,10 @@
 #include <yas/serializers/text/std/std_set_serializers.hpp>
 #include <yas/serializers/json/std/std_set_serializers.hpp>
 
+#include <yas/serializers/binary/std/std_deque_serializers.hpp>
+#include <yas/serializers/text/std/std_deque_serializers.hpp>
+#include <yas/serializers/json/std/std_deque_serializers.hpp>
+
 #include <yas/serializers/binary/std/std_multimap_serializers.hpp>
 #include <yas/serializers/text/std/std_multimap_serializers.hpp>
 #include <yas/serializers/json/std/std_multimap_serializers.hpp>
