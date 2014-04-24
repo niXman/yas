@@ -34,7 +34,7 @@
 
 #include <yas/detail/config/config.hpp>
 #include <yas/detail/tools/noncopyable.hpp>
-#include <yas/detail/tools/buffers.hpp>
+#include <yas/buffers.hpp>
 
 #include <cmath>
 

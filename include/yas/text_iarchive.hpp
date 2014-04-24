@@ -53,7 +53,7 @@
 #include <yas/serializers/text/utility/autoarray_serializers.hpp>
 #include <yas/serializers/text/utility/buffer_serializers.hpp>
 
-#include <yas/detail/tools/buffers.hpp>
+#include <yas/buffers.hpp>
 #include <yas/detail/tools/noncopyable.hpp>
 
 namespace yas {

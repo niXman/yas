@@ -32,7 +32,7 @@
 #ifndef _yas__binary__buffer_serializer_hpp
 #define _yas__binary__buffer_serializer_hpp
 
-#include <yas/detail/tools/buffers.hpp>
+#include <yas/buffers.hpp>
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 

@@ -136,5 +136,5 @@ Currently supports all types except Qt types.
 If you use YAS in your project - please tell to the author with the short description of the reasons and advantages in comparison with other serialization libraries ;)
 
 ===
-[1] https://github.com/niXman/yas/blob/master/include/yas/detail/tools/buffers.hpp#L45
-[2] https://github.com/niXman/yas/blob/master/include/yas/detail/tools/buffers.hpp#L64
+[1] https://github.com/niXman/yas/blob/master/include/yas/buffers.hpp#L45
+[2] https://github.com/niXman/yas/blob/master/include/yas/buffers.hpp#L64
