@@ -131,35 +131,19 @@ std::chrono::milliseconds load(IA &ia, const std::size_t iterations) {
 
 /***************************************************************************/
 
-test_result boost_binary_test(const std::size_t iterations, const std::size_t preallocated) {
+template<typename OA, typename IA>
+test_result boost_test(const std::size_t iterations, const std::size_t preallocated) {
 	test_result res;
 	std::string sb;
 	sb.reserve(preallocated);
 	std::ostringstream os(sb);
-	boost::archive::binary_oarchive oa(os, boost::archive::no_header);
+	OA oa(os, boost::archive::no_header);
 	res.save = save(oa, iterations);
 
 	res.size = os.str().length();
 
 	std::istringstream is(os.str());
-	boost::archive::binary_iarchive ia(is, boost::archive::no_header);
-	res.load = load(ia, iterations);
-
-	return res;
-}
-
-test_result boost_text_test(const std::size_t iterations, const std::size_t preallocated) {
-	test_result res;
-	std::string sb;
-	sb.reserve(preallocated);
-	std::ostringstream os(sb);
-	boost::archive::text_oarchive oa(os, boost::archive::no_header);
-	res.save = save(oa, iterations);
-
-	res.size = os.str().length();
-
-	std::istringstream is(os.str());
-	boost::archive::text_iarchive ia(is, boost::archive::no_header);
+	IA ia(is, boost::archive::no_header);
 	res.load = load(ia, iterations);
 
 	return res;
@@ -167,33 +151,18 @@ test_result boost_text_test(const std::size_t iterations, const std::size_t prea
 
 /***************************************************************************/
 
-test_result yas_binary_test(const std::size_t iterations, const std::size_t preallocated) {
+template<typename OA, typename IA>
+test_result yas_test(const std::size_t iterations, const std::size_t preallocated) {
 	test_result res;
 	yas::mem_ostream os(preallocated);
-	yas::binary_oarchive<yas::mem_ostream> oa(os, yas::no_header);
+	OA oa(os, yas::no_header);
 	res.save = save(oa, iterations);
 
 	res.size = os.get_intrusive_buffer().size;
 
 	const yas::intrusive_buffer buf = os.get_intrusive_buffer();
 	yas::mem_istream is(buf.data, buf.size);
-	yas::binary_iarchive<yas::mem_istream> ia(is, yas::no_header);
-	res.load = load(ia, iterations);
-
-	return res;
-}
-
-test_result yas_text_test(const std::size_t iterations, const std::size_t preallocated) {
-	test_result res;
-	yas::mem_ostream os(preallocated);
-	yas::text_oarchive<yas::mem_ostream> oa(os, yas::no_header);
-	res.save = save(oa, iterations);
-
-	res.size = os.get_intrusive_buffer().size;
-
-	const yas::intrusive_buffer buf = os.get_intrusive_buffer();
-	yas::mem_istream is(buf.data, buf.size);
-	yas::text_iarchive<yas::mem_istream> ia(is, yas::no_header);
+	IA ia(is, yas::no_header);
 	res.load = load(ia, iterations);
 
 	return res;
@@ -209,13 +178,19 @@ int main() {
 
 	try {
 		test_result bb, bt, yb, yt;
-		bb = boost_binary_test(iterations, preallocated);
+		bb = boost_test<
+			 boost::archive::binary_oarchive
+			,boost::archive::binary_iarchive
+		>(iterations, preallocated);
 		std::cout
 		<< "binary:" << std::endl
 		<< "   boost save time  : " << bb.save.count() << " ms" << std::endl
 		<< "   boost load time  : " << bb.load.count() << " ms" << std::endl
 		<< "   boost data size  : " << bb.size << std::endl;
-		yb = yas_binary_test(iterations, preallocated);
+		yb = yas_test<
+			 yas::binary_oarchive<yas::mem_ostream>
+			,yas::binary_iarchive<yas::mem_istream>
+		>(iterations, preallocated);
 		std::cout
 		<< "   yas save time    : " << yb.save.count() << " ms" << std::endl
 		<< "   yas load time    : " << yb.load.count() << " ms" << std::endl
@@ -223,13 +198,19 @@ int main() {
 		<< "   yas save speed up: " << (((double)bb.save.count())/((double)yb.save.count())) << std::endl
 		<< "   yas load speed up: " << (((double)bb.load.count())/((double)yb.load.count())) << std::endl;
 
-		bt = boost_text_test(iterations, preallocated);
+		bt = boost_test<
+			 boost::archive::text_oarchive
+			,boost::archive::text_iarchive
+		>(iterations, preallocated);
 		std::cout
 		<< "text:" << std::endl
 		<< "   boost save time  : " << bt.save.count() << " ms" << std::endl
 		<< "   boost load time  : " << bt.load.count() << " ms" << std::endl
 		<< "   boost data size  : " << bt.size << std::endl;
-		yt = yas_text_test(iterations, preallocated);
+		yt = yas_test<
+			 yas::text_oarchive<yas::mem_ostream>
+			,yas::text_iarchive<yas::mem_istream>
+		>(iterations, preallocated);
 		std::cout
 		<< "   yas save time    : " << yt.save.count() << " ms" << std::endl
 		<< "   yas load time    : " << yt.load.count() << " ms" << std::endl
