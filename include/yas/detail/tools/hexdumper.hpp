@@ -110,11 +110,10 @@ static const std::uint32_t crc32_table[] = {
 	0xB40BBE37, 0xC30C8EA1, 0x5A05DF1B, 0x2D02EF8D
 };
 
-inline size_t chksum_crc32(const unsigned char *block, size_t length) {
-	size_t crc, idx;
-
-	crc = 0xFFFFFFFF;
-	for ( idx = 0; idx < length; ++idx ) {
+inline size_t chksum_crc32(const void *ptr, std::size_t length) {
+	std::size_t crc = 0xFFFFFFFF;
+	const unsigned char *block = static_cast<const unsigned char*>(ptr);
+	for ( std::size_t idx = 0; idx < length; ++idx ) {
 		crc = ((crc >> 8) & 0x00FFFFFF) ^ crc32_table[(crc ^ *block++) & 0xFF];
 	}
 	return (crc ^ 0xFFFFFFFF);
@@ -124,14 +123,12 @@ inline size_t chksum_crc32(const unsigned char *block, size_t length) {
 
 /***************************************************************************/
 
-inline std::string hex_dump(const void* buf, size_t len) {
+inline std::string hex_dump(const void *buf, std::size_t len) {
 	const unsigned char* buffer = static_cast<const unsigned char*>(buf);
 	std::stringstream os;
 	if ( !buffer || len <= 0 ) return os.str();
 
-	size_t addr = 0;
-
-	size_t n = 0, idx = 0, cnt2 = 0;
+	std::size_t addr = 0, n = 0, idx = 0, cnt2 = 0;
 	for ( n = 0; n < len; ++n ) {
 		if ( cnt2 == 0 ) {
 			os << std::setw(7) << std::setfill('0') << addr << ": ";
@@ -139,7 +136,7 @@ inline std::string hex_dump(const void* buf, size_t len) {
 		}
 		cnt2 = (cnt2 + 1) % 18;
 		if ( cnt2 <= 16 ) {
-			os << std::hex << std::setw(2) << std::setfill('0') << (size_t)buffer[n] << " ";
+			os << std::hex << std::setw(2) << std::setfill('0') << (std::size_t)buffer[n] << " ";
 		} else {
 			os << "  ";
 			os << std::setfill(' ');
@@ -163,7 +160,7 @@ inline std::string hex_dump(const void* buf, size_t len) {
 	}
 	os << "  ";
 
-	for ( idx = n - cnt2; cnt2 <= 16 && idx < n; ++idx ) {
+	for ( idx = n-cnt2; cnt2 <= 16 && idx < n; ++idx ) {
 		if ( buffer[idx] < 32 || 126 < buffer[idx] ) {
 			os << '.';
 		} else {
@@ -174,7 +171,7 @@ inline std::string hex_dump(const void* buf, size_t len) {
 
 	os << std::endl
 		<< "LEN: " << len << " bytes, "
-		<< "CRC32: 0x" << std::hex << detail::chksum_crc32(buffer, len);
+		<< "CRC32: 0x" << std::hex << detail::chksum_crc32(buf, len);
 
 	return os.str();
 }
