@@ -110,7 +110,7 @@ static const std::uint32_t crc32_table[] = {
 	0xB40BBE37, 0xC30C8EA1, 0x5A05DF1B, 0x2D02EF8D
 };
 
-inline size_t chksum_crc32(const void *ptr, std::size_t length) {
+inline std::size_t chksum_crc32(const void *ptr, std::size_t length) {
 	std::size_t crc = 0xFFFFFFFF;
 	const unsigned char *block = static_cast<const unsigned char*>(ptr);
 	for ( std::size_t idx = 0; idx < length; ++idx ) {
