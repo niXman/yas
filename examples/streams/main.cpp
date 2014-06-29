@@ -46,7 +46,7 @@ struct my_ostream: yas::detail::noncopyable {
 		std::memset(buf, 0, bufsize);
 	}
 
-	std::size_t write(const void *ptr, std::size_t size) {
+	std::size_t write(const void *ptr, const std::size_t size) {
 		std::memcpy(cur, ((const char*)ptr), size);
 		cur += size;
 		*cur = 0;
@@ -58,12 +58,12 @@ struct my_ostream: yas::detail::noncopyable {
 };
 
 struct my_istream: yas::detail::noncopyable {
-	my_istream(const char *ptr, std::size_t size)
+	my_istream(const char *ptr, const std::size_t size)
 		:cur(ptr)
 		,end(ptr+size)
 	{}
 
-	std::size_t read(void *ptr, std::size_t size) {
+	std::size_t read(void *ptr, const std::size_t size) {
 		if ( cur+size > end ) return 0;
 		std::memcpy(ptr, cur, size);
 		cur += size;
