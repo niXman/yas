@@ -46,7 +46,7 @@ struct my_ostream: yas::mem_ostream {
 		,key(key)
 	{}
 
-	std::size_t write(const void *ptr, std::size_t size) {
+	std::size_t write(const void *ptr, const std::size_t size) {
 		const char *sp = ((const char*)ptr);
 		for ( std::size_t idx = 0; idx < size; ++idx ) {
 			const char ch = *sp++ ^ key;
@@ -65,7 +65,7 @@ struct my_istream: yas::mem_istream {
 		,key(key)
 	{}
 
-	std::size_t read(void *ptr, std::size_t size) {
+	std::size_t read(void *ptr, const std::size_t size) {
 		char *sp = ((char*)ptr);
 		for ( std::size_t idx = 0; idx < size; ++idx ) {
 			char ch = 0;
@@ -84,6 +84,7 @@ private:
 int main() {
 	const char key = 0x33;
 	std::string src = "my mega super string", dst;
+
 	my_ostream os(key);
 	yas::text_oarchive<my_ostream> oa(os);
 	oa & src;
