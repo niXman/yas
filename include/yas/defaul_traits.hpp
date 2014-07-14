@@ -254,7 +254,7 @@ inline void strreverse(char* begin, char* end) {
 
 template<typename T>
 void default_traits::dtoa(char *buf, const std::size_t, std::size_t &len, T v) {
-	std::size_t prec = 3;
+	std::size_t prec = YAS_DEFAULT_DOUBLE_PRECISION;
 	// from: https://code.google.com/p/stringencoders/wiki/NumToA
 	static const double powers_of_10[] = {
 		1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000
