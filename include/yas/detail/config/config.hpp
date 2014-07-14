@@ -82,6 +82,9 @@
 # define YAS_HAS_BOOST_FUSION 1
 #endif
 
+#ifndef YAS_DEFAULT_DOUBLE_PRECISION
+#	define YAS_DEFAULT_DOUBLE_PRECISION (3)
+#endif // YAS_DEFAULT_DOUBLE_PRECISION
 
 /***************************************************************************/
 
