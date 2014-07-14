@@ -8,7 +8,8 @@ DEFINES += \
 	YAS_SERIALIZE_BOOST_TYPES=1 \
 	YAS_HAS_BOOST_TUPLE=1 \
 	YAS_HAS_BOOST_FUSION=1 \
-	YAS_HAS_BOOST_ARRAY=1
+	YAS_HAS_BOOST_ARRAY=1 \
+#	YAS_DECORATE_HEADER_BYTES="x"
 
 #QMAKE_CXX = clang++
 
@@ -387,4 +388,4 @@ HEADERS += \
 	 ../../../include/yas/serializers/text/std/std_deque_serializers.hpp \
 	 ../include/deque.hpp \
 	 ../../../include/yas/serializers/json/std/std_deque_serializers.hpp \
-    ../../../include/yas/buffers.hpp
+	../../../include/yas/buffers.hpp

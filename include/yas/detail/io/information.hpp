@@ -54,29 +54,43 @@ union archive_header {
 	archive_header()
 		:as_char(0)
 	{}
-	archive_header(char c)
+	archive_header(const std::int8_t c)
 		:as_char(c)
 	{}
-	archive_header(unsigned char v, unsigned char t, unsigned char b, unsigned char e)
-	{ bits.version=v;bits.type=t;bits.bits=b;bits.endian=e; }
+	archive_header(const std::uint8_t v, const std::uint8_t t, const std::uint8_t b, const std::uint8_t e)
+		:bits{v, t, b, e}
+	{}
 
 	struct {
-		unsigned char version:3;// version     : 0 ... 7
-		unsigned char type:3;   // archive type: binary, text, json
-		unsigned char bits:1;   // bitnes      : 0 - 32 bit, 1 - 64 bit
-		unsigned char endian:1; // endianness  : 0 - LE, 1 - BE
+		std::uint8_t version:3; // version     : 0 ... 7
+		std::uint8_t type   :3; // archive type: binary, text, json
+		std::uint8_t bits   :1; // bitnes      : 0 - 32 bit, 1 - 64 bit
+		std::uint8_t endian :1; // endianness  : 0 - LE, 1 - BE
 	} bits;
-	char as_char;
+	std::int8_t as_char;
 };
 #pragma pack(pop)
 
-static_assert(sizeof(archive_header)==sizeof(char), "ALIGNMENT_ERROR");
+static_assert(sizeof(archive_header)==sizeof(std::int8_t ), "ALIGNMENT ERROR");
 
 /***************************************************************************/
 
 namespace {
+
+#ifdef YAS_DECORATE_HEADER_BYTES
+static constexpr const char yas_id[] = {
+	 'y' ^ YAS_PP_STRINGIZE(YAS_DECORATE_HEADER_BYTES)[0]
+	,'a' ^ YAS_PP_STRINGIZE(YAS_DECORATE_HEADER_BYTES)[0]
+	,'s' ^ YAS_PP_STRINGIZE(YAS_DECORATE_HEADER_BYTES)[0]
+};
+#else // !YAS_DECORATE_HEADER_BYTES
 static constexpr const char yas_id[] = {'y', 'a', 's'};
-static constexpr const char hex_alpha[] = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
+#endif // YAS_DECORATE_HEADER_BYTES
+
+static constexpr const char hex_alpha[] = {
+	'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
+};
+
 } // ns
 
 /***************************************************************************/
@@ -109,7 +123,7 @@ struct header_reader_writer<archive_type::binary> {
 			,(std::uint8_t)YAS_PLATFORM_BITS_IS_64()
 			,(std::uint8_t)YAS_BIG_ENDIAN()
 		);
-		static const char buf[header_size] = {
+		static const std::int8_t buf[header_size] = {
 			yas_id[0], yas_id[1], yas_id[2], header.as_char
 		};
 
