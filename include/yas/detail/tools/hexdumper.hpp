@@ -112,7 +112,7 @@ static const std::uint32_t crc32_table[] = {
 
 inline std::size_t chksum_crc32(const void *ptr, std::size_t length) {
 	std::size_t crc = 0xFFFFFFFF;
-	const unsigned char *block = static_cast<const unsigned char*>(ptr);
+	const std::uint8_t *block = static_cast<const std::uint8_t*>(ptr);
 	for ( std::size_t idx = 0; idx < length; ++idx ) {
 		crc = ((crc >> 8) & 0x00FFFFFF) ^ crc32_table[(crc ^ *block++) & 0xFF];
 	}
@@ -123,11 +123,11 @@ inline std::size_t chksum_crc32(const void *ptr, std::size_t length) {
 
 /***************************************************************************/
 
-inline std::string hex_dump(const void *buf, std::size_t len) {
-	const unsigned char* buffer = static_cast<const unsigned char*>(buf);
+inline std::string hex_dump(const void *buf, const std::size_t len) {
 	std::stringstream os;
-	if ( !buffer || len <= 0 ) return os.str();
+	if ( !buf || !len ) return os.str();
 
+	const std::uint8_t *buffer = static_cast<const std::uint8_t*>(buf);
 	std::size_t addr = 0, n = 0, idx = 0, cnt2 = 0;
 	for ( n = 0; n < len; ++n ) {
 		if ( cnt2 == 0 ) {
@@ -176,8 +176,8 @@ inline std::string hex_dump(const void *buf, std::size_t len) {
 	return os.str();
 }
 
-inline std::string hex_dump(const std::string& buf, int len = -1) {
-	return hex_dump(buf.c_str(), (len==(-1)?buf.size():len));
+inline std::string hex_dump(const std::string& str, int len = -1) {
+	return hex_dump(str.c_str(), (len==(-1)?str.length():len));
 }
 
 /***************************************************************************/
