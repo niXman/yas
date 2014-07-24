@@ -50,19 +50,20 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
+#include <boost/preprocessor/repetition/repeat.hpp>
+#include <boost/preprocessor/seq/size.hpp>
+#include <boost/preprocessor/seq/elem.hpp>
+#include <boost/preprocessor/tuple/elem.hpp>
+#include <boost/preprocessor/tuple/enum.hpp>
+
 /***************************************************************************/
 
-#define ASSERT(expr) \
-	if ( !(expr) ) YAS_THROW_EXCEPTION(std::runtime_error, #expr)
-
-/***************************************************************************/
-
-struct pod_type {
+struct struct_of_pods {
 	bool a;
-	std::int8_t b;
-	std::int16_t c;
-	std::int32_t d;
-	std::int64_t e;
+	std::uint8_t b;
+	std::uint16_t c;
+	std::uint32_t d;
+	std::uint64_t e;
 	std::size_t f;
 	float g;
 	double h;
@@ -103,73 +104,141 @@ struct test_result {
 
 /***************************************************************************/
 
-template<typename OA>
-std::chrono::milliseconds save(OA &oa, const std::size_t iterations) {
-	pod_type pt;
+template<typename T, typename OA>
+std::chrono::milliseconds save(const T &t, OA &oa, const std::size_t iterations) {
 	auto s1 = std::chrono::system_clock::now();
 	for ( size_t idx = 0; idx < iterations; ++idx ) {
-		pt.a = idx;
-		pt.b = idx;
-		pt.c = idx;
-		pt.d = idx;
-		pt.e = idx;
-		pt.f = idx;
-		pt.g = idx;
-		pt.h = idx;
-		oa & pt;
+		oa & t;
 	}
 	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - s1);
 }
 
-template<typename IA>
-std::chrono::milliseconds load(IA &ia, const std::size_t iterations) {
-	pod_type pt;
+template<typename T, typename IA>
+std::chrono::milliseconds load(T &t, IA &ia, const std::size_t iterations) {
 	auto s1 = std::chrono::system_clock::now();
 	for ( size_t idx = 0; idx < iterations; ++idx ) {
-		ia & pt;
-		ASSERT(pt.f == idx);
+		ia & t;
 	}
 	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - s1);
 }
 
 /***************************************************************************/
 
-template<typename OA, typename IA>
-test_result boost_test(const std::size_t iterations, const std::size_t preallocated) {
+template<typename T, typename OA, typename IA>
+test_result boost_test(const T &ot, T &it, const std::size_t iterations, const std::size_t preallocated) {
 	test_result res;
 	std::string sb;
 	sb.reserve(preallocated);
 	std::ostringstream os(sb);
 	OA oa(os, boost::archive::no_header);
-	res.save = save(oa, iterations);
+	res.save = save(ot, oa, iterations);
 
 	res.size = os.str().length();
 
 	std::istringstream is(os.str());
 	IA ia(is, boost::archive::no_header);
-	res.load = load(ia, iterations);
+	res.load = load(it, ia, iterations);
 
 	return res;
 }
 
 /***************************************************************************/
 
-template<typename OA, typename IA>
-test_result yas_test(const std::size_t iterations, const std::size_t preallocated) {
+template<typename T, typename OA, typename IA>
+test_result yas_test(const T &ot, T &it, const std::size_t iterations, const std::size_t preallocated) {
 	test_result res;
 	yas::mem_ostream os(preallocated);
 	OA oa(os, yas::no_header);
-	res.save = save(oa, iterations);
+	res.save = save(ot, oa, iterations);
 
 	res.size = os.get_intrusive_buffer().size;
 
 	const yas::intrusive_buffer buf = os.get_intrusive_buffer();
 	yas::mem_istream is(buf.data, buf.size);
 	IA ia(is, yas::no_header);
-	res.load = load(ia, iterations);
+	res.load = load(it, ia, iterations);
 
 	return res;
 }
+
+/***************************************************************************/
+
+template<typename T>
+void test(const T &ot, T &it, const char *pref, const char *comment, const std::size_t iterations) {
+	const std::size_t preallocated = sizeof(T)*iterations*10;
+	std::cout
+	<< pref << comment << std::endl
+	<< pref << "(sizeof(T)=" << sizeof(T) << ", iterations=" << iterations << ", preallocated=" << preallocated << " bytes)"
+	<< std::endl;
+
+	test_result bb, yb, bt, yt;
+	bb = boost_test<
+		 T
+		,boost::archive::binary_oarchive
+		,boost::archive::binary_iarchive
+	>(ot, it, iterations, preallocated);
+	std::cout
+	<< "binary:" << std::endl
+	<< "   boost save time  : " << bb.save.count() << " ms" << std::endl
+	<< "   boost load time  : " << bb.load.count() << " ms" << std::endl
+	<< "   boost data size  : " << bb.size << std::endl;
+	yb = yas_test<
+		 T
+		,yas::binary_oarchive<yas::mem_ostream>
+		,yas::binary_iarchive<yas::mem_istream>
+	>(ot, it, iterations, preallocated);
+	std::cout
+	<< "   yas save time    : " << yb.save.count() << " ms" << std::endl
+	<< "   yas load time    : " << yb.load.count() << " ms" << std::endl
+	<< "   yas data size    : " << yb.size << std::endl
+	<< "   yas save speed up: " << (((double)bb.save.count())/((double)yb.save.count())) << std::endl
+	<< "   yas load speed up: " << (((double)bb.load.count())/((double)yb.load.count())) << std::endl;
+
+	bt = boost_test<
+		 T
+		,boost::archive::text_oarchive
+		,boost::archive::text_iarchive
+	>(ot, it, iterations, preallocated);
+	std::cout
+	<< "text:" << std::endl
+	<< "   boost save time  : " << bt.save.count() << " ms" << std::endl
+	<< "   boost load time  : " << bt.load.count() << " ms" << std::endl
+	<< "   boost data size  : " << bt.size << std::endl;
+	yt = yas_test<
+		 T
+		,yas::text_oarchive<yas::mem_ostream>
+		,yas::text_iarchive<yas::mem_istream>
+	>(ot, it, iterations, preallocated);
+	std::cout
+	<< "   yas save time    : " << yt.save.count() << " ms" << std::endl
+	<< "   yas load time    : " << yt.load.count() << " ms" << std::endl
+	<< "   yas data size    : " << yt.size << std::endl
+	<< "   yas save speed up: " << (((double)bt.save.count())/((double)yt.save.count())) << std::endl
+	<< "   yas load speed up: " << (((double)bt.load.count())/((double)yt.load.count())) << std::endl;
+
+	std::cout << std::endl << std::endl;
+}
+
+/***************************************************************************/
+
+#define GENERATE_TESTS_ITEM_IMPL(type, init) { \
+		const type ovar = {BOOST_PP_TUPLE_ENUM(init)}; \
+		type ivar; \
+		test<type>(ovar, ivar, ">>>>>>>>: ", "test for \"" BOOST_PP_STRINGIZE(type) "\" type", iterations); \
+	}
+
+#define GENERATE_TESTS_ITEM(unused, idx, seq) \
+	GENERATE_TESTS_ITEM_IMPL( \
+		 BOOST_PP_TUPLE_ELEM(0, BOOST_PP_SEQ_ELEM(idx, seq)) \
+		,BOOST_PP_TUPLE_ELEM(1, BOOST_PP_SEQ_ELEM(idx, seq)) \
+	)
+
+#define GENERATE_TESTS(seq) \
+	BOOST_PP_REPEAT( \
+		 BOOST_PP_SEQ_SIZE(seq) \
+		,GENERATE_TESTS_ITEM \
+		,seq \
+	)
 
 /***************************************************************************/
 
@@ -177,49 +246,19 @@ int main() {
 	setvbuf(stdout, 0, _IONBF, 0);
 	std::cout << "platform bits: " << (YAS_PLATFORM_BITS()) << std::endl;
 
-	enum { iterations = 1024*1024, preallocated = iterations*100 };
+	enum { iterations = 1024u*1024u*10u };
 
 	try {
-		test_result bb, bt, yb, yt;
-		bb = boost_test<
-			 boost::archive::binary_oarchive
-			,boost::archive::binary_iarchive
-		>(iterations, preallocated);
-		std::cout
-		<< "binary:" << std::endl
-		<< "   boost save time  : " << bb.save.count() << " ms" << std::endl
-		<< "   boost load time  : " << bb.load.count() << " ms" << std::endl
-		<< "   boost data size  : " << bb.size << std::endl;
-		yb = yas_test<
-			 yas::binary_oarchive<yas::mem_ostream>
-			,yas::binary_iarchive<yas::mem_istream>
-		>(iterations, preallocated);
-		std::cout
-		<< "   yas save time    : " << yb.save.count() << " ms" << std::endl
-		<< "   yas load time    : " << yb.load.count() << " ms" << std::endl
-		<< "   yas data size    : " << yb.size << std::endl
-		<< "   yas save speed up: " << (((double)bb.save.count())/((double)yb.save.count())) << std::endl
-		<< "   yas load speed up: " << (((double)bb.load.count())/((double)yb.load.count())) << std::endl;
-
-		bt = boost_test<
-			 boost::archive::text_oarchive
-			,boost::archive::text_iarchive
-		>(iterations, preallocated);
-		std::cout
-		<< "text:" << std::endl
-		<< "   boost save time  : " << bt.save.count() << " ms" << std::endl
-		<< "   boost load time  : " << bt.load.count() << " ms" << std::endl
-		<< "   boost data size  : " << bt.size << std::endl;
-		yt = yas_test<
-			 yas::text_oarchive<yas::mem_ostream>
-			,yas::text_iarchive<yas::mem_istream>
-		>(iterations, preallocated);
-		std::cout
-		<< "   yas save time    : " << yt.save.count() << " ms" << std::endl
-		<< "   yas load time    : " << yt.load.count() << " ms" << std::endl
-		<< "   yas data size    : " << yt.size << std::endl
-		<< "   yas save speed up: " << (((double)bt.save.count())/((double)yt.save.count())) << std::endl
-		<< "   yas load speed up: " << (((double)bt.load.count())/((double)yt.load.count())) << std::endl;
+		GENERATE_TESTS(
+			((bool          , (true)))
+			((std::uint8_t  , ('y')))
+			((std::uint16_t , (0xDEAD)))
+			((std::uint32_t , (0xDEADBEAF)))
+			((std::uint64_t , (0xDEADBEAFDEADBEAF)))
+			((float         , (3.141)))
+			((double        , (3.141)))
+			((struct_of_pods, (0, 1, 0xDEAD, 0xDEADBEEF, 0xDEADBEEFDEADBEEF, 0xDEADBEEF, 3.141, 3.141)))
+		)
 	} catch (const std::exception &ex) {
 		std::cout << "[exception]: " << ex.what() << std::endl;
 	}

@@ -331,4 +331,4 @@ HEADERS += \
 	 ../../../include/yas/serializers/text/boost/boost_container_string_serializers.hpp \
 	 ../../../include/yas/serializers/text/boost/boost_container_vector_serializers.hpp \
 	 ../../../include/yas/serializers/text/boost/boost_container_wstring_serializers.hpp \
-    ../../../include/yas/buffers.hpp
+	../../../include/yas/buffers.hpp
