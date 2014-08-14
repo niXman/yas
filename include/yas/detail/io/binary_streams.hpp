@@ -71,14 +71,14 @@ struct binary_istream {
 		YAS_NETWORK_TO_LOCAL16(v, v);
 	}
 
-	// for 32-bit ints but not for floats
+	// for 32-bit ints
 	template<typename T>
 	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t, std::uint32_t)) {
 		YAS_THROW_ON_READ_ERROR(sizeof(v), !=, is.read(&v, sizeof(v)));
 		YAS_NETWORK_TO_LOCAL32(v, v);
 	}
 
-	// for 64-bit ints but not for floats
+	// for 64-bit ints
 	template<typename T>
 	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t, std::uint64_t)) {
 		YAS_THROW_ON_READ_ERROR(sizeof(v), !=, is.read(&v, sizeof(v)));
@@ -121,14 +121,14 @@ struct binary_ostream {
 		YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
 	}
 
-	// for 32-bit ints but not for floats
+	// for 32-bit ints
 	template<typename T>
 	void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t, std::uint32_t)) {
 		YAS_LOCAL_TO_NETWORK32(v, v);
 		YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
 	}
 
-	// for 64-bit ibts but not for floats
+	// for 64-bit ibts
 	template<typename T>
 	void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t, std::uint64_t)) {
 		YAS_LOCAL_TO_NETWORK64(v, v);
