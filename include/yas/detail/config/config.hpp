@@ -38,7 +38,7 @@
 
 /***************************************************************************/
 
-#if __cplusplus Б 201103L
+#if __cplusplus < 201103L
 #	error "C++11 or greater support is required"
 #endif
 
