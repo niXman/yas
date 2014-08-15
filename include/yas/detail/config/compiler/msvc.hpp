@@ -39,23 +39,9 @@
 /***************************************************************************/
 
 #if YAS_LITTLE_ENDIAN()
-#	define YAS_LOCAL_TO_NETWORK16(dst, src) \
-	(dst) = ((((src) >> 8) & 0xff) | (((src) & 0xff) << 8))
-
-#	define YAS_LOCAL_TO_NETWORK32(dst, src) \
-	(dst) = ((((src) & 0xff000000) >> 24) | (((src) & 0x00ff0000) >> 8) | \
-			  (((src) & 0x0000ff00) <<  8) | (((src) & 0x000000ff) << 24))
-
-#	define YAS_LOCAL_TO_NETWORK64(dst, src) \
-	(dst) = ((((src) & 0xff00000000000000ull) >> 56)  \
-			 | (((src) & 0x00ff000000000000ull) >> 40) \
-			 | (((src) & 0x0000ff0000000000ull) >> 24) \
-			 | (((src) & 0x000000ff00000000ull) >> 8)  \
-			 | (((src) & 0x00000000ff000000ull) << 8)  \
-			 | (((src) & 0x0000000000ff0000ull) << 24) \
-			 | (((src) & 0x000000000000ff00ull) << 40) \
-			 | (((src) & 0x00000000000000ffull) << 56))
-
+#	define YAS_LOCAL_TO_NETWORK16(dst, src) (dst) = _byteswap_ushort((src))
+#	define YAS_LOCAL_TO_NETWORK32(dst, src) (dst) = _byteswap_ulong((src))
+#	define YAS_LOCAL_TO_NETWORK64(dst, src) (dst) = _byteswap_uint64((src))
 #	define YAS_NETWORK_TO_LOCAL16(dst, src) YAS_LOCAL_TO_NETWORK16((dst), (src))
 #	define YAS_NETWORK_TO_LOCAL32(dst, src) YAS_LOCAL_TO_NETWORK32((dst), (src))
 #	define YAS_NETWORK_TO_LOCAL64(dst, src) YAS_LOCAL_TO_NETWORK64((dst), (src))
