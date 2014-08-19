@@ -93,7 +93,6 @@ struct shared_buffer {
 	shared_array_type data;
 	std::size_t size;
 
-private:
 	static void deleter(char *ptr) { delete []ptr; }
 };
 
