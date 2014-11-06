@@ -36,8 +36,6 @@
 #ifndef _yas__binary_oarchive_hpp
 #define _yas__binary_oarchive_hpp
 
-#include <ostream>
-
 #include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/has_method_serialize.hpp>
 #include <yas/detail/type_traits/has_function_serialize.hpp>
@@ -62,18 +60,18 @@ namespace yas {
 
 /***************************************************************************/
 
-template<typename OS>
+template<typename OS, endian_t ET = as_host>
 struct binary_oarchive
-	:detail::binary_ostream<OS>
-	,detail::archive_information<archive_type::binary, direction::out, OS>
+	:detail::binary_ostream<OS, ET>
+	,detail::archive_information<archive_type::binary, direction::out, OS, ET>
 	,private detail::noncopyable
 {
 	using stream_type = OS;
-	using this_type = binary_oarchive<OS>;
+	using this_type = binary_oarchive<OS, ET>;
 
 	binary_oarchive(OS &os, header_flag op = with_header)
-		:detail::binary_ostream<OS>(os)
-		,detail::archive_information<archive_type::binary, direction::out, OS>(os, op)
+		:detail::binary_ostream<OS, ET>(os)
+		,detail::archive_information<archive_type::binary, direction::out, OS, ET>(os, op)
 	{}
 
 	template<typename T>

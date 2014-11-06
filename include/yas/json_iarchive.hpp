@@ -64,7 +64,7 @@ namespace yas {
 template<typename IS, typename Trait>
 struct json_iarchive
 	:detail::json_istream<IS, Trait>
-	,detail::archive_information<archive_type::json, direction::in, IS>
+	,detail::archive_information<archive_type::json, direction::in, IS, not_used>
 	,private detail::noncopyable
 {
 	using stream_type = IS;
@@ -72,7 +72,7 @@ struct json_iarchive
 
 	json_iarchive(IS &is, header_flag op = with_header)
 		:detail::json_istream<IS, Trait>(is)
-		,detail::archive_information<archive_type::json, direction::in, IS>(is, op)
+		,detail::archive_information<archive_type::json, direction::in, IS, not_used>(is, op)
 	{}
 
 	template<typename T>

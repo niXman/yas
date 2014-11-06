@@ -66,7 +66,7 @@ namespace yas {
 template<typename OS, typename Trait = yas::detail::default_traits>
 struct text_oarchive
 	:detail::text_ostream<OS, Trait>
-	,detail::archive_information<archive_type::text, direction::out, OS>
+	,detail::archive_information<archive_type::text, direction::out, OS, not_used>
 	,private detail::noncopyable
 {
 	using stream_type = OS;
@@ -74,7 +74,7 @@ struct text_oarchive
 
 	text_oarchive(OS &os, header_flag op = with_header)
 		:detail::text_ostream<OS, Trait>(os)
-		,detail::archive_information<archive_type::text, direction::out, OS>(os, op)
+		,detail::archive_information<archive_type::text, direction::out, OS, not_used>(os, op)
 	{}
 
 	template<typename T>

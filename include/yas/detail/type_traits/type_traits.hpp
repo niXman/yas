@@ -89,14 +89,14 @@ struct is_fundamental_and_sizeof_is:
 
 /***************************************************************************/
 
-template<typename... Types>
+template<typename T, typename... Types>
 struct enable_if_is_any_of
-	:std::enable_if<is_any_of<Types...>::value>
+	:std::enable_if<is_any_of<T, Types...>::value>
 {};
 
-template<typename... Types>
+template<typename T, typename... Types>
 struct disable_if_is_any_of
-	:std::enable_if<!is_any_of<Types...>::value>
+	:std::enable_if<!is_any_of<T, Types...>::value>
 {};
 
 #define YAS_ENABLE_IF_IS_ANY_OF(T, ...) \

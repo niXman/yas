@@ -42,6 +42,14 @@
 #include <cstring>
 
 namespace yas {
+
+enum endian_t {
+	 big_endian
+	,little_endian
+	,as_host
+	,not_used
+};
+
 namespace detail {
 
 /***************************************************************************/
@@ -66,12 +74,12 @@ struct endian_convertor<true> {
 		>::type;
 
 		template<typename U>
-		static void bswab(U &u, typename std::enable_if<std::is_same<U, std::uint32_t>::value>::type* = 0) {
-			YAS_NETWORK_TO_LOCAL32(u, u);
+		static void bswab(U &u, YAS_ENABLE_IF_IS_ANY_OF(U, std::uint32_t)) {
+			u = YAS_NETWORK_TO_LOCAL32(u);
 		}
 		template<typename U>
-		static void bswab(U &u, typename std::enable_if<std::is_same<U, std::uint64_t>::value>::type* = 0) {
-			YAS_NETWORK_TO_LOCAL64(u, u);
+		static void bswab(U &u, YAS_ENABLE_IF_IS_ANY_OF(U, std::uint64_t)) {
+			u = YAS_NETWORK_TO_LOCAL64(u);
 		}
 	};
 

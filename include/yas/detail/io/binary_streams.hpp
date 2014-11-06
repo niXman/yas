@@ -40,14 +40,26 @@
 
 #include <yas/detail/io/io_exceptions.hpp>
 #include <yas/detail/io/endian_conv.hpp>
-#include <yas/detail/type_traits/type_traits.hpp>
+
+#include <yas/detail/preprocessor/cat.hpp>
 
 namespace yas {
 namespace detail {
 
 /***************************************************************************/
 
-template<typename IS>
+#define YAS_ENDIAN_TEST(et) \
+	(et == as_host) || (et == big_endian && YAS_BIG_ENDIAN()) || (et == little_endian && YAS_LITTLE_ENDIAN())
+
+#define YAS_SAVE_ENDIAN_SWITCH(et, var, bits) \
+	var = YAS_ENDIAN_TEST(et) ? var : YAS_PP_CAT(YAS_LOCAL_TO_NETWORK, bits)(var)
+
+#define YAS_LOAD_ENDIAN_SWITCH(et, var, bits) \
+	var = YAS_ENDIAN_TEST(et) ? var : YAS_PP_CAT(YAS_NETWORK_TO_LOCAL, bits)(var)
+
+/***************************************************************************/
+
+template<typename IS, endian_t ET>
 struct binary_istream {
 	binary_istream(IS &is)
 		:is(is)
@@ -68,21 +80,21 @@ struct binary_istream {
 	template<typename T>
 	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::uint16_t)) {
 		YAS_THROW_ON_READ_ERROR(sizeof(v), !=, is.read(&v, sizeof(v)));
-		YAS_NETWORK_TO_LOCAL16(v, v);
+		YAS_LOAD_ENDIAN_SWITCH(ET, v, 16);
 	}
 
 	// for 32-bit ints
 	template<typename T>
 	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t, std::uint32_t)) {
 		YAS_THROW_ON_READ_ERROR(sizeof(v), !=, is.read(&v, sizeof(v)));
-		YAS_NETWORK_TO_LOCAL32(v, v);
+		YAS_LOAD_ENDIAN_SWITCH(ET, v, 32);
 	}
 
 	// for 64-bit ints
 	template<typename T>
 	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t, std::uint64_t)) {
 		YAS_THROW_ON_READ_ERROR(sizeof(v), !=, is.read(&v, sizeof(v)));
-		YAS_NETWORK_TO_LOCAL64(v, v);
+		YAS_LOAD_ENDIAN_SWITCH(ET, v, 64);
 	}
 
 	// for floats and doubles
@@ -90,14 +102,14 @@ struct binary_istream {
 	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, float, double)) {
 		std::uint8_t buf[sizeof(T)];
 		YAS_THROW_ON_READ_ERROR(sizeof(T), !=, is.read(buf, sizeof(buf)));
-		endian_convertor<YAS_LITTLE_ENDIAN()>::from_network(v, buf);
+		endian_convertor<!YAS_ENDIAN_TEST(ET)>::from_network(v, buf);
 	}
 
 private:
 	IS &is;
 };
 
-template<typename OS>
+template<typename OS, endian_t ET>
 struct binary_ostream {
 	binary_ostream(OS &os)
 		:os(os)
@@ -117,21 +129,21 @@ struct binary_ostream {
 	// for shorts
 	template<typename T>
 	void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::uint16_t)) {
-		YAS_LOCAL_TO_NETWORK16(v, v);
+		YAS_SAVE_ENDIAN_SWITCH(ET, v, 16);
 		YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
 	}
 
 	// for 32-bit ints
 	template<typename T>
 	void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t, std::uint32_t)) {
-		YAS_LOCAL_TO_NETWORK32(v, v);
+		YAS_SAVE_ENDIAN_SWITCH(ET, v, 32);
 		YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
 	}
 
 	// for 64-bit ibts
 	template<typename T>
 	void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t, std::uint64_t)) {
-		YAS_LOCAL_TO_NETWORK64(v, v);
+		YAS_SAVE_ENDIAN_SWITCH(ET, v, 64);
 		YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
 	}
 
@@ -139,7 +151,7 @@ struct binary_ostream {
 	template<typename T>
 	void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, float, double)) {
 		std::uint8_t buf[sizeof(T)];
-		endian_convertor<YAS_LITTLE_ENDIAN()>::to_network(buf, v);
+		endian_convertor<!YAS_ENDIAN_TEST(ET)>::to_network(buf, v);
 		YAS_THROW_ON_WRITE_ERROR(sizeof(buf), !=, os.write(buf, sizeof(buf)));
 	}
 

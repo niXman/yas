@@ -62,18 +62,18 @@ namespace yas {
 
 /***************************************************************************/
 
-template<typename IS>
+template<typename IS, endian_t ET = as_host>
 struct binary_iarchive
-	:detail::binary_istream<IS>
-	,detail::archive_information<archive_type::binary, direction::in, IS>
+	:detail::binary_istream<IS, ET>
+	,detail::archive_information<archive_type::binary, direction::in, IS, ET>
 	,private detail::noncopyable
 {
 	using stream_type = IS;
-	using this_type = binary_iarchive<IS>;
+	using this_type = binary_iarchive<IS, ET>;
 
 	binary_iarchive(IS &is, header_flag op = with_header)
-		:detail::binary_istream<IS>(is)
-		,detail::archive_information<archive_type::binary, direction::in, IS>(is, op)
+		:detail::binary_istream<IS, ET>(is)
+		,detail::archive_information<archive_type::binary, direction::in, IS, ET>(is, op)
 	{}
 
 	template<typename T>
