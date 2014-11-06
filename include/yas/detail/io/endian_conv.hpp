@@ -60,6 +60,19 @@ struct endian_convertor;
 template<>
 struct endian_convertor<true> {
 	template<typename T>
+	static void to_network(std::uint8_t *dst, const T &v) {
+		*((T*)dst) = v;
+	}
+
+	template<typename T>
+	static void from_network(T &v, const std::uint8_t *src) {
+		v = *((T*)src);
+	}
+};
+
+template<>
+struct endian_convertor<false> {
+	template<typename T>
 	struct storage_type {
 		enum {
 			 is_float  = std::is_same<T, float>::value
@@ -105,19 +118,6 @@ struct endian_convertor<true> {
 		std::memcpy(&u.u, src, sizeof(v));
 		storage_type<T>::bswab(u.u);
 		v = u.v;
-	}
-};
-
-template<>
-struct endian_convertor<false> {
-	template<typename T>
-	static void to_network(std::uint8_t *dst, const T &v) {
-		*((T*)dst) = v;
-	}
-
-	template<typename T>
-	static void from_network(T &v, const std::uint8_t *src) {
-		v = *((T*)src);
 	}
 };
 

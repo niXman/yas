@@ -49,7 +49,7 @@ namespace detail {
 /***************************************************************************/
 
 #define YAS_ENDIAN_TEST(et) \
-	(et == as_host) || (et == big_endian && YAS_BIG_ENDIAN()) || (et == little_endian && YAS_LITTLE_ENDIAN())
+	(et == as_host || (et == big_endian && YAS_BIG_ENDIAN()) || (et == little_endian && YAS_LITTLE_ENDIAN()))
 
 #define YAS_SAVE_ENDIAN_SWITCH(et, var, bits) \
 	var = YAS_ENDIAN_TEST(et) ? var : YAS_PP_CAT(YAS_LOCAL_TO_NETWORK, bits)(var)
@@ -102,7 +102,7 @@ struct binary_istream {
 	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, float, double)) {
 		std::uint8_t buf[sizeof(T)];
 		YAS_THROW_ON_READ_ERROR(sizeof(T), !=, is.read(buf, sizeof(buf)));
-		endian_convertor<!YAS_ENDIAN_TEST(ET)>::from_network(v, buf);
+		endian_convertor<YAS_ENDIAN_TEST(ET)>::from_network(v, buf);
 	}
 
 private:
@@ -151,7 +151,7 @@ struct binary_ostream {
 	template<typename T>
 	void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, float, double)) {
 		std::uint8_t buf[sizeof(T)];
-		endian_convertor<!YAS_ENDIAN_TEST(ET)>::to_network(buf, v);
+		endian_convertor<YAS_ENDIAN_TEST(ET)>::to_network(buf, v);
 		YAS_THROW_ON_WRITE_ERROR(sizeof(buf), !=, os.write(buf, sizeof(buf)));
 	}
 
