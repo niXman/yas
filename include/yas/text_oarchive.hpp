@@ -66,7 +66,7 @@ namespace yas {
 template<typename OS, typename Trait = yas::detail::default_traits>
 struct text_oarchive
 	:detail::text_ostream<OS, Trait>
-	,detail::archive_information<archive_type::text, direction::out, OS, not_used>
+	,detail::archive_information<archive_type::text, direction::out, OS, as_host>
 	,private detail::noncopyable
 {
 	using stream_type = OS;
@@ -74,19 +74,31 @@ struct text_oarchive
 
 	text_oarchive(OS &os, header_flag op = with_header)
 		:detail::text_ostream<OS, Trait>(os)
-		,detail::archive_information<archive_type::text, direction::out, OS, not_used>(os, op)
+		,detail::archive_information<archive_type::text, direction::out, OS, as_host>(os, op)
 	{}
 
 	template<typename T>
-	text_oarchive& operator& (const T& v) {
+	this_type& operator& (const T& v) {
 		using namespace detail;
 		return serializer<
-			type_properties<T>::value,
-			serialization_method<T, this_type>::value,
-			archive_type::text,
-			direction::out,
-			T
+			 type_properties<T>::value
+			,serialization_method<T, this_type>::value
+			,archive_type::text
+			,direction::out
+			,T
 		>::apply(*this, v);
+	}
+
+	this_type& serialize() { return *this; }
+
+	template<typename Head, typename... Tail>
+	this_type& serialize(const Head& head, const Tail&... tail) {
+		return operator&(head).serialize(tail...);
+	}
+
+	template<typename... Args>
+	this_type& operator()(const Args&... args) {
+		return serialize(args...);
 	}
 };
 

@@ -77,7 +77,7 @@ struct binary_iarchive
 	{}
 
 	template<typename T>
-	binary_iarchive& operator& (T& v) {
+	this_type& operator& (T& v) {
 		using namespace detail;
 		return serializer<
 			 type_properties<T>::value
@@ -86,6 +86,18 @@ struct binary_iarchive
 			,direction::in
 			,T
 		>::apply(*this, v);
+	}
+
+	this_type& serialize() { return *this; }
+
+	template<typename Head, typename... Tail>
+	this_type& serialize(Head& head, Tail&... tail) {
+		return operator&(head).serialize(tail...);
+	}
+
+	template<typename... Args>
+	this_type& operator()(Args&... args) {
+		return serialize(args...);
 	}
 };
 

@@ -42,47 +42,52 @@
 
 /***************************************************************************/
 
-struct base {
-	base()
-		:x(33)
-	{}
-
-	int x;
-
-	template<typename archive_type>
-	void serialize(archive_type& ar) {
-		ar & x;
-	}
-};
-
-struct derived: base {
-	derived()
-		:y(44)
-	{}
-
-	int y;
-
-	template<typename archive_type>
-	void serialize(archive_type& ar) {
-		ar & yas::base_object<base>(*this)
-			& y;
-	}
-};
-
-/***************************************************************************/
-
 int main() {
-	derived t1, t2;
-	yas::mem_ostream os;
-	yas::binary_oarchive<yas::mem_ostream> oa(os);
-	oa & t1;
+	char w0=33, r0=0;
+	int w1=44, r1=0;
+	float w2=3.14156, r2=0;
+	double w3=3.14156259, r3=0;
 
-	yas::mem_istream is(os.get_intrusive_buffer());
-	yas::binary_iarchive<yas::mem_istream> ia(is);
-	ia & t2;
+	{
+		yas::mem_ostream os;
+		yas::binary_oarchive<yas::mem_ostream> oa(os);
+		oa.serialize(w0, w1, w2, w3);
 
-	if ( t2.x != 33 || t2.y != 44 )
-		YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
+		yas::mem_istream is(os.get_intrusive_buffer());
+		yas::binary_iarchive<yas::mem_istream> ia(is);
+		ia.serialize(r0, r1, r2, r3);
+
+		if ( r0 != w0 || r1 != w1 || r2 != w2 || r3 != w3)
+			YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
+	}
+	r0=0;r1=0;r2=0;r3=0;
+	{
+		yas::mem_ostream os;
+		yas::binary_oarchive<yas::mem_ostream> oa(os);
+		oa(w0, w1, w2, w3);
+
+		yas::mem_istream is(os.get_intrusive_buffer());
+		yas::binary_iarchive<yas::mem_istream> ia(is);
+		ia(r0, r1, r2, r3);
+
+		if ( r0 != w0 || r1 != w1 || r2 != w2 || r3 != w3)
+			YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
+	}
+	r0=0;r1=0;r2=0;r3=0;
+	{
+		yas::mem_ostream os;
+		yas::binary_oarchive<yas::mem_ostream> oa(os);
+		auto save = [&oa](auto&&... args) { oa(args...); };
+		save(w0, w1, w2, w3);
+
+		yas::mem_istream is(os.get_intrusive_buffer());
+		yas::binary_iarchive<yas::mem_istream> ia(is);
+		auto load = [&ia](auto&&... args) { ia(args...); };
+		load(r0, r1, r2, r3);
+
+		if ( r0 != w0 || r1 != w1 || r2 != w2 || r3 != w3)
+			YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
+	}
 }
 
 /***************************************************************************/

@@ -64,7 +64,7 @@ namespace yas {
 template<typename IS, typename Trait>
 struct json_iarchive
 	:detail::json_istream<IS, Trait>
-	,detail::archive_information<archive_type::json, direction::in, IS, not_used>
+	,detail::archive_information<archive_type::json, direction::in, IS, as_host>
 	,private detail::noncopyable
 {
 	using stream_type = IS;
@@ -72,18 +72,18 @@ struct json_iarchive
 
 	json_iarchive(IS &is, header_flag op = with_header)
 		:detail::json_istream<IS, Trait>(is)
-		,detail::archive_information<archive_type::json, direction::in, IS, not_used>(is, op)
+		,detail::archive_information<archive_type::json, direction::in, IS, as_host>(is, op)
 	{}
 
 	template<typename T>
-	json_iarchive& operator& (T& v) {
+	this_type& operator& (T& v) {
 		using namespace detail;
 		return serializer<
-			type_properties<T>::value,
-			serialization_method<T, this_type>::value,
-			archive_type::json,
-			direction::in,
-			T
+			 type_properties<T>::value
+			,serialization_method<T, this_type>::value
+			,archive_type::json
+			,direction::in
+			,T
 		>::apply(*this, v);
 	}
 };

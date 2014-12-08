@@ -75,15 +75,27 @@ struct binary_oarchive
 	{}
 
 	template<typename T>
-	binary_oarchive& operator& (const T& v) {
+	this_type& operator& (const T &v) {
 		using namespace detail;
 		return serializer<
-			type_properties<T>::value,
-			serialization_method<T, this_type>::value,
-			archive_type::binary,
-			direction::out,
-			T
+			 type_properties<T>::value
+			,serialization_method<T, this_type>::value
+			,archive_type::binary
+			,direction::out
+			,T
 		>::apply(*this, v);
+	}
+
+	this_type& serialize() { return *this; }
+
+	template<typename Head, typename... Tail>
+	this_type& serialize(const Head& head, const Tail&... tail) {
+		return operator&(head).serialize(tail...);
+	}
+
+	template<typename... Args>
+	this_type& operator()(const Args&... args) {
+		return serialize(args...);
 	}
 };
 

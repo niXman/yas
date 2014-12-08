@@ -33,64 +33,42 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#include <iostream>
+#ifndef _yas_test__serialization_methods_hpp__included_
+#define _yas_test__serialization_methods_hpp__included_
 
-#include <yas/mem_streams.hpp>
-#include <yas/binary_iarchive.hpp>
-#include <yas/binary_oarchive.hpp>
-#include <yas/serializers/std_types_serializers.hpp>
+template<typename archive_traits>
+bool serialization_methods_test(const char* archive_type, const char* io_type) {
+	int w0=0, w1=1, w2=2, w3=3;
+	int r0=0, r1=0, r2=0, r3=0;
 
-/***************************************************************************/
+	typename archive_traits::oarchive oa;
+	archive_traits::ocreate(oa, archive_type, io_type);
+	oa.serialize(w0, w1, w2, w3);
 
-struct type {
-	type()
-		:i(33)
-		,d(.33)
-		,s("33")
-		,v({33, 33, 33})
-	{}
+	typename archive_traits::iarchive ia;
+	archive_traits::icreate(ia, oa, archive_type, io_type);
+	ia.serialize(r0, r1, r2, r3);
 
-	int i;
-	double d;
-	std::string s;
-	std::vector<int> v;
-
-	// split member-functions for serialize/deserialize
-
-	// serializer
-	template<typename archive_type>
-	void serialize(archive_type& ar) const {
-		ar & i
-			& d
-			& s
-			& v;
+	if ( r0!=w0 || r1!=w1 || r2!=w2 || r3!=w3) {
+		std::cout << "SERIALIZATION METHODS error! [1]" << std::endl;
+		return false;
 	}
-	// deserializer
-	template<typename archive_type>
-	void serialize(archive_type& ar) {
-		ar & i
-			& d
-			& s
-			& v;
+
+	r0=0,r1=0,r2=0,r3=0;
+	typename archive_traits::oarchive oa2;
+	archive_traits::ocreate(oa2, archive_type, io_type);
+	oa2(w0, w1, w2, w3);
+
+	typename archive_traits::iarchive ia2;
+	archive_traits::icreate(ia2, oa2, archive_type, io_type);
+	ia2(r0, r1, r2, r3);
+
+	if ( r0!=w0 || r1!=w1 || r2!=w2 || r3!=w3) {
+		std::cout << "SERIALIZATION METHODS error! [2]" << std::endl;
+		return false;
 	}
-};
 
-/***************************************************************************/
-
-int main() {
-	type t1;
-	yas::mem_ostream os;
-	yas::binary_oarchive<yas::mem_ostream> oa(os);
-	oa & t1;
-
-	type t2;
-	yas::mem_istream is(os.get_intrusive_buffer());
-	yas::binary_iarchive<yas::mem_istream> ia(is);
-	ia & t2;
-
-	type t3;
-	if ( t2.i != t3.i || t2.d != t3.d || t2.s != t3.s || t2.v != t3.v )
-		YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
+	return true;
 }
 
-/***************************************************************************/
+#endif // _yas_test__serialization_methods_hpp__included_

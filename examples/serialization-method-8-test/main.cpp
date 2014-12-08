@@ -42,54 +42,46 @@
 
 /***************************************************************************/
 
-struct type {
-	type()
-		:i(33)
-		,d(.33)
-		,s("33")
-		,v({33, 33, 33})
+struct base {
+	base()
+		:x(33)
 	{}
 
-	int i;
-	double d;
-	std::string s;
-	std::vector<int> v;
+	int x;
 
-	// split member-functions for serialize/deserialize
-
-	// serializer
-	template<typename archive_type>
-	void serialize(archive_type& ar) const {
-		ar & i
-			& d
-			& s
-			& v;
-	}
-	// deserializer
 	template<typename archive_type>
 	void serialize(archive_type& ar) {
-		ar & i
-			& d
-			& s
-			& v;
+		ar & x;
+	}
+};
+
+struct derived: base {
+	derived()
+		:y(44)
+	{}
+
+	int y;
+
+	template<typename archive_type>
+	void serialize(archive_type& ar) {
+		ar & yas::base_object<base>(*this)
+			& y;
 	}
 };
 
 /***************************************************************************/
 
 int main() {
-	type t1;
+	derived t1, t2;
 	yas::mem_ostream os;
 	yas::binary_oarchive<yas::mem_ostream> oa(os);
 	oa & t1;
 
-	type t2;
 	yas::mem_istream is(os.get_intrusive_buffer());
 	yas::binary_iarchive<yas::mem_istream> ia(is);
 	ia & t2;
 
-	type t3;
-	if ( t2.i != t3.i || t2.d != t3.d || t2.s != t3.s || t2.v != t3.v )
+	if ( t2.x != 33 || t2.y != 44 )
 		YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
 }
 

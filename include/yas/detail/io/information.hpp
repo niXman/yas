@@ -257,12 +257,14 @@ struct header_reader_writer<archive_type::json> {
 			return header.bits.endian; \
 		} \
 		bool is_little_endian() const { return !is_big_endian(); } \
+		static constexpr endian_t host_endian() { return YAS_BIG_ENDIAN() ? big_endian : little_endian; } \
+		\
 		std::uint32_t version() const { \
 			if ( !header.bits.version ) YAS_THROW_ARCHIVE_NO_HEADER(); \
 			return header.bits.version; \
 		} \
 		\
-		static constexpr yas::direction::type	direction()	{ return yas::direction::in; } \
+		static constexpr yas::direction::type direction()	{ return yas::direction::in; } \
 		\
 		static constexpr bool is_readable()	{ return true; } \
 		static constexpr bool is_writable() { return false; }\
@@ -284,6 +286,7 @@ struct header_reader_writer<archive_type::json> {
 		\
 		static constexpr bool is_big_endian() { return ET == as_host ? YAS_BIG_ENDIAN() : ET == big_endian; } \
 		static constexpr bool is_little_endian() { return ET == as_host ? YAS_LITTLE_ENDIAN() : ET == little_endian; } \
+		static constexpr endian_t host_endian() { return YAS_BIG_ENDIAN() ? big_endian : little_endian; } \
 		\
 		static constexpr std::uint32_t version() { return archive_version; } \
 		\

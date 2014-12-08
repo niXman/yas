@@ -47,7 +47,6 @@ enum endian_t {
 	 big_endian
 	,little_endian
 	,as_host
-	,not_used
 };
 
 namespace detail {

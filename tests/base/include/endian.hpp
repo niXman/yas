@@ -49,8 +49,9 @@ bool endian_test(const char* archive_type, const char* io_type) {
 		std::cout << "ENDIAN test failed! endianness is not equal! [1]" << std::endl;
 		return false;
 	}
+
 	if ( ia->is_little_endian() != oa->is_little_endian() || oa->is_little_endian() != YAS_LITTLE_ENDIAN() ) {
-		std::cout << "ENDIAN test failed! endianness is not equal! [1]" << std::endl;
+		std::cout << "ENDIAN test failed! endianness is not equal! [2]" << std::endl;
 		return false;
 	}
 

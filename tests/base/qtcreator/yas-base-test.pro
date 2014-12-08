@@ -388,4 +388,5 @@ HEADERS += \
 	 ../../../include/yas/serializers/text/std/std_deque_serializers.hpp \
 	 ../include/deque.hpp \
 	 ../../../include/yas/serializers/json/std/std_deque_serializers.hpp \
-	../../../include/yas/buffers.hpp
+	../../../include/yas/buffers.hpp \
+    ../include/serialization_methods.hpp

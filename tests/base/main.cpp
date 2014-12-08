@@ -117,6 +117,7 @@
 #include "include/one_method.hpp"
 #include "include/split_functions.hpp"
 #include "include/split_methods.hpp"
+#include "include/serialization_methods.hpp"
 
 /***************************************************************************/
 
@@ -138,6 +139,20 @@ struct concrete_archive_traits<true, OA, IA> {
 
 		template<typename T>
 		oarchive_type& operator& (const T& v) { return (*(oa) & v); }
+		oarchive_type& serialize() { return *oa; }
+		template<typename Head, typename... Tail>
+		oarchive_type& serialize(const Head& head, const Tail&... tail) {
+			oa->operator& (head);
+			oa->serialize(tail...);
+
+			return *oa;
+		}
+		template<typename... Ts>
+		oarchive_type& operator()(const Ts&... ts) { oa->serialize(ts...); return *oa; }
+
+		static constexpr bool is_little_endian() { return oarchive_type::is_little_endian(); }
+		static constexpr bool is_big_endian() { return oarchive_type::is_big_endian(); }
+		static constexpr yas::endian_t host_endian() { return oarchive_type::host_endian(); }
 
 		std::uint32_t size() const { return stream.get_intrusive_buffer().size; }
 		void dump() {
@@ -147,6 +162,8 @@ struct concrete_archive_traits<true, OA, IA> {
 
 		bool compare(const void* ptr, std::uint32_t size) const {
 			const yas::intrusive_buffer buf = stream.get_intrusive_buffer();
+//			std::cout << "ptr=" << std::endl << yas::hex_dump(ptr, size) << std::endl;
+//			std::cout << "buf=" << std::endl << yas::hex_dump(buf.data, buf.size) << std::endl;
 			return size == buf.size ? (0 == std::memcmp(buf.data, ptr, size)) : false;
 		}
 
@@ -168,6 +185,20 @@ struct concrete_archive_traits<true, OA, IA> {
 
 		template<typename T>
 		iarchive_type& operator& (T& v) { return (*(ia) & v); }
+		iarchive_type& serialize() { return *ia; }
+		template<typename Head, typename... Tail>
+		iarchive_type& serialize(Head& head, Tail&... tail) {
+			ia->operator&(head);
+			ia->serialize(tail...);
+
+			return *ia;
+		}
+		template<typename... Ts>
+		iarchive_type& operator()(Ts&... ts) { return ia->serialize(ts...); return *ia; }
+
+		bool is_little_endian() { return ia->is_little_endian(); }
+		bool is_big_endian() { return ia->is_big_endian(); }
+		static constexpr yas::endian_t host_endian() { return iarchive_type::host_endian(); }
 
 		typename iarchive_type::stream_type *stream;
 		iarchive_type* ia;
@@ -182,7 +213,7 @@ struct concrete_archive_traits<true, OA, IA> {
 
 /***************************************************************************/
 
-static std::uint32_t oa_cnt = 0;
+std::uint32_t oa_cnt = 0;
 
 // file archives traits
 template<typename OA, typename IA>
@@ -203,6 +234,20 @@ struct concrete_archive_traits<false, OA, IA> {
 
 		template<typename T>
 		oarchive_type& operator& (const T& v) { return (*(oa) & v); }
+		oarchive_type& serialize() { return *oa; }
+		template<typename Head, typename... Tail>
+		oarchive_type& serialize(const Head& head, const Tail&... tail) {
+			oa->operator&(head);
+			oa->serialize(tail...);
+
+			return *oa;
+		}
+		template<typename... Ts>
+		oarchive_type& operator()(const Ts&... ts) { oa->serialize(ts...); return *oa; }
+
+		static constexpr bool is_little_endian() { return oarchive_type::is_little_endian(); }
+		static constexpr bool is_big_endian() { return oarchive_type::is_big_endian(); }
+		static constexpr yas::endian_t host_endian() { return oarchive_type::host_endian(); }
 
 		std::uint32_t size() {
 			stream->flush();
@@ -250,6 +295,20 @@ struct concrete_archive_traits<false, OA, IA> {
 
 		template<typename T>
 		iarchive_type& operator& (T& v) { return (*(ia) & v); }
+		iarchive_type& serialize() { return *ia; }
+		template<typename Head, typename... Tail>
+		iarchive_type& serialize(Head& head, Tail&... tail) {
+			ia->operator&(head);
+			ia->serialize(tail...);
+
+			return *ia;
+		}
+		template<typename... Ts>
+		iarchive_type& operator()(Ts&... ts) { serialize(ts...); return *ia; }
+
+		bool is_little_endian() { return ia->is_little_endian(); }
+		bool is_big_endian() { return ia->is_big_endian(); }
+		static constexpr yas::endian_t host_endian() { return iarchive_type::host_endian(); }
 
 		std::string fname;
 		typename iarchive_type::stream_type *stream;
@@ -275,8 +334,9 @@ struct concrete_archive_traits<false, OA, IA> {
 		: "unknown" \
 	); \
 	static const char *iotype = (mem ? "mem" : "file"); \
-	printf( \
-		 "%-6s %-4s: %-24s -> %s\n" \
+	std::fprintf( \
+		 stdout \
+		,"%-6s %-4s: %-24s -> %s\n" \
 		,artype /* 1 */ \
 		,iotype /* 2 */ \
 		,#testname /* 3 */ \
@@ -345,6 +405,7 @@ void tests(std::uint32_t& p, std::uint32_t& e) {
 	YAS_RUN_TEST(split_functions			, p, e);
 	YAS_RUN_TEST(one_method					, p, e);
 	YAS_RUN_TEST(split_methods				, p, e);
+	YAS_RUN_TEST(serialization_methods	, p, e);
 }
 
 /***************************************************************************/
@@ -368,9 +429,10 @@ int main() {
 
 	std::cout << std::endl
 	<< "/***************************************************/" << std::endl
-	<< "> platform bits: " << (YAS_PLATFORM_BITS()) << std::endl
-	<< "> passed tests : " << passed << std::endl
-	<< "> failed tests : " << failed << std::endl
+	<< "> platform bits  : " << (YAS_PLATFORM_BITS()) << std::endl
+	<< "> platform endian: " << (YAS_LITTLE_ENDIAN() ? "little" : "big") << std::endl
+	<< "> passed tests   : " << passed << std::endl
+	<< "> failed tests   : " << failed << std::endl
 	<< "/***************************************************/" << std::endl;
 }
 
