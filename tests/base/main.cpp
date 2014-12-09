@@ -67,6 +67,7 @@
 #include "include/array.hpp"
 #include "include/auto_array.hpp"
 #include "include/bitset.hpp"
+#include "include/chrono.hpp"
 #include "include/complex.hpp"
 #include "include/buffer.hpp"
 #include "include/enum.hpp"
@@ -358,6 +359,7 @@ void tests(std::uint32_t& p, std::uint32_t& e) {
 	YAS_RUN_TEST(array						, p, e);
 	YAS_RUN_TEST(bitset						, p, e);
 	YAS_RUN_TEST(buffer						, p, e);
+	YAS_RUN_TEST(chrono					, p, e)
 	YAS_RUN_TEST(complex					, p, e);
 	YAS_RUN_TEST(string						, p, e);
 	YAS_RUN_TEST(wstring					, p, e);

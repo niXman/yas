@@ -246,7 +246,7 @@ int main() {
 	setvbuf(stdout, 0, _IONBF, 0);
 	std::cout << "platform bits: " << (YAS_PLATFORM_BITS()) << std::endl;
 
-	enum { iterations = 1024u*1024u*10u };
+	enum { iterations = 1024u*1024u*4u };
 
 	try {
 		GENERATE_TESTS(

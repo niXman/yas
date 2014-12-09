@@ -44,6 +44,10 @@
 #include <yas/serializers/text/boost/boost_array_serializers.hpp>
 #include <yas/serializers/json/boost/boost_array_serializers.hpp>
 
+#include <yas/serializers/binary/boost/boost_chrono_serializers.hpp>
+#include <yas/serializers/text/boost/boost_chrono_serializers.hpp>
+//#include <yas/serializers/json/boost/boost_chrono_serializers.hpp>
+
 #include <yas/serializers/binary/boost/boost_tuple_serializers.hpp>
 #include <yas/serializers/text/boost/boost_tuple_serializers.hpp>
 #include <yas/serializers/json/boost/boost_tuple_serializers.hpp>

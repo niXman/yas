@@ -389,4 +389,9 @@ HEADERS += \
 	 ../include/deque.hpp \
 	 ../../../include/yas/serializers/json/std/std_deque_serializers.hpp \
 	../../../include/yas/buffers.hpp \
-    ../include/serialization_methods.hpp
+    ../include/serialization_methods.hpp \
+    ../include/chrono.hpp \
+    ../../../include/yas/serializers/binary/boost/boost_chrono_serializers.hpp \
+    ../../../include/yas/serializers/binary/std/std_chrono_serializers.hpp \
+    ../../../include/yas/serializers/text/boost/boost_chrono_serializers.hpp \
+    ../../../include/yas/serializers/text/std/std_chrono_serializers.hpp
