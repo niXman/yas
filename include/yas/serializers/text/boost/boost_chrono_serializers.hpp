@@ -42,6 +42,7 @@
 
 #include <boost/ratio/ratio_fwd.hpp>
 #include <boost/chrono/duration.hpp>
+#include <boost/chrono/time_point.hpp>
 
 namespace yas {
 namespace detail {
@@ -76,6 +77,40 @@ struct serializer<
 		R count;
 		ar & count;
 		d = boost::chrono::duration<R, P>(count);
+		return ar;
+	}
+};
+
+/***************************************************************************/
+
+template<typename C, typename D>
+struct serializer<
+	type_prop::not_a_pod,
+	ser_method::use_internal_serializer,
+	archive_type::text,
+	direction::out,
+	boost::chrono::time_point<C, D>
+> {
+	template<typename Archive>
+	static Archive& apply(Archive& ar, const boost::chrono::time_point<C, D> &t) {
+		ar & t.time_since_epoch();
+		return ar;
+	}
+};
+
+template<typename C, typename D>
+struct serializer<
+	type_prop::not_a_pod,
+	ser_method::use_internal_serializer,
+	archive_type::text,
+	direction::in,
+	boost::chrono::time_point<C, D>
+> {
+	template<typename Archive>
+	static Archive& apply(Archive& ar, boost::chrono::time_point<C, D> &t) {
+		D duration;
+		ar & duration;
+		t = boost::chrono::time_point<C, D>(duration);
 		return ar;
 	}
 };

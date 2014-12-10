@@ -42,7 +42,7 @@ template<typename archive_traits>
 bool chrono_test(const char* archive_type, const char* io_type) {
 	{
 		std::chrono::duration<int, std::ratio<1>> w0{32}, r0;
-		std::chrono::duration<double, std::ratio<1>> w1{32}, r1;
+		std::chrono::duration<double, std::ratio<1>> w1{23}, r1;
 
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type, io_type);
@@ -62,8 +62,24 @@ bool chrono_test(const char* archive_type, const char* io_type) {
 		}
 	}
 	{
+		decltype(std::chrono::system_clock::now()) w0 = std::chrono::system_clock::now(), r0;
+
+		typename archive_traits::oarchive oa;
+		archive_traits::ocreate(oa, archive_type, io_type);
+		oa & w0;
+
+		typename archive_traits::iarchive ia;
+		archive_traits::icreate(ia, oa, archive_type, io_type);
+		ia & r0;
+
+		if ( r0 != w0 ) {
+			std::cout << "CHRONO serialization error! [2]" << std::endl;
+			return false;
+		}
+	}
+	{
 		boost::chrono::duration<int, boost::ratio<1>> w0{32}, r0;
-		boost::chrono::duration<double, boost::ratio<1>> w1{32}, r1;
+		boost::chrono::duration<double, boost::ratio<1>> w1{23}, r1;
 
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type, io_type);
@@ -78,7 +94,23 @@ bool chrono_test(const char* archive_type, const char* io_type) {
 		;
 
 		if ( r0 != w0 || r1 != w1 ) {
-			std::cout << "CHRONO serialization error! [2]" << std::endl;
+			std::cout << "CHRONO serialization error! [3]" << std::endl;
+			return false;
+		}
+	}
+	{
+		decltype(boost::chrono::system_clock::now()) w0 = boost::chrono::system_clock::now(), r0;
+
+		typename archive_traits::oarchive oa;
+		archive_traits::ocreate(oa, archive_type, io_type);
+		oa & w0;
+
+		typename archive_traits::iarchive ia;
+		archive_traits::icreate(ia, oa, archive_type, io_type);
+		ia & r0;
+
+		if ( r0 != w0 ) {
+			std::cout << "CHRONO serialization error! [4]" << std::endl;
 			return false;
 		}
 	}

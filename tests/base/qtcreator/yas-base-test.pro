@@ -1,3 +1,4 @@
+
 QT -= core gui
 TARGET = yas-base-test
 CONFIG += console
@@ -11,13 +12,15 @@ DEFINES += \
 	YAS_HAS_BOOST_ARRAY=1 \
 #	YAS_DECORATE_HEADER_BYTES="x"
 
-#QMAKE_CXX = clang++
-
 QMAKE_CXXFLAGS += \
 	-std=c++11
 
 INCLUDEPATH += \
 	../../../include
+
+LIBS += \
+	-lboost_system \
+	-lboost_chrono
 
 SOURCES += \
 	../main.cpp
@@ -389,9 +392,9 @@ HEADERS += \
 	 ../include/deque.hpp \
 	 ../../../include/yas/serializers/json/std/std_deque_serializers.hpp \
 	../../../include/yas/buffers.hpp \
-    ../include/serialization_methods.hpp \
-    ../include/chrono.hpp \
-    ../../../include/yas/serializers/binary/boost/boost_chrono_serializers.hpp \
-    ../../../include/yas/serializers/binary/std/std_chrono_serializers.hpp \
-    ../../../include/yas/serializers/text/boost/boost_chrono_serializers.hpp \
-    ../../../include/yas/serializers/text/std/std_chrono_serializers.hpp
+	 ../include/serialization_methods.hpp \
+	 ../include/chrono.hpp \
+	 ../../../include/yas/serializers/binary/boost/boost_chrono_serializers.hpp \
+	 ../../../include/yas/serializers/binary/std/std_chrono_serializers.hpp \
+	 ../../../include/yas/serializers/text/boost/boost_chrono_serializers.hpp \
+	 ../../../include/yas/serializers/text/std/std_chrono_serializers.hpp

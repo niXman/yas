@@ -81,6 +81,40 @@ struct serializer<
 
 /***************************************************************************/
 
+template<typename C, typename D>
+struct serializer<
+	type_prop::not_a_pod,
+	ser_method::use_internal_serializer,
+	archive_type::binary,
+	direction::out,
+	std::chrono::time_point<C, D>
+> {
+	template<typename Archive>
+	static Archive& apply(Archive& ar, const std::chrono::time_point<C, D> &t) {
+		ar & t.time_since_epoch();
+		return ar;
+	}
+};
+
+template<typename C, typename D>
+struct serializer<
+	type_prop::not_a_pod,
+	ser_method::use_internal_serializer,
+	archive_type::binary,
+	direction::in,
+	std::chrono::time_point<C, D>
+> {
+	template<typename Archive>
+	static Archive& apply(Archive& ar, std::chrono::time_point<C, D> &t) {
+		D duration;
+		ar & duration;
+		t = std::chrono::time_point<C, D>(duration);
+		return ar;
+	}
+};
+
+/***************************************************************************/
+
 } // namespace detail
 } // namespace yas
 
