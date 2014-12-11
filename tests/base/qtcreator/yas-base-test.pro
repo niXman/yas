@@ -12,10 +12,16 @@ DEFINES += \
 	YAS_HAS_BOOST_ARRAY=1 \
 #	YAS_DECORATE_HEADER_BYTES="x"
 
+#QMAKE_CXX = \
+#	/usr/local/bin/g++
+#QMAKE_LINK = \
+#	/usr/local/bin/g++
+
 QMAKE_CXXFLAGS += \
 	-std=c++11
 
 INCLUDEPATH += \
+	/usr/local/include \
 	../../../include
 
 LIBS += \
@@ -397,4 +403,9 @@ HEADERS += \
 	 ../../../include/yas/serializers/binary/boost/boost_chrono_serializers.hpp \
 	 ../../../include/yas/serializers/binary/std/std_chrono_serializers.hpp \
 	 ../../../include/yas/serializers/text/boost/boost_chrono_serializers.hpp \
-	 ../../../include/yas/serializers/text/std/std_chrono_serializers.hpp
+	 ../../../include/yas/serializers/text/std/std_chrono_serializers.hpp \
+	../include/optional.hpp \
+	../../../include/yas/serializers/binary/boost/boost_optional_serializers.hpp \
+	../../../include/yas/serializers/binary/std/std_optional_serializers.hpp \
+	../../../include/yas/serializers/text/boost/boost_optional_serializers.hpp \
+	../../../include/yas/serializers/text/std/std_optional_serializers.hpp

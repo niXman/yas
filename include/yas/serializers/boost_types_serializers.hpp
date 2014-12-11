@@ -48,6 +48,10 @@
 #include <yas/serializers/text/boost/boost_chrono_serializers.hpp>
 //#include <yas/serializers/json/boost/boost_chrono_serializers.hpp>
 
+#include <yas/serializers/binary/boost/boost_optional_serializers.hpp>
+#include <yas/serializers/text/boost/boost_optional_serializers.hpp>
+//#include <yas/serializers/json/boost/boost_optional_serializers.hpp>
+
 #include <yas/serializers/binary/boost/boost_tuple_serializers.hpp>
 #include <yas/serializers/text/boost/boost_tuple_serializers.hpp>
 #include <yas/serializers/json/boost/boost_tuple_serializers.hpp>
@@ -139,7 +143,9 @@
 //#include <yas/serializers/json/boost/boost_container_set_serializers.hpp>
 //#include <yas/serializers/json/boost/boost_container_multiset_serializers.hpp>
 //#include <yas/serializers/json/boost/boost_container_flat_map_serializers.hpp>
+//#include <yas/serializers/json/boost/boost_container_flat_multimap_serializers.hpp>
 //#include <yas/serializers/json/boost/boost_container_flat_set_serializers.hpp>
+//#include <yas/serializers/json/boost/boost_container_flat_multiset_serializers.hpp>
 
 #endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 

@@ -99,6 +99,7 @@
 #include "include/map.hpp"
 #include "include/multimap.hpp"
 #include "include/multiset.hpp"
+#include "include/optional.hpp"
 #include "include/pair.hpp"
 #include "include/pod.hpp"
 #include "include/deque.hpp"
@@ -377,6 +378,7 @@ void tests(std::uint32_t& p, std::uint32_t& e) {
 	YAS_RUN_TEST(unordered_set				, p, e);
 	YAS_RUN_TEST(unordered_multimap			, p, e);
 	YAS_RUN_TEST(unordered_multiset			, p, e);
+	YAS_RUN_TEST(optional				, p, e);
 #if defined(YAS_HAS_BOOST_FUSION)
 	YAS_RUN_TEST(fusion_pair				, p, e);
 	YAS_RUN_TEST(fusion_tuple				, p, e);
