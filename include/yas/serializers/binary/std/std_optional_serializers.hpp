@@ -53,6 +53,9 @@
 #	endif
 #endif
 
+namespace yas {
+namespace detail {
+
 #if _YAS_HAVE_STD_OPTIONAL
 
 #ifdef _YAS_HAVE_STD_EXPERIMENTAL_OPTIONAL
@@ -60,9 +63,6 @@
 #else
 #	define _YAS_STD_OPTIONAL_NS std
 #endif // _YAS_HAVE_STD_EXPERIMENTAL_OPTIONAL
-
-namespace yas {
-namespace detail {
 
 /***************************************************************************/
 
