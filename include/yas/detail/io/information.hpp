@@ -65,8 +65,12 @@ union archive_header {
 		:as_char(c)
 	{}
 	archive_header(const std::uint8_t v, const std::uint8_t t, const std::uint8_t b, const std::uint8_t e)
-		:bits{v, t, b, e}
-	{}
+	{
+		bits.version = v;
+		bits.type = t;
+		bits.bits = b;
+		bits.endian = e;
+	}
 
 	struct {
 		std::uint8_t version:3; // version     : 0 ... 7
