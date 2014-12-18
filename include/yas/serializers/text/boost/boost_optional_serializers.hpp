@@ -60,7 +60,7 @@ struct serializer<
 		const bool initialized = static_cast<bool>(t);
 		ar.write(initialized);
 		if ( initialized )
-			ar & t.value();
+			ar & t.get();
 
 		return ar;
 	}

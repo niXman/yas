@@ -85,16 +85,16 @@ static_assert(sizeof(archive_header)==sizeof(std::int8_t ), "ALIGNMENT ERROR");
 namespace {
 
 #ifdef YAS_DECORATE_HEADER_BYTES
-static constexpr const char yas_id[] = {
+static YAS_CONSTEXPR const char yas_id[] = {
 	 'y' ^ YAS_PP_STRINGIZE(YAS_DECORATE_HEADER_BYTES)[0]
 	,'a' ^ YAS_PP_STRINGIZE(YAS_DECORATE_HEADER_BYTES)[0]
 	,'s' ^ YAS_PP_STRINGIZE(YAS_DECORATE_HEADER_BYTES)[0]
 };
 #else // !YAS_DECORATE_HEADER_BYTES
-static constexpr const char yas_id[] = {'y', 'a', 's'};
+static YAS_CONSTEXPR const char yas_id[] = {'y', 'a', 's'};
 #endif // YAS_DECORATE_HEADER_BYTES
 
-static constexpr const char hex_alpha[] = {
+static YAS_CONSTEXPR const char hex_alpha[] = {
 	'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
 };
 
@@ -246,8 +246,8 @@ struct header_reader_writer<archive_type::json> {
 			,header() \
 		{ header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::read(io, op, header); } \
 		\
-		static constexpr std::uint32_t header_size() { return header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::header_size; } \
-		static constexpr archive_type::type type() { return YAS_PP_SEQ_ELEM(idx, seq); } \
+		static YAS_CONSTEXPR std::uint32_t header_size() { return header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::header_size; } \
+		static YAS_CONSTEXPR archive_type::type type() { return YAS_PP_SEQ_ELEM(idx, seq); } \
 		std::uint32_t bits() const { \
 			if ( !header.bits.version ) YAS_THROW_ARCHIVE_NO_HEADER(); \
 			return (header.bits.bits ? 64 : 32); \
@@ -257,17 +257,17 @@ struct header_reader_writer<archive_type::json> {
 			return header.bits.endian; \
 		} \
 		bool is_little_endian() const { return !is_big_endian(); } \
-		static constexpr endian_t host_endian() { return YAS_BIG_ENDIAN() ? big_endian : little_endian; } \
+		static YAS_CONSTEXPR endian_t host_endian() { return YAS_BIG_ENDIAN() ? big_endian : little_endian; } \
 		\
 		std::uint32_t version() const { \
 			if ( !header.bits.version ) YAS_THROW_ARCHIVE_NO_HEADER(); \
 			return header.bits.version; \
 		} \
 		\
-		static constexpr yas::direction::type direction()	{ return yas::direction::in; } \
+		static YAS_CONSTEXPR yas::direction::type direction()	{ return yas::direction::in; } \
 		\
-		static constexpr bool is_readable()	{ return true; } \
-		static constexpr bool is_writable() { return false; }\
+		static YAS_CONSTEXPR bool is_readable()	{ return true; } \
+		static YAS_CONSTEXPR bool is_writable() { return false; }\
 		\
 	private: \
 		IO &io; \
@@ -280,20 +280,20 @@ struct header_reader_writer<archive_type::json> {
 			:io(io) \
 		{ header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::write<ET>(io, op, YAS_PP_SEQ_ELEM(idx, seq)); } \
 		\
-		static constexpr std::uint32_t header_size() { return header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::header_size; } \
-		static constexpr archive_type::type type() { return YAS_PP_SEQ_ELEM(idx, seq); } \
-		static constexpr std::uint32_t bits() { return YAS_PLATFORM_BITS(); } \
+		static YAS_CONSTEXPR std::uint32_t header_size() { return header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::header_size; } \
+		static YAS_CONSTEXPR archive_type::type type() { return YAS_PP_SEQ_ELEM(idx, seq); } \
+		static YAS_CONSTEXPR std::uint32_t bits() { return YAS_PLATFORM_BITS(); } \
 		\
-		static constexpr bool is_big_endian() { return ET == as_host ? YAS_BIG_ENDIAN() : ET == big_endian; } \
-		static constexpr bool is_little_endian() { return ET == as_host ? YAS_LITTLE_ENDIAN() : ET == little_endian; } \
-		static constexpr endian_t host_endian() { return YAS_BIG_ENDIAN() ? big_endian : little_endian; } \
+		static YAS_CONSTEXPR bool is_big_endian() { return ET == as_host ? YAS_BIG_ENDIAN() : ET == big_endian; } \
+		static YAS_CONSTEXPR bool is_little_endian() { return ET == as_host ? YAS_LITTLE_ENDIAN() : ET == little_endian; } \
+		static YAS_CONSTEXPR endian_t host_endian() { return YAS_BIG_ENDIAN() ? big_endian : little_endian; } \
 		\
-		static constexpr std::uint32_t version() { return archive_version; } \
+		static YAS_CONSTEXPR std::uint32_t version() { return archive_version; } \
 		\
-		static constexpr yas::direction::type direction() { return yas::direction::out; } \
+		static YAS_CONSTEXPR yas::direction::type direction() { return yas::direction::out; } \
 		\
-		static constexpr bool is_readable() { return false; } \
-		static constexpr bool is_writable() { return true; } \
+		static YAS_CONSTEXPR bool is_readable() { return false; } \
+		static YAS_CONSTEXPR bool is_writable() { return true; } \
 		\
 	private: \
 		IO &io; \

@@ -41,6 +41,7 @@
 #include <yas/detail/io/serialization_exception.hpp>
 
 #include <boost/optional.hpp>
+#include <boost/move/move.hpp>
 
 namespace yas {
 namespace detail {
@@ -60,7 +61,7 @@ struct serializer<
 		const bool initialized = static_cast<bool>(t);
 		ar.write(initialized);
 		if ( initialized )
-			ar & t.value();
+			ar & t.get();
 
 		return ar;
 	}

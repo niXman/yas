@@ -38,6 +38,12 @@
 
 /***************************************************************************/
 
+#if _MSC_VER >= 1800
+#	define YAS_CONSTEXPR constexpr
+#else
+#	define YAS_CONSTEXPR
+#endif // _MSC_VER >= 1800
+
 #if YAS_LITTLE_ENDIAN()
 #	define YAS_LOCAL_TO_NETWORK16(src) _byteswap_ushort((src))
 #	define YAS_LOCAL_TO_NETWORK32(src) _byteswap_ulong((src))

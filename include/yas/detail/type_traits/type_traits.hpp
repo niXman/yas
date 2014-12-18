@@ -36,6 +36,8 @@
 #ifndef _yas__type_traits_hpp
 #define _yas__type_traits_hpp
 
+#include <yas/detail/config/config.hpp>
+
 #include <type_traits>
 
 namespace yas {
@@ -107,7 +109,7 @@ struct disable_if_is_any_of
 
 /***************************************************************************/
 
-static constexpr const char space_sep = ' ';
+static YAS_CONSTEXPR const char space_sep = ' ';
 
 /***************************************************************************/
 
