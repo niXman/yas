@@ -95,7 +95,7 @@ struct mem_ostream: private detail::noncopyable {
 		return size;
 	}
 
-	shared_buffer get_shared_buffer() const { return shared_buffer(beg, cur-beg); }
+	shared_buffer get_shared_buffer() const { return shared_buffer(buf.data, cur-beg); }
 	intrusive_buffer get_intrusive_buffer() const { return intrusive_buffer(beg, cur-beg); }
 
 private:
