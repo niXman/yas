@@ -38,8 +38,13 @@
 
 /***************************************************************************/
 
-#if __cplusplus < 201103L
+#if __cplusplus < 201103L && _MSC_VER < 1800
 #	error "C++11 or greater support is required"
+#endif
+
+#if _MSC_VER <= 1800
+#define constexpr 
+#define noexcept throw()
 #endif
 
 /***************************************************************************/
