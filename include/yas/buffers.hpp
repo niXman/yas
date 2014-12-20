@@ -73,22 +73,32 @@ struct shared_buffer {
 	shared_buffer(std::size_t size)
 		:size(size)
 	{
-		data.reset(new char[size], &deleter);
+		if ( size ) {
+			data.reset(new char[size], &deleter);
+		}
 	}
 	shared_buffer(const void *ptr, std::size_t size)
 		:size(size)
 	{
-		data.reset(new char[size], &deleter);
-		std::memcpy(data.get(), ptr, size);
+		if ( size ) {
+			data.reset(new char[size], &deleter);
+			std::memcpy(data.get(), ptr, size);
+		}
 	}
 	shared_buffer(const shared_array_type& buf, std::size_t size)
-		:data(buf)
-		,size(size)
-	{}
+		:size(size)
+	{
+		if ( size ) {
+			data = buf;
+		}
+	}
 	shared_buffer(const shared_buffer& buf)
-		:data(buf.data)
-		,size(buf.size)
-	{}
+		:size(buf.size)
+	{
+		if ( size ) {
+			data = buf.data;
+		}
+	}
 
 	shared_array_type data;
 	std::size_t size;
