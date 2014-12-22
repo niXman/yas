@@ -133,7 +133,7 @@ namespace detail {
 
 /***************************************************************************/
 
-#if _MSC_VER >= 1700
+#if _MSC_VER == 1700
 YAS__BINARY__GENERATE_SAVE_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(_VARIADIC_MAX)
 YAS__BINARY__GENERATE_LOAD_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(_VARIADIC_MAX)
 #else
