@@ -39,7 +39,7 @@ Supported the following compilers:
  - MinGW: 4.8.0, 4.8.1, 4.8.2, ... - x32/x64
  - Clang: 3.3, 3.4, ... - x32/x64
  - Intel: (untested)
- - MSVC : 2015, ... - x32/x64
+ - MSVC : 2013, 2015, ... - x32/x64
 
 ===
 Planned the support for the following serializable types:
