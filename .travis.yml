@@ -20,6 +20,7 @@ before_install:
 
 
 install:
+  - "g++ -v"
   - "cd $TRAVIS_BUILD_DIR/tests/base/qtcreator"
   - "qmake"
 
