@@ -17,15 +17,15 @@ before_install:
   - sudo apt-get update
   - if [ "$CXX" = "g++" ]; then sudo apt-get install g++-4.8 g++-4.9 libboost-dev qt4-qmake; fi
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
+  - if [[ -f /usr/bin/g++ ]]; then sudo rm /usr/bin/g++ && sudo ln /usr/bin/g++-4.9 /usr/bin/g++; fi
 
 
 install:
+  - "g++ -v"
   - "cd $TRAVIS_BUILD_DIR/tests/base/qtcreator"
   - "qmake"
 
 script:
-  - "g++ -v"
-  - "$CXX -v"
   - "cd $TRAVIS_BUILD_DIR/tests/base/qtcreator"
   - "make"
   - "./yas-base-test"
