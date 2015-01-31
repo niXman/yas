@@ -42,6 +42,12 @@
 #	error "C++11 or greater support is required"
 #endif
 
+#if __cplusplus >= 201103L
+#	define YAS_CONSTEXPR constexpr
+#else
+#	define YAS_CONSTEXPR
+#endif // __cplusplus >= 201103L
+
 /***************************************************************************/
 
 #include <cstdint>
