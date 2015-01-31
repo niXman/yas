@@ -102,14 +102,13 @@ bool buffer_test(const char* archive_type, const char* io_type) {
 			 XOR(0x79),XOR(0x61),XOR(0x73),0x30,0x41,0x20,0x32,0x31,0x20,0x69,0x6e,0x74,0x72,0x75,0x73
 			,0x69,0x76,0x65,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
 		};
-		const unsigned char* res = (YAS_PLATFORM_BITS_IS_64()) ? res64 : res32;
-		std::cout << "oa1.size()=" << oa1.size() << std::endl;
-		std::cout << "strlen(res)=" << strlen((const char*)res) << std::endl;
-		if ( oa1.size() != strlen((const char*)res) ) {
+		const unsigned char *res_ptr = (YAS_PLATFORM_BITS_IS_64()) ? res64 : res32;
+		const unsigned int  res_size = (YAS_PLATFORM_BITS_IS_64()) ? sizeof(res64) : sizeof(res32);
+		if ( oa1.size() != res_size ) {
 			std::cout << "BUFFER intrusive serialization error! [3]" << std::endl;
 			return false;
 		}
-		if ( !oa1.compare(res, strlen((const char*)res)) ) {
+		if ( !oa1.compare(res_ptr, res_size) ) {
 			std::cout << "BUFFER intrusive serialization error! [4]" << std::endl;
 			return false;
 		}
