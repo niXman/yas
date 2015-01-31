@@ -24,7 +24,7 @@ before_install:
   - cd boost_1_57_0
   - sed 's|if (!(\*first1 != \*first2))|if (*first1 != *first2)|g' -i boost/container/vector.hpp
   - ./bootstrap.sh
-  - sudo ./bjam release install --without-atomic --without-context --without-coroutine --without-filesystem --without-locale --without-random --without-signals --without-mpi --without-graph --without-graph_parallel --without-python --without-log --without-wave --without-program_options --without-math --without-regex --without-test --without-thread --without-timer --prefix=/usr/local -j4
+  - sudo ./bjam release install --without-atomic --without-context --without-coroutine --without-filesystem --without-locale --without-random --without-signals --without-mpi --without-graph --without-graph_parallel --without-python --without-log --without-wave --without-program_options --without-math --without-regex --without-serialization --without-test --without-thread --without-timer --prefix=/usr/local -j4
   - sudo ldconfig
 
 install:
