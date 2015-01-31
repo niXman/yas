@@ -64,8 +64,7 @@ union archive_header {
 	archive_header(const std::int8_t c)
 		:as_char(c)
 	{}
-	archive_header(const std::uint8_t v, const std::uint8_t t, const std::uint8_t b, const std::uint8_t e)
-	{
+	archive_header(const std::uint8_t v, const std::uint8_t t, const std::uint8_t b, const std::uint8_t e) {
 		bits.version = v;
 		bits.type = t;
 		bits.bits = b;
@@ -82,23 +81,23 @@ union archive_header {
 };
 #pragma pack(pop)
 
-static_assert(sizeof(archive_header)==sizeof(std::int8_t ), "ALIGNMENT ERROR");
+static_assert(sizeof(archive_header)==sizeof(std::int8_t), "ALIGNMENT ERROR");
 
 /***************************************************************************/
 
 namespace {
 
 #ifdef YAS_DECORATE_HEADER_BYTES
-static YAS_CONSTEXPR const char yas_id[] = {
+static const char yas_id[] = {
 	 'y' ^ YAS_PP_STRINGIZE(YAS_DECORATE_HEADER_BYTES)[0]
 	,'a' ^ YAS_PP_STRINGIZE(YAS_DECORATE_HEADER_BYTES)[0]
 	,'s' ^ YAS_PP_STRINGIZE(YAS_DECORATE_HEADER_BYTES)[0]
 };
 #else // !YAS_DECORATE_HEADER_BYTES
-static YAS_CONSTEXPR const char yas_id[] = {'y', 'a', 's'};
+static const char yas_id[] = {'y', 'a', 's'};
 #endif // YAS_DECORATE_HEADER_BYTES
 
-static YAS_CONSTEXPR const char hex_alpha[] = {
+static const char hex_alpha[] = {
 	'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
 };
 
@@ -270,7 +269,7 @@ struct header_reader_writer<archive_type::json> {
 		\
 		static YAS_CONSTEXPR yas::direction::type direction()	{ return yas::direction::in; } \
 		\
-		static YAS_CONSTEXPR bool is_readable()	{ return true; } \
+		static YAS_CONSTEXPR bool is_readable() { return true; } \
 		static YAS_CONSTEXPR bool is_writable() { return false; }\
 		\
 	private: \
