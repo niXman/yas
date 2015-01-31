@@ -15,14 +15,13 @@ notifications:
 before_install:
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
   - sudo apt-get update
-  - if [ "$CXX" = "g++" ]; then sudo apt-get install g++-4.9 libboost1.55-all-dev qt4-qmake; fi
+  - if [ "$CXX" = "g++" ]; then sudo apt-get install g++-4.9 libboost-dev qt4-qmake; fi
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
   - if [[ -f /usr/bin/g++ ]]; then sudo rm /usr/bin/g++; fi
   - sudo ln /usr/bin/g++-4.9 /usr/bin/g++
-
+  - wget http://sourceforge.net/projects/boost/files/boost/1.57.0/boost_1_57_0.tar.bz2 && tar jxf boost_1_57_0.tar.bz2 && cd boost_1_57_0 && ./bootstrap.sh && sudo ./bjam release install --prefix=/usr/local -j4
 
 install:
-  - "g++ -v"
   - "cd $TRAVIS_BUILD_DIR/tests/base/qtcreator"
   - "qmake"
 
