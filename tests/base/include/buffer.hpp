@@ -103,6 +103,8 @@ bool buffer_test(const char* archive_type, const char* io_type) {
 			,0x69,0x76,0x65,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
 		};
 		const unsigned char* res = (YAS_PLATFORM_BITS_IS_64()) ? res64 : res32;
+		std::cout << "oa1.size()=" << oa1.size() << std::endl;
+		std::cout << "strlen(res)=" << strlen((const char*)res) << std::endl;
 		if ( oa1.size() != strlen((const char*)res) ) {
 			std::cout << "BUFFER intrusive serialization error! [3]" << std::endl;
 			return false;
