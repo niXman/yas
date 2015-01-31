@@ -23,6 +23,7 @@ before_install:
   - tar jxf boost_1_57_0.tar.bz2
   - cd boost_1_57_0 && ./bootstrap.sh
   - sudo ./bjam release install --without-atomic --without-chrono --without-context --without-coroutine --without-filesystem --without-locale --without-random --without-signals --without-mpi --without-graph --without-graph_parallel --without-python --without-log --without-wave --without-program_options --without-math --without-regex --without-test --prefix=/usr/local -j4
+  - sudo ldconfig
 
 install:
   - "cd $TRAVIS_BUILD_DIR/tests/base/qtcreator"
