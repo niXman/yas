@@ -24,7 +24,7 @@ before_install:
   - cd boost_1_57_0
   - sed 's|if (!(\*first1 != \*first2))|if (*first1 != *first2)|g' -i boost/container/vector.hpp
   - ./bootstrap.sh
-  - sudo ./bjam release install --with-chrono --with-container --prefix=/usr/local -j4
+  - sudo ./bjam release install -d0 --with-chrono --with-container --prefix=/usr/local -j4
   - sudo ldconfig
 
 install:
