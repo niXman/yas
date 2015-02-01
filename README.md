@@ -12,7 +12,6 @@ Binary serialization:
       |  boost  |   YAS   |
 ------|---------|---------|---------
  save | 142 ms  | 24 ms   | +500%   
-------|---------|---------|---------
  load | 114 ms  | 8 ms    | +1300%  
 
 Text serialization:
@@ -20,7 +19,6 @@ Text serialization:
       |  boost  |   YAS   |
 ------|---------|---------|---------
  save | 8090 ms | 277 ms  | +28000%
-------|---------|---------|---------
  load | 8794 ms | 265 ms  | +33000%
 
 Yas is header only library. You do not need to link it with your code.
@@ -134,14 +132,10 @@ Planned the support for the following serializable types:
  - qvector2d
  - qvector3d
  - qvector4d
- - yas::intrusive_buffer [1] (only save)
- - yas::shared_buffer [2]
+ - [yas::intrusive_buffer](https://github.com/niXman/yas/blob/master/include/yas/buffers.hpp#L48) (only save)
+ - [yas::shared_buffer](https://github.com/niXman/yas/blob/master/include/yas/buffers.hpp#L67)
 
 Currently supports all types except Qt types.
 
 ===
 If you use YAS in your project - please tell to the author with the short description of the reasons and advantages in comparison with other serialization libraries ;)
-
-===
-[1] https://github.com/niXman/yas/blob/master/include/yas/buffers.hpp#L45
-[2] https://github.com/niXman/yas/blob/master/include/yas/buffers.hpp#L64
