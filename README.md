@@ -9,14 +9,14 @@ YAS is created as a replacement of boost.serialization because of its insufficie
 
 Binary serialization:
 
-      |  boost  |   YAS   |
+      |  boost  |   YAS   | Speedup
 ------|---------|---------|---------
  save | 142 ms  | 24 ms   | +500%   
  load | 114 ms  | 8 ms    | +1300%  
 
 Text serialization:
 
-      |  boost  |   YAS   |
+      |  boost  |   YAS   | Speedup
 ------|---------|---------|---------
  save | 8090 ms | 277 ms  | +28000%
  load | 8794 ms | 265 ms  | +33000%
