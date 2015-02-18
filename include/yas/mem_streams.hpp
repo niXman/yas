@@ -146,6 +146,9 @@ struct mem_istream: private detail::noncopyable {
 		return copy;
 	}
 
+	shared_buffer get_shared_buffer() const { return shared_buffer(cur, end - cur); }
+	intrusive_buffer get_intrusive_buffer() const { return intrusive_buffer(cur, end - cur); }
+
 private:
 	const char *beg, *cur, *end;
 }; // struct mem_istream
