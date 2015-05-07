@@ -1,4 +1,4 @@
-// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com). All
+// Copyright (c) 2010-2015 niXman (i dot nixman dog gmail dot com). All
 // rights reserved.
 //
 // This file is part of YAS(https://github.com/niXman/yas) project.
@@ -145,6 +145,9 @@ struct mem_istream: private detail::noncopyable {
 
 		return copy;
 	}
+
+	shared_buffer get_shared_buffer() const { return shared_buffer(cur, end - cur); }
+	intrusive_buffer get_intrusive_buffer() const { return intrusive_buffer(cur, end - cur); }
 
 private:
 	const char *beg, *cur, *end;

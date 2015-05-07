@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2014 niXman (i dot nixman dog gmail dot com). All
+// Copyright (c) 2010-2015 niXman (i dot nixman dog gmail dot com). All
 // rights reserved.
 //
 // This file is part of YAS(https://github.com/niXman/yas) project.
@@ -67,23 +67,15 @@ private:
 struct shared_buffer {
 	typedef std::shared_ptr<char> shared_array_type;
 
-	shared_buffer()
+	explicit shared_buffer(std::size_t size = 0)
 		:size(0)
-	{}
-	shared_buffer(std::size_t size)
-		:size(size)
 	{
-		if ( size ) {
-			data.reset(new char[size], &deleter);
-		}
+		resize(size);
 	}
 	shared_buffer(const void *ptr, std::size_t size)
-		:size(size)
+		:size(0)
 	{
-		if ( size ) {
-			data.reset(new char[size], &deleter);
-			std::memcpy(data.get(), ptr, size);
-		}
+		assign(ptr, size);
 	}
 	shared_buffer(const shared_array_type& buf, std::size_t size)
 		:size(size)
@@ -97,6 +89,22 @@ struct shared_buffer {
 	{
 		if ( size ) {
 			data = buf.data;
+		}
+	}
+
+	void resize(std::size_t new_size)
+	{
+		if ( new_size > size ) {
+			data.reset(new char[new_size], &deleter);
+		}
+		size = new_size;
+	}
+
+	void assign(const void *ptr, std::size_t size)
+	{
+		resize(size);
+		if ( size ) {
+			std::memcpy(data.get(), ptr, size);
 		}
 	}
 
