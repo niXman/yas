@@ -18,7 +18,9 @@ DEFINES += \
 #	/usr/local/bin/g++
 
 QMAKE_CXXFLAGS += \
-	-std=c++1y
+	-std=c++1y \
+	-Wall \
+	-Wextra
 
 INCLUDEPATH += \
 	/usr/local/include \

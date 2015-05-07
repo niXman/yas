@@ -86,14 +86,22 @@ struct type_properties {
 
 template<typename T, typename Ar>
 struct serialization_method {
+private:
+	enum {
+		 is_fundamental = std::is_fundamental<T>::value
+		,is_array = std::is_array<T>::value
+		,is_enum = std::is_enum<T>::value
+	};
+
+public:
 	static const ser_method::type value =
-		has_const_method_serializer<std::is_fundamental<T>::value || std::is_array<T>::value, std::is_enum<T>::value, T, void(Ar)>::value
+		has_const_method_serializer<is_fundamental || is_array, is_enum, T, void(Ar)>::value
 		? ser_method::has_split_methods
-		: has_method_serializer<std::is_fundamental<T>::value || std::is_array<T>::value, std::is_enum<T>::value, T, void(Ar)>::value
+		: has_method_serializer<is_fundamental || is_array, is_enum, T, void(Ar)>::value
 			? ser_method::has_one_method
-			: has_function_const_serialize<std::is_fundamental<T>::value || std::is_array<T>::value, std::is_enum<T>::value, Ar, T>::value
+			: has_function_const_serialize<is_fundamental || is_array, is_enum, Ar, T>::value
 				? ser_method::has_split_functions
-				: has_function_serialize<std::is_fundamental<T>::value || std::is_array<T>::value, std::is_enum<T>::value, Ar, T>::value
+				: has_function_serialize<is_fundamental || is_array, is_enum, Ar, T>::value
 					? ser_method::has_one_function
 					: ser_method::use_internal_serializer
 	;
