@@ -91,6 +91,12 @@ struct shared_buffer {
 			data = buf.data;
 		}
 	}
+	shared_buffer(shared_buffer&& buf)
+		:data(std::move(buf.data))
+		,size(buf.size)
+	{
+		buf.size = 0;
+	}
 
 	void resize(std::size_t new_size)
 	{
