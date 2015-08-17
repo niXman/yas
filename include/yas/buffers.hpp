@@ -97,6 +97,8 @@ struct shared_buffer {
 	{
 		buf.size = 0;
 	}
+	shared_buffer& operator=(const shared_buffer&) = default;
+	shared_buffer& operator=(shared_buffer&&) = default;
 
 	void resize(std::size_t new_size)
 	{
