@@ -138,4 +138,8 @@ Planned the support for the following serializable types:
 Currently supports all types except Qt types.
 
 ===
-If you use YAS in your project - please tell to the author with the short description of the reasons and advantages in comparison with other serialization libraries ;)
+Projects using this library
+---------------------------
+
+* [K3](https://github.com/DaMSL/K3): K3 is a programming language for building large-scale data systems
+* [cppan](https://github.com/tarasko/cppan): Class members annotations for C++
