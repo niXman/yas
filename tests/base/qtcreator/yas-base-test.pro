@@ -23,7 +23,6 @@ QMAKE_CXXFLAGS += \
 	-Wextra
 
 INCLUDEPATH += \
-	/home/nixman/boost_1_59_0 \
 	/usr/local/include \
 	../../../include
 
