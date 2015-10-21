@@ -274,9 +274,7 @@ void default_traits::dtoa(char *buf, const std::size_t, std::size_t &len, T v) {
 	double diff = 0.0;
 	char* wstr = buf;
 
-	if (prec < 0) {
-		prec = 0;
-	} else if (prec > 9) {
+	if (prec > 9) {
 		/* precision of >= 10 can lead to overflow errors */
 		prec = 9;
 	}

@@ -197,10 +197,11 @@ struct serializer<
 	}
 };
 
+#endif // BOOST_FUSION_HAS_VARIADIC_LIST
+
 } // namespace detail
 } // namespace yas
 
-#endif // BOOST_FUSION_HAS_VARIADIC_LIST
 #endif // defined(YAS_HAS_BOOST_FUSION)
 
 #endif // _yas__binary__boost_fusion_binary_list_serializer_hpp
