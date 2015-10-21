@@ -87,7 +87,7 @@ struct json_list_deserializer {
 };
 
 /***************************************************************************/
-
+#if 0
 #define YAS__JSON__GENERATE_EMPTY_SAVE_SERIALIZE_LIST_SPEC_VARIADIC() \
 	template<> \
 	struct serializer<type_prop::not_a_pod, ser_method::use_internal_serializer, \
@@ -156,8 +156,25 @@ struct json_list_deserializer {
 
 YAS__JSON__GENERATE_SAVE_SERIALIZE_LIST_SPEC_VARIADICS(FUSION_MAX_LIST_SIZE)
 YAS__JSON__GENERATE_LOAD_SERIALIZE_LIST_SPEC_VARIADICS(FUSION_MAX_LIST_SIZE)
-
+#endif
 /***************************************************************************/
+
+template<typename... T>
+struct serializer<
+	 type_prop::not_a_pod
+	,ser_method::use_internal_serializer
+	,archive_type::json
+	,direction::out
+	,boost::fusion::list<T...>
+>
+{
+	template<typename Archive>
+	static Archive& apply(Archive& ar, const boost::fusion::list<T...>& list) \
+	{
+		ar & sizeof...(T);
+		boost::fusion::for_each(list, detail::json_list_serializer<Archive>(ar));
+	}
+};
 
 } // namespace detail
 } // namespace yas

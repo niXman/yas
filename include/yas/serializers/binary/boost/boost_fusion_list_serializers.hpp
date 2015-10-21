@@ -38,8 +38,7 @@
 
 #include <yas/detail/config/config.hpp>
 
-#include <stdexcept>
-
+#if defined(YAS_HAS_BOOST_FUSION)
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
@@ -88,6 +87,8 @@ struct binary_list_deserializer {
 };
 
 /***************************************************************************/
+
+#ifndef BOOST_FUSION_HAS_VARIADIC_LIST
 
 #define YAS__BINARY__GENERATE_EMPTY_SAVE_SERIALIZE_LIST_SPEC_VARIADIC() \
 	template<> \
@@ -160,7 +161,46 @@ YAS__BINARY__GENERATE_LOAD_SERIALIZE_LIST_SPEC_VARIADICS(FUSION_MAX_LIST_SIZE)
 
 /***************************************************************************/
 
+#else // BOOST_FUSION_HAS_VARIADIC_LIST
+
+template<typename... T>
+struct serializer<
+	 type_prop::not_a_pod
+	,ser_method::use_internal_serializer
+	,archive_type::binary
+	,direction::out
+	,boost::fusion::list<T...>
+> {
+	template<typename Archive>
+	static Archive& apply(Archive& ar, const boost::fusion::list<T...>& list) {
+		ar.write((std::uint8_t)sizeof...(T));
+		boost::fusion::for_each(list, detail::binary_list_serializer<Archive>(ar));
+		return ar;
+	}
+};
+
+template<typename... T>
+struct serializer<
+	 type_prop::not_a_pod
+	,ser_method::use_internal_serializer
+	,archive_type::binary
+	,direction::in
+	,boost::fusion::list<T...>
+> {
+	template<typename Archive>
+	static Archive& apply(Archive& ar, boost::fusion::list<T...>& list) {
+		std::uint8_t size = 0;
+		ar.read(size);
+		if ( size != sizeof...(T) ) YAS_THROW_BAD_SIZE_ON_DESERIALIZE_FUSION("fusion::list");
+		boost::fusion::for_each(list, detail::binary_list_deserializer<Archive>(ar));
+		return ar;
+	}
+};
+
 } // namespace detail
 } // namespace yas
+
+#endif // BOOST_FUSION_HAS_VARIADIC_LIST
+#endif // defined(YAS_HAS_BOOST_FUSION)
 
 #endif // _yas__binary__boost_fusion_binary_list_serializer_hpp
