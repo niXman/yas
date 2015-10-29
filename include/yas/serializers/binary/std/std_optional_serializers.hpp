@@ -36,6 +36,8 @@
 #ifndef _yas__binary__std_optional_serializer_hpp
 #define _yas__binary__std_optional_serializer_hpp
 
+#if __cplusplus > 201103L
+
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 #include <yas/detail/io/serialization_exception.hpp>
@@ -119,5 +121,7 @@ struct serializer<
 
 } // namespace detail
 } // namespace yas
+
+#endif // __cplusplus > 201103L
 
 #endif // _yas__binary__std_optional_serializer_hpp
