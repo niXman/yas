@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__binary__boost_fusion_list_serializer_hpp
-#define _yas__binary__boost_fusion_list_serializer_hpp
+#ifndef _yas__binary__fusion_list_serializer_hpp
+#define _yas__binary__fusion_list_serializer_hpp
 
 #include <yas/detail/config/config.hpp>
 
@@ -204,4 +204,4 @@ struct serializer<
 
 #endif // defined(YAS_HAS_BOOST_FUSION)
 
-#endif // _yas__binary__boost_fusion_binary_list_serializer_hpp
+#endif // _yas__binary__fusion_binary_list_serializer_hpp

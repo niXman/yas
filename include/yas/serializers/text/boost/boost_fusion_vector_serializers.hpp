@@ -33,13 +33,14 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__text__boost_fusion_vector_serializer_hpp
-#define _yas__text__boost_fusion_vector_serializer_hpp
+#ifndef _yas__text__fusion_vector_serializer_hpp
+#define _yas__text__fusion_vector_serializer_hpp
 
 #include <yas/detail/config/config.hpp>
 
 #if defined(YAS_HAS_BOOST_FUSION)
 #include <yas/detail/type_traits/type_traits.hpp>
+#include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 #include <yas/detail/io/serialization_exception.hpp>
 #include <yas/detail/preprocessor/preprocessor.hpp>
@@ -242,4 +243,4 @@ YAS__TEXT__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS_VARIADIC(FUSION
 
 #endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 
-#endif // _yas__text__boost_fusion_vector_serializer_hpp
+#endif // _yas__text__fusion_vector_serializer_hpp

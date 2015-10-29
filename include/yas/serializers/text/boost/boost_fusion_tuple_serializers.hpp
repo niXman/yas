@@ -33,13 +33,14 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__text__boost_fusion_tuple_serializer_hpp
-#define _yas__text__boost_fusion_tuple_serializer_hpp
+#ifndef _yas__text__fusion_tuple_serializer_hpp
+#define _yas__text__fusion_tuple_serializer_hpp
 
 #include <yas/detail/config/config.hpp>
 
 #if defined(YAS_HAS_BOOST_FUSION)
 #include <yas/detail/type_traits/type_traits.hpp>
+#include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 #include <yas/detail/io/serialization_exception.hpp>
 #include <yas/detail/preprocessor/preprocessor.hpp>
@@ -146,4 +147,4 @@ YAS__TEXT__GENERATE_LOAD_SERIALIZE_BOOST_FUSION_TUPLE_FUNCTIONS_SPEC(FUSION_MAX_
 
 #endif // defined(YAS_HAS_BOOST_FUSION)
 
-#endif // _yas__text__boost_fusion_tuple_serializer_hpp
+#endif // _yas__text__fusion_tuple_serializer_hpp

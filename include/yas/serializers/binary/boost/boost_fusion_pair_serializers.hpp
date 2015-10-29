@@ -38,6 +38,7 @@
 
 #include <yas/detail/config/config.hpp>
 
+#if defined(YAS_HAS_BOOST_FUSION)
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
@@ -92,5 +93,7 @@ struct serializer<
 
 } // namespace detail
 } // namespace yas
+
+#endif // defined(YAS_HAS_BOOST_FUSION)
 
 #endif // _yas__binary__fusion_pair_serializer_hpp

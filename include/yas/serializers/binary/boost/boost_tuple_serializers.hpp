@@ -38,16 +38,13 @@
 
 #include <yas/detail/config/config.hpp>
 
-#if defined(YAS_HAS_BOOST_TUPLE)
-
-#include <stdexcept>
-
+#if defined(YAS_HAS_BOOST_FUSION)
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 #include <yas/detail/preprocessor/preprocessor.hpp>
 
-#include <stdint.h>
 #include <boost/tuple/tuple.hpp>
 #include <boost/tuple/tuple_comparison.hpp>
 

@@ -41,8 +41,6 @@
 #include <yas/detail/io/serialization_exception.hpp>
 #include <yas/detail/preprocessor/preprocessor.hpp>
 
-#include <stdint.h>
-#include <cassert>
 #include <tuple>
 
 namespace yas {
