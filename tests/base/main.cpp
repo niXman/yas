@@ -417,6 +417,13 @@ void tests(std::uint32_t& p, std::uint32_t& e) {
 int main() {
 	setvbuf(stdout, 0, _IONBF, 0);
 
+	const char str0[] = "some string";
+	const std::string str1 = "some string 2";
+	yas::hex_dump(std::cout, str0, sizeof(str0));
+	std::cout << std::endl;
+	std::cout << yas::hex_dump(str1);
+	std::cout << std::endl;
+
 	types_test();
 
 	std::uint32_t passed = 0;
@@ -433,10 +440,10 @@ int main() {
 
 	std::cout << std::endl
 	<< "/***************************************************/" << std::endl
-	<< "> platform bits  : " << (YAS_PLATFORM_BITS()) << std::endl
-	<< "> platform endian: " << (YAS_LITTLE_ENDIAN() ? "little" : "big") << std::endl
 	<< "> passed tests   : " << passed << std::endl
 	<< "> failed tests   : " << failed << std::endl
+	<< "> platform bits  : " << (YAS_PLATFORM_BITS()) << std::endl
+	<< "> platform endian: " << (YAS_LITTLE_ENDIAN() ? "little" : "big") << std::endl
 	<< "/***************************************************/" << std::endl;
 
 	return failed;

@@ -126,9 +126,10 @@ inline std::size_t chksum_crc32(const void *ptr, std::size_t length) {
 
 /***************************************************************************/
 
-inline std::string hex_dump(const void *buf, const std::size_t len) {
-	std::stringstream os;
-	if ( !buf || !len ) return os.str();
+inline void hex_dump(std::ostream &os, const void *buf, const std::size_t len) {
+	if ( !buf || !len ) return;
+
+	std::ios::fmtflags fmt(os.flags());
 
 	const std::uint8_t *buffer = static_cast<const std::uint8_t*>(buf);
 	std::size_t addr = 0, n = 0, idx = 0, cnt2 = 0;
@@ -173,14 +174,24 @@ inline std::string hex_dump(const void *buf, const std::size_t len) {
 	os << std::dec;
 
 	os << std::endl
-		<< "LEN: " << len << " bytes, "
-		<< "CRC32: 0x" << std::hex << detail::chksum_crc32(buf, len);
+	<< "LEN: " << len << " bytes, "
+	<< "CRC32: 0x" << std::hex << detail::chksum_crc32(buf, len);
+
+	os.flags(fmt);
+}
+
+inline std::string hex_dump(const void *ptr, const std::size_t size) {
+	std::ostringstream os;
+	hex_dump(os, ptr, size);
 
 	return os.str();
 }
 
-inline std::string hex_dump(const std::string& str, int len = -1) {
-	return hex_dump(str.c_str(), (len==(-1)?str.length():len));
+inline std::string hex_dump(const std::string& str) {
+	std::ostringstream os;
+	hex_dump(os, str.c_str(), str.length());
+
+	return os.str();
 }
 
 /***************************************************************************/

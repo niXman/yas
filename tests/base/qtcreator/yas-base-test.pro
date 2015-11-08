@@ -94,7 +94,6 @@ HEADERS += \
 	../../../include/yas/binary_oarchive.hpp \
 	../../../include/yas/buffers.hpp \
 	../../../include/yas/defaul_traits.hpp \
-	../../../include/yas/detail/base_object.hpp \
 	../../../include/yas/detail/config/compiler/clang.hpp \
 	../../../include/yas/detail/config/compiler/endian.hpp \
 	../../../include/yas/detail/config/compiler/gcc.hpp \
@@ -135,7 +134,6 @@ HEADERS += \
 	../../../include/yas/detail/preprocessor/telem.hpp \
 	../../../include/yas/detail/preprocessor/velem.hpp \
 	../../../include/yas/detail/preprocessor/vsize.hpp \
-	../../../include/yas/detail/tools/hexdumper.hpp \
 	../../../include/yas/detail/tools/noncopyable.hpp \
 	../../../include/yas/detail/tools/utf8conv.hpp \
 	../../../include/yas/detail/type_traits/has_function_serialize.hpp \
@@ -410,4 +408,6 @@ HEADERS += \
 	../../../include/yas/serializers/text/utility/usertype_serializers.hpp \
 	../../../include/yas/std_traits.hpp \
 	../../../include/yas/text_iarchive.hpp \
-	../../../include/yas/text_oarchive.hpp
+	../../../include/yas/text_oarchive.hpp \
+    ../../../include/yas/tools/base_object.hpp \
+    ../../../include/yas/tools/hexdumper.hpp
