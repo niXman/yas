@@ -38,8 +38,6 @@
 
 /***************************************************************************/
 
-#include <yas/detail/tools/hexdumper.hpp>
-
 #if defined(YAS_HAS_BOOST_TUPLE)
 //#include <boost/tuple/tuple_comparison.hpp>
 #endif // defined(YAS_HAS_BOOST_TUPLE)

@@ -44,7 +44,7 @@
 #include <yas/detail/io/information.hpp>
 #include <yas/detail/io/binary_streams.hpp>
 
-#include <yas/detail/base_object.hpp>
+#include <yas/tools/base_object.hpp>
 
 #include <yas/serializers/serializer.hpp>
 #include <yas/serializers/binary/utility/pod_serializers.hpp>

@@ -47,7 +47,7 @@
 #include <yas/mem_streams.hpp>
 #include <yas/file_streams.hpp>
 
-#include <yas/detail/tools/hexdumper.hpp>
+#include <yas/tools/hexdumper.hpp>
 
 #include <yas/serializers/std_types_serializers.hpp>
 

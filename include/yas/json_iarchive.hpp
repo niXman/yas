@@ -44,7 +44,7 @@
 #include <yas/detail/io/information.hpp>
 #include <yas/detail/io/json_streams.hpp>
 
-#include <yas/detail/base_object.hpp>
+#include <yas/tools/base_object.hpp>
 #include <yas/defaul_traits.hpp>
 
 #include <yas/serializers/serializer.hpp>
