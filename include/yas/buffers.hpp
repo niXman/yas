@@ -69,47 +69,33 @@ struct shared_buffer {
 
 	explicit shared_buffer(std::size_t size = 0)
 		:size(0)
-	{
-		resize(size);
-	}
+	{ resize(size); }
 	shared_buffer(const void *ptr, std::size_t size)
 		:size(0)
-	{
-		assign(ptr, size);
-	}
+	{ assign(ptr, size); }
 	shared_buffer(const shared_array_type& buf, std::size_t size)
 		:size(size)
-	{
-		if ( size ) {
-			data = buf;
-		}
-	}
+	{ if ( size ) { data = buf; } }
 	shared_buffer(const shared_buffer& buf)
 		:size(buf.size)
-	{
-		if ( size ) {
-			data = buf.data;
-		}
-	}
+	{ if ( size ) { data = buf.data; } }
+
 	shared_buffer(shared_buffer&& buf)
 		:data(std::move(buf.data))
 		,size(buf.size)
-	{
-		buf.size = 0;
-	}
+	{ buf.size = 0; }
+
 	shared_buffer& operator=(const shared_buffer&) = default;
 	shared_buffer& operator=(shared_buffer&&) = default;
 
-	void resize(std::size_t new_size)
-	{
+	void resize(std::size_t new_size) {
 		if ( new_size > size ) {
 			data.reset(new char[new_size], &deleter);
 		}
 		size = new_size;
 	}
 
-	void assign(const void *ptr, std::size_t size)
-	{
+	void assign(const void *ptr, std::size_t size) {
 		resize(size);
 		if ( size ) {
 			std::memcpy(data.get(), ptr, size);
