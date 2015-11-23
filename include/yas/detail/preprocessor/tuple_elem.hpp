@@ -18,8 +18,8 @@
 # include <yas/detail/preprocessor/cat.hpp>
 # include <yas/detail/preprocessor/config.hpp>
 # include <yas/detail/preprocessor/overload.hpp>
-# include <yas/detail/preprocessor/rem.hpp>
-# include <yas/detail/preprocessor/velem.hpp>
+# include <yas/detail/preprocessor/tuple_rem.hpp>
+# include <yas/detail/preprocessor/variadic_elem.hpp>
 #
 # if YAS_PP_VARIADICS
 #    if YAS_PP_VARIADICS_MSVC

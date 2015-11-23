@@ -52,29 +52,19 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::text,
-	direction::out,
 	std::list<T>
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::list<T>& list) {
+	static Archive& save(Archive& ar, const std::list<T>& list) {
 		ar & (uint32_t)list.size();
 		for ( const auto &it: list ) {
 			ar & it;
 		}
 		return ar;
 	}
-};
 
-template<typename T>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::text,
-	direction::in,
-	std::list<T>
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, std::list<T>& list) {
+	static Archive& load(Archive& ar, std::list<T>& list) {
 		std::uint32_t size = 0;
 		ar & size;
 		list.resize(size);

@@ -37,8 +37,6 @@
 #define _yas__json_oarchive_hpp
 
 #include <yas/detail/type_traits/properties.hpp>
-#include <yas/detail/type_traits/has_method_serialize.hpp>
-#include <yas/detail/type_traits/has_function_serialize.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 
 #include <yas/detail/io/information.hpp>
@@ -64,7 +62,7 @@ namespace yas {
 template<typename OS, typename Trait = yas::detail::default_traits>
 struct json_oarchive
 	:detail::json_ostream<OS, Trait>
-	,detail::archive_information<archive_type::json, direction::out, OS, as_host>
+	,detail::oarchive_information<archive_type::json, OS, as_host>
 	,private detail::noncopyable
 {
 	using stream_type = OS;
@@ -72,19 +70,18 @@ struct json_oarchive
 
 	json_oarchive(OS &os, header_flag op = with_header)
 		:detail::json_ostream<OS, Trait>(os)
-		,detail::archive_information<archive_type::json, direction::out, OS, as_host>(os, op)
+		,detail::oarchive_information<archive_type::json, OS, as_host>(os, op)
 	{}
 
 	template<typename T>
-	this_type& operator& (const T& v) {
+	this_type& operator& (T&& v) {
 		using namespace detail;
 		return serializer<
 			 type_properties<T>::value
 			,serialization_method<T, this_type>::value
 			,archive_type::json
-			,direction::out
 			,T
-		>::apply(*this, v);
+		>::save(*this, v);
 	}
 };
 

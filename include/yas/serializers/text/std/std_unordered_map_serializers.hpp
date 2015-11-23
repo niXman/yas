@@ -52,11 +52,10 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::text,
-	direction::out,
 	std::unordered_map<K, V>
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::unordered_map<K, V>& map) {
+	static Archive& save(Archive& ar, const std::unordered_map<K, V>& map) {
 		ar & (std::uint32_t)map.size();
 		for ( const auto &it: map ) {
 			ar & it.first
@@ -64,18 +63,9 @@ struct serializer<
 		}
 		return ar;
 	}
-};
 
-template<typename K, typename V>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::text,
-	direction::in,
-	std::unordered_map<K, V>
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, std::unordered_map<K, V>& map) {
+	static Archive& load(Archive& ar, std::unordered_map<K, V>& map) {
 		std::uint32_t size = 0;
 		ar & size;
 		for ( ; size; --size ) {

@@ -37,8 +37,6 @@
 #define _yas__text_iarchive_hpp
 
 #include <yas/detail/type_traits/properties.hpp>
-#include <yas/detail/type_traits/has_method_serialize.hpp>
-#include <yas/detail/type_traits/has_function_serialize.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 
 #include <yas/detail/io/information.hpp>
@@ -64,7 +62,7 @@ namespace yas {
 template<typename IS, typename Trait = yas::detail::default_traits>
 struct text_iarchive
 	:detail::text_istream<IS, Trait>
-	,detail::archive_information<archive_type::text, direction::in, IS, as_host>
+	,detail::iarchive_information<archive_type::text, IS, as_host>
 	,private detail::noncopyable
 {
 	using stream_type = IS;
@@ -72,19 +70,19 @@ struct text_iarchive
 
 	text_iarchive(IS &is, header_flag op = with_header)
 		:detail::text_istream<IS, Trait>(is)
-		,detail::archive_information<archive_type::text, direction::in, IS, as_host>(is, op)
+		,detail::iarchive_information<archive_type::text, IS, as_host>(is, op)
 	{}
 
 	template<typename T>
-	this_type& operator& (T& v) {
+	this_type& operator& (T &&v) {
 		using namespace detail;
+		using real_type = typename std::remove_reference<typename std::remove_const<T>::type>::type;
 		return serializer<
-			 type_properties<T>::value
-			,serialization_method<T, this_type>::value
+			 type_properties<real_type>::value
+			,serialization_method<real_type, this_type>::value
 			,archive_type::text
-			,direction::in
-			,T
-		>::apply(*this, v);
+			,real_type
+		>::load(*this, v);
 	}
 
 	this_type& serialize() { return *this; }

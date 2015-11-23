@@ -42,7 +42,7 @@
 
 #include <yas/serializers/binary/boost/boost_array_serializers.hpp>
 #include <yas/serializers/text/boost/boost_array_serializers.hpp>
-#include <yas/serializers/json/boost/boost_array_serializers.hpp>
+//#include <yas/serializers/json/boost/boost_array_serializers.hpp>
 
 #include <yas/serializers/binary/boost/boost_chrono_serializers.hpp>
 #include <yas/serializers/text/boost/boost_chrono_serializers.hpp>
@@ -54,47 +54,47 @@
 
 #include <yas/serializers/binary/boost/boost_tuple_serializers.hpp>
 #include <yas/serializers/text/boost/boost_tuple_serializers.hpp>
-#include <yas/serializers/json/boost/boost_tuple_serializers.hpp>
+//#include <yas/serializers/json/boost/boost_tuple_serializers.hpp>
 
 #include <yas/serializers/binary/boost/boost_unordered_set_serializers.hpp>
 #include <yas/serializers/text/boost/boost_unordered_set_serializers.hpp>
-#include <yas/serializers/json/boost/boost_unordered_set_serializers.hpp>
+//#include <yas/serializers/json/boost/boost_unordered_set_serializers.hpp>
 
 #include <yas/serializers/binary/boost/boost_unordered_map_serializers.hpp>
 #include <yas/serializers/text/boost/boost_unordered_map_serializers.hpp>
-#include <yas/serializers/json/boost/boost_unordered_map_serializers.hpp>
+//#include <yas/serializers/json/boost/boost_unordered_map_serializers.hpp>
 
 #include <yas/serializers/binary/boost/boost_unordered_multimap_serializers.hpp>
 #include <yas/serializers/text/boost/boost_unordered_multimap_serializers.hpp>
-#include <yas/serializers/json/boost/boost_unordered_multimap_serializers.hpp>
+//#include <yas/serializers/json/boost/boost_unordered_multimap_serializers.hpp>
 
 #include <yas/serializers/binary/boost/boost_unordered_multiset_serializers.hpp>
 #include <yas/serializers/text/boost/boost_unordered_multiset_serializers.hpp>
-#include <yas/serializers/json/boost/boost_unordered_multiset_serializers.hpp>
+//#include <yas/serializers/json/boost/boost_unordered_multiset_serializers.hpp>
 
 #include <yas/serializers/binary/boost/boost_fusion_pair_serializers.hpp>
 #include <yas/serializers/text/boost/boost_fusion_pair_serializers.hpp>
-#include <yas/serializers/json/boost/boost_fusion_pair_serializers.hpp>
+//#include <yas/serializers/json/boost/boost_fusion_pair_serializers.hpp>
 
 #include <yas/serializers/binary/boost/boost_fusion_vector_serializers.hpp>
 #include <yas/serializers/text/boost/boost_fusion_vector_serializers.hpp>
-#include <yas/serializers/json/boost/boost_fusion_vector_serializers.hpp>
+//#include <yas/serializers/json/boost/boost_fusion_vector_serializers.hpp>
 
 #include <yas/serializers/binary/boost/boost_fusion_list_serializers.hpp>
 #include <yas/serializers/text/boost/boost_fusion_list_serializers.hpp>
-#include <yas/serializers/json/boost/boost_fusion_list_serializers.hpp>
+//#include <yas/serializers/json/boost/boost_fusion_list_serializers.hpp>
 
 #include <yas/serializers/binary/boost/boost_fusion_map_serializers.hpp>
 #include <yas/serializers/text/boost/boost_fusion_map_serializers.hpp>
-#include <yas/serializers/json/boost/boost_fusion_map_serializers.hpp>
+//#include <yas/serializers/json/boost/boost_fusion_map_serializers.hpp>
 
 #include <yas/serializers/binary/boost/boost_fusion_set_serializers.hpp>
 #include <yas/serializers/text/boost/boost_fusion_set_serializers.hpp>
-#include <yas/serializers/json/boost/boost_fusion_set_serializers.hpp>
+//#include <yas/serializers/json/boost/boost_fusion_set_serializers.hpp>
 
 #include <yas/serializers/binary/boost/boost_fusion_tuple_serializers.hpp>
 #include <yas/serializers/text/boost/boost_fusion_tuple_serializers.hpp>
-#include <yas/serializers/json/boost/boost_fusion_tuple_serializers.hpp>
+//#include <yas/serializers/json/boost/boost_fusion_tuple_serializers.hpp>
 
 #include <yas/serializers/binary/boost/boost_container_string_serializers.hpp>
 #include <yas/serializers/binary/boost/boost_container_wstring_serializers.hpp>

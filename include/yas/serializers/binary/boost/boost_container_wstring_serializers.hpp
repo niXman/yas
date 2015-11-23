@@ -36,7 +36,8 @@
 #ifndef _yas__binary__boost_cont_wstring_serializer_hpp
 #define _yas__binary__boost_cont_wstring_serializer_hpp
 
-#include <yas/detail/type_traits/type_traits.hpp>
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
+#include <yas/serializers/serializer.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 #include <yas/detail/io/serialization_exception.hpp>
 
@@ -53,28 +54,18 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::binary,
-	direction::out,
 	boost::container::wstring
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const boost::container::wstring& string) {
+	static Archive& save(Archive& ar, const boost::container::wstring& string) {
 		boost::container::string dst;
 		detail::TypeConverter<boost::container::string, boost::container::wstring>::Convert(dst, string);
 		ar & dst;
 		return ar;
 	}
-};
 
-template<>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::binary,
-	direction::in,
-	boost::container::wstring
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, boost::container::wstring& string) {
+	static Archive& load(Archive& ar, boost::container::wstring& string) {
 		boost::container::string src;
 		ar & src;
 		detail::TypeConverter<boost::container::wstring, boost::container::string>::Convert(string, src);
@@ -86,5 +77,7 @@ struct serializer<
 
 } // namespace detail
 } // namespace yas
+
+#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 
 #endif // _yas__binary__boost_cont_wstring_serializer_hpp

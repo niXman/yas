@@ -36,12 +36,9 @@
 #ifndef _yas__json__autoarray_serializer_hpp
 #define _yas__json__autoarray_serializer_hpp
 
-#include <stdexcept>
-
-#include <yas/detail/config/config.hpp>
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 namespace yas {
 namespace detail {
@@ -53,62 +50,75 @@ struct serializer<
 	type_prop::is_array_of_pods,
 	ser_method::use_internal_serializer,
 	archive_type::json,
-	direction::out,
 	T[N]
 > {
-	template<
-		 typename Archive
-		,typename U
-	>
-	static Archive& apply(Archive& ar, const U(&v)[N], typename std::enable_if<is_any_of<U, char, signed char, unsigned char>::value>::type* = 0) {
-		ar & (N-1);
-		ar.write(reinterpret_cast<const char*>(v), N-1);
-		ar & ' ';
+	// for chars only
+	template<typename Archive, typename U>
+	static Archive& save(Archive& ar, const U(&v)[N], YAS_ENABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char)) {
+		ar.write((std::uint32_t)N-1);
+		ar.write(space_sep);
+		ar.write(v, N-1);
+		return ar;
 	}
 
-	template<
-		 typename Archive
-		,typename U
-	>
-	static Archive& apply(Archive& ar, const U(&v)[N], typename std::enable_if<!is_any_of<U, char, signed char, unsigned char>::value>::type* = 0) {
-		ar & N & ' ';
-		for ( size_t idx = 0; idx < N; ++idx ) {
-			ar & v[idx] & ' ';
+	// for bools only
+	template<typename Archive, typename U>
+	static Archive& save(Archive& ar, const U(&v)[N], YAS_ENABLE_IF_IS_ANY_OF(U, bool)) {
+		ar.write((std::uint32_t)N-1);
+		ar.write(space_sep);
+		for ( const auto &it: v ) {
+			ar.write(it);
 		}
+		return ar;
 	}
-};
 
-template<typename T, size_t N>
-struct serializer<
-	type_prop::is_array_of_pods,
-	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::in,
-	T[N]
-> {
-	template<
-		 typename Archive
-		,typename U
-	>
-	static Archive& apply(Archive& ar, U(&v)[N], typename std::enable_if<is_any_of<U, char, signed char, unsigned char>::value>::type* = 0) {
+	// others
+	template<typename Archive, typename U>
+	static Archive& save(Archive& ar, const U(&v)[N], YAS_DISABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char, bool)) {
+		ar.write((std::uint32_t)N);
+		ar.write(space_sep);
+		for ( const auto &it: v ) {
+			ar & it;
+		}
+		return ar;
+	}
+
+	// for chars only
+	template<typename Archive, typename U>
+	static Archive& load(Archive& ar, U(&v)[N], YAS_ENABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char)) {
 		std::uint32_t size = 0;
-		ar & size;
+		ar.read(size);
 		if ( size != N-1 ) YAS_THROW_BAD_ARRAY_SIZE();
-		ar.read(reinterpret_cast<char*>(v), size);
+		if ( ar.getch() != space_sep ) YAS_THROW_SPACE_IS_EXPECTED();
+		ar.read(v, size);
 		v[size] = 0;
+		return ar;
 	}
 
-	template<
-		 typename Archive
-		,typename U
-	>
-	static Archive& apply(Archive& ar, U(&v)[N], typename std::enable_if<!is_any_of<U, char, signed char, unsigned char>::value>::type* = 0) {
+	// for bools
+	template<typename Archive, typename U>
+	static Archive& load(Archive& ar, U(&v)[N], YAS_ENABLE_IF_IS_ANY_OF(U, bool)) {
 		std::uint32_t size = 0;
-		ar & size;
+		ar.read(size);
 		if ( size != N ) YAS_THROW_BAD_ARRAY_SIZE();
-		for ( size_t idx = 0; idx < N; ++idx ) {
-			ar & v[idx];
+		if ( ar.getch() != space_sep ) YAS_THROW_SPACE_IS_EXPECTED();
+		for ( auto &it: v ) {
+			ar.read(it);
 		}
+		return ar;
+	}
+
+	// others
+	template<typename Archive, typename U>
+	static Archive& load(Archive& ar, U(&v)[N], YAS_DISABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char, bool)) {
+		std::uint32_t size = 0;
+		ar.read(size);
+		if ( size != N ) YAS_THROW_BAD_ARRAY_SIZE();
+		if ( ar.getch() != space_sep ) YAS_THROW_SPACE_IS_EXPECTED();
+		for ( auto &it: v ) {
+			ar & it;
+		}
+		return ar;
 	}
 };
 
@@ -119,36 +129,28 @@ struct serializer<
 	type_prop::is_array,
 	ser_method::use_internal_serializer,
 	archive_type::json,
-	direction::out,
 	T[N]
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const T(&v)[N]) {
-		ar & N & ' ';
-		for ( size_t idx = 0; idx < N; ++idx ) {
-			ar & v[idx] & ' ';
+	static Archive& save(Archive& ar, const T(&v)[N]) {
+		ar.write((std::uint32_t)N);
+		ar.write(space_sep);
+		for ( const auto &it: v ) {
+			ar & it;
 		}
+		return ar;
 	}
-};
 
-/***************************************************************************/
-
-template<typename T, size_t N>
-struct serializer<
-	type_prop::is_array,
-	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::in,
-	T[N]
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, T(&v)[N]) {
+	static Archive& load(Archive& ar, T(&v)[N]) {
 		std::uint32_t size = 0;
-		(ar & size).snextc();
+		ar.read(size);
 		if ( size != N ) YAS_THROW_BAD_ARRAY_SIZE();
-		for ( size_t idx = 0; idx < N; ++idx ) {
-			(ar & v[idx]).snextc();
+		if ( ar.getch() != space_sep ) YAS_THROW_SPACE_IS_EXPECTED();
+		for ( auto &it: v ) {
+			ar & it;
 		}
+		return ar;
 	}
 };
 

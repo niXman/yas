@@ -6,16 +6,12 @@ CONFIG -= app_bundle qt
 TEMPLATE = app
 
 DEFINES += \
-	YAS_SERIALIZE_BOOST_TYPES=1 \
-	YAS_HAS_BOOST_TUPLE=1 \
-	YAS_HAS_BOOST_FUSION=1 \
-	YAS_HAS_BOOST_ARRAY=1 \
-#	YAS_DECORATE_HEADER_BYTES="x"
+	YAS_SERIALIZE_BOOST_TYPES \
+#	YAS_DECORATE_HEADER_BYTES=x
+#	YAS_SET_HEADER_BYTES=abc
 
-#QMAKE_CXX = \
-#	/usr/local/bin/g++
-#QMAKE_LINK = \
-#	/usr/local/bin/g++
+QMAKE_CXX = \
+	/usr/local/llvm/bin/clang++
 
 QMAKE_CXXFLAGS += \
 	-std=c++1y \
@@ -409,5 +405,5 @@ HEADERS += \
 	../../../include/yas/std_traits.hpp \
 	../../../include/yas/text_iarchive.hpp \
 	../../../include/yas/text_oarchive.hpp \
-    ../../../include/yas/tools/base_object.hpp \
-    ../../../include/yas/tools/hexdumper.hpp
+	../../../include/yas/tools/base_object.hpp \
+	../../../include/yas/tools/hexdumper.hpp

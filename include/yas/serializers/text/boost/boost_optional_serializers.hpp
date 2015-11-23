@@ -36,7 +36,8 @@
 #ifndef _yas__text__boost_optional_serializer_hpp
 #define _yas__text__boost_optional_serializer_hpp
 
-#include <yas/detail/type_traits/type_traits.hpp>
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
+#include <yas/serializers/serializer.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 #include <yas/detail/io/serialization_exception.hpp>
 
@@ -52,11 +53,10 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::text,
-	direction::out,
 	boost::optional<T>
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const boost::optional<T> &t) {
+	static Archive& save(Archive& ar, const boost::optional<T> &t) {
 		const bool initialized = static_cast<bool>(t);
 		ar.write(initialized);
 		if ( initialized )
@@ -64,18 +64,9 @@ struct serializer<
 
 		return ar;
 	}
-};
 
-template<typename T>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::text,
-	direction::in,
-	boost::optional<T>
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, boost::optional<T> &t) {
+	static Archive& load(Archive& ar, boost::optional<T> &t) {
 		bool initialized = false;
 		ar.read(initialized);
 		if ( initialized ) {
@@ -94,5 +85,7 @@ struct serializer<
 
 } // namespace detail
 } // namespace yas
+
+#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 
 #endif // _yas__text__boost_optional_serializer_hpp

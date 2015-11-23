@@ -52,28 +52,19 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::text,
-	direction::out,
 	std::deque<V>
 > {
 	template<typename Archive>
-	static Archive& apply(Archive &ar, const std::deque<V> &deque) {
+	static Archive& save(Archive &ar, const std::deque<V> &deque) {
 		ar & (std::uint32_t)deque.size();
 		for ( const auto &it: deque ) {
 			ar & it;
 		}
 		return ar;
 	}
-};
-template<typename V>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::text,
-	direction::in,
-	std::deque<V>
-> {
+
 	template<typename Archive>
-	static Archive& apply(Archive &ar, std::deque<V> &deque) {
+	static Archive& load(Archive &ar, std::deque<V> &deque) {
 		std::uint32_t size = 0;
 		ar & size;
 		for ( ; size; --size ) {

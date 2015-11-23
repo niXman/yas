@@ -74,7 +74,7 @@ bool version_test(const char* archive_type, const char* io_type) {
 		}
 	} else if ( yas::is_json_archive<typename archive_traits::oarchive_type>::value ) {
 		if ( oa->header_size() != archive_traits::oarchive_type::header_size() ||
-			  archive_traits::oarchive_type::header_size() != 16 /** see information.hpp */
+			  archive_traits::oarchive_type::header_size() != 1 /** see information.hpp */
 		) {
 			std::cout << "VERSION test failed! bad archive header size! [6]" << std::endl;
 			return false;

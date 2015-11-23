@@ -36,11 +36,8 @@
 #ifndef _yas__binary__fusion_pair_serializer_hpp
 #define _yas__binary__fusion_pair_serializer_hpp
 
-#include <yas/detail/config/config.hpp>
-
-#if defined(YAS_HAS_BOOST_FUSION)
-#include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/properties.hpp>
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
+#include <yas/serializers/serializer.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 
 #include <boost/fusion/support/pair.hpp>
@@ -56,31 +53,19 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::binary,
-	direction::out,
 	boost::fusion::pair<T1, T2>
->
-{
+> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const boost::fusion::pair<T1, T2>& pair) {
+	static Archive& save(Archive& ar, const boost::fusion::pair<T1, T2>& pair) {
 		if ( is_fundamental_and_sizeof_is<T2, 1>::value )
 			ar.write(&pair.second, 1);
 		else
 			ar & pair.second;
 		return ar;
 	}
-};
 
-template<typename T1, typename T2>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::binary,
-	direction::in,
-	boost::fusion::pair<T1, T2>
->
-{
 	template<typename Archive>
-	static Archive& apply(Archive& ar, boost::fusion::pair<T1, T2>& pair) {
+	static Archive& load(Archive& ar, boost::fusion::pair<T1, T2>& pair) {
 		if ( is_fundamental_and_sizeof_is<T2, 1>::value )
 			ar.read(&pair.second, 1);
 		else
@@ -94,6 +79,6 @@ struct serializer<
 } // namespace detail
 } // namespace yas
 
-#endif // defined(YAS_HAS_BOOST_FUSION)
+#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 
 #endif // _yas__binary__fusion_pair_serializer_hpp

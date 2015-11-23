@@ -33,15 +33,12 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__json__std_bitset_serializer_hpp
-#define _yas__json__std_bitset_serializer_hpp
+#ifndef _yas__text__std_bitset_serializer_hpp
+#define _yas__text__std_bitset_serializer_hpp
 
-#include <stdexcept>
-
-#include <yas/detail/config/config.hpp>
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 #include <bitset>
 
@@ -54,39 +51,29 @@ template<std::size_t N>
 struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::out,
+	archive_type::text,
 	std::bitset<N>
->
-{
+> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::bitset<N>& bits) {
-		ar & static_cast<std::uint32_t>(N);
+	static Archive& save(Archive& ar, const std::bitset<N>& bits) {
+		ar & (std::uint32_t)N;
 		for ( std::size_t idx = 0; idx < N; ++idx ) {
-			ar & (int)bits[idx];
+			ar & bits[idx];
 		}
+		return ar;
 	}
-};
 
-template<std::size_t N>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::in,
-	std::bitset<N>
->
-{
 	template<typename Archive>
-	static Archive& apply(Archive& ar, std::bitset<N>& bits) {
+	static Archive& load(Archive& ar, std::bitset<N>& bits) {
 		std::uint32_t size = 0;
 		ar & size;
 		if ( size != N ) YAS_THROW_BAD_BITSET_SIZE();
 		for ( std::size_t idx = 0; idx < N; ++idx ) {
-			int v;
+			bool v;
 			ar & v;
 			bits[idx] = v;
 		}
+		return ar;
 	}
 };
 
@@ -95,4 +82,4 @@ struct serializer<
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__json__std_bitset_serializer_hpp
+#endif // _yas__text__std_bitset_serializer_hpp

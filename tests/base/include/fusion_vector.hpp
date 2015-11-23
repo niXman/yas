@@ -38,8 +38,6 @@
 
 /***************************************************************************/
 
-#if defined(YAS_HAS_BOOST_FUSION)
-
 template<typename archive_traits>
 bool fusion_vector_test(const char* archive_type, const char* io_type) {
 	boost::fusion::vector<int, double> v1(33, 3.14), v2;
@@ -145,8 +143,6 @@ bool fusion_vector_test(const char* archive_type, const char* io_type) {
 
 	return true;
 }
-
-#endif // #if defined(YAS_HAS_BOOST_FUSION)
 
 /***************************************************************************/
 

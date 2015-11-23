@@ -36,16 +36,64 @@
 #ifndef _yas__json__enum_serializer_hpp
 #define _yas__json__enum_serializer_hpp
 
-#include <yas/detail/type_traits/properties.hpp>
+#include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/selector.hpp>
-
-#include <stdexcept>
+#include <yas/detail/io/serialization_exception.hpp>
 
 namespace yas {
 namespace detail {
 
 /***************************************************************************/
 
+template<typename T>
+struct serializer<
+	type_prop::is_enum,
+	ser_method::use_internal_serializer,
+	archive_type::json,
+	T
+> {
+	template<typename Archive>
+	static Archive& save(Archive& ar, const T& v) {
+		ar.write(space_sep);
+		switch ( sizeof(T) ) {
+			case sizeof(std::uint8_t):
+				ar.write(static_cast<std::uint8_t>(v));
+			break;
+			case sizeof(std::uint16_t):
+				ar.write(static_cast<std::uint16_t>(v));
+			break;
+			case sizeof(std::uint32_t):
+				ar.write(static_cast<std::uint32_t>(v));
+			break;
+			case sizeof(std::uint64_t):
+				ar.write(static_cast<std::uint64_t>(v));
+			break;
+		}
+		return ar;
+	}
+
+	template<typename Archive>
+	static Archive& load(Archive& ar, T& v) {
+		if ( ar.getch() != space_sep ) YAS_THROW_SPACE_IS_EXPECTED();
+		switch ( sizeof(T) ) {
+			case sizeof(std::uint8_t):
+				ar.read(reinterpret_cast<std::uint8_t&>(v));
+			break;
+			case sizeof(std::uint16_t):
+				ar.read(reinterpret_cast<std::uint16_t&>(v));
+			break;
+			case sizeof(std::uint32_t):
+				ar.read(reinterpret_cast<std::uint32_t&>(v));
+			break;
+			case sizeof(std::uint64_t):
+				ar.read(reinterpret_cast<std::uint64_t&>(v));
+			break;
+			default:
+				YAS_THROW_BAD_SIZE_OF_ENUM();
+		}
+		return ar;
+	}
+};
 
 /***************************************************************************/
 

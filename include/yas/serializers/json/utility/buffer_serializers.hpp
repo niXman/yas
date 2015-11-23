@@ -1,4 +1,3 @@
-
 // Copyright (c) 2010-2015 niXman (i dot nixman dog gmail dot com). All
 // rights reserved.
 //
@@ -37,8 +36,9 @@
 #define _yas__json__buffer_serializer_hpp
 
 #include <yas/buffers.hpp>
-#include <yas/detail/type_traits/properties.hpp>
+#include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 namespace yas {
 namespace detail {
@@ -50,14 +50,18 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::json,
-	direction::out,
 	intrusive_buffer
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const intrusive_buffer& buf) {
-		ar & buf.size;
+	static Archive& save(Archive& ar, const intrusive_buffer& buf) {
+		ar & (std::uint32_t)buf.size;
+		ar.write(space_sep);
 		ar.write(buf.data, buf.size);
-		ar & ' ';
+		return ar;
+	}
+	template<typename Archive>
+	static Archive& load(Archive &ar, intrusive_buffer &) {
+		return ar;
 	}
 };
 
@@ -68,34 +72,24 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::json,
-	direction::out,
 	shared_buffer
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const shared_buffer& buf) {
-		ar & buf.size;
+	static Archive& save(Archive& ar, const shared_buffer& buf) {
+		ar & (std::uint32_t)buf.size;
+		ar.write(space_sep);
 		ar.write(buf.data.get(), buf.size);
-		ar & ' ';
+		return ar;
 	}
-};
-
-template<>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::in,
-	shared_buffer
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, shared_buffer& buf) {
+	static Archive& load(Archive& ar, shared_buffer& buf) {
 		std::uint32_t size = 0;
 		ar & size;
-		buf.data.reset(new char[size+1], &shared_buffer::deleter);
-		assert(ar.read(buf.data.get(), size) == size);
-		ar.snextc();
+		if ( ar.getch() != space_sep ) YAS_THROW_SPACE_IS_EXPECTED();
+		buf.data.reset(new char[size], &shared_buffer::deleter);
+		ar.read(buf.data.get(), size);
 		buf.size = size;
-		buf.data.get()[size] = 0;
+		return ar;
 	}
 };
 

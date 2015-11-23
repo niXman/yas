@@ -49,11 +49,16 @@ struct serializer <
 	type_prop::not_a_pod,
 	ser_method::has_split_functions,
 	archive_type::binary,
-	direction::out,
 	T
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const T& v) {
+	static Archive& save(Archive& ar, const T& v) {
+		serialize(ar, v);
+		return ar;
+	}
+
+	template<typename Archive>
+	static Archive& load(Archive& ar, T& v) {
 		serialize(ar, v);
 		return ar;
 	}
@@ -66,45 +71,16 @@ struct serializer <
 	type_prop::not_a_pod,
 	ser_method::has_one_function,
 	archive_type::binary,
-	direction::out,
 	T
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const T& v) {
+	static Archive& save(Archive& ar, const T& v) {
 		serialize(ar, const_cast<T&>(v));
 		return ar;
 	}
-};
 
-/***************************************************************************/
-
-template<typename T>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::has_one_function,
-	archive_type::binary,
-	direction::in,
-	T
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, T& v) {
-		serialize(ar, v);
-		return ar;
-	}
-};
-
-/***************************************************************************/
-
-template<typename T>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::has_split_functions,
-	archive_type::binary,
-	direction::in,
-	T
-> {
-	template<typename Archive>
-	static Archive& apply(Archive& ar, T& v) {
+	static Archive& load(Archive& ar, T& v) {
 		serialize(ar, v);
 		return ar;
 	}
@@ -119,45 +95,16 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::has_one_method,
 	archive_type::binary,
-	direction::out,
 	T
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const T& v) {
+	static Archive& save(Archive& ar, const T& v) {
 		const_cast<T&>(v).serialize(ar);
 		return ar;
 	}
-};
 
-/***************************************************************************/
-
-template<typename T>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::has_split_methods,
-	archive_type::binary,
-	direction::out,
-	T
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const T& v) {
-		v.serialize(ar);
-		return ar;
-	}
-};
-
-/***************************************************************************/
-
-template<typename T>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::has_one_method,
-	archive_type::binary,
-	direction::in,
-	T
-> {
-	template<typename Archive>
-	static Archive& apply(Archive& ar, T& v) {
+	static Archive& load(Archive& ar, T& v) {
 		v.serialize(ar);
 		return ar;
 	}
@@ -170,11 +117,16 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::has_split_methods,
 	archive_type::binary,
-	direction::in,
 	T
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, T& v) {
+	static Archive& save(Archive& ar, const T& v) {
+		v.serialize(ar);
+		return ar;
+	}
+
+	template<typename Archive>
+	static Archive& load(Archive& ar, T& v) {
 		v.serialize(ar);
 		return ar;
 	}

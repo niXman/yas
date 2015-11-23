@@ -36,7 +36,7 @@
 #ifndef _yas__properties_hpp
 #define _yas__properties_hpp
 
-#include <yas/detail/type_traits/type_traits.hpp>
+#include <type_traits>
 
 namespace yas {
 
@@ -52,13 +52,6 @@ struct archive_type {
 		binary,
 		text,
 		json
-	};
-};
-
-struct direction {
-	enum type {
-		in,
-		out
 	};
 };
 

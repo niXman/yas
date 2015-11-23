@@ -67,7 +67,7 @@ bool pod_test(const char* archive_type, const char* io_type) {
 			+sizeof(f)
 			+sizeof(d)
 		,text_expected_size = 28
-		,json_expected_size = 0
+		,json_expected_size = 28
 	};
 
 	oa & c
@@ -95,8 +95,10 @@ bool pod_test(const char* archive_type, const char* io_type) {
 			}
 		break;
 		case yas::archive_type::json:
-			std::cout << "POD serialization unimplemented" << std::endl;
+		if ( oa.size() != archive_traits::oarchive_type::header_size()+json_expected_size ) {
+			std::cout << "POD serialization error! [2]" << std::endl;
 			return false;
+		}
 		break;
 		default:
 			std::cout << "POD serialization bad archive type!" << std::endl;

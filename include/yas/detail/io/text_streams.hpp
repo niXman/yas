@@ -80,68 +80,86 @@ struct text_istream {
 		is.read(&res, sizeof(res));
 		return res;
 	}
-	void ungetch(char c) { unch = c; }
+	text_istream& ungetch(char c) {
+		unch = c;
+
+		return *this;
+	}
 
 	// for arrays
-	void read(void *ptr, std::size_t size) {
+	text_istream& read(void *ptr, std::size_t size) {
 		char *sptr = ((char*)ptr);
 		if ( unch != EOF ) {
 			*sptr++ = unch;
 			unch = EOF;
 			--size;
 		}
-		if ( size == 0 ) return;
+		if ( size == 0 ) return *this;
 		YAS_THROW_ON_READ_ERROR(size, !=, is.read(sptr, size));
+
+		return *this;
 	}
 
 	// for chars only
 	template<typename T>
-	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char)) {
+	text_istream& read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char)) {
 		YAS_THROW_ON_READ_ERROR(sizeof(v), !=, is.read(&v, sizeof(v)));
+
+		return *this;
 	}
 
 	// for bools only
 	template<typename T>
-	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, bool)) {
+	text_istream& read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, bool)) {
 		const char ch = getch();
-		if ( ch == EOF ) return;
+		if ( ch == EOF ) return *this;
 		v = (ch == '1' ? true : false);
+
+		return *this;
 	}
 
 	// for signed 16/32/64 bits
 	template<typename T>
-	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t)) {
+	text_istream& read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t)) {
 		char buf[sizeof(T)*4];
 		std::size_t cnt = 0;
 		YAS_READ_BY_CHAR(buf, cnt)
 		Trait::atoi(v, buf, cnt);
+
+		return *this;
 	}
 
 	// for unsigned 16/32/64 bits
 	template<typename T>
-	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
+	text_istream& read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
 		char buf[sizeof(T)*4];
 		std::size_t cnt = 0;
 		YAS_READ_BY_CHAR(buf, cnt)
 		Trait::atou(v, buf, cnt);
+
+		return *this;
 	}
 
 	// for floats
 	template<typename T>
-	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, float)) {
-		char buf[std::numeric_limits<T>::max_exponent10+20];
+	text_istream& read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, float)) {
+		char buf[std::numeric_limits<T>::max_exponent10+20] = "\0";
 		std::size_t cnt = 0;
 		YAS_READ_BY_CHAR(buf, cnt)
 		Trait::atof(v, buf, cnt);
+
+		return *this;
 	}
 
 	// for doubles
 	template<typename T>
-	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, double)) {
-		char buf[std::numeric_limits<T>::max_exponent10+20];
+	text_istream& read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, double)) {
+		char buf[std::numeric_limits<T>::max_exponent10+20] = "\0";
 		std::size_t cnt = 0;
 		YAS_READ_BY_CHAR(buf, cnt)
 		Trait::atod(v, buf, cnt);
+
+		return *this;
 	}
 
 private:
@@ -158,57 +176,71 @@ struct text_ostream {
 	{}
 
 	// for arrays
-	void write(const void *ptr, std::size_t size) {
+	text_ostream& write(const void *ptr, std::size_t size) {
 		YAS_THROW_ON_WRITE_ERROR(size, !=, os.write(ptr, size));
+
+		return *this;
 	}
 
 	// for chars only
 	template<typename T>
-	void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char)) {
+	text_ostream& write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char)) {
 		YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
+
+		return *this;
 	}
 
 	// for bools only
 	template<typename T>
-	void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, bool)) {
+	text_ostream& write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, bool)) {
 		const char c = v ? '1' : '0';
 		YAS_THROW_ON_WRITE_ERROR(sizeof(c), !=, os.write(&c, sizeof(v)));
+
+		return *this;
 	}
 
 	// for signed 16/32/64 bits
 	template<typename T>
-	void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t)) {
+	text_ostream& write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t)) {
 		char buf[sizeof(T)*4];
 		std::size_t len = 0;
 		Trait::itoa(buf, sizeof(buf), len, v);
 		YAS_THROW_ON_WRITE_ERROR(len, !=, os.write(buf, len));
+
+		return *this;
 	}
 
 	// for unsigned 16/32/64 bits
 	template<typename T>
-	void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
+	text_ostream& write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
 		char buf[sizeof(T)*4];
 		std::size_t len = 0;
 		Trait::utoa(buf, sizeof(buf), len, v);
 		YAS_THROW_ON_WRITE_ERROR(len, !=, os.write(buf, len));
+
+		return *this;
 	}
 
 	// for floats
 	template<typename T>
-	void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, float)) {
-		char buf[std::numeric_limits<T>::max_exponent10 + 20];
+	text_ostream& write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, float)) {
+		char buf[std::numeric_limits<T>::max_exponent10 + 20] = "\0";
 		std::size_t len = 0;
 		Trait::ftoa(buf, sizeof(buf), len, v);
 		YAS_THROW_ON_WRITE_ERROR(len, !=, os.write(buf, len));
+
+		return *this;
 	}
 
 	// for doubles
 	template<typename T>
-	void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, double)) {
-		char buf[std::numeric_limits<T>::max_exponent10 + 20];
+	text_ostream& write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, double)) {
+		char buf[std::numeric_limits<T>::max_exponent10 + 20] = "\0";
 		std::size_t len = 0;
 		Trait::dtoa(buf, sizeof(buf), len, v);
 		YAS_THROW_ON_WRITE_ERROR(len, !=, os.write(buf, len));
+
+		return *this;
 	}
 
 private:

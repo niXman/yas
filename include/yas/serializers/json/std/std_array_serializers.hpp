@@ -33,14 +33,12 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__json__std_array_serializer_hpp
-#define _yas__json__std_array_serializer_hpp
-
-#include <yas/detail/config/config.hpp>
+#ifndef _yas__text__std_array_serializer_hpp
+#define _yas__text__std_array_serializer_hpp
 
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 #include <array>
 
@@ -53,39 +51,27 @@ template<typename T, std::size_t N>
 struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::out,
+	archive_type::text,
 	std::array<T, N>
->
-{
+> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::array<T, N>& array) {
-		typename std::array<T, N>::const_iterator it = array.begin();
-		ar & static_cast<std::uint32_t>(N);
-		for ( ; it != array.end(); ++it ) {
-			ar & (*it);
+	static Archive& save(Archive& ar, const std::array<T, N>& array) {
+		ar & (std::uint32_t)N;
+		for ( const auto &it: array ) {
+			ar & it;
 		}
+		return ar;
 	}
-};
 
-template<typename T, std::size_t N>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::in,
-	std::array<T, N>
->
-{
 	template<typename Archive>
-	static Archive& apply(Archive& ar, std::array<T, N>& array) {
+	static Archive& load(Archive& ar, std::array<T, N>& array) {
 		std::uint32_t size = 0;
 		ar & size;
 		if ( size != N ) YAS_THROW_BAD_ARRAY_SIZE();
-		typename std::array<T, N>::iterator it = array.begin();
-		for ( ; it != array.end(); ++it ) {
-			ar & (*it);
+		for ( auto &it: array ) {
+			ar & it;
 		}
+		return ar;
 	}
 };
 
@@ -94,4 +80,4 @@ struct serializer<
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__json__std_array_serializer_hpp
+#endif // _yas__text__std_array_serializer_hpp

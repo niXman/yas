@@ -52,28 +52,19 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::text,
-	direction::out,
 	std::set<K>
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::set<K>& set) {
+	static Archive& save(Archive& ar, const std::set<K>& set) {
 		ar & (std::uint32_t)set.size();
 		for ( const auto &it: set ) {
 			ar & it;
 		}
 		return ar;
 	}
-};
-template<typename K>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::text,
-	direction::in,
-	std::set<K>
-> {
+
 	template<typename Archive>
-	static Archive& apply(Archive& ar, std::set<K>& set) {
+	static Archive& load(Archive& ar, std::set<K>& set) {
 		std::uint32_t size = 0;
 		ar & size;
 		for ( ; size; --size ) {

@@ -33,15 +33,13 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__text__fusion_list_serializer_hpp
-#define _yas__text__fusion_list_serializer_hpp
+#ifndef _yas__text__boost_fusion_list_serializer_hpp
+#define _yas__text__boost_fusion_list_serializer_hpp
 
-#include <yas/detail/config/config.hpp>
-
-#if defined(YAS_HAS_BOOST_FUSION)
-#include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/properties.hpp>
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
+#include <yas/serializers/serializer.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 #include <yas/detail/preprocessor/preprocessor.hpp>
 
 #include <boost/fusion/container/list.hpp>
@@ -90,76 +88,55 @@ struct text_list_deserializer {
 
 #ifndef BOOST_FUSION_HAS_VARIADIC_LIST
 
-#define YAS__TEXT__GENERATE_EMPTY_SAVE_SERIALIZE_LIST_SPEC_VARIADIC() \
+#define YAS__TEXT__GENERATE_EMPTY_SERIALIZE_LIST_SPEC_VARIADIC() \
 	template<> \
 	struct serializer<type_prop::type_prop::not_a_pod, ser_method::use_internal_serializer, \
-		archive_type::text, direction::out, boost::fusion::list<> > \
+		archive_type::text, boost::fusion::list<> > \
 	{ \
 		template<typename Archive> \
-		static Archive& apply(Archive& ar, const boost::fusion::list<>&) { return ar; } \
-	};
-
-#define YAS__TEXT__GENERATE_EMPTY_LOAD_SERIALIZE_LIST_SPEC_VARIADIC() \
-	template<> \
-	struct serializer<type_prop::type_prop::not_a_pod, ser_method::use_internal_serializer, \
-		archive_type::text, direction::in, boost::fusion::list<> > \
-	{ \
+		static Archive& save(Archive& ar, const boost::fusion::list<>&) { return ar; } \
+		\
 		template<typename Archive> \
-		static Archive& apply(Archive& ar, boost::fusion::list<>&) { return ar; } \
+		static Archive& load(Archive& ar, boost::fusion::list<>&) { return ar; } \
 	};
 
-#define YAS__TEXT__GENERATE_SAVE_SERIALIZE_LIST_SPEC_VARIADIC(unused, count, unused2) \
+#define YAS__TEXT__GENERATE_SERIALIZE_LIST_SPEC_VARIADIC(unused, count, unused2) \
 	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
 	struct serializer<type_prop::type_prop::not_a_pod,ser_method::use_internal_serializer, \
-		archive_type::text, direction::out, boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
+		archive_type::text, boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
 	{ \
 		template<typename Archive> \
-		static Archive& apply(Archive& ar, \
+		static Archive& save(Archive& ar, \
 			const boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& list) \
 		{ \
 			ar & YAS_PP_INC(count); \
-			boost::fusion::for_each(list, text_list_serializer<Archive>(ar)); \
+			boost::fusion::for_each(list, detail::text_list_serializer<Archive>(ar)); \
 			return ar; \
 		} \
-	};
-
-#define YAS__TEXT__GENERATE_SAVE_SERIALIZE_LIST_SPEC_VARIADICS(count) \
-	YAS__TEXT__GENERATE_EMPTY_SAVE_SERIALIZE_LIST_SPEC_VARIADIC() \
-	YAS_PP_REPEAT( \
-		count, \
-		YAS__TEXT__GENERATE_SAVE_SERIALIZE_LIST_SPEC_VARIADIC, \
-		~ \
-	)
-
-#define YAS__TEXT__GENERATE_LOAD_SERIALIZE_LIST_SPEC_VARIADIC(unused, count, unused2) \
-	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
-	struct serializer<type_prop::type_prop::not_a_pod,ser_method::use_internal_serializer, \
-		archive_type::text, direction::in, boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
-	{ \
+		\
 		template<typename Archive> \
-		static Archive& apply(Archive& ar, \
+		static Archive& load(Archive& ar, \
 			boost::fusion::list<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& list) \
 		{ \
 			std::int32_t size = 0; \
 			ar & size; \
-			if ( size != YAS_PP_INC(count) ) YAS_THROW_BAD_SIZE_ON_DESERIALIZE_FUSION("fusion::list"); \
-			boost::fusion::for_each(list, text_list_deserializer<Archive>(ar)); \
+			if ( size != YAS_PP_INC(count) ) YAS_THROW_BAD_SIZE_ON_DESERIALIZE("fusion::list"); \
+			boost::fusion::for_each(list, detail::text_list_deserializer<Archive>(ar)); \
 			return ar; \
 		} \
 	};
 
-#define YAS__TEXT__GENERATE_LOAD_SERIALIZE_LIST_SPEC_VARIADICS(count) \
-	YAS__TEXT__GENERATE_EMPTY_LOAD_SERIALIZE_LIST_SPEC_VARIADIC() \
+#define YAS__TEXT__GENERATE_SERIALIZE_LIST_SPEC_VARIADICS(count) \
+	YAS__TEXT__GENERATE_EMPTY_SERIALIZE_LIST_SPEC_VARIADIC() \
 	YAS_PP_REPEAT( \
 		count, \
-		YAS__TEXT__GENERATE_LOAD_SERIALIZE_LIST_SPEC_VARIADIC, \
+		YAS__TEXT__GENERATE_SERIALIZE_LIST_SPEC_VARIADIC, \
 		~ \
 	)
 
 /***************************************************************************/
 
-YAS__TEXT__GENERATE_SAVE_SERIALIZE_LIST_SPEC_VARIADICS(FUSION_MAX_LIST_SIZE)
-YAS__TEXT__GENERATE_LOAD_SERIALIZE_LIST_SPEC_VARIADICS(FUSION_MAX_LIST_SIZE)
+YAS__TEXT__GENERATE_SERIALIZE_LIST_SPEC_VARIADICS(FUSION_MAX_LIST_SIZE)
 
 /***************************************************************************/
 
@@ -170,30 +147,20 @@ struct serializer<
 	 type_prop::not_a_pod
 	,ser_method::use_internal_serializer
 	,archive_type::text
-	,direction::out
 	,boost::fusion::list<T...>
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const boost::fusion::list<T...>& list) {
-		ar & sizeof...(T);
+	static Archive& save(Archive& ar, const boost::fusion::list<T...>& list) {
+		ar.write((std::uint8_t)sizeof...(T));
 		boost::fusion::for_each(list, detail::text_list_serializer<Archive>(ar));
 		return ar;
 	}
-};
 
-template<typename... T>
-struct serializer<
-	 type_prop::not_a_pod
-	,ser_method::use_internal_serializer
-	,archive_type::text
-	,direction::in
-	,boost::fusion::list<T...>
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, boost::fusion::list<T...>& list) {
-		std::size_t size = 0;
-		ar & size;
-		if ( size != sizeof...(T) ) YAS_THROW_BAD_SIZE_ON_DESERIALIZE_FUSION("fusion::list");
+	static Archive& load(Archive& ar, boost::fusion::list<T...>& list) {
+		std::uint8_t size = 0;
+		ar.read(size);
+		if ( size != sizeof...(T) ) YAS_THROW_BAD_SIZE_ON_DESERIALIZE("fusion::list");
 		boost::fusion::for_each(list, detail::text_list_deserializer<Archive>(ar));
 		return ar;
 	}
@@ -204,6 +171,6 @@ struct serializer<
 } // namespace detail
 } // namespace yas
 
-#endif // defined(YAS_HAS_BOOST_FUSION)
+#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 
-#endif // _yas__text__fusion_list_serializer_hpp
+#endif // _yas__text__boost_fusion_list_serializer_hpp

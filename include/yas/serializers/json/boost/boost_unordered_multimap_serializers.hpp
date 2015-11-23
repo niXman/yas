@@ -33,15 +33,13 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__json__boost_unordered_multimap_hpp
-#define _yas__json__boost_unordered_multimap_hpp
+#ifndef _yas__text__boost_unordered_multimap_hpp
+#define _yas__text__boost_unordered_multimap_hpp
 
-#include <yas/detail/config/config.hpp>
-
-#if defined(YAS_HAS_BOOST_UNORDERED)
-#include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/properties.hpp>
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
+#include <yas/serializers/serializer.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 #include <boost/unordered_map.hpp>
 
@@ -52,42 +50,33 @@ namespace detail {
 
 template<typename K, typename V>
 struct serializer<
-	type_prop::type_prop::not_a_pod,
+	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::out,
+	archive_type::text,
 	boost::unordered_multimap<K, V>
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const boost::unordered_multimap<K, V>& multimap) {
-		ar & multimap.size();
-		typename boost::unordered_multimap<K, V>::const_iterator it = multimap.begin();
-		for ( ; it != multimap.end(); ++it ) {
-			ar & it->first
-				& it->second;
+	static Archive& save(Archive& ar, const boost::unordered_multimap<K, V>& multimap) {
+		ar & (std::uint32_t)multimap.size();
+		for ( const auto &it: multimap ) {
+			ar & it.first
+				& it.second;
 		}
+		return ar;
 	}
-};
 
-template<typename K, typename V>
-struct serializer<
-	type_prop::type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::in,
-	boost::unordered_multimap<K, V>
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, boost::unordered_multimap<K, V>& multimap) {
+	static Archive& load(Archive& ar, boost::unordered_multimap<K, V>& multimap) {
 		std::uint32_t size = 0;
 		ar & size;
-		K key = K();
-		V val = V();
-		for ( std::size_t idx = 0; idx < size; ++idx ) {
+		for ( ; size; --size ) {
+			K key = K();
+			V val = V();
 			ar & key
 				& val;
-			multimap.insert(typename boost::unordered_multimap<K, V>::value_type(key, val));
+			multimap.insert(std::make_pair(std::move(key), std::move(val)));
 		}
+		return ar;
 	}
 };
 
@@ -96,6 +85,6 @@ struct serializer<
 } // namespace detail
 } // namespace yas
 
-#endif // defined(YAS_HAS_BOOST_UNORDERED)
+#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 
-#endif // _yas__json__boost_unordered_multimap_hpp
+#endif // _yas__text__boost_unordered_multimap_hpp

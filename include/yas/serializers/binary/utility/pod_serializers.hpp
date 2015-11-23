@@ -49,26 +49,16 @@ struct serializer<
 	type_prop::is_fundamental,
 	ser_method::use_internal_serializer,
 	archive_type::binary,
-	direction::out,
 	T
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const T& v) {
+	static Archive& save(Archive& ar, const T& v) {
 		ar.write(v);
 		return ar;
 	}
-};
 
-template<typename T>
-struct serializer<
-	type_prop::is_fundamental,
-	ser_method::use_internal_serializer,
-	archive_type::binary,
-	direction::in,
-	T
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, T& v) {
+	static Archive& load(Archive& ar, T& v) {
 		ar.read(v);
 		return ar;
 	}

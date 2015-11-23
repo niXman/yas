@@ -52,11 +52,10 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::binary,
-	direction::out,
 	std::vector<T>
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::vector<T>& vector) {
+	static Archive& save(Archive& ar, const std::vector<T>& vector) {
 		ar.write((std::uint32_t)vector.size());
 		if ( std::is_fundamental<T>::value && sizeof(T) == 1 ) {
 			ar.write(&vector[0], vector.size());
@@ -67,18 +66,9 @@ struct serializer<
 		}
 		return ar;
 	}
-};
 
-template<typename T>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::binary,
-	direction::in,
-	std::vector<T>
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, std::vector<T>& vector) {
+	static Archive& load(Archive& ar, std::vector<T>& vector) {
 		std::uint32_t size = 0;
 		ar.read(size);
 		vector.resize(size);

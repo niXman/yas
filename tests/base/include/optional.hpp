@@ -38,6 +38,7 @@
 
 /***************************************************************************/
 
+#if __cplusplus > 201103L
 #ifdef __has_include
 #	if __has_include(<optional>)
 #		include <optional>
@@ -50,6 +51,7 @@
 #		define _YAS_HAVE_STD_OPTIONAL 0
 #	endif
 #endif
+#endif // __cplusplus > 201103L
 
 #ifdef _YAS_HAVE_STD_EXPERIMENTAL_OPTIONAL
 #	define _YAS_STD_OPTIONAL_NS std::experimental
@@ -59,6 +61,7 @@
 
 template<typename archive_traits>
 bool optional_test(const char* archive_type, const char* io_type) {
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
 	{
 		int i0 = 33;
 		boost::optional<int> o0(i0), o1;
@@ -91,6 +94,7 @@ bool optional_test(const char* archive_type, const char* io_type) {
 			return false;
 		}
 	}
+#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 #if _YAS_HAVE_STD_OPTIONAL
 	{
 		int i0 = 33;

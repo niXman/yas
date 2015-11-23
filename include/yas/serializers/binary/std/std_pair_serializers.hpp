@@ -52,27 +52,17 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::binary,
-	direction::out,
 	std::pair<T1, T2>
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::pair<T1, T2>& pair) {
+	static Archive& save(Archive& ar, const std::pair<T1, T2>& pair) {
 		ar & pair.first
 			& pair.second;
 		return ar;
 	}
-};
 
-template<typename T1, typename T2>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::binary,
-	direction::in,
-	std::pair<T1, T2>
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, std::pair<T1, T2>& pair) {
+	static Archive& load(Archive& ar, std::pair<T1, T2>& pair) {
 		ar & pair.first
 			& pair.second;
 		return ar;

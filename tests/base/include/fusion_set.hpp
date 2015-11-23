@@ -38,8 +38,6 @@
 
 /***************************************************************************/
 
-#if defined(YAS_HAS_BOOST_FUSION)
-
 template<typename archive_traits>
 bool fusion_set_test(const char* archive_type, const char* io_type) {
 	((void)io_type);
@@ -67,8 +65,6 @@ bool fusion_set_test(const char* archive_type, const char* io_type) {
 
 	return true;
 }
-
-#endif // #if defined(YAS_HAS_BOOST_FUSION)
 
 /***************************************************************************/
 

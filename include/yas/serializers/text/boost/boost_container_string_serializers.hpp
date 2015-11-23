@@ -36,7 +36,8 @@
 #ifndef _yas__text__boost_cont_string_serializer_hpp
 #define _yas__text__boost_cont_string_serializer_hpp
 
-#include <yas/detail/type_traits/type_traits.hpp>
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
+#include <yas/serializers/serializer.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 #include <yas/detail/io/serialization_exception.hpp>
 
@@ -52,28 +53,18 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::text,
-	direction::out,
 	boost::container::string
 > {
 	template<typename Archive>
-	static Archive& apply(Archive &ar, const boost::container::string &string) {
+	static Archive& save(Archive &ar, const boost::container::string &string) {
 		ar & (std::uint32_t)string.length();
 		ar.write(space_sep);
 		ar.write(&string[0], string.length());
 		return ar;
 	}
-};
 
-template<>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::text,
-	direction::in,
-	boost::container::string
-> {
 	template<typename Archive>
-	static Archive& apply(Archive &ar, boost::container::string &string) {
+	static Archive& load(Archive &ar, boost::container::string &string) {
 		std::uint32_t size = 0;
 		ar & size;
 		string.resize(size);
@@ -87,5 +78,7 @@ struct serializer<
 
 } // namespace detail
 } // namespace yas
+
+#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 
 #endif // _yas__text__boost_cont_string_serializer_hpp

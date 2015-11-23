@@ -53,28 +53,18 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::binary,
-	direction::out,
 	std::wstring
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::wstring& wstring) {
+	static Archive& save(Archive& ar, const std::wstring& wstring) {
 		std::string dst;
 		detail::TypeConverter<std::string, std::wstring>::Convert(dst, wstring);
 		ar & dst;
 		return ar;
 	}
-};
 
-template<>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::binary,
-	direction::in,
-	std::wstring
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, std::wstring& wstring) {
+	static Archive& load(Archive& ar, std::wstring& wstring) {
 		std::string string;
 		ar & string;
 		detail::TypeConverter<std::wstring, std::string>::Convert(wstring, string);

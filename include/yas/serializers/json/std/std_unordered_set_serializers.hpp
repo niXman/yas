@@ -33,14 +33,12 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__json__std_unordered_set_serializer_hpp
-#define _yas__json__std_unordered_set_serializer_hpp
-
-#include <yas/detail/config/config.hpp>
+#ifndef _yas__text__std_unordered_set_serializer_hpp
+#define _yas__text__std_unordered_set_serializer_hpp
 
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 #include <unordered_set>
 
@@ -53,38 +51,28 @@ template<typename K>
 struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::out,
+	archive_type::text,
 	std::unordered_set<K>
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::unordered_set<K>& set) {
-		ar & set.size();
-		typename std::unordered_set<K>::const_iterator it = set.begin();
-		for ( ; it != set.end(); ++it ) {
-			ar & (*it);
+	static Archive& save(Archive& ar, const std::unordered_set<K>& set) {
+		ar & (std::uint32_t)set.size();
+		for ( const auto &it: set ) {
+			ar & it;
 		}
+		return ar;
 	}
-};
 
-
-template<typename K>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::in,
-	std::unordered_set<K>
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, std::unordered_set<K>& set) {
+	static Archive& load(Archive& ar, std::unordered_set<K>& set) {
 		std::uint32_t size = 0;
 		ar & size;
-		K key = K();
 		for ( ; size; --size ) {
+			K key = K();
 			ar & key;
-			set.insert(key);
+			set.insert(std::move(key));
 		}
+		return ar;
 	}
 };
 
@@ -93,4 +81,4 @@ struct serializer<
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__json__std_unordered_set_serializer_hpp
+#endif // _yas__text__std_unordered_set_serializer_hpp

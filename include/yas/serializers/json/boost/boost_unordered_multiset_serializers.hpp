@@ -33,15 +33,13 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__json__boost_unordered_multiset_hpp
-#define _yas__json__boost_unordered_multiset_hpp
+#ifndef _yas__text__boost_unordered_multiset_hpp
+#define _yas__text__boost_unordered_multiset_hpp
 
-#include <yas/detail/config/config.hpp>
-
-#if defined(YAS_HAS_BOOST_UNORDERED)
-#include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/properties.hpp>
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
+#include <yas/serializers/serializer.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 #include <boost/unordered_set.hpp>
 
@@ -52,41 +50,30 @@ namespace detail {
 
 template<typename K>
 struct serializer<
-	type_prop::type_prop::not_a_pod,
+	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::out,
+	archive_type::text,
 	boost::unordered_multiset<K>
->
-{
+> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const boost::unordered_multiset<K>& set) {
-		ar & set.size();
-		typename boost::unordered_multiset<K>::const_iterator it = set.begin();
-		for ( ; it != set.end(); ++it ) {
-			ar & (*it);
+	static Archive& save(Archive& ar, const boost::unordered_multiset<K>& set) {
+		ar & (std::uint32_t)set.size();
+		for ( const auto &it: set ) {
+			ar & it;
 		}
+		return ar;
 	}
-};
 
-template<typename K>
-struct serializer<
-	type_prop::type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::in,
-	boost::unordered_multiset<K>
->
-{
 	template<typename Archive>
-	static Archive& apply(Archive& ar, boost::unordered_multiset<K>& set) {
+	static Archive& load(Archive& ar, boost::unordered_multiset<K>& set) {
 		std::uint32_t size = 0;
 		ar & size;
-		K key = K();
 		for ( ; size; --size ) {
+			K key = K();
 			ar & key;
-			set.insert(key);
+			set.insert(std::move(key));
 		}
+		return ar;
 	}
 };
 
@@ -95,6 +82,6 @@ struct serializer<
 } // namespace detail
 } // namespace yas
 
-#endif // defined(YAS_HAS_BOOST_UNORDERED)
+#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 
-#endif // _yas__json__boost_unordered_multiset_hpp
+#endif // _yas__text__boost_unordered_multiset_hpp

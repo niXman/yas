@@ -33,11 +33,12 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__json__std_string_serializer_hpp
-#define _yas__json__std_string_serializer_hpp
+#ifndef _yas__text__std_string_serializer_hpp
+#define _yas__text__std_string_serializer_hpp
 
+#include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/selector.hpp>
-#include <yas/detail/type_traits/properties.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 #include <string>
 
@@ -50,35 +51,25 @@ template<>
 struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::out,
+	archive_type::text,
 	std::string
->
-{
+> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::string& string) {
-		ar & static_cast<std::uint32_t>(string.length());
+	static Archive& save(Archive& ar, const std::string& string) {
+		ar & (std::uint32_t)string.length();
+		ar.write(space_sep);
 		ar.write(&string[0], string.length());
-		ar & ' ';
+		return ar;
 	}
-};
 
-template<>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::in,
-	std::string
->
-{
 	template<typename Archive>
-	static Archive& apply(Archive& ar, std::string& string) {
+	static Archive& load(Archive& ar, std::string& string) {
 		std::uint32_t size = 0;
 		ar & size;
 		string.resize(size);
+		if ( ar.getch() != space_sep ) YAS_THROW_SPACE_IS_EXPECTED();
 		ar.read(&string[0], size);
-		ar.snextc();
+		return ar;
 	}
 };
 
@@ -87,4 +78,4 @@ struct serializer<
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__json__std_string_serializer_hpp
+#endif // _yas__text__std_string_serializer_hpp

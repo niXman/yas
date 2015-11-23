@@ -33,12 +33,12 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__json__std_vector_serializer_hpp
-#define _yas__json__std_vector_serializer_hpp
+#ifndef _yas__text__std_vector_serializer_hpp
+#define _yas__text__std_vector_serializer_hpp
 
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 #include <vector>
 
@@ -51,39 +51,27 @@ template<typename T>
 struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::out,
+	archive_type::text,
 	std::vector<T>
->
-{
+> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::vector<T>& vector) {
-		ar & vector.size();
-		typename std::vector<T>::const_iterator it = vector.begin();
-		for ( ; it != vector.end(); ++it ) {
-			ar & (*it);
+	static Archive& save(Archive& ar, const std::vector<T>& vector) {
+		ar & (std::uint32_t)vector.size();
+		for ( const auto &it: vector ) {
+			ar & it;
 		}
+		return ar;
 	}
-};
 
-template<typename T>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::in,
-	std::vector<T>
->
-{
 	template<typename Archive>
-	static Archive& apply(Archive& ar, std::vector<T>& vector) {
+	static Archive& load(Archive& ar, std::vector<T>& vector) {
 		std::uint32_t size = 0;
 		ar & size;
 		vector.resize(size);
-		typename std::vector<T>::iterator it = vector.begin();
-		for ( ; it != vector.end(); ++it ) {
-			ar & (*it);
+		for ( auto &it: vector ) {
+			ar & it;
 		}
+		return ar;
 	}
 };
 
@@ -92,4 +80,4 @@ struct serializer<
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__json__std_vector_serializer_hpp
+#endif // _yas__text__std_vector_serializer_hpp

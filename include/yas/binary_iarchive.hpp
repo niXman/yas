@@ -37,8 +37,6 @@
 #define _yas__binary_iarchive_hpp
 
 #include <yas/detail/type_traits/properties.hpp>
-#include <yas/detail/type_traits/has_method_serialize.hpp>
-#include <yas/detail/type_traits/has_function_serialize.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 
 #include <yas/detail/io/information.hpp>
@@ -63,7 +61,7 @@ namespace yas {
 template<typename IS, endian_t ET = as_host>
 struct binary_iarchive
 	:detail::binary_istream<IS, ET>
-	,detail::archive_information<archive_type::binary, direction::in, IS, ET>
+	,detail::iarchive_information<archive_type::binary, IS, ET>
 	,private detail::noncopyable
 {
 	using stream_type = IS;
@@ -71,30 +69,30 @@ struct binary_iarchive
 
 	binary_iarchive(IS &is, header_flag op = with_header)
 		:detail::binary_istream<IS, ET>(is)
-		,detail::archive_information<archive_type::binary, direction::in, IS, ET>(is, op)
+		,detail::iarchive_information<archive_type::binary, IS, ET>(is, op)
 	{}
 
 	template<typename T>
-	this_type& operator& (T& v) {
+	this_type& operator& (T &&v) {
 		using namespace detail;
+		using real_type = typename std::remove_reference<typename std::remove_const<T>::type>::type;
 		return serializer<
-			 type_properties<T>::value
-			,serialization_method<T, this_type>::value
+			 type_properties<real_type>::value
+			,serialization_method<real_type, this_type>::value
 			,archive_type::binary
-			,direction::in
-			,T
-		>::apply(*this, v);
+			,real_type
+		>::load(*this, v);
 	}
 
 	this_type& serialize() { return *this; }
 
 	template<typename Head, typename... Tail>
-	this_type& serialize(Head& head, Tail&... tail) {
+	this_type& serialize(Head &&head, Tail&&... tail) {
 		return operator&(head).serialize(tail...);
 	}
 
 	template<typename... Args>
-	this_type& operator()(Args&... args) {
+	this_type& operator()(Args&&... args) {
 		return serialize(args...);
 	}
 };

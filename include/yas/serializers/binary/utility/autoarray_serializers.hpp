@@ -51,45 +51,26 @@ struct serializer<
 	type_prop::is_array_of_pods,
 	ser_method::use_internal_serializer,
 	archive_type::binary,
-	direction::out,
 	T[N]
 > {
-	template<
-		 typename Archive
-		,typename U
-	>
-	static Archive& apply(Archive& ar, const U(&v)[N], YAS_ENABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char, bool)) {
+	template<typename Archive, typename U>
+	static Archive& save(Archive& ar, const U(&v)[N], YAS_ENABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char, bool)) {
 		ar.write((std::uint32_t)N-1);
 		ar.write(v, N-1);
 		return ar;
 	}
 
-	template<
-		 typename Archive
-		,typename U
-	>
-	static Archive& apply(Archive& ar, const U(&v)[N], YAS_DISABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char, bool)) {
+	template<typename Archive, typename U>
+	static Archive& save(Archive& ar, const U(&v)[N], YAS_DISABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char, bool)) {
 		ar.write((std::uint32_t)N);
 		for ( const auto &it: v ) {
 			ar.write(it);
 		}
 		return ar;
 	}
-};
 
-template<typename T, size_t N>
-struct serializer<
-	type_prop::is_array_of_pods,
-	ser_method::use_internal_serializer,
-	archive_type::binary,
-	direction::in,
-	T[N]
-> {
-	template<
-		 typename Archive
-		,typename U
-	>
-	static Archive& apply(Archive& ar, U(&v)[N], YAS_ENABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char, bool)) {
+	template<typename Archive, typename U>
+	static Archive& load(Archive& ar, U(&v)[N], YAS_ENABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char, bool)) {
 		std::uint32_t size = 0;
 		ar.read(size);
 		if ( size != N-1 ) YAS_THROW_BAD_ARRAY_SIZE();
@@ -98,11 +79,8 @@ struct serializer<
 		return ar;
 	}
 
-	template<
-		 typename Archive
-		,typename U
-	>
-	static Archive& apply(Archive& ar, U(&v)[N], YAS_DISABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char, bool)) {
+	template<typename Archive, typename U>
+	static Archive& load(Archive& ar, U(&v)[N], YAS_DISABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char, bool)) {
 		std::uint32_t size = 0;
 		ar.read(size);
 		if ( size != N ) YAS_THROW_BAD_ARRAY_SIZE();
@@ -120,29 +98,19 @@ struct serializer<
 	type_prop::is_array,
 	ser_method::use_internal_serializer,
 	archive_type::binary,
-	direction::out,
 	T[N]
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const T(&v)[N]) {
+	static Archive& save(Archive& ar, const T(&v)[N]) {
 		ar.write((std::uint32_t)N);
 		for ( const auto &it: v ) {
 			ar & it;
 		}
 		return ar;
 	}
-};
 
-template<typename T, size_t N>
-struct serializer<
-	type_prop::is_array,
-	ser_method::use_internal_serializer,
-	archive_type::binary,
-	direction::in,
-	T[N]
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, T(&v)[N]) {
+	static Archive& load(Archive& ar, T(&v)[N]) {
 		std::uint32_t size = 0;
 		ar.read(size);
 		if ( size != N ) YAS_THROW_BAD_ARRAY_SIZE();

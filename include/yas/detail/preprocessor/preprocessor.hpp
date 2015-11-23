@@ -33,26 +33,44 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__preprocessor_hpp
-#define _yas__preprocessor_hpp
+#ifndef _yas__detail__preprocessor_hpp
+#define _yas__detail__preprocessor_hpp
 
 #include <yas/detail/preprocessor/auto_rec.hpp>
+#include <yas/detail/preprocessor/bitand.hpp>
 #include <yas/detail/preprocessor/bool.hpp>
 #include <yas/detail/preprocessor/cat.hpp>
 #include <yas/detail/preprocessor/comma.hpp>
 #include <yas/detail/preprocessor/comma_if.hpp>
 #include <yas/detail/preprocessor/config.hpp>
-#include <yas/detail/preprocessor/eat.hpp>
+#include <yas/detail/preprocessor/dec.hpp>
 #include <yas/detail/preprocessor/empty.hpp>
 #include <yas/detail/preprocessor/enum_params.hpp>
 #include <yas/detail/preprocessor/error.hpp>
+#include <yas/detail/preprocessor/expr_if.hpp>
+#include <yas/detail/preprocessor/expr_iif.hpp>
 #include <yas/detail/preprocessor/if.hpp>
 #include <yas/detail/preprocessor/iif.hpp>
 #include <yas/detail/preprocessor/repeat.hpp>
-#include <yas/detail/preprocessor/size.hpp>
 #include <yas/detail/preprocessor/dec.hpp>
 #include <yas/detail/preprocessor/inc.hpp>
-#include <yas/detail/preprocessor/elem.hpp>
-#include <yas/detail/preprocessor/telem.hpp>
+#include <yas/detail/preprocessor/not_equal.hpp>
+#include <yas/detail/preprocessor/overload.hpp>
+#include <yas/detail/preprocessor/preprocessor.hpp>
+#include <yas/detail/preprocessor/repeat.hpp>
+#include <yas/detail/preprocessor/rep_for.hpp>
+#include <yas/detail/preprocessor/seq_elem.hpp>
+#include <yas/detail/preprocessor/seq_for_each.hpp>
+#include <yas/detail/preprocessor/seq_for_each_i.hpp>
+#include <yas/detail/preprocessor/seq_seq.hpp>
+#include <yas/detail/preprocessor/seq_size.hpp>
+#include <yas/detail/preprocessor/stringize.hpp>
+#include <yas/detail/preprocessor/tuple_eat.hpp>
+#include <yas/detail/preprocessor/tuple_elem.hpp>
+#include <yas/detail/preprocessor/tuple_rem.hpp>
+#include <yas/detail/preprocessor/tuple_size.hpp>
+#include <yas/detail/preprocessor/tuple_to_seq.hpp>
+#include <yas/detail/preprocessor/variadic_elem.hpp>
+#include <yas/detail/preprocessor/variadic_size.hpp>
 
-#endif // _yas__preprocessor_hpp
+#endif // _yas__detail__preprocessor_hpp

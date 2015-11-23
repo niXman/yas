@@ -49,13 +49,16 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::binary,
-	direction::out,
 	intrusive_buffer
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const intrusive_buffer& buf) {
+	static Archive& save(Archive& ar, const intrusive_buffer& buf) {
 		ar.write((std::uint32_t)buf.size);
 		ar.write(buf.data, buf.size);
+		return ar;
+	}
+	template<typename Archive>
+	static Archive& load(Archive& ar, intrusive_buffer &) {
 		return ar;
 	}
 };
@@ -67,27 +70,17 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::binary,
-	direction::out,
 	shared_buffer
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const shared_buffer& buf) {
+	static Archive& save(Archive& ar, const shared_buffer& buf) {
 		ar.write((std::uint32_t)buf.size);
 		ar.write(buf.data.get(), buf.size);
 		return ar;
 	}
-};
 
-template<>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::binary,
-	direction::in,
-	shared_buffer
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, shared_buffer& buf) {
+	static Archive& load(Archive& ar, shared_buffer& buf) {
 		std::uint32_t size = 0;
 		ar.read(size);
 		buf.size = size;

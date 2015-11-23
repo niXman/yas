@@ -73,7 +73,7 @@ YAS_DECLARE_EXCEPTION_TYPE(serialization_exception);
 		throw ::yas::serialization_exception(YAS_EXCEPTION_MAKE_MSG("bad bitset storage size")); \
 	} while(0)
 
-#define YAS_THROW_BAD_SIZE_ON_DESERIALIZE_FUSION(type) \
+#define YAS_THROW_BAD_SIZE_ON_DESERIALIZE(type) \
 	do { \
 		throw ::yas::serialization_exception(YAS_EXCEPTION_MAKE_MSG("bad size on deserialize " type)); \
 	} while(0)

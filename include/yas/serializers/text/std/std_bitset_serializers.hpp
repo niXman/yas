@@ -52,29 +52,19 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::text,
-	direction::out,
 	std::bitset<N>
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::bitset<N>& bits) {
+	static Archive& save(Archive& ar, const std::bitset<N>& bits) {
 		ar & (std::uint32_t)N;
 		for ( std::size_t idx = 0; idx < N; ++idx ) {
 			ar & bits[idx];
 		}
 		return ar;
 	}
-};
 
-template<std::size_t N>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::text,
-	direction::in,
-	std::bitset<N>
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, std::bitset<N>& bits) {
+	static Archive& load(Archive& ar, std::bitset<N>& bits) {
 		std::uint32_t size = 0;
 		ar & size;
 		if ( size != N ) YAS_THROW_BAD_BITSET_SIZE();

@@ -38,16 +38,12 @@
 
 /***************************************************************************/
 
-#if defined(YAS_HAS_BOOST_FUSION)
-
 template<typename archive_traits>
 bool fusion_map_test(const char* archive_type, const char* io_type) {
 	((void)io_type);
 	((void)archive_type);
 	return true;
 }
-
-#endif // defined(YAS_HAS_BOOST_FUSION)
 
 /***************************************************************************/
 

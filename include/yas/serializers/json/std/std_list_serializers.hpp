@@ -33,12 +33,12 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__json__std_list_serializer_hpp
-#define _yas__json__std_list_serializer_hpp
+#ifndef _yas__text__std_list_serializer_hpp
+#define _yas__text__std_list_serializer_hpp
 
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 #include <list>
 
@@ -51,37 +51,27 @@ template<typename T>
 struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::out,
+	archive_type::text,
 	std::list<T>
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::list<T>& list) {
-		ar & static_cast<std::uint32_t>(list.size());
-		typename std::list<T>::const_iterator it = list.begin();
-		for ( ; it != list.end(); ++it ) {
-			ar & (*it);
+	static Archive& save(Archive& ar, const std::list<T>& list) {
+		ar & (uint32_t)list.size();
+		for ( const auto &it: list ) {
+			ar & it;
 		}
+		return ar;
 	}
-};
 
-template<typename T>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::in,
-	std::list<T>
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, std::list<T>& list) {
+	static Archive& load(Archive& ar, std::list<T>& list) {
 		std::uint32_t size = 0;
 		ar & size;
 		list.resize(size);
-		typename std::list<T>::iterator it = list.begin();
-		for ( ; it != list.end(); ++it ) {
-			ar & (*it);
+		for ( auto &it: list ) {
+			ar & it;
 		}
+		return ar;
 	}
 };
 
@@ -90,4 +80,4 @@ struct serializer<
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__json__std_list_serializer_hpp
+#endif // _yas__text__std_list_serializer_hpp

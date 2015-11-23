@@ -52,12 +52,10 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::text,
-	direction::out,
 	std::multimap<K, V>
->
-{
+> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::multimap<K, V>& multimap) {
+	static Archive& save(Archive& ar, const std::multimap<K, V>& multimap) {
 		ar & (std::uint32_t)multimap.size();
 		for ( const auto &it: multimap ) {
 			ar & it.first
@@ -65,19 +63,9 @@ struct serializer<
 		}
 		return ar;
 	}
-};
 
-template<typename K, typename V>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::text,
-	direction::in,
-	std::multimap<K, V>
->
-{
 	template<typename Archive>
-	static Archive& apply(Archive& ar, std::multimap<K, V>& multimap) {
+	static Archive& load(Archive& ar, std::multimap<K, V>& multimap) {
 		std::uint32_t size = 0;
 		ar & size;
 		for ( ; size; --size ) {

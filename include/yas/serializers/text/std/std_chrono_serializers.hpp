@@ -52,26 +52,16 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::text,
-	direction::out,
 	std::chrono::duration<R, P>
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::chrono::duration<R, P> &d) {
+	static Archive& save(Archive& ar, const std::chrono::duration<R, P> &d) {
 		ar & d.count();
 		return ar;
 	}
-};
 
-template<typename R, typename P>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::text,
-	direction::in,
-	std::chrono::duration<R, P>
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, std::chrono::duration<R, P> &d) {
+	static Archive& load(Archive& ar, std::chrono::duration<R, P> &d) {
 		R count;
 		ar & count;
 		d = std::chrono::duration<R, P>(count);
@@ -86,26 +76,16 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::text,
-	direction::out,
 	std::chrono::time_point<C, D>
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::chrono::time_point<C, D> &t) {
+	static Archive& save(Archive& ar, const std::chrono::time_point<C, D> &t) {
 		ar & t.time_since_epoch();
 		return ar;
 	}
-};
 
-template<typename C, typename D>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::text,
-	direction::in,
-	std::chrono::time_point<C, D>
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, std::chrono::time_point<C, D> &t) {
+	static Archive& load(Archive& ar, std::chrono::time_point<C, D> &t) {
 		D duration;
 		ar & duration;
 		t = std::chrono::time_point<C, D>(duration);

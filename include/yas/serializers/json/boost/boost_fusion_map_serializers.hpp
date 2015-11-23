@@ -33,12 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__json__boost_fusion_map_serializer_hpp
-#define _yas__json__boost_fusion_map_serializer_hpp
-
-#include <yas/detail/config/config.hpp>
-
-#if defined(YAS_HAS_BOOST_FUSION)
+#ifndef _yas__text__boost_fusion_map_serializer_hpp
+#define _yas__text__boost_fusion_map_serializer_hpp
 
 namespace yas {
 
@@ -50,6 +46,4 @@ namespace yas {
 
 } // namespace yas
 
-#endif // defined(YAS_HAS_BOOST_FUSION)
-
-#endif // _yas__json__boost_fusion_map_serializer_hpp
+#endif // _yas__text__boost_fusion_map_serializer_hpp

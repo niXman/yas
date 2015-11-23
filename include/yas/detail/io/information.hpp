@@ -72,8 +72,8 @@ union archive_header {
 	}
 
 	struct {
-		std::uint8_t version:3; // version     : 0 ... 7
-		std::uint8_t type   :3; // archive type: binary, text, json
+		std::uint8_t version:3; // version     : 0...7
+		std::uint8_t type   :3; // archive type: 0...7: binary, text, json
 		std::uint8_t bits   :1; // bitnes      : 0 - 32 bit, 1 - 64 bit
 		std::uint8_t endian :1; // endianness  : 0 - LE, 1 - BE
 	} bits;
@@ -81,7 +81,7 @@ union archive_header {
 };
 #pragma pack(pop)
 
-static_assert(sizeof(archive_header)==sizeof(std::int8_t), "ALIGNMENT ERROR");
+static_assert(sizeof(archive_header)==sizeof(std::int8_t), "alignment error");
 
 /***************************************************************************/
 
@@ -94,7 +94,16 @@ static const char yas_id[] = {
 	,'s' ^ YAS_PP_STRINGIZE(YAS_DECORATE_HEADER_BYTES)[0]
 };
 #else // !YAS_DECORATE_HEADER_BYTES
+#ifdef YAS_SET_HEADER_BYTES
+static_assert(sizeof(YAS_PP_STRINGIZE(YAS_SET_HEADER_BYTES)) >= 4, "header bytes error");
+static const char yas_id[] = {
+	YAS_PP_STRINGIZE(YAS_SET_HEADER_BYTES)[0]
+  ,YAS_PP_STRINGIZE(YAS_SET_HEADER_BYTES)[1]
+  ,YAS_PP_STRINGIZE(YAS_SET_HEADER_BYTES)[2]
+};
+#else
 static const char yas_id[] = {'y', 'a', 's'};
+#endif // YAS_USE_HEADER_BYTES
 #endif // YAS_DECORATE_HEADER_BYTES
 
 static const char hex_alpha[] = {
@@ -112,7 +121,7 @@ template<>
 struct header_reader_writer<archive_type::binary> {
 	enum { header_size = 4 };
 
-	template<typename IO>
+	template<endian_t ET, typename IO>
 	static void read(IO &io, yas::header_flag op, archive_header& header) {
 		if ( op == yas::no_header ) return;
 
@@ -151,7 +160,7 @@ struct header_reader_writer<archive_type::text> {
 		,second_hex_pos = 4
 	};
 
-	template<typename IO>
+	template<endian_t ET, typename IO>
 	static void read(IO &io, yas::header_flag op, archive_header& header) {
 		if ( op == yas::no_header ) return;
 		char buf[header_size];
@@ -193,61 +202,31 @@ struct header_reader_writer<archive_type::text> {
 
 template<>
 struct header_reader_writer<archive_type::json> {
-	enum {
-		 header_size = 16
-		,first_hex_pos = 11
-		,second_hex_pos = 12
-	};
+	enum { header_size = 1 }; // unused for json archives
 
-	template<typename IO>
-	static void read(IO &io, yas::header_flag op, archive_header& header) {
-//		if ( op == yas::no_header ) return;
-//		char buf[header_size];
-//		static const char archive_id[11] = { '{','"','h','d','r','"',':','"',yas_id[0],yas_id[1],yas_id[2] };
-
-//		if ( io.read(buf, header_size) != header_size )
-//			YAS_THROW_ARCHIVE_IS_EMPTY();
-//		if ( memcmp(buf, archive_id, sizeof(archive_id)) )
-//			YAS_THROW_BAD_ARCHIVE_INFORMATION();
-
-//		const char* p = std::lower_bound(hex_alpha, hex_alpha+sizeof(hex_alpha), buf[first_hex_pos]);
-//		if (*p != buf[first_hex_pos]) YAS_THROW_BAD_BYTES_IN_HEADER();
-//		const char* q = std::lower_bound(hex_alpha, hex_alpha+sizeof(hex_alpha), buf[second_hex_pos]);
-//		if (*q != buf[second_hex_pos]) YAS_THROW_BAD_BYTES_IN_HEADER();
-
-//		header.as_char = (((p - hex_alpha) << 4) | (q - hex_alpha));
+	template<endian_t ET, typename IO>
+	static void read(IO &, yas::header_flag op, archive_header &header) {
+		// TODO:
+		if ( op == yas::no_header ) return;
+		header.bits.version = archive_version;
+		header.bits.type = archive_type::json;
+		header.bits.bits = YAS_PLATFORM_BITS_IS_64();
+		header.bits.endian = (ET == as_host ? YAS_BIG_ENDIAN() : ET == big_endian);
 	}
 
 	template<endian_t ET, typename IO>
-	static void write(IO &io, yas::header_flag op, archive_type::type at) {
-//		if ( op == yas::no_header ) return;
-//		static const archive_header header(
-//			 (std::uint8_t)archive_version
-//			,(std::uint8_t)at
-//			,(std::uint8_t)YAS_PLATFORM_BITS_IS_64()
-//			,(std::uint8_t)YAS_BIG_ENDIAN()
-//		);
-
-//		static const char buf[header_size] = {
-//			 '{','"','h','d','r','"',':','"',yas_id[0],yas_id[1],yas_id[2]
-//			,hex_alpha[(((std::uint8_t)header.as_char) >> 4) & 0xff]
-//			,hex_alpha[((std::uint8_t)header.as_char) & 15]
-//			,'"','}',','
-//		};
-
-//		YAS_THROW_ON_WRITE_ERROR(header_size, !=, io.write(buf, header_size));
-	}
+	static void write(IO &, yas::header_flag, archive_type::type) {}
 };
 
 /***************************************************************************/
 
 #define YAS_WRITE_ARCHIVE_INFORMATION_SPECIALIZATION_IMPL(unused, idx, seq) \
 	template<typename IO, endian_t ET> \
-	struct archive_information<YAS_PP_SEQ_ELEM(idx, seq), yas::direction::in, IO, ET> { \
-		archive_information(IO &io, yas::header_flag op) \
+	struct iarchive_information<YAS_PP_SEQ_ELEM(idx, seq), IO, ET> { \
+		iarchive_information(IO &io, yas::header_flag op) \
 			:io(io) \
 			,header() \
-		{ header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::read(io, op, header); } \
+		{ header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::read<ET>(io, op, header); } \
 		\
 		static YAS_CONSTEXPR std::uint32_t header_size() { return header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::header_size; } \
 		static YAS_CONSTEXPR archive_type::type type() { return YAS_PP_SEQ_ELEM(idx, seq); } \
@@ -267,8 +246,6 @@ struct header_reader_writer<archive_type::json> {
 			return header.bits.version; \
 		} \
 		\
-		static YAS_CONSTEXPR yas::direction::type direction()	{ return yas::direction::in; } \
-		\
 		static YAS_CONSTEXPR bool is_readable() { return true; } \
 		static YAS_CONSTEXPR bool is_writable() { return false; }\
 		\
@@ -278,8 +255,8 @@ struct header_reader_writer<archive_type::json> {
 	}; \
 	\
 	template<typename IO, endian_t ET> \
-	struct archive_information<YAS_PP_SEQ_ELEM(idx, seq), yas::direction::out, IO, ET> { \
-		archive_information(IO &io, yas::header_flag op) \
+	struct oarchive_information<YAS_PP_SEQ_ELEM(idx, seq), IO, ET> { \
+		oarchive_information(IO &io, yas::header_flag op) \
 			:io(io) \
 		{ header_reader_writer<YAS_PP_SEQ_ELEM(idx, seq)>::write<ET>(io, op, YAS_PP_SEQ_ELEM(idx, seq)); } \
 		\
@@ -292,8 +269,6 @@ struct header_reader_writer<archive_type::json> {
 		static YAS_CONSTEXPR endian_t host_endian() { return YAS_BIG_ENDIAN() ? big_endian : little_endian; } \
 		\
 		static YAS_CONSTEXPR std::uint32_t version() { return archive_version; } \
-		\
-		static YAS_CONSTEXPR yas::direction::type direction() { return yas::direction::out; } \
 		\
 		static YAS_CONSTEXPR bool is_readable() { return false; } \
 		static YAS_CONSTEXPR bool is_writable() { return true; } \
@@ -313,11 +288,17 @@ struct header_reader_writer<archive_type::json> {
 
 template<
 	 yas::archive_type::type
-	,yas::direction::type
 	,typename IO
 	,endian_t ET
 >
-struct archive_information;
+struct iarchive_information;
+
+template<
+	 yas::archive_type::type
+	,typename IO
+	,endian_t ET
+>
+struct oarchive_information;
 
 YAS_WRITE_ARCHIVE_INFORMATION_SPECIALIZATIONS(
 	(archive_type::binary)

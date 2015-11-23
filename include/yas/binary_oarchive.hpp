@@ -37,8 +37,6 @@
 #define _yas__binary_oarchive_hpp
 
 #include <yas/detail/type_traits/properties.hpp>
-#include <yas/detail/type_traits/has_method_serialize.hpp>
-#include <yas/detail/type_traits/has_function_serialize.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 
 #include <yas/detail/io/information.hpp>
@@ -63,7 +61,7 @@ namespace yas {
 template<typename OS, endian_t ET = as_host>
 struct binary_oarchive
 	:detail::binary_ostream<OS, ET>
-	,detail::archive_information<archive_type::binary, direction::out, OS, ET>
+	,detail::oarchive_information<archive_type::binary, OS, ET>
 	,private detail::noncopyable
 {
 	using stream_type = OS;
@@ -71,7 +69,7 @@ struct binary_oarchive
 
 	binary_oarchive(OS &os, header_flag op = with_header)
 		:detail::binary_ostream<OS, ET>(os)
-		,detail::archive_information<archive_type::binary, direction::out, OS, ET>(os, op)
+		,detail::oarchive_information<archive_type::binary, OS, ET>(os, op)
 	{}
 
 	template<typename T>
@@ -81,9 +79,8 @@ struct binary_oarchive
 			 type_properties<T>::value
 			,serialization_method<T, this_type>::value
 			,archive_type::binary
-			,direction::out
 			,T
-		>::apply(*this, v);
+		>::save(*this, v);
 	}
 
 	this_type& serialize() { return *this; }

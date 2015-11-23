@@ -52,29 +52,19 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::binary,
-	direction::out,
 	std::forward_list<T>
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::forward_list<T>& list) {
+	static Archive& save(Archive& ar, const std::forward_list<T>& list) {
 		ar.write((std::uint32_t)std::distance(list.begin(), list.end()));
 		for ( const auto &it: list ) {
 			ar & it;
 		}
 		return ar;
 	}
-};
 
-template<typename T>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::binary,
-	direction::in,
-	std::forward_list<T>
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, std::forward_list<T>& list) {
+	static Archive& load(Archive& ar, std::forward_list<T>& list) {
 		std::uint32_t size = 0;
 		ar.read(size);
 		list.resize(size);

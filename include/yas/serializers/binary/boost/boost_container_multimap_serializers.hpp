@@ -36,7 +36,8 @@
 #ifndef _yas__binary__boost_cont_multimap_serializer_hpp
 #define _yas__binary__boost_cont_multimap_serializer_hpp
 
-#include <yas/detail/type_traits/type_traits.hpp>
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
+#include <yas/serializers/serializer.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 #include <yas/detail/io/serialization_exception.hpp>
 
@@ -52,11 +53,10 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::binary,
-	direction::out,
 	boost::container::multimap<K, V>
 > {
 	template<typename Archive>
-	static Archive& apply(Archive &ar, const boost::container::multimap<K, V> &multimap) {
+	static Archive& save(Archive &ar, const boost::container::multimap<K, V> &multimap) {
 		ar.write((std::uint32_t)multimap.size());
 		for ( const auto &it: multimap ) {
 			ar & it.first
@@ -64,18 +64,9 @@ struct serializer<
 		}
 		return ar;
 	}
-};
 
-template<typename K, typename V>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::binary,
-	direction::in,
-	boost::container::multimap<K, V>
-> {
 	template<typename Archive>
-	static Archive& apply(Archive &ar, boost::container::multimap<K, V> &multimap) {
+	static Archive& load(Archive &ar, boost::container::multimap<K, V> &multimap) {
 		std::uint32_t size = 0;
 		ar.read(size);
 		for ( ; size; --size ) {
@@ -93,5 +84,7 @@ struct serializer<
 
 } // namespace detail
 } // namespace yas
+
+#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 
 #endif // _yas__binary__boost_cont_multimap_serializer_hpp

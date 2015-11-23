@@ -33,12 +33,12 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__json__std_map_serializer_hpp
-#define _yas__json__std_map_serializer_hpp
+#ifndef _yas__text__std_map_serializer_hpp
+#define _yas__text__std_map_serializer_hpp
 
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 #include <map>
 
@@ -51,42 +51,31 @@ template<typename K, typename V>
 struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::out,
+	archive_type::text,
 	std::map<K, V>
->
-{
+> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::map<K, V>& map) {
-		ar & map.size();
-		typename std::map<K, V>::const_iterator it = map.begin();
-		for ( ; it != map.end(); ++it ) {
-			ar & it->first
-				& it->second;
+	static Archive& save(Archive& ar, const std::map<K, V>& map) {
+		ar & (std::uint32_t)map.size();
+		for ( const auto &it: map ) {
+			ar & it.first
+				& it.second;
 		}
+		return ar;
 	}
-};
 
-template<typename K, typename V>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::in,
-	std::map<K, V>
->
-{
 	template<typename Archive>
-	static Archive& apply(Archive& ar, std::map<K, V>& map) {
+	static Archive& load(Archive& ar, std::map<K, V>& map) {
 		std::uint32_t size = 0;
 		ar & size;
-		K key = K();
-		V val = V();
 		for ( ; size; --size ) {
+			K key = K();
+			V val = V();
 			ar & key
 				& val;
-			map[key] = val;
+			map.insert(std::make_pair(std::move(key), std::move(val)));
 		}
+		return ar;
 	}
 };
 
@@ -95,4 +84,4 @@ struct serializer<
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__json__std_map_serializer_hpp
+#endif // _yas__text__std_map_serializer_hpp

@@ -36,7 +36,8 @@
 #ifndef _yas__binary__boost_chrono_serializer_hpp
 #define _yas__binary__boost_chrono_serializer_hpp
 
-#include <yas/detail/type_traits/type_traits.hpp>
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
+#include <yas/serializers/serializer.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 #include <yas/detail/io/serialization_exception.hpp>
 
@@ -54,26 +55,16 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::binary,
-	direction::out,
 	boost::chrono::duration<R, P>
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const boost::chrono::duration<R, P> &d) {
+	static Archive& save(Archive& ar, const boost::chrono::duration<R, P> &d) {
 		ar.write(d.count());
 		return ar;
 	}
-};
 
-template<typename R, typename P>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::binary,
-	direction::in,
-	boost::chrono::duration<R, P>
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, boost::chrono::duration<R, P> &d) {
+	static Archive& load(Archive& ar, boost::chrono::duration<R, P> &d) {
 		R count;
 		ar.read(count);
 		d = boost::chrono::duration<R, P>(count);
@@ -88,26 +79,16 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::binary,
-	direction::out,
 	boost::chrono::time_point<C, D>
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const boost::chrono::time_point<C, D> &t) {
+	static Archive& save(Archive& ar, const boost::chrono::time_point<C, D> &t) {
 		ar & t.time_since_epoch();
 		return ar;
 	}
-};
 
-template<typename C, typename D>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::binary,
-	direction::in,
-	boost::chrono::time_point<C, D>
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, boost::chrono::time_point<C, D> &t) {
+	static Archive& load(Archive& ar, boost::chrono::time_point<C, D> &t) {
 		D duration;
 		ar & duration;
 		t = boost::chrono::time_point<C, D>(duration);
@@ -119,5 +100,7 @@ struct serializer<
 
 } // namespace detail
 } // namespace yas
+
+#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 
 #endif // _yas__binary__boost_chrono_serializer_hpp

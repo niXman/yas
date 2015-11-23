@@ -50,11 +50,10 @@ struct serializer<
 	type_prop::is_enum,
 	ser_method::use_internal_serializer,
 	archive_type::text,
-	direction::out,
 	T
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const T& v) {
+	static Archive& save(Archive& ar, const T& v) {
 		ar.write(space_sep);
 		switch ( sizeof(T) ) {
 			case sizeof(std::uint8_t):
@@ -72,18 +71,9 @@ struct serializer<
 		}
 		return ar;
 	}
-};
 
-template<typename T>
-struct serializer<
-	type_prop::is_enum,
-	ser_method::use_internal_serializer,
-	archive_type::text,
-	direction::in,
-	T
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, T& v) {
+	static Archive& load(Archive& ar, T& v) {
 		if ( ar.getch() != space_sep ) YAS_THROW_SPACE_IS_EXPECTED();
 		switch ( sizeof(T) ) {
 			case sizeof(std::uint8_t):

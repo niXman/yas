@@ -18,7 +18,7 @@
 # include <yas/detail/preprocessor/config.hpp>
 # include <yas/detail/preprocessor/error.hpp>
 # include <yas/detail/preprocessor/auto_rec.hpp>
-# include <yas/detail/preprocessor/eat.hpp>
+# include <yas/detail/preprocessor/tuple_eat.hpp>
 #
 # /* YAS_PP_REPEAT */
 #

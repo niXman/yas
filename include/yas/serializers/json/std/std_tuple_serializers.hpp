@@ -33,14 +33,12 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__json__std_tuple_serializer_hpp
-#define _yas__json__std_tuple_serializer_hpp
-
-#include <yas/detail/config/config.hpp>
+#ifndef _yas__text__std_tuple_serializer_hpp
+#define _yas__text__std_tuple_serializer_hpp
 
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/properties.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 #include <yas/detail/preprocessor/preprocessor.hpp>
 
 #include <stdint.h>
@@ -52,90 +50,68 @@ namespace detail {
 
 /***************************************************************************/
 
-#define YAS__JSON__WRITE_STD_TUPLE_ITEM(unused, idx, type) \
+#define YAS__TEXT__WRITE_STD_TUPLE_ITEM(unused, idx, type) \
 		ar & std::get<idx>(tuple);
 
-#define YAS__JSON__READ_STD_TUPLE_ITEM(unused, idx, type) \
+#define YAS__TEXT__READ_STD_TUPLE_ITEM(unused, idx, type) \
 		ar & std::get<idx>(tuple);
 
-#define YAS__JSON__GENERATE_EMPTY_SAVE_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC() \
+#define YAS__TEXT__GENERATE_EMPTY_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC() \
 	template<> \
 	struct serializer<type_prop::not_a_pod,ser_method::use_internal_serializer, \
-		archive_type::json,direction::out,std::tuple<> \
+		archive_type::text, std::tuple<> \
 	> { \
 		template<typename Archive> \
-		static Archive& apply(Archive&, const std::tuple<>&) {} \
-	};
-
-#define YAS__JSON__GENERATE_EMPTY_LOAD_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC() \
-	template<> \
-	struct serializer<type_prop::not_a_pod,ser_method::use_internal_serializer, \
-		archive_type::json,direction::in,std::tuple<> \
-	> { \
+		static Archive& save(Archive& ar, const std::tuple<>&) { return ar;  } \
+		\
 		template<typename Archive> \
-		static Archive& apply(Archive&, std::tuple<>&) {} \
+		static Archive& load(Archive& ar, std::tuple<>&) { return ar; } \
 	};
 
-#define YAS__JSON__GENERATE_SAVE_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC(unused, count, unused2) \
+#define YAS__TEXT__GENERATE_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC(unused, count, unused2) \
 	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
 	struct serializer<type_prop::not_a_pod,ser_method::use_internal_serializer, \
-		archive_type::json, direction::out, \
-		std::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> \
+		archive_type::text, std::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> \
 	> { \
 		template<typename Archive> \
-		static Archive& apply(Archive& ar, const std::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
-			ar & YAS_PP_INC(count); \
+		static Archive& save(Archive& ar, const std::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
+			ar & (std::uint8_t)YAS_PP_INC(count); \
 			YAS_PP_REPEAT( \
 				YAS_PP_INC(count), \
-				YAS__JSON__WRITE_STD_TUPLE_ITEM, \
+				YAS__TEXT__WRITE_STD_TUPLE_ITEM, \
 				T \
 			) \
+			return ar; \
 		} \
-	};
-
-#define YAS__JSON__GENERATE_SAVE_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(count) \
-	YAS__JSON__GENERATE_EMPTY_SAVE_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC() \
-	YAS_PP_REPEAT( \
-		count, \
-		YAS__JSON__GENERATE_SAVE_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC, \
-		~ \
-	)
-
-#define YAS__JSON__GENERATE_LOAD_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC(unused, count, unused2) \
-	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
-	struct serializer<type_prop::not_a_pod,ser_method::use_internal_serializer, \
-		archive_type::json, direction::in, \
-		std::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> \
-	> { \
+		\
 		template<typename Archive> \
-		static Archive& apply(Archive& ar, std::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
-			std::int32_t size = 0; \
+		static Archive& load(Archive& ar, std::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
+			std::uint8_t size = 0; \
 			ar & size; \
-			if ( size != YAS_PP_INC(count) ) YAS_THROW_BAD_SIZE_ON_DESERIALIZE_FUSION("boost::tuple"); \
+			if ( size != YAS_PP_INC(count) ) YAS_THROW_BAD_SIZE_ON_DESERIALIZE("boost::tuple"); \
 			YAS_PP_REPEAT( \
 				YAS_PP_INC(count), \
-				YAS__JSON__READ_STD_TUPLE_ITEM, \
+				YAS__TEXT__READ_STD_TUPLE_ITEM, \
 				T \
 			) \
+			return ar; \
 		} \
 	};
 
-#define YAS__JSON__GENERATE_LOAD_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(count) \
-	YAS__JSON__GENERATE_EMPTY_LOAD_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC() \
+#define YAS__TEXT__GENERATE_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(count) \
+	YAS__TEXT__GENERATE_EMPTY_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC() \
 	YAS_PP_REPEAT( \
 		count, \
-		YAS__JSON__GENERATE_LOAD_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC, \
+		YAS__TEXT__GENERATE_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC, \
 		~ \
 	)
 
 /***************************************************************************/
 
 #if _MSC_VER == 1700
-YAS__JSON__GENERATE_SAVE_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(_VARIADIC_MAX)
-YAS__JSON__GENERATE_LOAD_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(_VARIADIC_MAX)
+YAS__TEXT__GENERATE_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(_VARIADIC_MAX)
 #else
-YAS__JSON__GENERATE_SAVE_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(10)
-YAS__JSON__GENERATE_LOAD_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(10)
+YAS__TEXT__GENERATE_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(10)
 #endif
 
 /***************************************************************************/
@@ -143,4 +119,4 @@ YAS__JSON__GENERATE_LOAD_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(10)
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__json__std_tuple_serializer_hpp
+#endif // _yas__text__std_tuple_serializer_hpp

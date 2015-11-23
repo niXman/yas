@@ -50,27 +50,17 @@ struct serializer<
 	type_prop::is_enum,
 	ser_method::use_internal_serializer,
 	archive_type::binary,
-	direction::out,
 	T
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const T& v) {
+	static Archive& save(Archive& ar, const T& v) {
 		ar.write((std::uint8_t)sizeof(T));
 		ar.write(static_cast<typename std::underlying_type<T>::type>(v));
 		return ar;
 	}
-};
 
-template<typename T>
-struct serializer<
-	type_prop::is_enum,
-	ser_method::use_internal_serializer,
-	archive_type::binary,
-	direction::in,
-	T
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, T& v) {
+	static Archive& load(Archive& ar, T& v) {
 		std::uint8_t size = 0;
 		typename std::underlying_type<T>::type t;
 		ar.read(size);

@@ -38,8 +38,6 @@
 
 /***************************************************************************/
 
-#if defined(YAS_HAS_BOOST_FUSION)
-
 template<typename archive_traits>
 bool fusion_pair_test(const char* archive_type, const char* io_type) {
 	boost::fusion::pair<std::size_t, unsigned char> p1('f'), p2;
@@ -77,8 +75,6 @@ bool fusion_pair_test(const char* archive_type, const char* io_type) {
 	}
 	return true;
 }
-
-#endif // #if defined(YAS_HAS_BOOST_FUSION)
 
 /***************************************************************************/
 

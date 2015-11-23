@@ -36,7 +36,8 @@
 #ifndef _yas__binary__boost_cont_static_vector_serializer_hpp
 #define _yas__binary__boost_cont_static_vector_serializer_hpp
 
-#include <yas/detail/type_traits/type_traits.hpp>
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
+#include <yas/serializers/serializer.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 #include <yas/detail/io/serialization_exception.hpp>
 
@@ -52,11 +53,10 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::binary,
-	direction::out,
 	boost::container::static_vector<T, N>
 > {
 	template<typename Archive>
-	static Archive& apply(Archive &ar, const boost::container::static_vector<T, N> &vector) {
+	static Archive& save(Archive &ar, const boost::container::static_vector<T, N> &vector) {
 		ar.write((std::uint32_t)N);
 		ar.write((std::uint32_t)vector.size());
 		if ( std::is_fundamental<T>::value && sizeof(T) == 1 ) {
@@ -68,18 +68,9 @@ struct serializer<
 		}
 		return ar;
 	}
-};
 
-template<typename T, std::size_t N>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::binary,
-	direction::in,
-	boost::container::static_vector<T, N>
-> {
 	template<typename Archive>
-	static Archive& apply(Archive &ar, boost::container::static_vector<T, N> &vector) {
+	static Archive& load(Archive &ar, boost::container::static_vector<T, N> &vector) {
 		std::uint32_t capacity = 0, size = 0;
 		ar.read(capacity);
 		ar.read(size);
@@ -100,5 +91,7 @@ struct serializer<
 
 } // namespace detail
 } // namespace yas
+
+#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 
 #endif // _yas__binary__boost_cont_static_vector_serializer_hpp

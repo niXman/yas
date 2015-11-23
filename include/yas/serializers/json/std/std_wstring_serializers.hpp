@@ -33,13 +33,14 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__json__std_wstring_serializer_hpp
-#define _yas__json__std_wstring_serializer_hpp
+#ifndef _yas__text__std_wstring_serializer_hpp
+#define _yas__text__std_wstring_serializer_hpp
 
 #include <yas/detail/tools/utf8conv.hpp>
 
+#include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/selector.hpp>
-#include <yas/detail/type_traits/properties.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 namespace yas {
 namespace detail {
@@ -50,31 +51,19 @@ template<>
 struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::out,
+	archive_type::text,
 	std::wstring
->
-{
+> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::wstring& wstring) {
+	static Archive& save(Archive& ar, const std::wstring& wstring) {
 		std::string dst;
 		detail::TypeConverter<std::string, std::wstring>::Convert(dst, wstring);
 		ar & dst;
 		return ar;
 	}
-};
 
-template<>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::in,
-	std::wstring
->
-{
 	template<typename Archive>
-	static Archive& apply(Archive& ar, std::wstring& wstring) {
+	static Archive& load(Archive& ar, std::wstring& wstring) {
 		std::string string;
 		ar & string;
 		detail::TypeConverter<std::wstring, std::string>::Convert(wstring, string);
@@ -87,4 +76,4 @@ struct serializer<
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__json__std_wstring_serializer_hpp
+#endif // _yas__text__std_wstring_serializer_hpp

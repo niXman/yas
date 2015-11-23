@@ -52,29 +52,17 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::text,
-	direction::out,
 	std::complex<T>
->
-{
+> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::complex<T> &complex) {
+	static Archive& save(Archive& ar, const std::complex<T> &complex) {
 		ar & complex.real()
 			& complex.imag();
 		return ar;
 	}
-};
 
-template<typename T>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::text,
-	direction::in,
-	std::complex<T>
->
-{
 	template<typename Archive>
-	static Archive& apply(Archive& ar, std::complex<T> &complex) {
+	static Archive& load(Archive& ar, std::complex<T> &complex) {
 		T real, imag;
 		ar & real
 			& imag;

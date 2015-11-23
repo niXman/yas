@@ -40,11 +40,11 @@
 
 #include <yas/serializers/binary/std/std_pair_serializers.hpp>
 #include <yas/serializers/text/std/std_pair_serializers.hpp>
-#include <yas/serializers/json/std/std_pair_serializers.hpp>
+//#include <yas/serializers/json/std/std_pair_serializers.hpp>
 
 #include <yas/serializers/binary/std/std_bitset_serializers.hpp>
 #include <yas/serializers/text/std/std_bitset_serializers.hpp>
-#include <yas/serializers/json/std/std_bitset_serializers.hpp>
+//#include <yas/serializers/json/std/std_bitset_serializers.hpp>
 
 #include <yas/serializers/binary/std/std_chrono_serializers.hpp>
 #include <yas/serializers/text/std/std_chrono_serializers.hpp>
@@ -56,70 +56,70 @@
 
 #include <yas/serializers/binary/std/std_complex_serializers.hpp>
 #include <yas/serializers/text/std/std_complex_serializers.hpp>
-#include <yas/serializers/json/std/std_complex_serializers.hpp>
+//#include <yas/serializers/json/std/std_complex_serializers.hpp>
 
 #include <yas/serializers/binary/std/std_string_serializers.hpp>
 #include <yas/serializers/text/std/std_string_serializers.hpp>
-#include <yas/serializers/json/std/std_string_serializers.hpp>
+//#include <yas/serializers/json/std/std_string_serializers.hpp>
 
 #include <yas/serializers/binary/std/std_wstring_serializers.hpp>
 #include <yas/serializers/text/std/std_wstring_serializers.hpp>
-#include <yas/serializers/json/std/std_wstring_serializers.hpp>
+//#include <yas/serializers/json/std/std_wstring_serializers.hpp>
 
 #include <yas/serializers/binary/std/std_vector_serializers.hpp>
 #include <yas/serializers/text/std/std_vector_serializers.hpp>
-#include <yas/serializers/json/std/std_vector_serializers.hpp>
+//#include <yas/serializers/json/std/std_vector_serializers.hpp>
 
 #include <yas/serializers/binary/std/std_list_serializers.hpp>
 #include <yas/serializers/text/std/std_list_serializers.hpp>
-#include <yas/serializers/json/std/std_list_serializers.hpp>
+//#include <yas/serializers/json/std/std_list_serializers.hpp>
 
 #include <yas/serializers/binary/std/std_forward_list_serializers.hpp>
 #include <yas/serializers/text/std/std_forward_list_serializers.hpp>
-#include <yas/serializers/json/std/std_forward_list_serializers.hpp>
+//#include <yas/serializers/json/std/std_forward_list_serializers.hpp>
 
 #include <yas/serializers/binary/std/std_map_serializers.hpp>
 #include <yas/serializers/text/std/std_map_serializers.hpp>
-#include <yas/serializers/json/std/std_map_serializers.hpp>
+//#include <yas/serializers/json/std/std_map_serializers.hpp>
 
 #include <yas/serializers/binary/std/std_set_serializers.hpp>
 #include <yas/serializers/text/std/std_set_serializers.hpp>
-#include <yas/serializers/json/std/std_set_serializers.hpp>
+//#include <yas/serializers/json/std/std_set_serializers.hpp>
 
 #include <yas/serializers/binary/std/std_deque_serializers.hpp>
 #include <yas/serializers/text/std/std_deque_serializers.hpp>
-#include <yas/serializers/json/std/std_deque_serializers.hpp>
+//#include <yas/serializers/json/std/std_deque_serializers.hpp>
 
 #include <yas/serializers/binary/std/std_multimap_serializers.hpp>
 #include <yas/serializers/text/std/std_multimap_serializers.hpp>
-#include <yas/serializers/json/std/std_multimap_serializers.hpp>
+//#include <yas/serializers/json/std/std_multimap_serializers.hpp>
 
 #include <yas/serializers/binary/std/std_multiset_serializers.hpp>
 #include <yas/serializers/text/std/std_multiset_serializers.hpp>
-#include <yas/serializers/json/std/std_multiset_serializers.hpp>
+//#include <yas/serializers/json/std/std_multiset_serializers.hpp>
 
 #include <yas/serializers/binary/std/std_array_serializers.hpp>
 #include <yas/serializers/text/std/std_array_serializers.hpp>
-#include <yas/serializers/json/std/std_array_serializers.hpp>
+//#include <yas/serializers/json/std/std_array_serializers.hpp>
 
 #include <yas/serializers/binary/std/std_tuple_serializers.hpp>
 #include <yas/serializers/text/std/std_tuple_serializers.hpp>
-#include <yas/serializers/json/std/std_tuple_serializers.hpp>
+//#include <yas/serializers/json/std/std_tuple_serializers.hpp>
 
 #include <yas/serializers/binary/std/std_unordered_set_serializers.hpp>
 #include <yas/serializers/text/std/std_unordered_set_serializers.hpp>
-#include <yas/serializers/json/std/std_unordered_set_serializers.hpp>
+//#include <yas/serializers/json/std/std_unordered_set_serializers.hpp>
 
 #include <yas/serializers/binary/std/std_unordered_map_serializers.hpp>
 #include <yas/serializers/text/std/std_unordered_map_serializers.hpp>
-#include <yas/serializers/json/std/std_unordered_map_serializers.hpp>
+//#include <yas/serializers/json/std/std_unordered_map_serializers.hpp>
 
 #include <yas/serializers/binary/std/std_unordered_multiset_serializers.hpp>
 #include <yas/serializers/text/std/std_unordered_multiset_serializers.hpp>
-#include <yas/serializers/json/std/std_unordered_multiset_serializers.hpp>
+//#include <yas/serializers/json/std/std_unordered_multiset_serializers.hpp>
 
 #include <yas/serializers/binary/std/std_unordered_multimap_serializers.hpp>
 #include <yas/serializers/text/std/std_unordered_multimap_serializers.hpp>
-#include <yas/serializers/json/std/std_unordered_multimap_serializers.hpp>
+//#include <yas/serializers/json/std/std_unordered_multimap_serializers.hpp>
 
 #endif // _yas__std_types_serializers_hpp

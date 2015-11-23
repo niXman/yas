@@ -15,7 +15,7 @@
 #
 # include <yas/detail/preprocessor/config.hpp>
 # include <yas/detail/preprocessor/cat.hpp>
-# include <yas/detail/preprocessor/vsize.hpp>
+# include <yas/detail/preprocessor/variadic_size.hpp>
 #
 # /* BOOST_PP_OVERLOAD */
 #

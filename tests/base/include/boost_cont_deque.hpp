@@ -40,6 +40,7 @@
 
 template<typename archive_traits>
 bool boost_cont_deque_test(const char* archive_type, const char* io_type) {
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
 	boost::container::deque<int> deq1, deq2;
 	deq1.push_back(0);
 	deq1.push_back(1);
@@ -83,6 +84,7 @@ bool boost_cont_deque_test(const char* archive_type, const char* io_type) {
 		return false;
 	}
 
+#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 	return true;
 }
 

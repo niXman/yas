@@ -33,15 +33,13 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__text__fusion_pair_serializer_hpp
-#define _yas__text__fusion_pair_serializer_hpp
+#ifndef _yas__text__boost_fusion_pair_serializer_hpp
+#define _yas__text__boost_fusion_pair_serializer_hpp
 
-#include <yas/detail/config/config.hpp>
-
-#if defined(YAS_HAS_BOOST_FUSION)
-#include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/properties.hpp>
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
+#include <yas/serializers/serializer.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 #include <boost/fusion/support/pair.hpp>
 #include <boost/fusion/include/pair.hpp>
@@ -56,26 +54,16 @@ struct serializer<
 	type_prop::type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::text,
-	direction::out,
 	boost::fusion::pair<T1, T2>
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const boost::fusion::pair<T1, T2>& pair) {
+	static Archive& save(Archive& ar, const boost::fusion::pair<T1, T2>& pair) {
 		ar & pair.second;
 		return ar;
 	}
-};
 
-template<typename T1, typename T2>
-struct serializer<
-	type_prop::type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::text,
-	direction::in,
-	boost::fusion::pair<T1, T2>
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, boost::fusion::pair<T1, T2>& pair) {
+	static Archive& load(Archive& ar, boost::fusion::pair<T1, T2>& pair) {
 		ar & pair.second;
 		return ar;
 	}
@@ -86,6 +74,6 @@ struct serializer<
 } // namespace detail
 } // namespace yas
 
-#endif // defined(YAS_HAS_BOOST_FUSION)
+#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 
-#endif // _yas__text__fusion_pair_serializer_hpp
+#endif // _yas__text__boost_fusion_pair_serializer_hpp

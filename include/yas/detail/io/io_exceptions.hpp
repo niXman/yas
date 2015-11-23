@@ -78,7 +78,7 @@ YAS_DECLARE_EXCEPTION_TYPE(io_exception);
 
 #define YAS_THROW_ON_WRITE_ERROR(expected, cmp, ...) \
 	if ( (expected) cmp (__VA_ARGS__) ) { \
-		throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("can't write requested bytes")); \
+		YAS_THROW_WRITE_ERROR_EXCEPTION(); \
 	}
 
 #define YAS_THROW_FILE_ALREADY_EXISTS() \

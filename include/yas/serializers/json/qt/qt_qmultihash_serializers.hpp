@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__json__qmultihash_serializer_hpp
-#define _yas__json__qmultihash_serializer_hpp
+#ifndef _yas__text__qmultihash_serializer_hpp
+#define _yas__text__qmultihash_serializer_hpp
 
 #include <yas/detail/config/config.hpp>
 
@@ -50,7 +50,7 @@ template<>
 struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
-	archive_type::json,
+	archive_type::text,
 	direction::out,
 	specialization_type
 > {
@@ -63,7 +63,7 @@ template<>
 struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
-	archive_type::json,
+	archive_type::text,
 	direction::in,
 	specialization_type
 > {
@@ -80,4 +80,4 @@ struct serializer<
 
 #endif // defined(YAS_SERIALIZE_QT_TYPES)
 
-#endif // _yas__json__qmultihash_serializer_hpp
+#endif // _yas__text__qmultihash_serializer_hpp

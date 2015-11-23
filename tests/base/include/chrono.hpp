@@ -77,6 +77,7 @@ bool chrono_test(const char* archive_type, const char* io_type) {
 			return false;
 		}
 	}
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
 	{
 		boost::chrono::duration<int, boost::ratio<1>> w0{32}, r0;
 		boost::chrono::duration<double, boost::ratio<1>> w1{23}, r1;
@@ -114,6 +115,7 @@ bool chrono_test(const char* archive_type, const char* io_type) {
 			return false;
 		}
 	}
+#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 
 	return true;
 }

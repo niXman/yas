@@ -52,30 +52,19 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::text,
-	direction::out,
 	std::unordered_multiset<K>
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::unordered_multiset<K>& set) {
+	static Archive& save(Archive& ar, const std::unordered_multiset<K>& set) {
 		ar & (std::uint32_t)set.size();
 		for ( const auto &it: set ) {
 			ar & it;
 		}
 		return ar;
 	}
-};
 
-
-template<typename K>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::text,
-	direction::in,
-	std::unordered_multiset<K>
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, std::unordered_multiset<K>& set) {
+	static Archive& load(Archive& ar, std::unordered_multiset<K>& set) {
 		std::uint32_t size = 0;
 		ar & size;
 		for ( ; size; --size ) {

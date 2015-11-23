@@ -33,17 +33,15 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__json__boost_array_serializers_hpp
-#define _yas__json__boost_array_serializers_hpp
+#ifndef _yas__text__boost_array_serializers_hpp
+#define _yas__text__boost_array_serializers_hpp
 
-#include <yas/detail/config/config.hpp>
-
-#if defined(YAS_HAS_BOOST_ARRAY)
-#include <yas/detail/type_traits/type_traits.hpp>
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
+#include <yas/serializers/serializer.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 #include <boost/array.hpp>
-#include <boost/assert.hpp>
 
 namespace yas {
 namespace detail {
@@ -52,40 +50,29 @@ namespace detail {
 
 template<typename T, size_t N>
 struct serializer<
-	type_prop::not_a_pod,
+	type_prop::type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::out,
+	archive_type::text,
 	boost::array<T, N>
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const boost::array<T, N>& array) {
-		ar & static_cast<std::uint32_t>(N);
-		typename boost::array<T, N>::const_iterator it = array.begin();
-		for ( ; it != array.end(); ++it ) {
-			ar & (*it);
+	static Archive& save(Archive& ar, const boost::array<T, N>& array) {
+		ar & (std::uint32_t)N;
+		for ( const auto& it: array ) {
+			ar & it;
 		}
+		return ar;
 	}
-};
 
-template<typename T, size_t N>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::in,
-	boost::array<T, N>
->
-{
 	template<typename Archive>
-	static Archive& apply(Archive& ar, boost::array<T, N>& array) {
+	static Archive& load(Archive& ar, boost::array<T, N>& array) {
 		std::uint32_t size = 0;
 		ar & size;
 		if ( size != N ) YAS_THROW_BAD_ARRAY_SIZE();
-		typename boost::array<T, N>::iterator it = array.begin();
-		for ( ; it != array.end(); ++it ) {
-			ar & (*it);
+		for ( auto &it: array ) {
+			ar & it;
 		}
+		return ar;
 	}
 };
 
@@ -94,6 +81,6 @@ struct serializer<
 } // namespace detail
 } // namespace yas
 
-#endif // defined(YAS_HAS_BOOST_ARRAY)
+#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 
-#endif // _yas__json__boost_array_serializers_hpp
+#endif // _yas__text__boost_array_serializers_hpp

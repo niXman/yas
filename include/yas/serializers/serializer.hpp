@@ -47,7 +47,6 @@ template<
 	type_prop::type,
 	ser_method::type,
 	archive_type::type,	// type of archive
-	direction::type,		// serialization direction
 	typename T           // serialized type
 > struct serializer;
 

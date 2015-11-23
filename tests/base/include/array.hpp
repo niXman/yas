@@ -74,7 +74,7 @@ bool array_test(const char* archive_type, const char* io_type) {
 		return false;
 	}
 
-#if defined(YAS_HAS_BOOST_ARRAY)
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
 	boost::array<int, 10> arr5 = {
 		{0,1,2,3,4,5,6,7,8,9}
 	}, arr6;
@@ -108,7 +108,7 @@ bool array_test(const char* archive_type, const char* io_type) {
 		std::cout << "ARRAY deserialization error! [4]" << std::endl;
 		return false;
 	}
-#endif // defined(YAS_HAS_BOOST_ARRAY)
+#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 	return true;
 }
 

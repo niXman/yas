@@ -73,11 +73,10 @@ struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
 	archive_type::text,
-	direction::out,
 	_YAS_STD_OPTIONAL_NS::optional<T>
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const _YAS_STD_OPTIONAL_NS::optional<T> &t) {
+	static Archive& save(Archive& ar, const _YAS_STD_OPTIONAL_NS::optional<T> &t) {
 		const bool initialized = static_cast<bool>(t);
 		ar.write(initialized);
 		if ( initialized )
@@ -85,18 +84,9 @@ struct serializer<
 
 		return ar;
 	}
-};
 
-template<typename T>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::text,
-	direction::in,
-	_YAS_STD_OPTIONAL_NS::optional<T>
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, _YAS_STD_OPTIONAL_NS::optional<T> &t) {
+	static Archive& load(Archive& ar, _YAS_STD_OPTIONAL_NS::optional<T> &t) {
 		bool initialized = false;
 		ar.read(initialized);
 		if ( initialized ) {

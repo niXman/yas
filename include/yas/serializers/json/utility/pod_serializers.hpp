@@ -36,8 +36,9 @@
 #ifndef _yas__json__pod_serializer_hpp
 #define _yas__json__pod_serializer_hpp
 
-#include <yas/detail/type_traits/properties.hpp>
+#include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 namespace yas {
 namespace detail {
@@ -49,28 +50,17 @@ struct serializer<
 	type_prop::is_fundamental,
 	ser_method::use_internal_serializer,
 	archive_type::json,
-	direction::out,
 	T
 > {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const T& v) {
-		ar << ' ' << v;
+	static Archive& save(Archive& ar, const T& v) {
+		ar.write(v);
 		return ar;
 	}
-};
 
-template<typename T>
-struct serializer<
-	type_prop::is_fundamental,
-	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::in,
-	T
-> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, T& v) {
-		ar.get();
-		ar >> v;
+	static Archive& load(Archive& ar, T& v) {
+		ar.read(v);
 		return ar;
 	}
 };

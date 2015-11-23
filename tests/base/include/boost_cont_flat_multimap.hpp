@@ -40,6 +40,7 @@
 
 template<typename archive_traits>
 bool boost_cont_flat_multimap_test(const char* archive_type, const char* io_type) {
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
 	boost::container::flat_multimap<int, int> pod_map, pod_map2;
 	pod_map.emplace(1, 2);
 	pod_map.emplace(3, 3);
@@ -94,6 +95,7 @@ bool boost_cont_flat_multimap_test(const char* archive_type, const char* io_type
 		return false;
 	}
 
+#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 	return true;
 }
 

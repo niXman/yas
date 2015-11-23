@@ -36,16 +36,7 @@
 #ifndef _yas__text__boost_fusion_map_serializer_hpp
 #define _yas__text__boost_fusion_map_serializer_hpp
 
-#include <yas/detail/config/config.hpp>
-
-#if defined(YAS_HAS_BOOST_FUSION)
-#include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/properties.hpp>
-#include <yas/detail/type_traits/selector.hpp>
-#include <yas/detail/preprocessor/preprocessor.hpp>
-
 namespace yas {
-namespace detail {
 
 /***************************************************************************/
 
@@ -53,9 +44,6 @@ namespace detail {
 
 /***************************************************************************/
 
-} // namespace detail
 } // namespace yas
-
-#endif // defined(YAS_HAS_BOOST_FUSION)
 
 #endif // _yas__text__boost_fusion_map_serializer_hpp

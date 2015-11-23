@@ -39,7 +39,6 @@
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 #include <yas/detail/io/serialization_exception.hpp>
-#include <yas/detail/preprocessor/preprocessor.hpp>
 
 #include <tuple>
 
@@ -60,32 +59,25 @@ namespace detail {
 	else \
 		ar & std::get<idx>(tuple);
 
-#define YAS__BINARY__GENERATE_EMPTY_SAVE_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC() \
+#define YAS__BINARY__GENERATE_EMPTY_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC() \
 	template<> \
 	struct serializer<type_prop::not_a_pod,ser_method::use_internal_serializer, \
-		archive_type::binary,direction::out,std::tuple<> \
+		archive_type::binary,std::tuple<> \
 	> { \
 		template<typename Archive> \
-		static Archive& apply(Archive& ar, const std::tuple<>&) { return ar; } \
-	};
-
-#define YAS__BINARY__GENERATE_EMPTY_LOAD_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC() \
-	template<> \
-	struct serializer<type_prop::not_a_pod,ser_method::use_internal_serializer, \
-		archive_type::binary,direction::in,std::tuple<> \
-	> { \
+		static Archive& save(Archive& ar, const std::tuple<>&) { return ar; } \
+		\
 		template<typename Archive> \
-		static Archive& apply(Archive& ar, std::tuple<>&) { return ar; } \
+		static Archive& load(Archive& ar, std::tuple<>&) { return ar; } \
 	};
 
-#define YAS__BINARY__GENERATE_SAVE_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC(unused, count, text) \
+#define YAS__BINARY__GENERATE_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC(unused, count, text) \
 	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
 	struct serializer<type_prop::not_a_pod,ser_method::use_internal_serializer, \
-		archive_type::binary,direction::out, \
-		std::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> \
+		archive_type::binary,std::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> \
 	> { \
 		template<typename Archive> \
-		static Archive& apply(Archive& ar, const std::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
+		static Archive& save(Archive& ar, const std::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
 			ar.write((std::uint8_t)YAS_PP_INC(count)); \
 			YAS_PP_REPEAT( \
 				YAS_PP_INC(count), \
@@ -94,27 +86,12 @@ namespace detail {
 			) \
 			return ar; \
 		} \
-	};
-
-#define YAS__BINARY__GENERATE_SAVE_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(count) \
-	YAS__BINARY__GENERATE_EMPTY_SAVE_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC() \
-	YAS_PP_REPEAT( \
-		count, \
-		YAS__BINARY__GENERATE_SAVE_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC, \
-		~ \
-	)
-
-#define YAS__BINARY__GENERATE_LOAD_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC(unused, count, text) \
-	template<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), typename T)> \
-	struct serializer<type_prop::not_a_pod,ser_method::use_internal_serializer, \
-		archive_type::binary,direction::in, \
-		std::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> \
-	> { \
+		\
 		template<typename Archive> \
-		static Archive& apply(Archive& ar, std::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
+		static Archive& load(Archive& ar, std::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
 			std::uint8_t size = 0; \
 			ar.read(size); \
-			if ( size != YAS_PP_INC(count) ) YAS_THROW_BAD_SIZE_ON_DESERIALIZE_FUSION("std::tuple"); \
+			if ( size != YAS_PP_INC(count) ) YAS_THROW_BAD_SIZE_ON_DESERIALIZE("std::tuple"); \
 			YAS_PP_REPEAT( \
 				YAS_PP_INC(count), \
 				YAS__BINARY__READ_STD_TUPLE_ITEM, \
@@ -124,22 +101,20 @@ namespace detail {
 		} \
 	};
 
-#define YAS__BINARY__GENERATE_LOAD_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(count) \
-	YAS__BINARY__GENERATE_EMPTY_LOAD_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC() \
+#define YAS__BINARY__GENERATE_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(count) \
+	YAS__BINARY__GENERATE_EMPTY_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC() \
 	YAS_PP_REPEAT( \
 		count, \
-		YAS__BINARY__GENERATE_LOAD_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC, \
+		YAS__BINARY__GENERATE_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC, \
 		~ \
 	)
 
 /***************************************************************************/
 
 #if _MSC_VER == 1700
-YAS__BINARY__GENERATE_SAVE_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(_VARIADIC_MAX)
-YAS__BINARY__GENERATE_LOAD_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(_VARIADIC_MAX)
+YAS__BINARY__GENERATE_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(_VARIADIC_MAX)
 #else
-YAS__BINARY__GENERATE_SAVE_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(10)
-YAS__BINARY__GENERATE_LOAD_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(10)
+YAS__BINARY__GENERATE_SERIALIZE_STD_TUPLE_FUNCTIONS_VARIADIC(10)
 #endif
 
 /***************************************************************************/

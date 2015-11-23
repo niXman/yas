@@ -73,6 +73,7 @@
 #include "include/enum.hpp"
 #include "include/base_object.hpp"
 #include "include/forward_list.hpp"
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
 #include "include/fusion_list.hpp"
 #include "include/fusion_map.hpp"
 #include "include/fusion_pair.hpp"
@@ -95,6 +96,7 @@
 #include "include/boost_cont_flat_set.hpp"
 #include "include/boost_cont_flat_multiset.hpp"
 #include "include/boost_cont_deque.hpp"
+#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 #include "include/list.hpp"
 #include "include/map.hpp"
 #include "include/multimap.hpp"
@@ -157,6 +159,11 @@ struct concrete_archive_traits<true, OA, IA> {
 		static constexpr yas::endian_t host_endian() { return oarchive_type::host_endian(); }
 
 		std::uint32_t size() const { return stream.get_intrusive_buffer().size; }
+
+		void cout(std::ostream &os) {
+			const yas::intrusive_buffer buf = stream.get_intrusive_buffer();
+			os.write(buf.data, buf.size);
+		}
 		void dump() {
 			const yas::intrusive_buffer buf = stream.get_intrusive_buffer();
 			std::cout << yas::hex_dump(buf.data, buf.size) << std::endl;
@@ -186,17 +193,17 @@ struct concrete_archive_traits<true, OA, IA> {
 		iarchive_type* operator->() { return ia; }
 
 		template<typename T>
-		iarchive_type& operator& (T& v) { return (*(ia) & v); }
+		iarchive_type& operator& (T &&v) { return (*(ia) & std::forward<T>(v)); }
 		iarchive_type& serialize() { return *ia; }
 		template<typename Head, typename... Tail>
-		iarchive_type& serialize(Head& head, Tail&... tail) {
+		iarchive_type& serialize(Head &&head, Tail&&... tail) {
 			ia->operator&(head);
 			ia->serialize(tail...);
 
 			return *ia;
 		}
 		template<typename... Ts>
-		iarchive_type& operator()(Ts&... ts) { return ia->serialize(ts...); return *ia; }
+		iarchive_type& operator()(Ts&&... ts) { return ia->serialize(ts...); return *ia; }
 
 		bool is_little_endian() { return ia->is_little_endian(); }
 		bool is_big_endian() { return ia->is_big_endian(); }
@@ -296,17 +303,17 @@ struct concrete_archive_traits<false, OA, IA> {
 		iarchive_type* operator->() { return ia; }
 
 		template<typename T>
-		iarchive_type& operator& (T& v) { return (*(ia) & v); }
+		iarchive_type& operator& (T &&v) { return (*(ia) & std::forward<T>(v)); }
 		iarchive_type& serialize() { return *ia; }
 		template<typename Head, typename... Tail>
-		iarchive_type& serialize(Head& head, Tail&... tail) {
+		iarchive_type& serialize(Head &&head, Tail&&... tail) {
 			ia->operator&(head);
 			ia->serialize(tail...);
 
 			return *ia;
 		}
 		template<typename... Ts>
-		iarchive_type& operator()(Ts&... ts) { serialize(ts...); return *ia; }
+		iarchive_type& operator()(Ts&&... ts) { serialize(ts...); return *ia; }
 
 		bool is_little_endian() { return ia->is_little_endian(); }
 		bool is_big_endian() { return ia->is_big_endian(); }
@@ -379,14 +386,14 @@ void tests(std::uint32_t& p, std::uint32_t& e) {
 	YAS_RUN_TEST(unordered_multimap			, p, e);
 	YAS_RUN_TEST(unordered_multiset			, p, e);
 	YAS_RUN_TEST(optional				, p, e);
-#if defined(YAS_HAS_BOOST_FUSION)
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
 	YAS_RUN_TEST(fusion_pair				, p, e);
 	YAS_RUN_TEST(fusion_tuple				, p, e);
 	YAS_RUN_TEST(fusion_vector				, p, e);
 	YAS_RUN_TEST(fusion_list				, p, e);
 	YAS_RUN_TEST(fusion_set					, p, e);
 	YAS_RUN_TEST(fusion_map					, p, e);
-#endif // YAS_HAS_BOOST_FUSION
+#endif // YAS_SERIALIZE_BOOST_TYPES
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
 	YAS_RUN_TEST(boost_cont_string			, p, e);
 	YAS_RUN_TEST(boost_cont_wstring			, p, e);
@@ -416,13 +423,6 @@ void tests(std::uint32_t& p, std::uint32_t& e) {
 
 int main() {
 	setvbuf(stdout, 0, _IONBF, 0);
-
-	const char str0[] = "some string";
-	const std::string str1 = "some string 2";
-	yas::hex_dump(std::cout, str0, sizeof(str0));
-	std::cout << std::endl;
-	std::cout << yas::hex_dump(str1);
-	std::cout << std::endl;
 
 	types_test();
 

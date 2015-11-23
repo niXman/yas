@@ -33,12 +33,12 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__json__std_pair_serializer_hpp
-#define _yas__json__std_pair_serializer_hpp
+#ifndef _yas__text__std_pair_serializer_hpp
+#define _yas__text__std_pair_serializer_hpp
 
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/selector.hpp>
-#include <yas/detail/type_traits/properties.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
 #include <utility>
 
@@ -51,31 +51,21 @@ template<typename T1, typename T2>
 struct serializer<
 	type_prop::not_a_pod,
 	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::out,
+	archive_type::text,
 	std::pair<T1, T2>
->
-{
+> {
 	template<typename Archive>
-	static Archive& apply(Archive& ar, const std::pair<T1, T2>& pair) {
+	static Archive& save(Archive& ar, const std::pair<T1, T2>& pair) {
 		ar & pair.first
 			& pair.second;
+		return ar;
 	}
-};
 
-template<typename T1, typename T2>
-struct serializer<
-	type_prop::not_a_pod,
-	ser_method::use_internal_serializer,
-	archive_type::json,
-	direction::in,
-	std::pair<T1, T2>
->
-{
 	template<typename Archive>
-	static Archive& apply(Archive& ar, std::pair<T1, T2>& pair) {
+	static Archive& load(Archive& ar, std::pair<T1, T2>& pair) {
 		ar & pair.first
 			& pair.second;
+		return ar;
 	}
 };
 
@@ -84,4 +74,4 @@ struct serializer<
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__json__std_pair_serializer_hpp
+#endif // _yas__text__std_pair_serializer_hpp
