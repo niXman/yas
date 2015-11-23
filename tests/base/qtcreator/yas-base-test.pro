@@ -10,9 +10,6 @@ DEFINES += \
 #	YAS_DECORATE_HEADER_BYTES=x
 #	YAS_SET_HEADER_BYTES=abc
 
-QMAKE_CXX = \
-	/usr/local/llvm/bin/clang++
-
 QMAKE_CXXFLAGS += \
 	-std=c++1y \
 	-Wall \
