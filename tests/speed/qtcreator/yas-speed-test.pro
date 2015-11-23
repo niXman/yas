@@ -4,7 +4,7 @@ CONFIG += console
 CONFIG -= app_bundle qt
 TEMPLATE = app
 
-#QMAKE_CXX = clang++
+#QMAKE_CXX = /usr/local/llvm/bin/clang++
 
 QMAKE_CXXFLAGS += \
 	-std=c++11

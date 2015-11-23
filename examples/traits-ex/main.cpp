@@ -38,6 +38,7 @@
 #include <yas/text_oarchive.hpp>
 
 #include <iostream>
+#include <inttypes.h>
 
 /***************************************************************************/
 
@@ -53,7 +54,7 @@ struct my_traits {
 	}
 	template<typename T>
 	static void itoa(char *buf, const std::size_t bufsize, std::size_t &size, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t)) {
-		size = std::snprintf(buf, bufsize, "%lld", (v+10));
+		size = std::snprintf(buf, bufsize, "%" PRId64, (v+10));
 	}
 	template<typename T>
 	static void utoa(char *buf, const std::size_t bufsize, std::size_t &size, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t)) {
@@ -65,7 +66,7 @@ struct my_traits {
 	}
 	template<typename T>
 	static void utoa(char *buf, const std::size_t bufsize, std::size_t &size, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint64_t)) {
-		size = std::snprintf(buf, bufsize, "%llu", (v+12));
+		size = std::snprintf(buf, bufsize, "%" PRIu64, (v+12));
 	}
 
 	// c-string -> integer

@@ -36,7 +36,7 @@
 #include <yas/mem_streams.hpp>
 #include <yas/binary_oarchive.hpp>
 #include <yas/binary_iarchive.hpp>
-#include <yas/detail/tools/hexdumper.hpp>
+#include <yas/tools/hexdumper.hpp>
 
 #include <iostream>
 #include <cassert>

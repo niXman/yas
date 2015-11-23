@@ -42,7 +42,7 @@
 #include <yas/text_iarchive.hpp>
 #include <yas/text_oarchive.hpp>
 #include <yas/mem_streams.hpp>
-#include <yas/detail/tools/hexdumper.hpp>
+#include <yas/tools/hexdumper.hpp>
 #include <yas/serializers/std_types_serializers.hpp>
 
 #include <boost/archive/binary_iarchive.hpp>
