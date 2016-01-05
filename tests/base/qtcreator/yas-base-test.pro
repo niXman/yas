@@ -10,9 +10,9 @@ DEFINES += \
 #	YAS_DECORATE_HEADER_BYTES=x
 #	YAS_SET_HEADER_BYTES=abc
 
-QMAKE_CXX = /home/nixman/clang371/bin/clang++ -stdlib=libc++
-QMAKE_LINK = /home/nixman/clang371/bin/clang++ -lc++ -Wl,-rpath=/home/nixman/clang371/lib -lc++abi
-QMAKE_LIBDIR = /home/nixman/clang371/lib
+#QMAKE_CXX = /home/nixman/clang371/bin/clang++ -stdlib=libc++
+#QMAKE_LINK = /home/nixman/clang371/bin/clang++ -lc++ -Wl,-rpath=/home/nixman/clang371/lib -lc++abi
+#QMAKE_LIBDIR = /home/nixman/clang371/lib
 
 QMAKE_CXXFLAGS += \
 	-std=c++11 \
