@@ -62,7 +62,8 @@ bool chrono_test(const char* archive_type, const char* io_type) {
 		}
 	}
 	{
-		decltype(std::chrono::system_clock::now()) w0 = std::chrono::system_clock::now(), r0;
+		auto w0 = std::chrono::system_clock::now();
+		auto r0 = std::chrono::system_clock::now();
 
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type, io_type);

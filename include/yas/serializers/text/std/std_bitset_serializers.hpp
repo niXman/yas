@@ -58,7 +58,7 @@ struct serializer<
 	static Archive& save(Archive& ar, const std::bitset<N>& bits) {
 		ar & (std::uint32_t)N;
 		for ( std::size_t idx = 0; idx < N; ++idx ) {
-			ar & bits[idx];
+			ar & static_cast<bool>(bits[idx]);
 		}
 		return ar;
 	}

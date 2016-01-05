@@ -94,7 +94,7 @@ struct binary_istream {
 
 	// for 64-bit ints
 	template<typename T>
-	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t, std::uint64_t)) {
+	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t, std::uint64_t, long long)) {
 		YAS_THROW_ON_READ_ERROR(sizeof(v), !=, is.read(&v, sizeof(v)));
 		YAS_LOAD_ENDIAN_SWITCH(ET, v, 64);
 	}
@@ -144,7 +144,7 @@ struct binary_ostream {
 
 	// for 64-bit ibts
 	template<typename T>
-	void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t, std::uint64_t)) {
+	void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t, std::uint64_t, long long)) {
 		YAS_SAVE_ENDIAN_SWITCH(ET, v, 64);
 		YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
 	}
