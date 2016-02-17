@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2015 niXman (i dot nixman dog gmail dot com). All
+// Copyright (c) 2010-2016 niXman (i dot nixman dog gmail dot com). All
 // rights reserved.
 //
 // This file is part of YAS(https://github.com/niXman/yas) project.
