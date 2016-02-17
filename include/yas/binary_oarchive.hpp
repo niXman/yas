@@ -50,6 +50,8 @@
 #include <yas/serializers/binary/utility/usertype_serializers.hpp>
 #include <yas/serializers/binary/utility/autoarray_serializers.hpp>
 #include <yas/serializers/binary/utility/buffer_serializers.hpp>
+#include <yas/serializers/binary/utility/pair_serializers.hpp>
+#include <yas/serializers/binary/utility/object_serializers.hpp>
 
 #include <yas/buffers.hpp>
 #include <yas/detail/tools/noncopyable.hpp>

@@ -33,74 +33,55 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__binary_iarchive_hpp
-#define _yas__binary_iarchive_hpp
+#ifndef _yas__text__yas_object_serializer_hpp
+#define _yas__text__yas_object_serializer_hpp
 
-#include <yas/detail/type_traits/properties.hpp>
+#include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/selector.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
-#include <yas/detail/io/information.hpp>
-#include <yas/detail/io/binary_streams.hpp>
-
-#include <yas/tools/base_object.hpp>
-
-#include <yas/serializers/serializer.hpp>
-#include <yas/serializers/binary/utility/pod_serializers.hpp>
-#include <yas/serializers/binary/utility/enum_serializer.hpp>
-#include <yas/serializers/binary/utility/usertype_serializers.hpp>
-#include <yas/serializers/binary/utility/autoarray_serializers.hpp>
-#include <yas/serializers/binary/utility/buffer_serializers.hpp>
-#include <yas/serializers/binary/utility/pair_serializers.hpp>
-#include <yas/serializers/binary/utility/object_serializers.hpp>
-
-#include <yas/buffers.hpp>
-#include <yas/detail/tools/noncopyable.hpp>
+#include <string>
 
 namespace yas {
+namespace detail {
 
 /***************************************************************************/
 
-template<typename IS, endian_t ET = as_host>
-struct binary_iarchive
-	:detail::binary_istream<IS, ET>
-	,detail::iarchive_information<archive_type::binary, IS, ET>
-	,private detail::noncopyable
-{
-	using stream_type = IS;
-	using this_type = binary_iarchive<IS, ET>;
-
-	binary_iarchive(IS &is, header_flag op = with_header)
-		:detail::binary_istream<IS, ET>(is)
-		,detail::iarchive_information<archive_type::binary, IS, ET>(is, op)
-	{}
-
-	template<typename T>
-	this_type& operator& (T &&v) {
-		using namespace detail;
-		using real_type = typename std::remove_reference<typename std::remove_const<T>::type>::type;
-		return serializer<
-			 type_properties<real_type>::value
-			,serialization_method<real_type, this_type>::value
-			,archive_type::binary
-			,real_type
-		>::load(*this, v);
+template<typename... Pairs>
+struct serializer<
+	type_prop::not_a_pod,
+	ser_method::use_internal_serializer,
+	archive_type::text,
+	object<Pairs...>
+> {
+	template<typename Archive>
+	static Archive& save(Archive& ar, const object<Pairs...> &o) {
+		iterate(ar, const_cast<typename object<Pairs...>::type&>(o.pairs));
+		return ar;
 	}
 
-	this_type& serialize() { return *this; }
-
-	template<typename Head, typename... Tail>
-	this_type& serialize(Head &&head, Tail&&... tail) {
-		return operator&(head).serialize(tail...);
+	template<typename Archive>
+	static Archive& load(Archive& ar, object<Pairs...> &o) {
+		iterate(ar, o.pairs);
+		return ar;
 	}
 
-	template<typename... Args>
-	this_type& operator()(Args&&... args) {
-		return serialize(args...);
+private:
+	template<typename Archive, std::size_t I = 0, typename... Tp>
+	static typename std::enable_if<I == sizeof...(Tp), void>::type
+	iterate(Archive &, std::tuple<Tp...> &) {}
+
+	template<typename Archive, std::size_t I = 0, typename... Tp>
+	static typename std::enable_if<I < sizeof...(Tp) , void>::type
+	iterate(Archive &ar, std::tuple<Tp...> &t) {
+		 ar & std::get<I>(t);
+		 iterate<Archive, I + 1, Tp...>(ar, t);
 	}
 };
 
 /***************************************************************************/
 
+} // namespace detail
 } // namespace yas
 
-#endif // _yas__binary_iarchive_hpp
+#endif // _yas__text__yas_object_serializer_hpp

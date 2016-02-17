@@ -33,64 +33,62 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__binary__boost_fusion_list_serializer_hpp
-#define _yas__binary__boost_fusion_list_serializer_hpp
+#ifndef _yas__serializers__detail__boost_fusion_containers_hpp
+#define _yas__serializers__detail__boost_fusion_containers_hpp
 
-#include <yas/detail/config/config.hpp>
-
-#if defined(YAS_SERIALIZE_BOOST_TYPES)
-#include <yas/serializers/serializer.hpp>
-#include <yas/detail/type_traits/selector.hpp>
-#include <yas/detail/io/serialization_exception.hpp>
-#include <yas/detail/preprocessor/preprocessor.hpp>
-
-#include <yas/serializers/detail/boost_fusion_containers_for_each.hpp>
-
-#include <boost/fusion/container/list.hpp>
-#include <boost/fusion/include/list.hpp>
-#include <boost/fusion/container/list/list_fwd.hpp>
-#include <boost/fusion/include/list_fwd.hpp>
-
-#include <boost/fusion/algorithm/iteration/for_each.hpp>
-#include <boost/fusion/include/for_each.hpp>
+#include <yas/detail/type_traits/type_traits.hpp>
+#include <yas/detail/type_traits/properties.hpp>
 
 namespace yas {
 namespace detail {
 
-/***************************************************************************/
+/**************************************************************************/
 
-template<typename... T>
-struct serializer<
-	 type_prop::not_a_pod
-	,ser_method::use_internal_serializer
-	,archive_type::binary
-	,boost::fusion::list<T...>
-> {
-	template<typename Archive>
-	static Archive& save(Archive& ar, const boost::fusion::list<T...>& list) {
-		ar.write((std::uint8_t)sizeof...(T));
-		boost::fusion::for_each(list, ofusion_sequence_apply<Archive>(ar));
+template<typename Archive>
+struct ofusion_sequence_apply {
+	ofusion_sequence_apply(Archive &ar)
+		:ar(ar)
+	{}
 
-		return ar;
+	template<typename T>
+	void operator()(const T &v) const {
+		if ( is_binary_archive<Archive>::value ) {
+			if ( is_fundamental_and_sizeof_is<T, 1>::value )
+				ar.write(&v, sizeof(v));
+			else
+				ar & v;
+		} else {
+			ar & v;
+		}
 	}
 
-	template<typename Archive>
-	static Archive& load(Archive& ar, boost::fusion::list<T...>& list) {
-		std::uint8_t size = 0;
-		ar.read(size);
-		if ( size != sizeof...(T) )
-			YAS_THROW_BAD_SIZE_ON_DESERIALIZE("fusion::list");
-		boost::fusion::for_each(list, ifusion_sequence_apply<Archive>(ar));
-
-		return ar;
-	}
+	Archive &ar;
 };
 
-/***************************************************************************/
+template<typename Archive>
+struct ifusion_sequence_apply {
+	ifusion_sequence_apply(Archive &ar)
+		:ar(ar)
+	{}
 
-} // namespace detail
-} // namespace yas
+	template<typename T>
+	void operator()(T &v) const {
+		if ( is_binary_archive<Archive>::value ) {
+			if ( is_fundamental_and_sizeof_is<T, 1>::value )
+				ar.read(&v, sizeof(v));
+			else
+				ar & v;
+		} else {
+			ar & v;
+		}
+	}
 
-#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
+	Archive &ar;
+};
 
-#endif // _yas__binary__boost_fusion_binary_list_serializer_hpp
+/**************************************************************************/
+
+} // ns detail
+} // ns yas
+
+#endif // _yas__serializers__detail__boost_fusion_containers_hpp

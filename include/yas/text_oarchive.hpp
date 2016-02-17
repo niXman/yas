@@ -41,9 +41,10 @@
 
 #include <yas/detail/io/information.hpp>
 #include <yas/detail/io/text_streams.hpp>
-
-#include <yas/tools/base_object.hpp>
 #include <yas/defaul_traits.hpp>
+
+#include <yas/tools/pair_object.hpp>
+#include <yas/tools/base_object.hpp>
 
 #include <yas/serializers/serializer.hpp>
 #include <yas/serializers/text/utility/pod_serializers.hpp>
@@ -51,6 +52,8 @@
 #include <yas/serializers/text/utility/usertype_serializers.hpp>
 #include <yas/serializers/text/utility/autoarray_serializers.hpp>
 #include <yas/serializers/text/utility/buffer_serializers.hpp>
+#include <yas/serializers/text/utility/pair_serializers.hpp>
+#include <yas/serializers/text/utility/object_serializers.hpp>
 
 #include <yas/buffers.hpp>
 #include <yas/detail/tools/noncopyable.hpp>

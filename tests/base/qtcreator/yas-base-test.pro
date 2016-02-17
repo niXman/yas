@@ -20,12 +20,22 @@ QMAKE_CXXFLAGS += \
 	-Wextra
 
 INCLUDEPATH += \
-	/usr/local/include \
 	../../../include
 
-LIBS += \
-	-lboost_system \
-	-lboost_chrono
+USED_BOOST_VERSION=1.60.0
+
+contains(DEFINES, YAS_SERIALIZE_BOOST_TYPES) {
+	LIBS += \
+		-lboost_system \
+		-lboost_chrono
+
+	!isEmpty(USED_BOOST_VERSION) {
+		INCLUDEPATH += \
+			/usr/local/boost-$$USED_BOOST_VERSION/include
+		LIBS += \
+			-L/usr/local/boost-$$USED_BOOST_VERSION/lib
+	}
+}
 
 SOURCES += \
 	../main.cpp
@@ -407,4 +417,36 @@ HEADERS += \
 	../../../include/yas/text_iarchive.hpp \
 	../../../include/yas/text_oarchive.hpp \
 	../../../include/yas/tools/base_object.hpp \
-	../../../include/yas/tools/hexdumper.hpp
+	../../../include/yas/tools/hexdumper.hpp \
+	../../../include/yas/detail/preprocessor/bitand.hpp \
+	../../../include/yas/detail/preprocessor/compl.hpp \
+	../../../include/yas/detail/preprocessor/equal.hpp \
+	../../../include/yas/detail/preprocessor/expr_if.hpp \
+	../../../include/yas/detail/preprocessor/expr_iif.hpp \
+	../../../include/yas/detail/preprocessor/not_equal.hpp \
+	../../../include/yas/detail/preprocessor/rep_for_impl_dmc.hpp \
+	../../../include/yas/detail/preprocessor/rep_for_impl_edg.hpp \
+	../../../include/yas/detail/preprocessor/rep_for_impl_msvc.hpp \
+	../../../include/yas/detail/preprocessor/rep_for_impl.hpp \
+	../../../include/yas/detail/preprocessor/rep_for.hpp \
+	../../../include/yas/detail/preprocessor/seq_elem.hpp \
+	../../../include/yas/detail/preprocessor/seq_for_each_i.hpp \
+	../../../include/yas/detail/preprocessor/seq_for_each.hpp \
+	../../../include/yas/detail/preprocessor/seq_seq.hpp \
+	../../../include/yas/detail/preprocessor/seq_size.hpp \
+	../../../include/yas/detail/preprocessor/tuple_eat.hpp \
+	../../../include/yas/detail/preprocessor/tuple_elem.hpp \
+	../../../include/yas/detail/preprocessor/tuple_rem.hpp \
+	../../../include/yas/detail/preprocessor/tuple_size.hpp \
+	../../../include/yas/detail/preprocessor/tuple_to_seq.hpp \
+	../../../include/yas/detail/preprocessor/variadic_elem.hpp \
+	../../../include/yas/detail/preprocessor/variadic_size.hpp \
+	../include/yas_object.hpp \
+	../include/yas_pair.hpp \
+	../../../include/yas/serializers/detail/boost_fusion_containers_for_each.hpp \
+	../../../include/yas/tools/archive_selector.hpp \
+	../../../include/yas/tools/pair_object.hpp \
+    ../../../include/yas/serializers/binary/utility/object_serializers.hpp \
+    ../../../include/yas/serializers/binary/utility/pair_serializers.hpp \
+    ../../../include/yas/serializers/text/utility/object_serializers.hpp \
+    ../../../include/yas/serializers/text/utility/pair_serializers.hpp

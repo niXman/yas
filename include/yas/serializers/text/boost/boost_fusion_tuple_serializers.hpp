@@ -36,24 +36,60 @@
 #ifndef _yas__text__boost_fusion_tuple_serializer_hpp
 #define _yas__text__boost_fusion_tuple_serializer_hpp
 
+#include <yas/detail/config/config.hpp>
+
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
 #include <yas/serializers/serializer.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 #include <yas/detail/io/serialization_exception.hpp>
 #include <yas/detail/preprocessor/preprocessor.hpp>
 
+#include <yas/serializers/detail/boost_fusion_containers_for_each.hpp>
+
 #include <boost/fusion/tuple.hpp>
+
+#include <boost/fusion/algorithm/iteration/for_each.hpp>
+#include <boost/fusion/include/for_each.hpp>
 
 namespace yas {
 namespace detail {
 
+#ifdef BOOST_FUSION_HAS_VARIADIC_VECTOR
+
 /***************************************************************************/
 
-#define YAS__TEXT__WRITE_BOOST_FUSION_TUPLE_ITEM(unused, idx, type) \
-	ar & boost::fusion::at_c<idx>(tuple);
+template<typename... Types>
+struct serializer<
+	 type_prop::not_a_pod
+	,ser_method::use_internal_serializer
+	,archive_type::text
+	,boost::fusion::tuple<Types...>
+> {
+	template<typename Archive>
+	static Archive& save(Archive& ar, const boost::fusion::tuple<Types...> &tuple) {
+		ar & (std::uint32_t)sizeof...(Types);
+		boost::fusion::for_each(tuple, ofusion_sequence_apply<Archive>(ar));
 
-#define YAS__TEXT__READ_BOOST_FUSION_TUPLE_ITEM(unused, idx, type) \
-	ar & boost::fusion::at_c<idx>(tuple);
+		return ar;
+	}
+
+	template<typename Archive>
+	static Archive& load(Archive& ar, boost::fusion::tuple<Types...> &tuple) {
+		std::uint32_t size = 0;
+		ar & size;
+		if ( size != sizeof...(Types) )
+			YAS_THROW_BAD_SIZE_ON_DESERIALIZE("fusion::tuple");
+		boost::fusion::for_each(tuple, ifusion_sequence_apply<Archive>(ar));
+
+		return ar;
+	}
+};
+
+/***************************************************************************/
+
+#else // BOOST_FUSION_HAS_VARIADIC_VECTOR
+
+/***************************************************************************/
 
 #define YAS__TEXT__GENERATE_EMPTY_SERIALIZE_BOOST_FUSION_TUPLE_SPEC() \
 	template<> \
@@ -61,10 +97,21 @@ namespace detail {
 		archive_type::text, boost::fusion::tuple<> > \
 	{ \
 		template<typename Archive> \
-		static Archive& save(Archive& ar, const boost::fusion::tuple<>&) { return ar; } \
+		static Archive& save(Archive& ar, const boost::fusion::tuple<> &) { \
+			ar & (std::uint32_t)0; \
+			\
+			return ar; \
+		} \
 		\
 		template<typename Archive> \
-		static Archive& load(Archive& ar, boost::fusion::tuple<>&) { return ar; } \
+		static Archive& load(Archive& ar, boost::fusion::tuple<> &) { \
+			std::uint32_t size = 0; \
+			ar & size; \
+			if ( size != 0 ) \
+				YAS_THROW_BAD_SIZE_ON_DESERIALIZE("fusion::tuple, expected size == 0"); \
+			\
+			return ar; \
+		} \
 	};
 
 #define YAS__TEXT__GENERATE_SERIALIZE_BOOST_FUSION_TUPLE_FUNCTION_SPEC(unused, count, unused2) \
@@ -73,30 +120,21 @@ namespace detail {
 		archive_type::text, boost::fusion::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)> > \
 	{ \
 		template<typename Archive> \
-		static Archive& save(Archive& ar, \
-			const boost::fusion::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) \
-		{ \
-			ar & YAS_PP_INC(count); \
-			YAS_PP_REPEAT( \
-				YAS_PP_INC(count), \
-				YAS__TEXT__WRITE_BOOST_FUSION_TUPLE_ITEM, \
-				T \
-			) \
+		static Archive& save(Archive& ar, const boost::fusion::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
+			ar & (std::uint32_t)YAS_PP_INC(count); \
+			boost::fusion::for_each(tuple, ofusion_sequence_apply<Archive>(ar)); \
+			\
 			return ar; \
 		} \
 		\
 		template<typename Archive> \
-		static Archive& load(Archive& ar, \
-			boost::fusion::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) \
-		{ \
-			std::int32_t size = 0; \
+		static Archive& load(Archive& ar, boost::fusion::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
+			std::uint32_t size = 0; \
 			ar & size; \
-			if ( size != YAS_PP_INC(count) ) YAS_THROW_BAD_SIZE_ON_DESERIALIZE("fusion::tuple"); \
-			YAS_PP_REPEAT( \
-				YAS_PP_INC(count), \
-				YAS__TEXT__READ_BOOST_FUSION_TUPLE_ITEM, \
-				T \
-			) \
+			if ( size != YAS_PP_INC(count) ) \
+				YAS_THROW_BAD_SIZE_ON_DESERIALIZE("fusion::tuple"); \
+			boost::fusion::for_each(tuple, ifusion_sequence_apply<Archive>(ar)); \
+			\
 			return ar; \
 		} \
 	};
@@ -114,6 +152,8 @@ namespace detail {
 YAS__TEXT__GENERATE_SERIALIZE_BOOST_FUSION_TUPLE_FUNCTIONS_SPEC(FUSION_MAX_VECTOR_SIZE)
 
 /***************************************************************************/
+
+#endif // BOOST_FUSION_HAS_VARIADIC_VECTOR
 
 } // namespace detail
 } // namespace yas

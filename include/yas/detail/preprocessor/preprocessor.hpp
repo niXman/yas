@@ -46,6 +46,7 @@
 #include <yas/detail/preprocessor/dec.hpp>
 #include <yas/detail/preprocessor/empty.hpp>
 #include <yas/detail/preprocessor/enum_params.hpp>
+#include <yas/detail/preprocessor/equal.hpp>
 #include <yas/detail/preprocessor/error.hpp>
 #include <yas/detail/preprocessor/expr_if.hpp>
 #include <yas/detail/preprocessor/expr_iif.hpp>

@@ -36,31 +36,63 @@
 #ifndef _yas__text__boost_fusion_vector_serializer_hpp
 #define _yas__text__boost_fusion_vector_serializer_hpp
 
+#include <yas/detail/config/config.hpp>
+
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
 #include <yas/serializers/serializer.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 #include <yas/detail/io/serialization_exception.hpp>
 #include <yas/detail/preprocessor/preprocessor.hpp>
 
+#include <yas/serializers/detail/boost_fusion_containers_for_each.hpp>
+
 #include <boost/fusion/container/vector.hpp>
 #include <boost/fusion/include/vector.hpp>
 #include <boost/fusion/container/vector/vector_fwd.hpp>
 #include <boost/fusion/include/vector_fwd.hpp>
-#include <boost/fusion/sequence/intrinsic/at.hpp>
-#include <boost/fusion/include/at.hpp>
-#include <boost/fusion/sequence/intrinsic/at_c.hpp>
-#include <boost/fusion/include/at_c.hpp>
+
+#include <boost/fusion/algorithm/iteration/for_each.hpp>
+#include <boost/fusion/include/for_each.hpp>
 
 namespace yas {
 namespace detail {
 
+#ifdef BOOST_FUSION_HAS_VARIADIC_VECTOR
+
 /***************************************************************************/
 
-#define YAS__TEXT__WRITE_BOOST_FUSION_VECTOR_ITEM(unused, idx, type) \
-	ar & boost::fusion::at_c<idx>(vector);
+template<typename... Types>
+struct serializer<
+	 type_prop::not_a_pod
+	,ser_method::use_internal_serializer
+	,archive_type::text
+	,boost::fusion::vector<Types...>
+> {
+	template<typename Archive>
+	static Archive& save(Archive& ar, const boost::fusion::vector<Types...> &vector) {
+		ar & (std::uint32_t)sizeof...(Types);
+		boost::fusion::for_each(vector, ofusion_sequence_apply<Archive>(ar));
 
-#define YAS__TEXT__READ_BOOST_FUSION_VECTOR_ITEM(unused, idx, type) \
-	ar & boost::fusion::at_c<idx>(vector);
+		return ar;
+	}
+
+	template<typename Archive>
+	static Archive& load(Archive& ar, boost::fusion::vector<Types...> &vector) {
+		std::uint32_t size = 0;
+		ar & size;
+		if ( size != sizeof...(Types) )
+			YAS_THROW_BAD_SIZE_ON_DESERIALIZE("fusion::vector");
+		boost::fusion::for_each(vector, ifusion_sequence_apply<Archive>(ar));
+
+		return ar;
+	}
+};
+
+/***************************************************************************/
+
+#else // BOOST_FUSION_HAS_VARIADIC_VECTOR
+
+/***************************************************************************/
 
 #define YAS__TEXT__GENERATE_EMPTY_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTION() \
 	template<> \
@@ -68,10 +100,21 @@ namespace detail {
 		archive_type::text, boost::fusion::vector0<> > \
 	{ \
 		template<typename Archive> \
-		static Archive& save(Archive& ar, const boost::fusion::vector0<>&) { return ar; } \
+		static Archive& save(Archive& ar, const boost::fusion::vector0<> &) { \
+			ar & (std::uint32_t)0; \
+			\
+			return ar; \
+		} \
 		\
 		template<typename Archive> \
-		static Archive& load(Archive& ar, boost::fusion::vector0<>&) { return ar; } \
+		static Archive& load(Archive& ar, boost::fusion::vector0<> &) { \
+			std::uint32_t size = 0; \
+			ar & size; \
+			if ( size != 0 ) \
+				YAS_THROW_BAD_SIZE_ON_DESERIALIZE("fusion::vector0, expected size == 0"); \
+			\
+			return ar; \
+		} \
 	};
 
 #define YAS__TEXT__GENERATE_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTION(unused, count, unused2) \
@@ -85,12 +128,9 @@ namespace detail {
 			const YAS_PP_CAT(boost::fusion::vector, YAS_PP_INC(count)) \
 				<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& vector) \
 		{ \
-			ar & YAS_PP_INC(count); \
-			YAS_PP_REPEAT( \
-				YAS_PP_INC(count), \
-				YAS__TEXT__WRITE_BOOST_FUSION_VECTOR_ITEM, \
-				T \
-			) \
+			ar & (std::uint32_t)YAS_PP_INC(count); \
+			boost::fusion::for_each(vector, ofusion_sequence_apply<Archive>(ar)); \
+			\
 			return ar; \
 		} \
 		\
@@ -99,14 +139,12 @@ namespace detail {
 			YAS_PP_CAT(boost::fusion::vector, YAS_PP_INC(count)) \
 				<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& vector) \
 		{ \
-			std::int32_t size = 0; \
+			std::uint32_t size = 0; \
 			ar & size; \
-			if ( size != YAS_PP_INC(count) ) YAS_THROW_BAD_SIZE_ON_DESERIALIZE("fusion::vector"); \
-			YAS_PP_REPEAT( \
-				YAS_PP_INC(count), \
-				YAS__TEXT__READ_BOOST_FUSION_VECTOR_ITEM, \
-				T \
-			) \
+			if ( size != YAS_PP_INC(count) ) \
+				YAS_THROW_BAD_SIZE_ON_DESERIALIZE("fusion::vector"); \
+			boost::fusion::for_each(vector, ifusion_sequence_apply<Archive>(ar)); \
+			\
 			return ar; \
 		} \
 	};
@@ -131,10 +169,21 @@ YAS__TEXT__GENERATE_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS(FUSION_MAX_VECTOR_SI
 		archive_type::text, boost::fusion::vector<> > \
 	{ \
 		template<typename Archive> \
-		static Archive& save(Archive& ar, const boost::fusion::vector<>&) { return ar; } \
+		static Archive& save(Archive& ar, const boost::fusion::vector<> &) { \
+			ar & (std::uint32_t)0; \
+			\
+			return ar; \
+		} \
 		\
 		template<typename Archive> \
-		static Archive& load(Archive& ar, boost::fusion::vector<>&) { return ar; } \
+		static Archive& load(Archive& ar, boost::fusion::vector<> &) { \
+			std::uint32_t size = 0; \
+			ar & size; \
+			if ( size != 0 ) \
+				YAS_THROW_BAD_SIZE_ON_DESERIALIZE("fusion::vector, expected size == 0"); \
+			\
+			return ar; \
+		} \
 	};
 
 #define YAS__TEXT__GENERATE_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTION_VARIADIC(unused, count, unused2) \
@@ -146,12 +195,9 @@ YAS__TEXT__GENERATE_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS(FUSION_MAX_VECTOR_SI
 		static Archive& save(Archive& ar, \
 			const boost::fusion::vector<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& vector) \
 		{ \
-			ar & YAS_PP_INC(count); \
-			YAS_PP_REPEAT( \
-				YAS_PP_INC(count), \
-				YAS__TEXT__WRITE_BOOST_FUSION_VECTOR_ITEM, \
-				T \
-			) \
+			ar & (std::uint32_t)YAS_PP_INC(count); \
+			boost::fusion::for_each(vector, ofusion_sequence_apply<Archive>(ar)); \
+			\
 			return ar; \
 		} \
 		\
@@ -159,14 +205,12 @@ YAS__TEXT__GENERATE_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS(FUSION_MAX_VECTOR_SI
 		static Archive& load(Archive& ar, \
 			boost::fusion::vector<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& vector) \
 		{ \
-			std::int32_t size = 0; \
+			std::uint32_t size = 0; \
 			ar & size; \
-			if ( size != YAS_PP_INC(count) ) YAS_THROW_BAD_SIZE_ON_DESERIALIZE("fusion::vector"); \
-			YAS_PP_REPEAT( \
-				YAS_PP_INC(count), \
-				YAS__TEXT__READ_BOOST_FUSION_VECTOR_ITEM, \
-				T \
-			) \
+			if ( size != YAS_PP_INC(count) ) \
+				YAS_THROW_BAD_SIZE_ON_DESERIALIZE("fusion::vector"); \
+			boost::fusion::for_each(vector, ifusion_sequence_apply<Archive>(ar)); \
+			\
 			return ar; \
 		} \
 	};
@@ -184,6 +228,8 @@ YAS__TEXT__GENERATE_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS(FUSION_MAX_VECTOR_SI
 YAS__TEXT__GENERATE_SERIALIZE_BOOST_FUSION_VECTOR_FUNCTIONS_VARIADIC(FUSION_MAX_VECTOR_SIZE)
 
 /***************************************************************************/
+
+#endif // BOOST_FUSION_HAS_VARIADIC_VECTOR
 
 } // namespace detail
 } // namespace yas

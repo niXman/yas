@@ -36,6 +36,9 @@
 #ifndef _yas_test__fusion_list_hpp__included_
 #define _yas_test__fusion_list_hpp__included_
 
+#include <boost/fusion/container/generation/make_list.hpp>
+#include <boost/fusion/include/make_list.hpp>
+
 /***************************************************************************/
 
 template<typename archive_traits>

@@ -48,6 +48,7 @@
 #include <yas/json_iarchive.hpp>
 
 #include <yas/tools/hexdumper.hpp>
+#include <yas/tools/pair_object.hpp>
 
 #include <yas/serializers/std_types_serializers.hpp>
 
@@ -122,6 +123,8 @@
 #include "include/split_functions.hpp"
 #include "include/split_methods.hpp"
 #include "include/serialization_methods.hpp"
+#include "include/yas_pair.hpp"
+#include "include/yas_object.hpp"
 
 /***************************************************************************/
 
@@ -417,6 +420,8 @@ void tests(std::uint32_t& p, std::uint32_t& e) {
 	YAS_RUN_TEST(one_method					, p, e);
 	YAS_RUN_TEST(split_methods				, p, e);
 	YAS_RUN_TEST(serialization_methods	, p, e);
+	YAS_RUN_TEST(yas_pair					, p, e);
+	YAS_RUN_TEST(yas_object					, p, e);
 }
 
 /***************************************************************************/

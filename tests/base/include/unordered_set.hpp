@@ -36,6 +36,7 @@
 #ifndef _yas_test__unordered_set_hpp__included_
 #define _yas_test__unordered_set_hpp__included_
 
+#include <algorithm>
 #include <numeric>
 
 /***************************************************************************/
