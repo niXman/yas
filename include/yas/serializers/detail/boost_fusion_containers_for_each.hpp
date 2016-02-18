@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__serializers__detail__boost_fusion_containers_hpp
-#define _yas__serializers__detail__boost_fusion_containers_hpp
+#ifndef _yas__serializers__detail__boost_fusion_containers_for_each_hpp
+#define _yas__serializers__detail__boost_fusion_containers_for_each_hpp
 
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/properties.hpp>
@@ -91,4 +91,4 @@ struct ifusion_sequence_apply {
 } // ns detail
 } // ns yas
 
-#endif // _yas__serializers__detail__boost_fusion_containers_hpp
+#endif // _yas__serializers__detail__boost_fusion_containers_for_each_hpp
