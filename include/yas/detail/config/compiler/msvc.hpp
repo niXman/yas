@@ -38,9 +38,9 @@
 
 /***************************************************************************/
 
-#if __cplusplus < 201103L
+#if _MSC_VER < 1900 // msvc2015
 #	define noexcept
-#endif // __cplusplus < 201103L
+#endif // _MSC_VER < 1900 // msvc2015
 
 #if YAS_LITTLE_ENDIAN()
 #	define YAS_LOCAL_TO_NETWORK16(src) _byteswap_ushort((src))
