@@ -103,7 +103,7 @@ static const char yas_id[] = {
 };
 #else
 static const char yas_id[] = {'y', 'a', 's'};
-#endif // YAS_USE_HEADER_BYTES
+#endif // YAS_SET_HEADER_BYTES
 #endif // YAS_DECORATE_HEADER_BYTES
 
 static const char hex_alpha[] = {
