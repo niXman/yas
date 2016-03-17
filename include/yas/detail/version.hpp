@@ -40,7 +40,7 @@ namespace yas {
 namespace detail {
 
 enum yas_version {
-	archive_version = 2
+	archive_version = 3
 };
 
 } // namespace detail

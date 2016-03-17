@@ -8,7 +8,7 @@
 #include <string>
 
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
-#	include <boost/container/container_fwd.hpp>
+#	include <boost/container/string.hpp>
 #endif
 
 namespace yas {

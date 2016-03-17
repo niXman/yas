@@ -75,12 +75,12 @@
 #include "include/base_object.hpp"
 #include "include/forward_list.hpp"
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
-#include "include/fusion_list.hpp"
-#include "include/fusion_map.hpp"
-#include "include/fusion_pair.hpp"
-#include "include/fusion_set.hpp"
-#include "include/fusion_tuple.hpp"
-#include "include/fusion_vector.hpp"
+#include "include/boost_fusion_list.hpp"
+#include "include/boost_fusion_map.hpp"
+#include "include/boost_fusion_pair.hpp"
+#include "include/boost_fusion_set.hpp"
+#include "include/boost_fusion_tuple.hpp"
+#include "include/boost_fusion_vector.hpp"
 #include "include/boost_cont_string.hpp"
 #include "include/boost_cont_wstring.hpp"
 #include "include/boost_cont_vector.hpp"
@@ -97,6 +97,7 @@
 #include "include/boost_cont_flat_set.hpp"
 #include "include/boost_cont_flat_multiset.hpp"
 #include "include/boost_cont_deque.hpp"
+#include "include/boost_tuple.hpp"
 #endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 #include "include/list.hpp"
 #include "include/map.hpp"
@@ -174,7 +175,7 @@ struct concrete_archive_traits<true, OA, IA> {
 
 		bool compare(const void* ptr, std::uint32_t size) const {
 			const yas::intrusive_buffer buf = stream.get_intrusive_buffer();
-//			std::cout << "ptr=" << std::endl << yas::hex_dump(ptr, size) << std::endl;
+//			std::cout << "exp=" << std::endl << yas::hex_dump(ptr, size) << std::endl;
 //			std::cout << "buf=" << std::endl << yas::hex_dump(buf.data, buf.size) << std::endl;
 			return size == buf.size ? (0 == std::memcmp(buf.data, ptr, size)) : false;
 		}
@@ -390,14 +391,12 @@ void tests(std::uint32_t& p, std::uint32_t& e) {
 	YAS_RUN_TEST(unordered_multiset			, p, e);
 	YAS_RUN_TEST(optional				, p, e);
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
-	YAS_RUN_TEST(fusion_pair				, p, e);
-	YAS_RUN_TEST(fusion_tuple				, p, e);
-	YAS_RUN_TEST(fusion_vector				, p, e);
-	YAS_RUN_TEST(fusion_list				, p, e);
-	YAS_RUN_TEST(fusion_set					, p, e);
-	YAS_RUN_TEST(fusion_map					, p, e);
-#endif // YAS_SERIALIZE_BOOST_TYPES
-#if defined(YAS_SERIALIZE_BOOST_TYPES)
+	YAS_RUN_TEST(boost_fusion_pair			, p, e);
+	YAS_RUN_TEST(boost_fusion_tuple			, p, e);
+	YAS_RUN_TEST(boost_fusion_vector			, p, e);
+	YAS_RUN_TEST(boost_fusion_list			, p, e);
+	YAS_RUN_TEST(boost_fusion_set				, p, e);
+	YAS_RUN_TEST(boost_fusion_map				, p, e);
 	YAS_RUN_TEST(boost_cont_string			, p, e);
 	YAS_RUN_TEST(boost_cont_wstring			, p, e);
 	YAS_RUN_TEST(boost_cont_vector			, p, e);
@@ -414,6 +413,7 @@ void tests(std::uint32_t& p, std::uint32_t& e) {
 	YAS_RUN_TEST(boost_cont_flat_set		, p, e);
 	YAS_RUN_TEST(boost_cont_flat_multiset	, p, e);
 	YAS_RUN_TEST(boost_cont_deque			, p, e);
+	YAS_RUN_TEST(boost_tuple				, p, e);
 #endif // YAS_SERIALIZE_BOOST_TYPES
 	YAS_RUN_TEST(one_function				, p, e);
 	YAS_RUN_TEST(split_functions			, p, e);

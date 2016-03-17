@@ -33,14 +33,17 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__fusion_tuple_hpp__included_
-#define _yas_test__fusion_tuple_hpp__included_
+#ifndef _yas_test__boost_fusion_list_hpp__included_
+#define _yas_test__boost_fusion_list_hpp__included_
+
+#include <boost/fusion/container/generation/make_list.hpp>
+#include <boost/fusion/include/make_list.hpp>
 
 /***************************************************************************/
 
 template<typename archive_traits>
-bool fusion_tuple_test(const char* archive_type, const char* io_type) {
-	boost::fusion::tuple<int, double> v1(33, 3.14), v2;
+bool boost_fusion_list_test(const char* archive_type, const char* io_type) {
+	boost::fusion::list<int, double> v1(33, 3.14), v2;
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type, io_type);
@@ -50,7 +53,7 @@ bool fusion_tuple_test(const char* archive_type, const char* io_type) {
 	archive_traits::icreate(ia, oa, archive_type, io_type);
 	ia & v2;
 	if ( v1 != v2 ) {
-		std::cout << "FUSION_TUPLE deserialization error! [1]" << std::endl;
+		std::cout << "FUSION_LIST deserialization error! [1]" << std::endl;
 		return false;
 	}
 
@@ -59,7 +62,7 @@ bool fusion_tuple_test(const char* archive_type, const char* io_type) {
 	set.insert("3");
 	set.insert("4");
 
-	boost::fusion::tuple<
+	boost::fusion::list<
 		std::string,
 		std::set<std::string>
 	> v3("1", set), v4;
@@ -72,27 +75,27 @@ bool fusion_tuple_test(const char* archive_type, const char* io_type) {
 	archive_traits::icreate(ia2, oa2, archive_type, io_type);
 	ia2 & v4;
 	if ( v3 != v4 ) {
-		std::cout << "FUSION_TUPLE deserialization error! [2]" << std::endl;
+		std::cout << "FUSION_LIST deserialization error! [2]" << std::endl;
 		return false;
 	}
 
-	boost::fusion::tuple<int, int> vv;
+	boost::fusion::list<int, int> vv;
 
 	typename archive_traits::oarchive oa3;
 	archive_traits::ocreate(oa3, archive_type, io_type);
-	oa3 & boost::fusion::make_tuple(33,44);
+	oa3 & boost::fusion::make_list(33,44);
 
 	typename archive_traits::iarchive ia3;
 	archive_traits::icreate(ia3, oa3, archive_type, io_type);
 	ia3 & vv;
 
-	if ( vv != boost::fusion::make_tuple(33,44) ) {
-		std::cout << "FUSION_TUPLE deserialization error! [3]" << std::endl;
+	if ( vv != boost::fusion::make_list(33,44) ) {
+		std::cout << "FUSION_LIST deserialization error! [3]" << std::endl;
 		return false;
 	}
 
 	static const char str[] = "str";
-	boost::fusion::tuple<std::uint64_t, std::string> v5(33, str), v6;
+	boost::fusion::list<boost::uint64_t, std::string> v5(33, str), v6;
 
 	typename archive_traits::oarchive oa4;
 	archive_traits::ocreate(oa4, archive_type, io_type);
@@ -100,14 +103,15 @@ bool fusion_tuple_test(const char* archive_type, const char* io_type) {
 
 	const size_t expected_size =
 		4+ // archive information
-		sizeof(std::uint8_t)+ // fusion::tuple size marker
+		sizeof(std::uint8_t)+ // fusion::list size marker
 		sizeof(std::uint64_t)+ // first type
 		sizeof(std::uint32_t)+ // string size marker
 		strlen(str); // string length
+
 	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
 		const size_t current_size = oa4.size();
 		if ( current_size != expected_size ) {
-			std::cout << "FUSION_TUPLE deserialization error! [4]" << std::endl;
+			std::cout << "FUSION_LIST deserialization error! [4]" << std::endl;
 			return false;
 		}
 	}
@@ -116,19 +120,18 @@ bool fusion_tuple_test(const char* archive_type, const char* io_type) {
 	archive_traits::icreate(ia4, oa4, archive_type, io_type);
 	ia4 & v6;
 	if ( v5 != v6 ) {
-		std::cout << "FUSION_TUPLE deserialization error! [5]" << std::endl;
+		std::cout << "FUSION_LIST deserialization error! [5]" << std::endl;
 		return false;
 	}
 
 	typename archive_traits::oarchive oa5;
 	archive_traits::ocreate(oa5, archive_type, io_type);
-	oa5 & boost::fusion::make_tuple<std::uint64_t, std::string>(33, "str");
+	oa5 & boost::fusion::make_list<boost::uint64_t, std::string>(33, "str");
 
 	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
 		const size_t current_size2 = oa5.size();
-
 		if ( current_size2 != expected_size ) {
-			std::cout << "FUSION_TUPLE deserialization error! [6]" << std::endl;
+			std::cout << "FUSION_LIST deserialization error! [6]" << std::endl;
 			return false;
 		}
 	}
@@ -137,7 +140,7 @@ bool fusion_tuple_test(const char* archive_type, const char* io_type) {
 	archive_traits::icreate(ia5, oa5, archive_type, io_type);
 	ia5 & v6;
 	if ( v5 != v6 ) {
-		std::cout << "FUSION_TUPLE deserialization error! [7]" << std::endl;
+		std::cout << "FUSION_LIST deserialization error! [7]" << std::endl;
 		return false;
 	}
 
@@ -146,4 +149,4 @@ bool fusion_tuple_test(const char* archive_type, const char* io_type) {
 
 /***************************************************************************/
 
-#endif // _yas_test__fusion_tuple_hpp__included_
+#endif // _yas_test__boost_fusion_list_hpp__included_

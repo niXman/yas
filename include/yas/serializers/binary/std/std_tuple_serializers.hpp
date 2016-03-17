@@ -39,6 +39,7 @@
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/selector.hpp>
 #include <yas/detail/io/serialization_exception.hpp>
+#include <yas/detail/preprocessor/preprocessor.hpp>
 
 #include <tuple>
 
@@ -65,10 +66,21 @@ namespace detail {
 		archive_type::binary,std::tuple<> \
 	> { \
 		template<typename Archive> \
-		static Archive& save(Archive& ar, const std::tuple<>&) { return ar; } \
+		static Archive& save(Archive& ar, const std::tuple<>&) { \
+			ar.write((std::uint8_t)0); \
+			\
+			return ar; \
+		} \
 		\
 		template<typename Archive> \
-		static Archive& load(Archive& ar, std::tuple<>&) { return ar; } \
+		static Archive& load(Archive& ar, std::tuple<>&) { \
+			std::uint8_t size = 0; \
+			ar.read(size); \
+			if ( size != 0 ) \
+				YAS_THROW_BAD_SIZE_ON_DESERIALIZE("std::tuple, expected size == 0"); \
+			\
+			return ar; \
+		} \
 	};
 
 #define YAS__BINARY__GENERATE_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC(unused, count, text) \

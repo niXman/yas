@@ -69,10 +69,21 @@ namespace detail {
 		archive_type::binary, boost::tuples::tuple<> \
 	> { \
 		template<typename Archive> \
-		static Archive& apply(Archive& ar, const boost::tuples::tuple<>&) { return ar; } \
+		static Archive& save(Archive& ar, const boost::tuples::tuple<>&) { \
+			ar.write((std::uint8_t)0); \
+			\
+			return ar; \
+		} \
 		\
 		template<typename Archive> \
-		static Archive& apply(Archive& ar, boost::tuples::tuple<>&) { return ar; } \
+		static Archive& load(Archive& ar, boost::tuples::tuple<>&) { \
+			std::uint8_t size = 0; \
+			ar.read(size); \
+			if ( size != 0 ) \
+				YAS_THROW_BAD_SIZE_ON_DESERIALIZE("boost::tuple, expected size == 0"); \
+			\
+			return ar; \
+		} \
 	};
 
 #define YAS__BINARY__GENERATE_SERIALIZE_BOOST_TUPLE_FUNCTION_VARIADIC(unused, count, text) \

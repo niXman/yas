@@ -33,49 +33,18 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__fusion_pair_hpp__included_
-#define _yas_test__fusion_pair_hpp__included_
+#ifndef _yas_test__boost_fusion_map_hpp__included_
+#define _yas_test__boost_fusion_map_hpp__included_
 
 /***************************************************************************/
 
 template<typename archive_traits>
-bool fusion_pair_test(const char* archive_type, const char* io_type) {
-	boost::fusion::pair<std::size_t, unsigned char> p1('f'), p2;
-	typename archive_traits::oarchive oa;
-	archive_traits::ocreate(oa, archive_type, io_type);
-	oa & p1;
-
-	typename archive_traits::iarchive ia;
-	archive_traits::icreate(ia, oa, archive_type, io_type);
-	ia & p2;
-
-	if ( p1 != p2 ) {
-		std::cout << "FUSION_PAIR deserialization error! [1]" << std::endl;
-		return false;
-	}
-
-	std::vector<std::string> vec;
-	vec.push_back("5");
-	vec.push_back("5");
-	vec.push_back("6");
-	vec.push_back("7");
-
-	boost::fusion::pair<std::size_t, std::vector<std::string> > p3(vec), p4;
-	typename archive_traits::oarchive oa2;
-	archive_traits::ocreate(oa2, archive_type, io_type);
-	oa2 & p3;
-
-	typename archive_traits::iarchive ia2;
-	archive_traits::icreate(ia2, oa2, archive_type, io_type);
-	ia2 & p4;
-
-	if ( p3 != p4 ) {
-		std::cout << "FUSION_PAIR deserialization error! [2]" << std::endl;
-		return false;
-	}
+bool boost_fusion_map_test(const char* archive_type, const char* io_type) {
+	((void)io_type);
+	((void)archive_type);
 	return true;
 }
 
 /***************************************************************************/
 
-#endif // _yas_test__fusion_pair_hpp__included_
+#endif // _yas_test__boost_fusion_map_hpp__included_

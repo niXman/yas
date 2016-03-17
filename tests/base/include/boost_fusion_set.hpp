@@ -33,18 +33,39 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__fusion_map_hpp__included_
-#define _yas_test__fusion_map_hpp__included_
+#ifndef _yas_test__boost_fusion_set_hpp__included_
+#define _yas_test__boost_fusion_set_hpp__included_
 
 /***************************************************************************/
 
 template<typename archive_traits>
-bool fusion_map_test(const char* archive_type, const char* io_type) {
+bool boost_fusion_set_test(const char* archive_type, const char* io_type) {
 	((void)io_type);
 	((void)archive_type);
+#if 0
+
+	typedef boost::fusion::set<int, int> set;
+	set s1(33, 44), s2;
+
+	std::cout << "size = " << boost::fusion::size(s1) << std::endl;
+	std::cout << "0 = " << boost::fusion::at_key<int>(s1) << std::endl;
+	std::cout << "1 = " << boost::fusion::at_key<int>(s1) << std::endl;
+
+	OA oa;
+	oa & s1;
+
+	IA ia(oa.get_intrusive_buffer());
+	ia & s2;
+
+	if ( s1 != s2 ) {
+		std::cout << "FUSION_SET deserialization error!" << std::endl;
+		return false;
+	}
+#endif
+
 	return true;
 }
 
 /***************************************************************************/
 
-#endif // _yas_test__fusion_map_hpp__included_
+#endif // _yas_test__boost_fusion_set_hpp__included_

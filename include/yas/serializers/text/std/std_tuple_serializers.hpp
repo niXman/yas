@@ -62,10 +62,21 @@ namespace detail {
 		archive_type::text, std::tuple<> \
 	> { \
 		template<typename Archive> \
-		static Archive& save(Archive& ar, const std::tuple<>&) { return ar;  } \
+		static Archive& save(Archive& ar, const std::tuple<>&) { \
+			ar & (std::uint32_t)0; \
+			\
+			return ar; \
+		} \
 		\
 		template<typename Archive> \
-		static Archive& load(Archive& ar, std::tuple<>&) { return ar; } \
+		static Archive& load(Archive& ar, std::tuple<>&) { \
+			std::uint32_t size = 0; \
+			ar & size; \
+			if ( size != 0 ) \
+				YAS_THROW_BAD_SIZE_ON_DESERIALIZE("std::tuple, expected size == 0"); \
+			\
+			return ar; \
+		} \
 	};
 
 #define YAS__TEXT__GENERATE_SERIALIZE_STD_TUPLE_FUNCTION_VARIADIC(unused, count, unused2) \

@@ -68,12 +68,12 @@ HEADERS += \
 	../include/endian.hpp \
 	../include/enum.hpp \
 	../include/forward_list.hpp \
-	../include/fusion_list.hpp \
-	../include/fusion_map.hpp \
-	../include/fusion_pair.hpp \
-	../include/fusion_set.hpp \
-	../include/fusion_tuple.hpp \
-	../include/fusion_vector.hpp \
+	../include/boost_fusion_list.hpp \
+	../include/boost_fusion_map.hpp \
+	../include/boost_fusion_pair.hpp \
+	../include/boost_fusion_set.hpp \
+	../include/boost_fusion_tuple.hpp \
+	../include/boost_fusion_vector.hpp \
 	../include/list.hpp \
 	../include/map.hpp \
 	../include/multimap.hpp \
@@ -446,7 +446,8 @@ HEADERS += \
 	../../../include/yas/serializers/detail/boost_fusion_containers_for_each.hpp \
 	../../../include/yas/tools/archive_selector.hpp \
 	../../../include/yas/tools/pair_object.hpp \
-    ../../../include/yas/serializers/binary/utility/object_serializers.hpp \
-    ../../../include/yas/serializers/binary/utility/pair_serializers.hpp \
-    ../../../include/yas/serializers/text/utility/object_serializers.hpp \
-    ../../../include/yas/serializers/text/utility/pair_serializers.hpp
+	../../../include/yas/serializers/binary/utility/object_serializers.hpp \
+	../../../include/yas/serializers/binary/utility/pair_serializers.hpp \
+	../../../include/yas/serializers/text/utility/object_serializers.hpp \
+	../../../include/yas/serializers/text/utility/pair_serializers.hpp \
+	../include/boost_tuple.hpp

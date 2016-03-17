@@ -128,7 +128,7 @@ struct header_reader_writer<archive_type::binary> {
 		char buf[header_size];
 		std::streamsize rd = io.read(buf, header_size);
 		if ( rd != header_size ) YAS_THROW_ARCHIVE_IS_EMPTY();
-		if ( memcmp(buf, yas_id, sizeof(yas_id)) ) YAS_THROW_BAD_ARCHIVE_INFORMATION();
+		if ( 0 != std::memcmp(buf, yas_id, sizeof(yas_id)) ) YAS_THROW_BAD_ARCHIVE_INFORMATION();
 		header = *reinterpret_cast<archive_header*>(buf+sizeof(yas_id));
 	}
 
@@ -167,7 +167,7 @@ struct header_reader_writer<archive_type::text> {
 
 		if ( io.read(buf, header_size) != header_size )
 			YAS_THROW_ARCHIVE_IS_EMPTY();
-		if ( memcmp(buf, yas_id, sizeof(yas_id)) )
+		if ( 0 != std::memcmp(buf, yas_id, sizeof(yas_id)) )
 			YAS_THROW_BAD_ARCHIVE_INFORMATION();
 
 		const char* p = std::lower_bound(hex_alpha, hex_alpha+sizeof(hex_alpha), buf[first_hex_pos]);
