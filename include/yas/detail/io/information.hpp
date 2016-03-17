@@ -130,6 +130,9 @@ struct header_reader_writer<archive_type::binary> {
 		if ( rd != header_size ) YAS_THROW_ARCHIVE_IS_EMPTY();
 		if ( 0 != std::memcmp(buf, yas_id, sizeof(yas_id)) ) YAS_THROW_BAD_ARCHIVE_INFORMATION();
 		header = *reinterpret_cast<archive_header*>(buf+sizeof(yas_id));
+
+		if ( header.bits.version != archive_version ) YAS_THROW_BAD_ARCHIVE_VERSION();
+		if ( header.bits.type != archive_type::binary ) YAS_THROW_BAD_ARCHIVE_TYPE();
 	}
 
 	template<endian_t ET, typename IO>
@@ -176,6 +179,9 @@ struct header_reader_writer<archive_type::text> {
 		if (*q != buf[second_hex_pos]) YAS_THROW_BAD_BYTES_IN_HEADER();
 
 		header.as_char = (((p - hex_alpha) << 4) | (q - hex_alpha));
+
+		if ( header.bits.version != archive_version ) YAS_THROW_BAD_ARCHIVE_VERSION();
+		if ( header.bits.type != archive_type::text ) YAS_THROW_BAD_ARCHIVE_TYPE();
 	}
 
 	template<endian_t ET, typename IO>

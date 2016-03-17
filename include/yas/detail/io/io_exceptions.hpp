@@ -56,6 +56,16 @@ YAS_DECLARE_EXCEPTION_TYPE(io_exception);
 		throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("archive is corrupted or try to use \"yas::no_header\" flag")); \
 	} while(0)
 
+#define YAS_THROW_BAD_ARCHIVE_VERSION() \
+	do { \
+		throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("incompatible archive version")); \
+	} while(0)
+
+#define YAS_THROW_BAD_ARCHIVE_TYPE() \
+	do { \
+		throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("incompatible archive type")); \
+	} while(0)
+
 #define YAS_THROW_ARCHIVE_NO_HEADER() \
 	do { \
 		throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("you cannot use information functions with \"yas::no_header\" flag")); \
