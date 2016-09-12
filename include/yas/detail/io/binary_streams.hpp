@@ -52,12 +52,10 @@ namespace detail {
 	(et == big_endian && !YAS_BIG_ENDIAN()) || (et == little_endian && !YAS_LITTLE_ENDIAN())
 
 #define YAS_SAVE_ENDIAN_SWITCH(et, var, bits) \
-	enum { _need_bswap = YAS_ENDIAN_TEST(et) }; \
-	var = _need_bswap ? YAS_PP_CAT(YAS_LOCAL_TO_NETWORK, bits)(var) : var
+	var = (YAS_ENDIAN_TEST(et) ? YAS_PP_CAT(YAS_LOCAL_TO_NETWORK, bits)(var) : var)
 
 #define YAS_LOAD_ENDIAN_SWITCH(et, var, bits) \
-	enum { _need_bswap = YAS_ENDIAN_TEST(et) }; \
-	var = _need_bswap ? YAS_PP_CAT(YAS_NETWORK_TO_LOCAL, bits)(var) : var
+	var = (YAS_ENDIAN_TEST(et) ? YAS_PP_CAT(YAS_NETWORK_TO_LOCAL, bits)(var) : var)
 
 /***************************************************************************/
 
