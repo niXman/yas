@@ -4,6 +4,17 @@ YAS
 ===
 Yet Another Serialization
 
+##### Graphical representations
+
+###### Size
+
+![Size](https://raw.githubusercontent.com/STEllAR-GROUP/cpp-serializers/c78526f97fb2e4ac9d000ca9d6a076561680c29f/images/size.png)
+
+###### Time
+
+![Time](https://raw.githubusercontent.com/STEllAR-GROUP/cpp-serializers/c78526f97fb2e4ac9d000ca9d6a076561680c29f/images/time.png)
+
+
 ===
 YAS is created as a replacement of boost.serialization because of its insufficient speed of serialization.
 YAS is header only library. You do not need to link it with your code.
