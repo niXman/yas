@@ -16,11 +16,11 @@ Yet Another Serialization
 
 
 ===
-YAS is created as a replacement of boost.serialization because of its insufficient speed of serialization.
-YAS is header only library. You do not need to link it with your code.
-YAS does not depend on third-party libraries or boost.
-YAS require C++11 support.
-YAS binary archives is endian independent.
+* YAS is created as a replacement of boost.serialization because of its insufficient speed of serialization.
+* YAS is header only library. You do not need to link it with your code.
+* YAS does not depend on third-party libraries or boost.
+* YAS require C++11 support.
+* YAS binary archives is endian independent.
 
 ===
 Supported the following types of archives:
