@@ -6,25 +6,10 @@ Yet Another Serialization
 
 ===
 YAS is created as a replacement of boost.serialization because of its insufficient speed of serialization.
-
-Binary serialization:
-
-      |  boost  |   YAS   | Speedup
-------|---------|---------|---------
- save | 142 ms  | 24 ms   | +500%   
- load | 114 ms  | 8 ms    | +1300%  
-
-Text serialization:
-
-      |  boost  |   YAS   | Speedup
-------|---------|---------|---------
- save | 8090 ms | 277 ms  | +28000%
- load | 8794 ms | 265 ms  | +33000%
-
-Yas is header only library. You do not need to link it with your code.
-Yas does not depend on third-party libraries or boost.
-Yas require C++11 support.
-Yas binary archives is endian independent.
+YAS is header only library. You do not need to link it with your code.
+YAS does not depend on third-party libraries or boost.
+YAS require C++11 support.
+YAS binary archives is endian independent.
 
 ===
 Supported the following types of archives:
