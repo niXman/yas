@@ -78,16 +78,16 @@ struct mem_ostream: private detail::noncopyable {
 		switch ( size ) {
 			case sizeof(std::int8_t):
 				*cur = *((std::int8_t*)ptr);
-			break;
+				break;
 			case sizeof(std::int16_t):
 				*((std::int16_t*)cur) = *((std::int16_t*)ptr);
-			break;
+				break;
 			case sizeof(std::int32_t):
 				*((std::int32_t*)cur) = *((std::int32_t*)ptr);
-			break;
+				break;
 			case sizeof(std::int64_t):
 				*((std::int64_t*)cur) = *((std::int64_t*)ptr);
-			break;
+				break;
 			default:
 				std::memcpy(cur, ptr, size);
 		}
@@ -129,16 +129,16 @@ struct mem_istream: private detail::noncopyable {
 		switch ( copy ) {
 			case sizeof(std::int8_t):
 				*((std::int8_t*)ptr) = *cur;
-			break;
+				break;
 			case sizeof(std::int16_t):
 				*((std::int16_t*)ptr) = *((std::int16_t*)cur);
-			break;
+				break;
 			case sizeof(std::int32_t):
 				*((std::int32_t*)ptr) = *((std::int32_t*)cur);
-			break;
+				break;
 			case sizeof(std::int64_t):
 				*((std::int64_t*)ptr) = *((std::int64_t*)cur);
-			break;
+				break;
 			default:
 				std::memcpy(ptr, cur, copy);
 		}
@@ -146,6 +146,9 @@ struct mem_istream: private detail::noncopyable {
 
 		return copy;
 	}
+
+	char getch() { return *cur++; }
+	void ungetch(char) { --cur; }
 
 	shared_buffer get_shared_buffer() const { return shared_buffer(cur, end - cur); }
 	intrusive_buffer get_intrusive_buffer() const { return intrusive_buffer(cur, end - cur); }

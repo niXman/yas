@@ -113,6 +113,9 @@ struct file_istream: private detail::noncopyable {
 		std::fclose(file);
 	}
 
+	char getch() { return static_cast<char>(std::fgetc(file)); }
+	void ungetch(char ch) { std::ungetc(ch, file); }
+
 	std::size_t read(void *ptr, std::size_t size) {
 		return std::fread(ptr, 1, size, file);
 	}

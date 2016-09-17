@@ -38,9 +38,6 @@
 
 /***************************************************************************/
 
-template<typename T>
-void foo(const T &) { std::cout << __PRETTY_FUNCTION__ << std::endl << std::flush; }
-
 namespace _yas_object_test_ {
 
 struct type0: private ::yas::detail::noncopyable {
