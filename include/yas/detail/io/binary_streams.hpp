@@ -101,7 +101,7 @@ struct binary_istream {
 	template<typename T>
 	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, float, double)) {
 		std::uint8_t buf[sizeof(T)];
-		YAS_THROW_ON_READ_ERROR(sizeof(T), !=, is.read(buf, sizeof(buf)));
+		YAS_THROW_ON_READ_ERROR(sizeof(buf), !=, is.read(buf, sizeof(buf)));
 		endian_convertor<YAS_ENDIAN_TEST(ET)>::from_network(v, buf);
 	}
 
