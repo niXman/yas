@@ -269,17 +269,6 @@ void default_traits::dtoa(char *buf, const std::size_t size, std::size_t &len, T
 		buf[0] = 'n'; buf[1] = 'a'; buf[2] = 'n'; buf[3] = '\0';
 		len = 3;
 	}
-	/* if input is larger than thres_max, revert to exponential */
-	const double thres_max = (double)(0x7FFFFFFF);
-
-	double diff = 0.0;
-	char* wstr = buf;
-
-	if (prec > 9) {
-		/* precision of >= 10 can lead to overflow errors */
-		prec = 9;
-	}
-
 
 	/* we'll work in positive values and deal with the
 		 negative sign issue later */
@@ -289,6 +278,20 @@ void default_traits::dtoa(char *buf, const std::size_t size, std::size_t &len, T
 		v = -v;
 	}
 
+	/* for very large numbers switch back to native sprintf for exponentials.
+		 anyone want to write code to replace this? */
+	/*
+		normal printf behavior is to print EVERY whole number digit
+		which can be 100s of characters overflowing your buffers == bad
+	 */
+	if ( v > (double)(0x7FFFFFFF) ) {
+		len = std::snprintf(buf, size, "%e", neg ? -v : v);
+
+		return;
+	}
+
+	double diff = 0.0;
+	char* wstr = buf;
 
 	int whole = (int)v;
 	double tmp = (v - whole) * powers_of_10[prec];
@@ -306,18 +309,6 @@ void default_traits::dtoa(char *buf, const std::size_t size, std::size_t &len, T
 		/* if halfway, round up if odd, OR
 			  if last digit is 0.  That last part is strange */
 		++frac;
-	}
-
-	/* for very large numbers switch back to native sprintf for exponentials.
-		 anyone want to write code to replace this? */
-	/*
-		normal printf behavior is to print EVERY whole number digit
-		which can be 100s of characters overflowing your buffers == bad
-	 */
-	if (v > thres_max) {
-		len = std::snprintf(buf, size, "%e", neg ? -v : v);
-
-		return;
 	}
 
 	if (prec == 0) {

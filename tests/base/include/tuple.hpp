@@ -100,15 +100,17 @@ bool tuple_test(const char* archive_type, const char* io_type) {
 
 	static const std::size_t binary_expected_size =
 		archive_traits::oarchive_type::header_size()+ // archive header
-		sizeof(std::uint8_t)+ // fusion::vector size marker
+		sizeof(std::uint8_t)+ // size marker
 		sizeof(std::uint64_t)+ // first type
 		sizeof(std::uint32_t)+ // string size marker
-		std::strlen(str); // string length
+		std::strlen(str) // string length
+	;
 	static const std::size_t text_expected_size =
-		archive_traits::oarchive_type::header_size()+1/*space*/
-		+1/*fusion::vector size marker*/
-		+1/*space*/+2/*value*/+1/*space*/
-		+1/*string len*/+1/*space*/+3/*string*/;
+		archive_traits::oarchive_type::header_size()
+		+1/*space*/+2/*len of next field*/+1/*size marker*/
+		+1/*space*/+2/*len of next field*/+2/*value*/
+		+1/*space*/+2/*len of next field*/+1/*string len*/+3/*string*/
+	;
 
 	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
 		const size_t current_size = oa4.size();
@@ -166,13 +168,15 @@ bool tuple_test(const char* archive_type, const char* io_type) {
 	oa6 & et0;
 
 	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
-		if ( oa6.size() != (archive_traits::oarchive_type::header_size()+1) ) {
+		const size_t current_size = oa6.size();
+		if ( current_size != (archive_traits::oarchive_type::header_size()+1) ) {
 			std::cout << "STD_TUPLE serialization error! [10]" << std::endl;
 			return false;
 		}
 	}
 	if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
-		if ( oa6.size() != (archive_traits::oarchive_type::header_size()+1/*space*/+1/*size marker*/) ) {
+		const size_t current_size = oa6.size();
+		if ( current_size != (archive_traits::oarchive_type::header_size()+1/*space*/+2/*len of next field*/+1/*size marker*/) ) {
 			std::cout << "STD_TUPLE serialization error! [11]" << std::endl;
 			return false;
 		}

@@ -54,7 +54,6 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& save(Archive& ar, const T& v) {
-		ar.write(space_sep);
 		switch ( sizeof(T) ) {
 			case sizeof(std::uint8_t):
 				ar.write(static_cast<std::uint8_t>(v));
@@ -74,7 +73,6 @@ struct serializer<
 
 	template<typename Archive>
 	static Archive& load(Archive& ar, T& v) {
-		if ( ar.getch() != space_sep ) YAS_THROW_SPACE_IS_EXPECTED();
 		switch ( sizeof(T) ) {
 			case sizeof(std::uint8_t):
 				ar.read(reinterpret_cast<std::uint8_t&>(v));

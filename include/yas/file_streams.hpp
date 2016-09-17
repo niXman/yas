@@ -74,8 +74,6 @@ struct file_ostream: private detail::noncopyable {
 	}
 
 	void flush() { std::fflush(file); }
-private:
-	FILE *file;
 
 private:
 	static const char* file_mode_str(file_mode m) {
@@ -98,6 +96,7 @@ private:
 		return false;
 	}
 
+	std::FILE *file;
 }; // struct file_ostream
 
 /***************************************************************************/
@@ -113,19 +112,12 @@ struct file_istream: private detail::noncopyable {
 		std::fclose(file);
 	}
 
-	char getch() { return static_cast<char>(std::fgetc(file)); }
-	void ungetch(char ch) { std::ungetc(ch, file); }
-
 	std::size_t read(void *ptr, std::size_t size) {
 		return std::fread(ptr, 1, size, file);
 	}
 
-	bool eof() const {
-		return std::feof(file);
-	}
-
 private:
-	FILE *file;
+	std::FILE *file;
 }; // struct file_istream
 
 /***************************************************************************/

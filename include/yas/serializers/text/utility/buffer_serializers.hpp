@@ -55,7 +55,6 @@ struct serializer<
 	template<typename Archive>
 	static Archive& save(Archive& ar, const intrusive_buffer& buf) {
 		ar & (std::uint32_t)buf.size;
-		ar.write(space_sep);
 		ar.write(buf.data, buf.size);
 		return ar;
 	}
@@ -77,7 +76,6 @@ struct serializer<
 	template<typename Archive>
 	static Archive& save(Archive& ar, const shared_buffer& buf) {
 		ar & (std::uint32_t)buf.size;
-		ar.write(space_sep);
 		ar.write(buf.data.get(), buf.size);
 		return ar;
 	}
@@ -85,7 +83,6 @@ struct serializer<
 	static Archive& load(Archive& ar, shared_buffer& buf) {
 		std::uint32_t size = 0;
 		ar & size;
-		if ( ar.getch() != space_sep ) YAS_THROW_SPACE_IS_EXPECTED();
 		buf.data.reset(new char[size], &shared_buffer::deleter);
 		ar.read(buf.data.get(), size);
 		buf.size = size;

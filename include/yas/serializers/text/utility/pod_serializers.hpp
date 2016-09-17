@@ -54,14 +54,12 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& save(Archive& ar, const T& v) {
-		ar.write(space_sep);
 		ar.write(v);
 		return ar;
 	}
 
 	template<typename Archive>
 	static Archive& load(Archive& ar, T& v) {
-		if ( ar.getch() != space_sep ) YAS_THROW_SPACE_IS_EXPECTED();
 		ar.read(v);
 		return ar;
 	}

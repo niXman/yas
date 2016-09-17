@@ -56,7 +56,6 @@ struct serializer<
 	template<typename Archive, typename U>
 	static Archive& save(Archive& ar, const U(&v)[N], YAS_ENABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char)) {
 		ar.write((std::uint32_t)N-1);
-		ar.write(space_sep);
 		ar.write(v, N-1);
 		return ar;
 	}
@@ -65,7 +64,6 @@ struct serializer<
 	template<typename Archive, typename U>
 	static Archive& save(Archive& ar, const U(&v)[N], YAS_ENABLE_IF_IS_ANY_OF(U, bool)) {
 		ar.write((std::uint32_t)N-1);
-		ar.write(space_sep);
 		for ( const auto &it: v ) {
 			ar.write(it);
 		}
@@ -76,7 +74,6 @@ struct serializer<
 	template<typename Archive, typename U>
 	static Archive& save(Archive& ar, const U(&v)[N], YAS_DISABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char, bool)) {
 		ar.write((std::uint32_t)N);
-		ar.write(space_sep);
 		for ( const auto &it: v ) {
 			ar & it;
 		}
@@ -89,7 +86,6 @@ struct serializer<
 		std::uint32_t size = 0;
 		ar.read(size);
 		if ( size != N-1 ) YAS_THROW_BAD_ARRAY_SIZE();
-		if ( ar.getch() != space_sep ) YAS_THROW_SPACE_IS_EXPECTED();
 		ar.read(v, size);
 		v[size] = 0;
 		return ar;
@@ -101,7 +97,6 @@ struct serializer<
 		std::uint32_t size = 0;
 		ar.read(size);
 		if ( size != N ) YAS_THROW_BAD_ARRAY_SIZE();
-		if ( ar.getch() != space_sep ) YAS_THROW_SPACE_IS_EXPECTED();
 		for ( auto &it: v ) {
 			ar.read(it);
 		}
@@ -114,7 +109,6 @@ struct serializer<
 		std::uint32_t size = 0;
 		ar.read(size);
 		if ( size != N ) YAS_THROW_BAD_ARRAY_SIZE();
-		if ( ar.getch() != space_sep ) YAS_THROW_SPACE_IS_EXPECTED();
 		for ( auto &it: v ) {
 			ar & it;
 		}
@@ -134,7 +128,6 @@ struct serializer<
 	template<typename Archive>
 	static Archive& save(Archive& ar, const T(&v)[N]) {
 		ar.write((std::uint32_t)N);
-		ar.write(space_sep);
 		for ( const auto &it: v ) {
 			ar & it;
 		}
@@ -146,7 +139,6 @@ struct serializer<
 		std::uint32_t size = 0;
 		ar.read(size);
 		if ( size != N ) YAS_THROW_BAD_ARRAY_SIZE();
-		if ( ar.getch() != space_sep ) YAS_THROW_SPACE_IS_EXPECTED();
 		for ( auto &it: v ) {
 			ar & it;
 		}

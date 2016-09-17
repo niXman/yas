@@ -33,17 +33,44 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__version_hpp
-#define _yas__version_hpp
+#ifndef _yas__detail__version_hpp
+#define _yas__detail__version_hpp
+
+#include <yas/detail/type_traits/properties.hpp>
+
+// YAS_VERSION % 100 is the patch level
+// YAS_VERSION / 100 % 1000 is the minor version
+// YAS_VERSION / 100000 is the major version
+
+#define YAS_VERSION() 400000
+#define YAS_VERSION_STRING() "1.0.0"
 
 namespace yas {
 namespace detail {
 
 enum yas_version {
-	archive_version = 3
+	 binary_archive_version = 3
+	,text_archive_version = 1
+	,json_archive_version = 0
+};
+
+template<yas::archive_type::type>
+struct archive_version_by_type;
+
+template<>
+struct archive_version_by_type<archive_type::binary> {
+	enum { version = binary_archive_version };
+};
+template<>
+struct archive_version_by_type<archive_type::text> {
+	enum { version = text_archive_version };
+};
+template<>
+struct archive_version_by_type<archive_type::json> {
+	enum { version = json_archive_version };
 };
 
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__version_hpp
+#endif // _yas__detail__version_hpp

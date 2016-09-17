@@ -60,8 +60,7 @@ struct mem_ostream: private detail::noncopyable {
 		,end((char*)ptr+size)
 	{}
 
-	template<typename T>
-	std::size_t write(const T *ptr, const std::size_t size) {
+	void reserve(const std::size_t size) {
 		if ( cur+size > end ) {
 			shared_buffer::shared_array_type prev = buf.data;
 			const std::size_t olds = cur - beg;
@@ -74,6 +73,11 @@ struct mem_ostream: private detail::noncopyable {
 			cur = beg+olds;
 			end = beg+news;
 		}
+	}
+
+	template<typename T>
+	std::size_t write(const T *ptr, const std::size_t size) {
+		reserve(size);
 
 		switch ( size ) {
 			case sizeof(std::int8_t):
@@ -125,7 +129,8 @@ struct mem_istream: private detail::noncopyable {
 
 	template<typename T>
 	std::size_t read(T *ptr, const std::size_t size) {
-		const std::size_t copy = std::min(((std::size_t)(end-cur)), size);
+		const std::size_t avail = (std::size_t)(end-cur);
+		const std::size_t copy = (avail < size) ? avail : size;
 		switch ( copy ) {
 			case sizeof(std::int8_t):
 				*((std::int8_t*)ptr) = *cur;
@@ -146,9 +151,6 @@ struct mem_istream: private detail::noncopyable {
 
 		return copy;
 	}
-
-	char getch() { return (cur < end ? *cur++ : -1); }
-	void ungetch(char) { --cur; }
 
 	shared_buffer get_shared_buffer() const { return shared_buffer(cur, end - cur); }
 	intrusive_buffer get_intrusive_buffer() const { return intrusive_buffer(cur, end - cur); }

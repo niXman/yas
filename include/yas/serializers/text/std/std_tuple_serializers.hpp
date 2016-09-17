@@ -86,7 +86,7 @@ namespace detail {
 	> { \
 		template<typename Archive> \
 		static Archive& save(Archive& ar, const std::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
-			ar & (std::uint8_t)YAS_PP_INC(count); \
+			ar & (std::uint32_t)YAS_PP_INC(count); \
 			YAS_PP_REPEAT( \
 				YAS_PP_INC(count), \
 				YAS__TEXT__WRITE_STD_TUPLE_ITEM, \
@@ -97,7 +97,7 @@ namespace detail {
 		\
 		template<typename Archive> \
 		static Archive& load(Archive& ar, std::tuple<YAS_PP_ENUM_PARAMS(YAS_PP_INC(count), T)>& tuple) { \
-			std::uint8_t size = 0; \
+			std::uint32_t size = 0; \
 			ar & size; \
 			if ( size != YAS_PP_INC(count) ) YAS_THROW_BAD_SIZE_ON_DESERIALIZE("boost::tuple"); \
 			YAS_PP_REPEAT( \

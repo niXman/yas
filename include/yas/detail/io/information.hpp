@@ -41,13 +41,13 @@
 
 #include <yas/detail/config/config.hpp>
 
+#include <yas/detail/preprocessor/preprocessor.hpp>
+
 #include <yas/detail/io/io_exceptions.hpp>
 #include <yas/detail/io/endian_conv.hpp>
 
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/properties.hpp>
-
-#include <yas/detail/preprocessor/preprocessor.hpp>
 
 #include <yas/detail/version.hpp>
 
@@ -131,7 +131,7 @@ struct header_reader_writer<archive_type::binary> {
 		if ( 0 != std::memcmp(buf, yas_id, sizeof(yas_id)) ) YAS_THROW_BAD_ARCHIVE_INFORMATION();
 		header = *reinterpret_cast<archive_header*>(buf+sizeof(yas_id));
 
-		if ( header.bits.version != archive_version ) YAS_THROW_BAD_ARCHIVE_VERSION();
+		if ( header.bits.version != binary_archive_version ) YAS_THROW_BAD_ARCHIVE_VERSION();
 		if ( header.bits.type != archive_type::binary ) YAS_THROW_BAD_ARCHIVE_TYPE();
 	}
 
@@ -140,7 +140,7 @@ struct header_reader_writer<archive_type::binary> {
 		if ( op == yas::no_header ) return;
 
 		static const archive_header header(
-			 (std::uint8_t)archive_version
+			 (std::uint8_t)binary_archive_version
 			,(std::uint8_t)at
 			,(std::uint8_t)YAS_PLATFORM_BITS_IS_64()
 			,(std::uint8_t)(ET == as_host ? YAS_BIG_ENDIAN() : ET == big_endian)
@@ -180,7 +180,7 @@ struct header_reader_writer<archive_type::text> {
 
 		header.as_char = (((p - hex_alpha) << 4) | (q - hex_alpha));
 
-		if ( header.bits.version != archive_version ) YAS_THROW_BAD_ARCHIVE_VERSION();
+		if ( header.bits.version != text_archive_version ) YAS_THROW_BAD_ARCHIVE_VERSION();
 		if ( header.bits.type != archive_type::text ) YAS_THROW_BAD_ARCHIVE_TYPE();
 	}
 
@@ -188,7 +188,7 @@ struct header_reader_writer<archive_type::text> {
 	static void write(IO &io, yas::header_flag op, archive_type::type at) {
 		if ( op == yas::no_header ) return;
 		static const archive_header header(
-			 (std::uint8_t)archive_version
+			 (std::uint8_t)text_archive_version
 			,(std::uint8_t)at
 			,(std::uint8_t)YAS_PLATFORM_BITS_IS_64()
 			,(std::uint8_t)(ET == as_host ? YAS_BIG_ENDIAN() : ET == big_endian)
@@ -211,14 +211,7 @@ struct header_reader_writer<archive_type::json> {
 	enum { header_size = 1 }; // unused for json archives
 
 	template<endian_t ET, typename IO>
-	static void read(IO &, yas::header_flag op, archive_header &header) {
-		// TODO:
-		if ( op == yas::no_header ) return;
-		header.bits.version = archive_version;
-		header.bits.type = archive_type::json;
-		header.bits.bits = YAS_PLATFORM_BITS_IS_64();
-		header.bits.endian = (ET == as_host ? YAS_BIG_ENDIAN() : ET == big_endian);
-	}
+	static void read(IO &, yas::header_flag, archive_header &) {}
 
 	template<endian_t ET, typename IO>
 	static void write(IO &, yas::header_flag, archive_type::type) {}
@@ -274,7 +267,7 @@ struct header_reader_writer<archive_type::json> {
 		static YAS_CONSTEXPR bool is_little_endian() { return ET == as_host ? YAS_LITTLE_ENDIAN() : ET == little_endian; } \
 		static YAS_CONSTEXPR endian_t host_endian() { return YAS_BIG_ENDIAN() ? big_endian : little_endian; } \
 		\
-		static YAS_CONSTEXPR std::uint32_t version() { return archive_version; } \
+		static YAS_CONSTEXPR std::uint32_t version() { return archive_version_by_type<YAS_PP_SEQ_ELEM(idx, seq)>::version ; } \
 		\
 		static YAS_CONSTEXPR bool is_readable() { return false; } \
 		static YAS_CONSTEXPR bool is_writable() { return true; } \
@@ -305,6 +298,8 @@ template<
 	,endian_t ET
 >
 struct oarchive_information;
+
+/***************************************************************************/
 
 YAS_WRITE_ARCHIVE_INFORMATION_SPECIALIZATIONS(
 	(archive_type::binary)

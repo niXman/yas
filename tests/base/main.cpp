@@ -449,6 +449,7 @@ int main() {
 	<< "> failed tests   : " << failed << std::endl
 	<< "> platform bits  : " << (YAS_PLATFORM_BITS()) << std::endl
 	<< "> platform endian: " << (YAS_LITTLE_ENDIAN() ? "little" : "big") << std::endl
+	<< "> YAS version    : " << YAS_VERSION_STRING() << std::endl
 	<< "/***************************************************/" << std::endl;
 
 	return failed;

@@ -58,7 +58,6 @@ struct serializer<
 	template<typename Archive>
 	static Archive& save(Archive &ar, const boost::container::string &string) {
 		ar & (std::uint32_t)string.length();
-		ar.write(space_sep);
 		ar.write(&string[0], string.length());
 		return ar;
 	}
@@ -68,7 +67,6 @@ struct serializer<
 		std::uint32_t size = 0;
 		ar & size;
 		string.resize(size);
-		if ( ar.getch() != space_sep ) YAS_THROW_SPACE_IS_EXPECTED();
 		ar.read(&string[0], size);
 		return ar;
 	}
