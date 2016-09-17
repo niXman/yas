@@ -60,7 +60,8 @@ struct mem_ostream: private detail::noncopyable {
 		,end((char*)ptr+size)
 	{}
 
-	void reserve(const std::size_t size) {
+	template<typename T>
+	std::size_t write(const T *ptr, const std::size_t size) {
 		if ( cur+size > end ) {
 			shared_buffer::shared_array_type prev = buf.data;
 			const std::size_t olds = cur - beg;
@@ -73,11 +74,6 @@ struct mem_ostream: private detail::noncopyable {
 			cur = beg+olds;
 			end = beg+news;
 		}
-	}
-
-	template<typename T>
-	std::size_t write(const T *ptr, const std::size_t size) {
-		reserve(size);
 
 		switch ( size ) {
 			case sizeof(std::int8_t):
