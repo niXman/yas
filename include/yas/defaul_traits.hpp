@@ -38,6 +38,7 @@
 
 #include <yas/detail/config/config.hpp>
 
+#include <cstring>
 #include <cmath>
 
 namespace yas {
@@ -253,7 +254,7 @@ inline void strreverse(char* begin, char* end) {
 }
 
 template<typename T>
-void default_traits::dtoa(char *buf, const std::size_t, std::size_t &len, T v) {
+void default_traits::dtoa(char *buf, const std::size_t size, std::size_t &len, T v) {
 	std::size_t prec = YAS_DEFAULT_DOUBLE_PRECISION;
 	// from: https://code.google.com/p/stringencoders/wiki/NumToA
 	static const double powers_of_10[] = {
@@ -314,8 +315,9 @@ void default_traits::dtoa(char *buf, const std::size_t, std::size_t &len, T v) {
 		which can be 100s of characters overflowing your buffers == bad
 	 */
 	if (v > thres_max) {
-		sprintf(buf, "%e", neg ? -v : v);
-		len = strlen(buf);
+		len = std::snprintf(buf, size, "%e", neg ? -v : v);
+
+		return;
 	}
 
 	if (prec == 0) {
