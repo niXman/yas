@@ -49,8 +49,6 @@ bool enum_test(const char* archive_type, const char* io_type) {
 	oa1 & _1_2
 		 & _1_4;
 
-	oa1.dump();
-
 	enum_test_enum1 e11, e12;
 	typename archive_traits::iarchive ia1;
 	archive_traits::icreate(ia1, oa1, archive_type, io_type);
