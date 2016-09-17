@@ -49,13 +49,15 @@ bool enum_test(const char* archive_type, const char* io_type) {
 	oa1 & _1_2
 		 & _1_4;
 
-	enum_test_enum1 e11, e12, e13(_1_1);
+	oa1.dump();
+
+	enum_test_enum1 e11, e12;
 	typename archive_traits::iarchive ia1;
 	archive_traits::icreate(ia1, oa1, archive_type, io_type);
 
 	ia1 & e11
 		 & e12;
-	if ( e11 != _1_2 || e12 != _1_4 || e13 != _1_1 ) {
+	if ( e11 != _1_2 || e12 != _1_4 ) {
 		std::cout << "ENUM deserialization error! [1]" << std::endl;
 		return false;
 	}
@@ -65,14 +67,12 @@ bool enum_test(const char* archive_type, const char* io_type) {
 	oa2 & enum_test_enum2::_2_1
 		 & enum_test_enum2::_2_3;
 
-	enum_test_enum2 e21, e22, e23(enum_test_enum2::_2_1);
+	enum_test_enum2 e21, e22;
 	typename archive_traits::iarchive ia2;
 	archive_traits::icreate(ia2, oa2, archive_type, io_type);
 	ia2 & e21
 		 & e22;
-	if ( e21 != enum_test_enum2::_2_1 || e22 != enum_test_enum2::_2_3
-			|| e23 != enum_test_enum2::_2_1
-	) {
+	if ( e21 != enum_test_enum2::_2_1 || e22 != enum_test_enum2::_2_3) {
 		std::cout << "ENUM deserialization error! [2]" << std::endl;
 		return false;
 	}

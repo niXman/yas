@@ -147,7 +147,7 @@ struct mem_istream: private detail::noncopyable {
 		return copy;
 	}
 
-	char getch() { return *cur++; }
+	char getch() { return (cur < end ? *cur++ : -1); }
 	void ungetch(char) { --cur; }
 
 	shared_buffer get_shared_buffer() const { return shared_buffer(cur, end - cur); }

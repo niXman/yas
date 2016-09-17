@@ -49,14 +49,15 @@ namespace detail {
 /***************************************************************************/
 
 #define YAS_READ_BY_CHAR(is, buf, cnt) \
-	for ( char *cur = &buf[0], *end = &buf[sizeof(buf)-1]; cur != end; ++cur ) { \
+	for ( char *cur = &buf[0], *end = &buf[sizeof(buf)-1]; cur != end; ++cur, ++cnt ) { \
 		*cur = is.getch(); \
 		if ( *cur == ' ' ) { \
 			is.ungetch(*cur); \
 			*cur = 0; \
 			break; \
-		} else { \
-			++cnt; \
+		} \
+		if ( *cur == -1 ) { \
+			break; \
 		} \
 	}
 
