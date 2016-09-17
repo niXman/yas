@@ -49,23 +49,6 @@ namespace detail {
 
 /***************************************************************************/
 
-#if 0
-#define YAS_READ_BY_CHAR(is, buf, cnt) \
-	for ( char *cur = &buf[0], *end = &buf[sizeof(buf)-1]; cur != end; ++cur, ++cnt ) { \
-		*cur = is.getch(); \
-		if ( *cur == ' ' ) { \
-			is.ungetch(*cur); \
-			*cur = 0; \
-			break; \
-		} \
-		if ( *cur == -1 ) { \
-			break; \
-		} \
-	}
-#endif
-
-/***************************************************************************/
-
 template<typename IS, typename Trait>
 struct text_istream {
 	text_istream(IS &is)
