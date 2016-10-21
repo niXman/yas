@@ -4,7 +4,7 @@ YAS
 ===
 Yet Another Serialization
 
-![Time](https://raw.githubusercontent.com/STEllAR-GROUP/cpp-serializers/803ab248cd682d3e69e8471e0a9c2e09259b802c/images/time.png)
+![Time](https://github.com/STEllAR-GROUP/cpp-serializers/blob/master/images/time.png)
 
 ===
 * YAS is created as a replacement of boost.serialization because of its insufficient speed of serialization.
