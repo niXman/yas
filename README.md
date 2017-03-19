@@ -4,8 +4,6 @@ YAS
 ===
 Yet Another Serialization
 
-![Time](https://github.com/STEllAR-GROUP/cpp-serializers/blob/master/images/time.png)
-
 ===
 * YAS is created as a replacement of boost.serialization because of its insufficient speed of serialization.
 * YAS is header only library. You do not need to link it with your code.
@@ -21,14 +19,14 @@ Supported the following types of archives:
 
 ===
 Supported the following compilers:
- - GCC  : 4.8.0, 4.8.1, 4.8.2, ... - x32/x64
- - MinGW: 4.8.0, 4.8.1, 4.8.2, ... - x32/x64
- - Clang: 3.3, 3.4, ... - x32/x64
+ - GCC  : 4.8.5, ... - 32/64 bit
+ - MinGW: 4.8.5, ... - 32/64 bit
+ - Clang: 3.4, ... - 32/64 bit
  - Intel: (untested)
- - MSVC : 2013, 2015, ... - x32/x64
+ - MSVC : 2015, ... - 32/64 bit
 
 ===
-Planned the support for the following serializable types:
+Serialization for the following types is supported:
  - all built-in types
  - enum`s and 'enum class'es
  - std::array
