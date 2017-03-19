@@ -36,7 +36,7 @@
 #ifndef _yas__has_function_serialize_hpp
 #define _yas__has_function_serialize_hpp
 
-#include <yas/detail/config/config.hpp>
+#include <yas/detail/tools/cast.hpp>
 
 namespace yas {
 
@@ -55,12 +55,12 @@ struct has_function_const_serialize<false, false, T, T2> {
 	typedef char (&no)  [2];
 
 	template<typename U, typename U2>
-	static yes check(decltype(serialize((*(U*)0),(*(const U2*)0)))*);
+	static yes check(decltype(serialize(*YAS_SCAST(U*, nullptr), *YAS_SCAST(const U2*, nullptr)))*);
 
 	template<typename U, typename U2>
 	static no check(...);
 
-	static const bool value = sizeof(check<T, T2>(0)) == sizeof(yes);
+	enum { value = sizeof(check<T, T2>(0)) == sizeof(yes) };
 };
 
 /***************************************************************************/
@@ -76,12 +76,12 @@ struct has_function_serialize<false, false, T, T2> {
 	typedef char (&no)  [2];
 
 	template<typename U, typename U2>
-	static yes check(decltype(serialize((*(U*)0),(*(U2*)0)))*);
+	static yes check(decltype(serialize(*YAS_SCAST(U*, nullptr), *YAS_SCAST(U2*, nullptr)))*);
 
 	template<typename U, typename U2>
 	static no check(...);
 
-	static const bool value = sizeof(check<T, T2>(0)) == sizeof(yes);
+	enum { value = sizeof(check<T, T2>(0)) == sizeof(yes) };
 };
 
 /***************************************************************************/

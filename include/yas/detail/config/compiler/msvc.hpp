@@ -36,6 +36,8 @@
 #ifndef _yas__config_msvc_config_hpp
 #define _yas__config_msvc_config_hpp
 
+#include <yas/detail/config/endian.hpp>
+
 /***************************************************************************/
 
 #if _MSC_VER < 1900 // msvc2015

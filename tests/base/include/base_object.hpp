@@ -43,19 +43,27 @@ namespace {
 struct base {
 	int x;
 
+    base()
+        :x{}
+    {}
+
 	template<typename archive_type>
 	void serialize(archive_type& ar) {
-		ar & x;
+		ar & YAS_OBJECT("base", x);
 	}
 };
 
 struct derived: base {
 	int y;
 
+    derived()
+        :y{}
+    {}
+
 	template<typename archive_type>
 	void serialize(archive_type& ar) {
-		ar & yas::base_object<base>(*this)
-			& y;
+		auto &x = yas::base_object<base>(*this);
+		ar & YAS_OBJECT("derived", x, y);
 	}
 };
 
@@ -68,11 +76,11 @@ bool base_object_test(const char* archive_type, const char* io_type) {
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type, io_type);
-	oa & d1;
+	oa & YAS_OBJECT("save_d1", d1);
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type, io_type);
-	ia & d2;
+	ia & YAS_OBJECT("load_d2", d2);
 
 	if ( d1.x != d2.x || d1.y != d2.y ) {
 		std::cout << "BASE_OBJECT deserialization error!" << std::endl;

@@ -36,7 +36,7 @@
 #ifndef _yas__io_exceptions_hpp
 #define _yas__io_exceptions_hpp
 
-#include <yas/detail/io/exceptions_base.hpp>
+#include <yas/detail/io/exception_base.hpp>
 
 namespace yas {
 
@@ -47,69 +47,47 @@ YAS_DECLARE_EXCEPTION_TYPE(io_exception);
 /***************************************************************************/
 
 #define YAS_THROW_ARCHIVE_IS_EMPTY() \
-	do { \
-		throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("archive is empty")); \
-	} while(0)
+	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("archive is empty"));
 
 #define YAS_THROW_BAD_ARCHIVE_INFORMATION() \
-	do { \
-		throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("archive is corrupted or try to use \"yas::no_header\" flag")); \
-	} while(0)
+	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("archive is corrupted or try to use \"yas::no_header\" flag"));
 
 #define YAS_THROW_BAD_ARCHIVE_VERSION() \
-	do { \
-		throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("incompatible archive version")); \
-	} while(0)
+	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("incompatible archive version"));
+
+#define YAS_THROW_INCOMPATIBLE_OPTIONS(msg) \
+	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("incompatible options: " msg));
 
 #define YAS_THROW_BAD_ARCHIVE_TYPE() \
-	do { \
-		throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("incompatible archive type")); \
-	} while(0)
+	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("incompatible archive type"));
 
 #define YAS_THROW_ARCHIVE_NO_HEADER() \
-	do { \
-		throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("you cannot use information functions with \"yas::no_header\" flag")); \
-	} while(0)
+	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("you cannot use information functions with \"yas::no_header\" flag"));
 
 #define YAS_THROW_BAD_BYTES_IN_HEADER() \
-	do { \
-		throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("not a hex digit")); \
-	} while(0)
+	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("not a hex digit"));
 
 #define YAS_THROW_ON_READ_ERROR(expected, cmp, ...) \
 	if ( (expected) cmp (__VA_ARGS__) ) { \
 		throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("can't read requested bytes")); \
 	}
 
-#define YAS_THROW_WRITE_ERROR_EXCEPTION() \
-	do { \
-		throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("can't write requested bytes")); \
-	} while(0)
-
 #define YAS_THROW_ON_WRITE_ERROR(expected, cmp, ...) \
 	if ( (expected) cmp (__VA_ARGS__) ) { \
-		YAS_THROW_WRITE_ERROR_EXCEPTION(); \
+		throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("can't write requested bytes")); \
 	}
 
 #define YAS_THROW_FILE_ALREADY_EXISTS() \
-	do { \
-		throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("file already exists")); \
-	} while(0)
+	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("file already exists"));
 
 #define YAS_THROW_FILE_IS_NOT_EXISTS() \
-	do { \
-		throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("file is not exists")); \
-	} while(0)
+	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("file is not exists"));
 
 #define YAS_THROW_ERROR_OPENING_FILE() \
-	do { \
-		throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("error opening file")); \
-	} while(0)
+	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("error opening file"));
 
 #define YAS_THROW_BAD_FILE_MODE() \
-	do { \
-		throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("bad file open mode")); \
-	} while(0)
+	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("bad file open mode"));
 
 /***************************************************************************/
 

@@ -36,52 +36,56 @@
 #ifndef _yas__binary_iarchive_hpp
 #define _yas__binary_iarchive_hpp
 
-#include <yas/detail/type_traits/properties.hpp>
-#include <yas/detail/type_traits/selector.hpp>
-
+#include <yas/detail/type_traits/type_traits.hpp>
+#include <yas/detail/type_traits/serializer.hpp>
 #include <yas/detail/io/information.hpp>
 #include <yas/detail/io/binary_streams.hpp>
+#include <yas/detail/tools/noncopyable.hpp>
+#include <yas/detail/tools/limit.hpp>
 
 #include <yas/tools/base_object.hpp>
 
-#include <yas/serializers/serializer.hpp>
-#include <yas/serializers/binary/utility/pod_serializers.hpp>
-#include <yas/serializers/binary/utility/enum_serializer.hpp>
-#include <yas/serializers/binary/utility/usertype_serializers.hpp>
-#include <yas/serializers/binary/utility/autoarray_serializers.hpp>
-#include <yas/serializers/binary/utility/buffer_serializers.hpp>
-#include <yas/serializers/binary/utility/pair_serializers.hpp>
-#include <yas/serializers/binary/utility/object_serializers.hpp>
+#include <yas/types/utility/fundamental_serializers.hpp>
+#include <yas/types/utility/enum_serializer.hpp>
+#include <yas/types/utility/usertype_serializers.hpp>
+#include <yas/types/utility/autoarray_serializers.hpp>
+#include <yas/types/utility/buffer_serializers.hpp>
+#include <yas/types/utility/object.hpp>
+#include <yas/types/utility/value_serializers.hpp>
+#include <yas/types/utility/object_serializers.hpp>
 
 #include <yas/buffers.hpp>
-#include <yas/detail/tools/noncopyable.hpp>
+#include <yas/version.hpp>
 
 namespace yas {
 
 /***************************************************************************/
 
-template<typename IS, endian_t ET = as_host>
+template<typename IS, std::size_t F = binary|endian_as_host|seq_size_32>
 struct binary_iarchive
-	:detail::binary_istream<IS, ET>
-	,detail::iarchive_information<archive_type::binary, IS, ET>
-	,private detail::noncopyable
+	:detail::binary_istream<IS, F>
+	,detail::iarchive_info<F>
 {
-	using stream_type = IS;
-	using this_type = binary_iarchive<IS, ET>;
+	YAS_NONCOPYABLE(binary_iarchive)
 
-	binary_iarchive(IS &is, header_flag op = with_header)
-		:detail::binary_istream<IS, ET>(is)
-		,detail::iarchive_information<archive_type::binary, IS, ET>(is, op)
+	using stream_type = IS;
+	using this_type = binary_iarchive<IS, F>;
+
+	binary_iarchive(IS &is)
+		:detail::binary_istream<IS, F>(is)
+		,detail::iarchive_info<F>(is)
 	{}
 
 	template<typename T>
 	this_type& operator& (T &&v) {
 		using namespace detail;
-		using real_type = typename std::remove_reference<typename std::remove_const<T>::type>::type;
+		using real_type = typename std::remove_reference<
+			typename std::remove_const<T>::type
+		>::type;
 		return serializer<
 			 type_properties<real_type>::value
 			,serialization_method<real_type, this_type>::value
-			,archive_type::binary
+			,F
 			,real_type
 		>::load(*this, v);
 	}

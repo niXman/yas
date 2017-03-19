@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__endian_hpp
-#define _yas__endian_hpp
+#ifndef _yas__detail__config__endian_hpp
+#define _yas__detail__config__endian_hpp
 
 /***************************************************************************/
 
@@ -74,9 +74,9 @@
 #	define YAS_LITTLE_ENDIAN() (1)
 #	define YAS_BIG_ENDIAN() (0)
 #else
-#	error The file yas/detail/config/endian.hpp needs to be set up for your CPU type.
+#	error The file yas/detail/config/config.hpp needs to be set up for your CPU type.
 #endif
 
 /***************************************************************************/
 
-#endif // _yas__endian_hpp
+#endif // _yas__detail__config__endian_hpp

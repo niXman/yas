@@ -36,44 +36,45 @@
 #ifndef _yas__text_oarchive_hpp
 #define _yas__text_oarchive_hpp
 
-#include <yas/detail/type_traits/properties.hpp>
-#include <yas/detail/type_traits/selector.hpp>
-
+#include <yas/detail/type_traits/type_traits.hpp>
+#include <yas/detail/type_traits/serializer.hpp>
 #include <yas/detail/io/information.hpp>
 #include <yas/detail/io/text_streams.hpp>
+#include <yas/detail/tools/noncopyable.hpp>
+#include <yas/detail/tools/limit.hpp>
 #include <yas/defaul_traits.hpp>
 
-#include <yas/tools/pair_object.hpp>
 #include <yas/tools/base_object.hpp>
 
-#include <yas/serializers/serializer.hpp>
-#include <yas/serializers/text/utility/pod_serializers.hpp>
-#include <yas/serializers/text/utility/enum_serializer.hpp>
-#include <yas/serializers/text/utility/usertype_serializers.hpp>
-#include <yas/serializers/text/utility/autoarray_serializers.hpp>
-#include <yas/serializers/text/utility/buffer_serializers.hpp>
-#include <yas/serializers/text/utility/pair_serializers.hpp>
-#include <yas/serializers/text/utility/object_serializers.hpp>
+#include <yas/types/utility/fundamental_serializers.hpp>
+#include <yas/types/utility/enum_serializer.hpp>
+#include <yas/types/utility/usertype_serializers.hpp>
+#include <yas/types/utility/autoarray_serializers.hpp>
+#include <yas/types/utility/buffer_serializers.hpp>
+#include <yas/types/utility/object.hpp>
+#include <yas/types/utility/value_serializers.hpp>
+#include <yas/types/utility/object_serializers.hpp>
 
 #include <yas/buffers.hpp>
-#include <yas/detail/tools/noncopyable.hpp>
+#include <yas/version.hpp>
 
 namespace yas {
 
 /***************************************************************************/
 
-template<typename OS, typename Trait = yas::detail::default_traits>
+template<typename OS, std::size_t F = text|endian_as_host, typename Trait = yas::detail::default_traits>
 struct text_oarchive
-	:detail::text_ostream<OS, Trait>
-	,detail::oarchive_information<archive_type::text, OS, as_host>
-	,private detail::noncopyable
+	:detail::text_ostream<OS, F, Trait>
+	,detail::oarchive_info<F>
 {
-	using stream_type = OS;
-	using this_type = text_oarchive<OS, Trait>;
+	YAS_NONCOPYABLE(text_oarchive)
 
-	text_oarchive(OS &os, header_flag op = with_header)
-		:detail::text_ostream<OS, Trait>(os)
-		,detail::oarchive_information<archive_type::text, OS, as_host>(os, op)
+	using stream_type = OS;
+	using this_type = text_oarchive<OS, F, Trait>;
+
+	text_oarchive(OS &os)
+		:detail::text_ostream<OS, F, Trait>(os)
+		,detail::oarchive_info<F>(os)
 	{}
 
 	template<typename T>
@@ -82,7 +83,7 @@ struct text_oarchive
 		return serializer<
 			 type_properties<T>::value
 			,serialization_method<T, this_type>::value
-			,archive_type::text
+			,F
 			,T
 		>::save(*this, v);
 	}

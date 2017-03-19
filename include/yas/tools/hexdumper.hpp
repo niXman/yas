@@ -36,10 +36,10 @@
 #ifndef _yas__tools__hexdumper_hpp
 #define _yas__tools__hexdumper_hpp
 
+#include <yas/detail/tools/cast.hpp>
+
 #include <sstream>
 #include <iomanip>
-
-#include <yas/detail/config/config.hpp>
 
 namespace yas {
 namespace detail {
@@ -140,9 +140,9 @@ inline void hex_dump(std::ostream &os, const void *buf, const std::size_t len) {
 		}
 		cnt2 = (cnt2 + 1) % 18;
 		if ( cnt2 <= 16 ) {
-			os << std::hex << std::setw(2) << std::setfill('0') << (std::size_t)buffer[n] << " ";
+			os << std::hex << std::setw(2) << std::setfill('0') << YAS_SCAST(std::size_t, buffer[n]) << ' ';
 		} else {
-			os << "  ";
+			os << '|';
 			os << std::setfill(' ');
 			for ( idx = n - cnt2 + 1; idx < n; ++idx) {
 				if ( buffer[idx] < 32 || 126 < buffer[idx] ) {
@@ -162,7 +162,7 @@ inline void hex_dump(std::ostream &os, const void *buf, const std::size_t len) {
 	for ( idx = cnt2+1; idx <= 16 ; ++idx ) {
 		os << std::setw(2) << "-- ";
 	}
-	os << "  ";
+	os << '|';
 
 	for ( idx = n-cnt2; cnt2 <= 16 && idx < n; ++idx ) {
 		if ( buffer[idx] < 32 || 126 < buffer[idx] ) {
@@ -174,6 +174,7 @@ inline void hex_dump(std::ostream &os, const void *buf, const std::size_t len) {
 	os << std::dec;
 
 	os << std::endl
+	<< "ADDR: 0x" << buf << ", "
 	<< "LEN: " << len << " bytes, "
 	<< "CRC32: 0x" << std::hex << detail::chksum_crc32(buf, len);
 

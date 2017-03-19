@@ -98,35 +98,6 @@ bool tuple_test(const char* archive_type, const char* io_type) {
 	archive_traits::ocreate(oa4, archive_type, io_type);
 	oa4 & v5;
 
-	static const std::size_t binary_expected_size =
-		archive_traits::oarchive_type::header_size()+ // archive header
-		sizeof(std::uint8_t)+ // size marker
-		sizeof(std::uint64_t)+ // first type
-		sizeof(std::uint32_t)+ // string size marker
-		std::strlen(str) // string length
-	;
-	static const std::size_t text_expected_size =
-		archive_traits::oarchive_type::header_size()
-		+1/*space*/+2/*len of next field*/+1/*size marker*/
-		+1/*space*/+2/*len of next field*/+2/*value*/
-		+1/*space*/+2/*len of next field*/+1/*string len*/+3/*string*/
-	;
-
-	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
-		const size_t current_size = oa4.size();
-		if ( current_size != binary_expected_size ) {
-			std::cout << "STD_TUPLE deserialization error! [4]" << std::endl;
-			return false;
-		}
-	}
-	if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
-		const size_t current_size = oa4.size();
-		if ( current_size != text_expected_size ) {
-			std::cout << "STD_TUPLE deserialization error! [5]" << std::endl;
-			return false;
-		}
-	}
-
 	typename archive_traits::iarchive ia4;
 	archive_traits::icreate(ia4, oa4, archive_type, io_type);
 	ia4 & v6;
@@ -138,21 +109,6 @@ bool tuple_test(const char* archive_type, const char* io_type) {
 	typename archive_traits::oarchive oa5;
 	archive_traits::ocreate(oa5, archive_type, io_type);
 	oa5 & std::make_tuple<std::uint64_t, std::string>(33, "str");
-
-	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
-		const size_t current_size2 = oa5.size();
-		if ( current_size2 != binary_expected_size ) {
-			std::cout << "STD_TUPLE deserialization error! [7]" << std::endl;
-			return false;
-		}
-	}
-	if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
-		const size_t current_size = oa5.size();
-		if ( current_size != text_expected_size ) {
-			std::cout << "STD_TUPLE deserialization error! [8]" << std::endl;
-			return false;
-		}
-	}
 
 	typename archive_traits::iarchive ia5;
 	archive_traits::icreate(ia5, oa5, archive_type, io_type);
@@ -176,7 +132,7 @@ bool tuple_test(const char* archive_type, const char* io_type) {
 	}
 	if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
 		const size_t current_size = oa6.size();
-		if ( current_size != (archive_traits::oarchive_type::header_size()+1/*space*/+2/*len of next field*/+1/*size marker*/) ) {
+		if ( current_size != (archive_traits::oarchive_type::header_size()+1/*len of next field*/+1/*size marker*/) ) {
 			std::cout << "STD_TUPLE serialization error! [11]" << std::endl;
 			return false;
 		}

@@ -42,13 +42,14 @@
 /***************************************************************************/
 
 struct my_traits {
-	static void itoa(char *buf, const std::size_t bufsize, std::size_t &size, std::int32_t v) {
-		size = std::snprintf(buf, bufsize, "%d", v);
+	static std::size_t itoa(char *buf, const std::size_t bufsize, std::int32_t v) {
+		return std::snprintf(buf, bufsize, "%d", v);
 	}
 };
 struct my_traits2 {
-	static void atoi(std::int32_t &v, const char *str, std::size_t) {
-		v = std::strtol(str, 0, 10);
+	template<typename T>
+	static T atoi(const char *str, std::size_t) {
+		return static_cast<T>(std::strtol(str, 0, 10));
 	}
 };
 
@@ -57,11 +58,19 @@ struct my_traits2 {
 int main() {
 	std::int32_t src = 33, dst = 0;
 	yas::mem_ostream os;
-	yas::text_oarchive<yas::mem_ostream, my_traits> oa(os);
+	yas::text_oarchive<
+		 yas::mem_ostream
+		,yas::text|yas::endian_as_host
+		,my_traits
+	> oa(os);
 	oa & src;
 
 	yas::mem_istream is(os.get_intrusive_buffer());
-	yas::text_iarchive<yas::mem_istream, my_traits2> ia(is);
+	yas::text_iarchive<
+		 yas::mem_istream
+		,yas::text|yas::endian_as_host
+		,my_traits2
+	> ia(is);
 	ia & dst;
 
 	if ( src != dst )

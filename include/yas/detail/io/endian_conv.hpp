@@ -39,84 +39,102 @@
 #include <yas/detail/config/config.hpp>
 #include <yas/detail/type_traits/type_traits.hpp>
 
-#include <cstring>
-
 namespace yas {
-
-enum endian_t {
-	 big_endian
-	,little_endian
-	,as_host
-};
-
 namespace detail {
 
 /***************************************************************************/
 
-template<bool LE>
-struct endian_convertor;
+template<typename T>
+struct storage_type {
+	enum {
+		 is_float  = std::is_same<T, float>::value
+		,is_double = std::is_same<T, double>::value
+	};
+	static_assert(is_float||is_double,"only double or float types is allowed");
 
-template<>
-struct endian_convertor<true> {
-	template<typename T>
-	static void to_network(std::uint8_t *dst, const T &v) {
-		*((T*)dst) = v;
-	}
-
-	template<typename T>
-	static void from_network(T &v, const std::uint8_t *src) {
-		v = *((T*)src);
-	}
+	using type = typename std::conditional<
+		 is_float
+		,std::uint32_t
+		,std::uint64_t
+	>::type;
 };
 
+template<bool Bswap>
+struct endian_converter;
+
 template<>
-struct endian_convertor<false> {
+struct endian_converter<false> {
 	template<typename T>
-	struct storage_type {
-		enum {
-			 is_float  = std::is_same<T, float>::value
-			,is_double = std::is_same<T, double>::value
-		};
-		static_assert(is_float||is_double,"only double or float types is allowed");
-
-		using type = typename std::conditional<
-			 is_float
-			,std::uint32_t
-			,std::uint64_t
-		>::type;
-
-		template<typename U>
-		static void bswab(U &u, YAS_ENABLE_IF_IS_ANY_OF(U, std::uint32_t)) {
-			u = YAS_NETWORK_TO_LOCAL32(u);
-		}
-		template<typename U>
-		static void bswab(U &u, YAS_ENABLE_IF_IS_ANY_OF(U, std::uint64_t)) {
-			u = YAS_NETWORK_TO_LOCAL64(u);
-		}
-	};
+	static T bswap(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::uint16_t))
+	{ return v; }
+	template<typename T>
+	static T bswap(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t, std::uint32_t))
+	{ return v; }
+	template<typename T>
+	static T bswap(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t, std::uint64_t))
+	{ return v; }
 
 	template<typename T>
-	static void to_network(std::uint8_t *dst, const T &v) {
+	static typename storage_type<T>::type
+	to_network(const T &v) {
 		union {
 			typename storage_type<T>::type u;
 			T v;
 		} u;
 		u.v = v;
 
-		storage_type<T>::bswab(u.u);
-		std::memcpy(dst, &u.u, sizeof(T));
+		return u.u;
 	}
 
 	template<typename T>
-	static void from_network(T &v, const std::uint8_t *src) {
+	static T
+	from_network(const typename storage_type<T>::type &v) {
 		union {
 			typename storage_type<T>::type u;
 			T v;
 		} u;
+		u.u = v;
 
-		std::memcpy(&u.u, src, sizeof(v));
-		storage_type<T>::bswab(u.u);
-		v = u.v;
+		return u.v;
+	}
+};
+
+template<>
+struct endian_converter<true> {
+	template<typename T>
+	static T bswap(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::uint16_t))
+	{ return YAS_NETWORK_TO_LOCAL16(v); }
+	template<typename T>
+	static T bswap(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t, std::uint32_t))
+	{ return YAS_NETWORK_TO_LOCAL32(v); }
+	template<typename T>
+	static T bswap(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t, std::uint64_t))
+	{ return YAS_NETWORK_TO_LOCAL64(v); }
+
+	template<typename T>
+	static typename storage_type<T>::type
+	to_network(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, float, double)) {
+		union {
+			typename storage_type<T>::type u;
+			T v;
+		} u;
+		u.v = v;
+
+		return bswap(u.u);
+	}
+
+	template<typename T>
+	static T
+	from_network(const typename storage_type<T>::type &v, YAS_ENABLE_IF_IS_ANY_OF(T, float, double)) {
+		union {
+			typename storage_type<T>::type u;
+			T v;
+		} u;
+		u.u = v;
+
+		u.u = bswap(u.u);
+
+		return u.v;
 	}
 };
 

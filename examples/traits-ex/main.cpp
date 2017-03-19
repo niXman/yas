@@ -45,54 +45,54 @@
 struct my_traits {
 	// integer -> c-string
 	template<typename T>
-	static void itoa(char *buf, const std::size_t bufsize, std::size_t &size, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t)) {
-		size = std::snprintf(buf, bufsize, "%d", (v+2));
+	static std::size_t itoa(char *buf, const std::size_t bufsize, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t)) {
+		return std::snprintf(buf, bufsize, "%d", (v+2));
 	}
 	template<typename T>
-	static void itoa(char *buf, const std::size_t bufsize, std::size_t &size, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t)) {
-		size = std::snprintf(buf, bufsize, "%d", (v+6));
+	static std::size_t itoa(char *buf, const std::size_t bufsize, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t)) {
+		return std::snprintf(buf, bufsize, "%d", (v+6));
 	}
 	template<typename T>
-	static void itoa(char *buf, const std::size_t bufsize, std::size_t &size, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t)) {
-		size = std::snprintf(buf, bufsize, "%" PRId64, (v+10));
+	static std::size_t itoa(char *buf, const std::size_t bufsize, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t)) {
+		return std::snprintf(buf, bufsize, "%" PRId64, (v+10));
 	}
 	template<typename T>
-	static void utoa(char *buf, const std::size_t bufsize, std::size_t &size, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t)) {
-		size = std::snprintf(buf, bufsize, "%u", (v+4));
+	static std::size_t utoa(char *buf, const std::size_t bufsize, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t)) {
+		return std::snprintf(buf, bufsize, "%u", (v+4));
 	}
 	template<typename T>
-	static void utoa(char *buf, const std::size_t bufsize, std::size_t &size, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint32_t)) {
-		size = std::snprintf(buf, bufsize, "%u", (v+8));
+	static std::size_t utoa(char *buf, const std::size_t bufsize, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint32_t)) {
+		return std::snprintf(buf, bufsize, "%u", (v+8));
 	}
 	template<typename T>
-	static void utoa(char *buf, const std::size_t bufsize, std::size_t &size, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint64_t)) {
-		size = std::snprintf(buf, bufsize, "%" PRIu64, (v+12));
+	static std::size_t utoa(char *buf, const std::size_t bufsize, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint64_t)) {
+		return std::snprintf(buf, bufsize, "%" PRIu64, (v+12));
 	}
 
 	// c-string -> integer
 	template<typename T>
-	static void atoi(T &v, const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t)) {
-		v = std::strtol(str, 0, 10);
+	static T atoi(const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t)) {
+		return std::strtol(str, 0, 10);
 	}
 	template<typename T>
-	static void atoi(T &v, const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t)) {
-		v = std::strtol(str, 0, 10);
+	static T atoi(const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t)) {
+		return std::strtol(str, 0, 10);
 	}
 	template<typename T>
-	static void atoi(T &v, const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t)) {
-		v = std::strtol(str, 0, 10);
+	static T atoi(const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t)) {
+		return std::strtol(str, 0, 10);
 	}
 	template<typename T>
-	static void atou(T &v, const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t)) {
-		v = std::strtoul(str, 0, 10);
+	static T atou(const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t)) {
+		return std::strtoul(str, 0, 10);
 	}
 	template<typename T>
-	static void atou(T &v, const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint32_t)) {
-		v = std::strtoul(str, 0, 10);
+	static T atou(const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint32_t)) {
+		return std::strtoul(str, 0, 10);
 	}
 	template<typename T>
-	static void atou(T &v, const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint64_t)) {
-		v = std::strtoul(str, 0, 10);
+	static T atou(const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint64_t)) {
+		return std::strtoul(str, 0, 10);
 	}
 }; // struct my_traits
 
@@ -102,11 +102,19 @@ template<typename T>
 void test(T val, T expected) {
 	T dst = 0;
 	yas::mem_ostream os;
-	yas::text_oarchive<yas::mem_ostream, my_traits> oa(os);
+	yas::text_oarchive<
+		 yas::mem_ostream
+		,yas::text|yas::endian_as_host
+		,my_traits
+	> oa(os);
 	oa & val;
 
 	yas::mem_istream is(os.get_intrusive_buffer());
-	yas::text_iarchive<yas::mem_istream, my_traits> ia(is);
+	yas::text_iarchive<
+		 yas::mem_istream
+		,yas::text|yas::endian_as_host
+		,my_traits
+	> ia(is);
 	ia & dst;
 
 	if ( dst != expected ) {

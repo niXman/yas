@@ -36,8 +36,11 @@
 #ifndef _yas__type_traits_hpp
 #define _yas__type_traits_hpp
 
-#include <yas/detail/config/config.hpp>
+#include <yas/detail/type_traits/has_method_serialize.hpp>
+#include <yas/detail/type_traits/has_function_serialize.hpp>
+#include <yas/version.hpp>
 
+#include <cstdint>
 #include <type_traits>
 
 namespace yas {
@@ -72,7 +75,7 @@ struct is_any_of: std::integral_constant<
 /***************************************************************************/
 
 template<typename T>
-struct is_array_of_pods
+struct is_array_of_fundamentals
 	:std::integral_constant<
 		 bool
 		,std::is_array<T>::value && std::is_fundamental<typename std::remove_all_extents<T>::type>::value
@@ -109,11 +112,102 @@ struct disable_if_is_any_of
 
 /***************************************************************************/
 
-static const char space_sep = ' ';
+enum class type_prop {
+	 is_enum
+	,is_fundamental
+	,is_array
+	,is_array_of_fundamentals
+	,not_a_fundamental
+};
+
+enum class ser_method {
+	 has_one_method
+	,has_split_methods
+	,has_one_function
+	,has_split_functions
+	,use_internal_serializer
+};
+
+template<typename T>
+struct type_properties {
+	static constexpr type_prop value =
+		std::is_enum<T>::value
+		? type_prop::is_enum
+		: std::is_fundamental<T>::value
+			? type_prop::is_fundamental
+			: is_array_of_fundamentals<T>::value
+				? type_prop::is_array_of_fundamentals
+				: std::is_array<T>::value
+					? type_prop::is_array
+					: type_prop::not_a_fundamental
+	;
+};
+
+template<typename T, typename Ar>
+struct serialization_method {
+private:
+	enum {
+		 is_fundamental = std::is_fundamental<T>::value
+		,is_array = std::is_array<T>::value
+		,is_enum = std::is_enum<T>::value
+	};
+
+public:
+	static constexpr ser_method value =
+		has_const_method_serializer<is_fundamental || is_array, is_enum, T, void(Ar)>::value
+		? ser_method::has_split_methods
+		: has_method_serializer<is_fundamental || is_array, is_enum, T, void(Ar)>::value
+			? ser_method::has_one_method
+			: has_function_const_serialize<is_fundamental || is_array, is_enum, Ar, T>::value
+				? ser_method::has_split_functions
+				: has_function_serialize<is_fundamental || is_array, is_enum, Ar, T>::value
+					? ser_method::has_one_function
+					: ser_method::use_internal_serializer
+	;
+};
 
 /***************************************************************************/
 
 } // namespace detail
+
+/***************************************************************************/
+
+enum options: std::uint32_t {
+	 binary            = 1u<<0
+	,text              = 1u<<1
+	,object            = 1u<<2
+	,no_header         = 1u<<3
+	,endian_little     = 1u<<4
+	,endian_big        = 1u<<5
+	,endian_as_host    = 1u<<6
+	,compacted         = 1u<<7
+	,seq_size_32       = 1u<<8
+	,seq_size_64       = 1u<<9
+	,seq_size_variadic = 1u<<10
+};
+
+template<typename Ar>
+struct is_binary_archive: std::integral_constant<bool, Ar::type() == options::binary>
+{};
+
+template<typename Ar>
+struct is_text_archive: std::integral_constant<bool, Ar::type() == options::text>
+{};
+
+template<typename Ar>
+struct is_object_archive: std::integral_constant<bool, Ar::type() == options::object>
+{};
+
+template<typename Ar>
+struct is_readable_archive: std::integral_constant<bool, Ar::is_readable()>
+{};
+
+template<typename Ar>
+struct is_writable_archive: std::integral_constant<bool, Ar::is_writable()>
+{};
+
+/***************************************************************************/
+
 } // namespace yas
 
 #endif // _yas__type_traits_hpp

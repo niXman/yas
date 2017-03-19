@@ -39,7 +39,7 @@
 #include <yas/mem_streams.hpp>
 #include <yas/text_oarchive.hpp>
 #include <yas/text_iarchive.hpp>
-#include <yas/serializers/std_types_serializers.hpp>
+#include <yas/std_types.hpp>
 
 /***************************************************************************/
 

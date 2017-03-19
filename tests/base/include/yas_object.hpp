@@ -40,7 +40,7 @@
 
 namespace _yas_object_test_ {
 
-struct type0: private ::yas::detail::noncopyable {
+struct type0 {
 	int v;
 
 	type0(int v)

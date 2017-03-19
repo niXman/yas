@@ -43,6 +43,7 @@ bool pod_test(const char* archive_type, const char* io_type) {
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type, io_type);
 
+	bool b = true, bb;
 	std::int8_t c = '1', cc;
 	std::uint8_t uc = '2', uc2;
 	std::int16_t s = 3, ss;
@@ -56,7 +57,8 @@ bool pod_test(const char* archive_type, const char* io_type) {
 
 	enum {
 		binary_expected_size =
-			 sizeof(c)
+			 sizeof(b)
+			+sizeof(c)
 			+sizeof(uc)
 			+sizeof(s)
 			+sizeof(us)
@@ -66,39 +68,30 @@ bool pod_test(const char* archive_type, const char* io_type) {
 			+sizeof(ui64)
 			+sizeof(f)
 			+sizeof(d)
-		,text_expected_size = 44
+		,text_expected_size = 37
 		,json_expected_size = 28
 	};
 
-	oa & c
-		& uc
-		& s
-		& us
-		& i
-		& l
-		& i64
-		& ui64
-		& f
-		& d;
+	oa & YAS_OBJECT("pod", b, c, uc, s, us, i, l, i64, ui64, f, d);
 
 	switch ( archive_traits::oarchive_type::type() ) {
-		case yas::archive_type::binary:
+		case yas::binary:
 			if ( oa.size() != archive_traits::oarchive_type::header_size()+binary_expected_size ) {
 				std::cout << "POD serialization error! [1]" << std::endl;
 				return false;
 			}
 		break;
-		case yas::archive_type::text:
+		case yas::text:
 			if ( oa.size() != archive_traits::oarchive_type::header_size()+text_expected_size ) {
 				std::cout << "POD serialization error! [2]" << std::endl;
 				return false;
 			}
 		break;
-		case yas::archive_type::json:
-		if ( oa.size() != archive_traits::oarchive_type::header_size()+json_expected_size ) {
-			std::cout << "POD serialization error! [3]" << std::endl;
-			return false;
-		}
+		case yas::object:
+			if ( oa.size() != archive_traits::oarchive_type::header_size()+json_expected_size ) {
+				std::cout << "POD serialization error! [3]" << std::endl;
+				return false;
+			}
 		break;
 		default:
 			std::cout << "POD serialization bad archive type!" << std::endl;
@@ -107,18 +100,9 @@ bool pod_test(const char* archive_type, const char* io_type) {
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type, io_type);
-	ia & cc
-		& uc2
-		& ss
-		& us2
-		& ii
-		& ll
-		& ii64
-		& uui64
-		& ff
-		& dd;
+	ia & YAS_OBJECT("pod", bb, cc, uc2, ss, us2, ii, ll, ii64, uui64, ff, dd);
 
-	if ( c != cc || uc != uc2 || s != ss || us != us2 || i != ii || l != ll || i64 != ii64 || ui64 != uui64 || f != ff || d != dd ) {
+	if ( b != bb || c != cc || uc != uc2 || s != ss || us != us2 || i != ii || l != ll || i64 != ii64 || ui64 != uui64 || f != ff || d != dd ) {
 		std::cout << "POD deserialization error! [4]" << std::endl;
 		return false;
 	}

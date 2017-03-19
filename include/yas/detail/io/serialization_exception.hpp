@@ -36,47 +36,33 @@
 #ifndef _yas__serialization_exceptions_hpp
 #define _yas__serialization_exceptions_hpp
 
-#include <yas/detail/io/exceptions_base.hpp>
-
-#include <stdexcept>
+#include <yas/detail/io/exception_base.hpp>
 
 namespace yas {
 
 /***************************************************************************/
 
-YAS_DECLARE_EXCEPTION_TYPE(serialization_exception);
+YAS_DECLARE_EXCEPTION_TYPE(serialization_exception)
 
 /***************************************************************************/
 
 #define YAS_THROW_BAD_ARRAY_SIZE() \
-	do { \
-		throw ::yas::serialization_exception(YAS_EXCEPTION_MAKE_MSG("bad array size")); \
-	} while(0)
+	YAS_THROW_EXCEPTION(serialization_exception, "bad array size");
 
 #define YAS_THROW_SPACE_IS_EXPECTED() \
-	do { \
-		throw ::yas::serialization_exception(YAS_EXCEPTION_MAKE_MSG("space symbol is expected")); \
-	} while(0)
+	YAS_THROW_EXCEPTION(serialization_exception, "space symbol is expected");
 
 #define YAS_THROW_BAD_SIZE_OF_ENUM() \
-	do { \
-		throw ::yas::serialization_exception(YAS_EXCEPTION_MAKE_MSG("bad size of enum")); \
-	} while(0)
+	YAS_THROW_EXCEPTION(serialization_exception, "bad size of enum");
 
 #define YAS_THROW_BAD_BITSET_SIZE() \
-	do { \
-		throw ::yas::serialization_exception(YAS_EXCEPTION_MAKE_MSG("bad bitset size")); \
-	} while(0)
+	YAS_THROW_EXCEPTION(serialization_exception, "bad bitset size");
 
 #define YAS_THROW_BAD_BITSET_STORAGE_SIZE() \
-	do { \
-		throw ::yas::serialization_exception(YAS_EXCEPTION_MAKE_MSG("bad bitset storage size")); \
-	} while(0)
+	YAS_THROW_EXCEPTION(serialization_exception, "bad bitset storage size");
 
 #define YAS_THROW_BAD_SIZE_ON_DESERIALIZE(type) \
-	do { \
-		throw ::yas::serialization_exception(YAS_EXCEPTION_MAKE_MSG("bad size on deserialize " type)); \
-	} while(0)
+	YAS_THROW_EXCEPTION(serialization_exception, "bad size on deserialize " type);
 
 /***************************************************************************/
 

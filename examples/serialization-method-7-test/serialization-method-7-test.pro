@@ -3,10 +3,10 @@ CONFIG += console
 CONFIG -= qt app_bundle
 
 QMAKE_CXXFLAGS += \
-	-std=c++14
+    -std=c++14
 
 INCLUDEPATH += \
-	../../include \
+    ../../include \
 
 SOURCES += \
-	main.cpp
+    main.cpp

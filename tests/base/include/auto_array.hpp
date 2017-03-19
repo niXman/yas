@@ -39,169 +39,171 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool auto_array_test(const char* archive_type, const char* io_type) {
-	enum { array_size = 6 };
+bool auto_array_test(const char *archive_type, const char *io_type) {
+    enum {
+        array_size = 6
+    };
 
-	std::int8_t ca1[] = {"string"}, ca2[array_size+1] = {0};
-	std::uint8_t uca1[] = {0x73,0x74,0x72,0x69,0x6e,0x67,0x00}, uca2[array_size+1] = {0};
-	std::int16_t sa1[array_size] = {1,2,3,4,5,6}, sa2[array_size];
-	std::uint16_t usa1[array_size] = {1,2,3,4,5,6}, usa2[array_size];
-	std::int32_t ia1[array_size] = {1,2,3,4,5,6}, ia2[array_size];
-	std::uint32_t uia1[array_size] = {1,2,3,4,5,6}, uia2[array_size];
-	std::int64_t i64a1[array_size] = {1,2,3,4,5,6}, i64a2[array_size];
-	std::uint64_t ui64a1[array_size] = {1,2,3,4,5,6}, ui64a2[array_size];
-	double da1[array_size] = {1.1,2.2,3.3,4.4,5.5,6.6}, da2[array_size];
-	float fa1[array_size] = {1.1,2.2,3.3,4.4,5.5,6.6}, fa2[array_size];
-	std::string stra1[array_size] = {"1", "2", "3", "4", "5", "6"}, stra2[array_size];
+    std::int8_t ca1[] = {"string"}, ca2[array_size + 1] = {0};
+    std::uint8_t uca1[] = {0x73, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x00}, uca2[array_size + 1] = {0};
+    std::int16_t sa1[array_size] = {1, 2, 3, 4, 5, 6}, sa2[array_size];
+    std::uint16_t usa1[array_size] = {1, 2, 3, 4, 5, 6}, usa2[array_size];
+    std::int32_t ia1[array_size] = {1, 2, 3, 4, 5, 6}, ia2[array_size];
+    std::uint32_t uia1[array_size] = {1, 2, 3, 4, 5, 6}, uia2[array_size];
+    std::int64_t i64a1[array_size] = {1, 2, 3, 4, 5, 6}, i64a2[array_size];
+    std::uint64_t ui64a1[array_size] = {1, 2, 3, 4, 5, 6}, ui64a2[array_size];
+    double da1[array_size] = {1.1, 2.2, 3.3, 4.4, 5.5, 6.6}, da2[array_size];
+    float fa1[array_size] = {1.1f, 2.2f, 3.3f, 4.4f, 5.5f, 6.6f}, fa2[array_size];
+    std::string stra1[array_size] = {"1", "2", "3", "4", "5", "6"}, stra2[array_size];
 
-	{
-		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type, io_type);
-		oa & ca1;
-		typename archive_traits::iarchive ia;
-		archive_traits::icreate(ia, oa, archive_type, io_type);
-		ia & ca2;
-		if ( memcmp(ca1, ca2, array_size*sizeof(ca1[0])) ) {
-			std::cout << "AUTO_ARRAY deserialization error! [1]" << std::endl;
-			return false;
-		}
-	}
-	{
-		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type, io_type);
-		oa & uca1;
-		typename archive_traits::iarchive ia;
-		archive_traits::icreate(ia, oa, archive_type, io_type);
-		ia & uca2;
-		if ( memcmp(uca1, uca2, array_size*sizeof(uca1[0])) ) {
-			std::cout << "AUTO_ARRAY deserialization error! [2]" << std::endl;
-			return false;
-		}
-	}
-	{
-		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type, io_type);
-		oa & sa1;
-		typename archive_traits::iarchive ia;
-		archive_traits::icreate(ia, oa, archive_type, io_type);
-		ia & sa2;
-		if ( memcmp(sa1, sa2, array_size*sizeof(sa1[0])) ) {
-			std::cout << "AUTO_ARRAY deserialization error! [3]" << std::endl;
-			return false;
-		}
-	}
-	{
-		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type, io_type);
-		oa & usa1;
-		typename archive_traits::iarchive ia;
-		archive_traits::icreate(ia, oa, archive_type, io_type);
-		ia & usa2;
-		if ( memcmp(usa1, usa2, array_size*sizeof(usa1[0])) ) {
-			std::cout << "AUTO_ARRAY deserialization error! [4]" << std::endl;
-			return false;
-		}
-	}
-	{
-		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type, io_type);
-		oa & ia1;
-		typename archive_traits::iarchive ia;
-		archive_traits::icreate(ia, oa, archive_type, io_type);
-		ia & ia2;
-		if ( memcmp(ia1, ia2, array_size*sizeof(ia1[0])) ) {
-			std::cout << "AUTO_ARRAY deserialization error! [5]" << std::endl;
-			return false;
-		}
-	}
-	{
-		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type, io_type);
-		oa & uia1;
-		typename archive_traits::iarchive ia;
-		archive_traits::icreate(ia, oa, archive_type, io_type);
-		ia & uia2;
-		if ( memcmp(uia1, uia2, array_size*sizeof(uia1[0])) ) {
-			std::cout << "AUTO_ARRAY deserialization error! [6]" << std::endl;
-			return false;
-		}
-	}
-	{
-		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type, io_type);
-		oa & i64a1;
-		typename archive_traits::iarchive ia;
-		archive_traits::icreate(ia, oa, archive_type, io_type);
-		ia & i64a2;
-		if ( memcmp(i64a1, i64a2, array_size*sizeof(i64a1[0])) ) {
-			std::cout << "AUTO_ARRAY deserialization error! [7]" << std::endl;
-			return false;
-		}
-	}
-	{
-		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type, io_type);
-		oa & ui64a1;
-		typename archive_traits::iarchive ia;
-		archive_traits::icreate(ia, oa, archive_type, io_type);
-		ia & ui64a2;
-		if ( memcmp(ui64a1, ui64a2, array_size*sizeof(ui64a1[0])) ) {
-			std::cout << "AUTO_ARRAY deserialization error! [8]" << std::endl;
-			return false;
-		}
-	}
-	{
-		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type, io_type);
-		oa & da1;
-		typename archive_traits::iarchive ia;
-		archive_traits::icreate(ia, oa, archive_type, io_type);
-		ia & da2;
-		if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
-			if ( memcmp(da1, da2, array_size*sizeof(da1[0])) ) {
-				std::cout << "AUTO_ARRAY deserialization error! [11]" << std::endl;
-				return false;
-			}
-		} else {
-			if ( !std::equal(da1, da1+array_size, da2) ) {
-				std::cout << "AUTO_ARRAY deserialization error! [11]" << std::endl;
-				return false;
-			}
-		}
-	}
-	{
-		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type, io_type);
-		oa & fa1;
-		typename archive_traits::iarchive ia;
-		archive_traits::icreate(ia, oa, archive_type, io_type);
-		ia & fa2;
-		if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
-			if ( memcmp(fa1, fa2, array_size*sizeof(fa1[0])) ) {
-				std::cout << "AUTO_ARRAY deserialization error! [12]" << std::endl;
-				return false;
-			}
-		} else {
-			if ( !std::equal(fa1, fa1+array_size, fa2) ) {
-				std::cout << "AUTO_ARRAY deserialization error! [12]" << std::endl;
-				return false;
-			}
-		}
-	}
-	{
-		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type, io_type);
-		oa & stra1;
-		typename archive_traits::iarchive ia;
-		archive_traits::icreate(ia, oa, archive_type, io_type);
-		ia & stra2;
-		if ( !std::equal(stra1, stra1+array_size, stra2) ) {
-			std::cout << "AUTO_ARRAY deserialization error! [13]" << std::endl;
-			return false;
-		}
-	}
+    {
+        typename archive_traits::oarchive oa;
+        archive_traits::ocreate(oa, archive_type, io_type);
+        oa & YAS_OBJECT("ca1", ca1);
+        typename archive_traits::iarchive ia;
+        archive_traits::icreate(ia, oa, archive_type, io_type);
+        ia & YAS_OBJECT("ca2", ca2);
+        if (memcmp(ca1, ca2, array_size * sizeof(ca1[0]))) {
+            std::cout << "AUTO_ARRAY deserialization error! [1]" << std::endl;
+            return false;
+        }
+    }
+    {
+        typename archive_traits::oarchive oa;
+        archive_traits::ocreate(oa, archive_type, io_type);
+        oa & YAS_OBJECT("uca1", uca1);
+        typename archive_traits::iarchive ia;
+        archive_traits::icreate(ia, oa, archive_type, io_type);
+        ia & YAS_OBJECT("uca2", uca2);
+        if (memcmp(uca1, uca2, array_size * sizeof(uca1[0]))) {
+            std::cout << "AUTO_ARRAY deserialization error! [2]" << std::endl;
+            return false;
+        }
+    }
+    {
+        typename archive_traits::oarchive oa;
+        archive_traits::ocreate(oa, archive_type, io_type);
+        oa & YAS_OBJECT("sa1", sa1);
+        typename archive_traits::iarchive ia;
+        archive_traits::icreate(ia, oa, archive_type, io_type);
+        ia & YAS_OBJECT("sa2", sa2);
+        if (memcmp(sa1, sa2, array_size * sizeof(sa1[0]))) {
+            std::cout << "AUTO_ARRAY deserialization error! [3]" << std::endl;
+            return false;
+        }
+    }
+    {
+        typename archive_traits::oarchive oa;
+        archive_traits::ocreate(oa, archive_type, io_type);
+        oa & YAS_OBJECT("usa1", usa1);
+        typename archive_traits::iarchive ia;
+        archive_traits::icreate(ia, oa, archive_type, io_type);
+        ia & YAS_OBJECT("usa2", usa2);
+        if (memcmp(usa1, usa2, array_size * sizeof(usa1[0]))) {
+            std::cout << "AUTO_ARRAY deserialization error! [4]" << std::endl;
+            return false;
+        }
+    }
+    {
+        typename archive_traits::oarchive oa;
+        archive_traits::ocreate(oa, archive_type, io_type);
+        oa & YAS_OBJECT("ia1", ia1);
+        typename archive_traits::iarchive ia;
+        archive_traits::icreate(ia, oa, archive_type, io_type);
+        ia & YAS_OBJECT("ia2", ia2);
+        if (memcmp(ia1, ia2, array_size * sizeof(ia1[0]))) {
+            std::cout << "AUTO_ARRAY deserialization error! [5]" << std::endl;
+            return false;
+        }
+    }
+    {
+        typename archive_traits::oarchive oa;
+        archive_traits::ocreate(oa, archive_type, io_type);
+        oa & YAS_OBJECT("uia1", uia1);
+        typename archive_traits::iarchive ia;
+        archive_traits::icreate(ia, oa, archive_type, io_type);
+        ia & YAS_OBJECT("uia2", uia2);
+        if (memcmp(uia1, uia2, array_size * sizeof(uia1[0]))) {
+            std::cout << "AUTO_ARRAY deserialization error! [6]" << std::endl;
+            return false;
+        }
+    }
+    {
+        typename archive_traits::oarchive oa;
+        archive_traits::ocreate(oa, archive_type, io_type);
+        oa & YAS_OBJECT("i64a1", i64a1);
+        typename archive_traits::iarchive ia;
+        archive_traits::icreate(ia, oa, archive_type, io_type);
+        ia & YAS_OBJECT("i64a2", i64a2);
+        if (memcmp(i64a1, i64a2, array_size * sizeof(i64a1[0]))) {
+            std::cout << "AUTO_ARRAY deserialization error! [7]" << std::endl;
+            return false;
+        }
+    }
+    {
+        typename archive_traits::oarchive oa;
+        archive_traits::ocreate(oa, archive_type, io_type);
+        oa & YAS_OBJECT("ui64a1", ui64a1);
+        typename archive_traits::iarchive ia;
+        archive_traits::icreate(ia, oa, archive_type, io_type);
+        ia & YAS_OBJECT("ui64a2", ui64a2);
+        if (memcmp(ui64a1, ui64a2, array_size * sizeof(ui64a1[0]))) {
+            std::cout << "AUTO_ARRAY deserialization error! [8]" << std::endl;
+            return false;
+        }
+    }
+    {
+        typename archive_traits::oarchive oa;
+        archive_traits::ocreate(oa, archive_type, io_type);
+        oa & YAS_OBJECT("da1", da1);
+        typename archive_traits::iarchive ia;
+        archive_traits::icreate(ia, oa, archive_type, io_type);
+        ia & YAS_OBJECT("da2", da2);
+        if (yas::is_binary_archive<typename archive_traits::oarchive_type>::value) {
+            if (memcmp(da1, da2, array_size * sizeof(da1[0]))) {
+                std::cout << "AUTO_ARRAY deserialization error! [11]" << std::endl;
+                return false;
+            }
+        } else {
+            if (!std::equal(da1, da1 + array_size, da2)) {
+                std::cout << "AUTO_ARRAY deserialization error! [11]" << std::endl;
+                return false;
+            }
+        }
+    }
+    {
+        typename archive_traits::oarchive oa;
+        archive_traits::ocreate(oa, archive_type, io_type);
+        oa & YAS_OBJECT("fa1", fa1);
+        typename archive_traits::iarchive ia;
+        archive_traits::icreate(ia, oa, archive_type, io_type);
+        ia & YAS_OBJECT("fa2", fa2);
+        if (yas::is_binary_archive<typename archive_traits::oarchive_type>::value) {
+            if (memcmp(fa1, fa2, array_size * sizeof(fa1[0]))) {
+                std::cout << "AUTO_ARRAY deserialization error! [12]" << std::endl;
+                return false;
+            }
+        } else {
+            if (!std::equal(fa1, fa1 + array_size, fa2)) {
+                std::cout << "AUTO_ARRAY deserialization error! [12]" << std::endl;
+                return false;
+            }
+        }
+    }
+    {
+        typename archive_traits::oarchive oa;
+        archive_traits::ocreate(oa, archive_type, io_type);
+        oa & YAS_OBJECT("stra1", stra1);
+        typename archive_traits::iarchive ia;
+        archive_traits::icreate(ia, oa, archive_type, io_type);
+        ia & YAS_OBJECT("stra2", stra2);
+        if (!std::equal(stra1, stra1 + array_size, stra2)) {
+            std::cout << "AUTO_ARRAY deserialization error! [13]" << std::endl;
+            return false;
+        }
+    }
 
-	return true;
+    return true;
 }
 
 /***************************************************************************/

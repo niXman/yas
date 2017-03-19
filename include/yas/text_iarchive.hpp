@@ -36,54 +36,57 @@
 #ifndef _yas__text_iarchive_hpp
 #define _yas__text_iarchive_hpp
 
-#include <yas/detail/type_traits/properties.hpp>
-#include <yas/detail/type_traits/selector.hpp>
-
+#include <yas/detail/type_traits/type_traits.hpp>
+#include <yas/detail/type_traits/serializer.hpp>
 #include <yas/detail/io/information.hpp>
 #include <yas/detail/io/text_streams.hpp>
+#include <yas/detail/tools/noncopyable.hpp>
+#include <yas/detail/tools/limit.hpp>
 #include <yas/defaul_traits.hpp>
 
-#include <yas/tools/pair_object.hpp>
 #include <yas/tools/base_object.hpp>
 
-#include <yas/serializers/serializer.hpp>
-#include <yas/serializers/text/utility/pod_serializers.hpp>
-#include <yas/serializers/text/utility/enum_serializer.hpp>
-#include <yas/serializers/text/utility/usertype_serializers.hpp>
-#include <yas/serializers/text/utility/autoarray_serializers.hpp>
-#include <yas/serializers/text/utility/buffer_serializers.hpp>
-#include <yas/serializers/text/utility/pair_serializers.hpp>
-#include <yas/serializers/text/utility/object_serializers.hpp>
+#include <yas/types/utility/fundamental_serializers.hpp>
+#include <yas/types/utility/enum_serializer.hpp>
+#include <yas/types/utility/usertype_serializers.hpp>
+#include <yas/types/utility/autoarray_serializers.hpp>
+#include <yas/types/utility/buffer_serializers.hpp>
+#include <yas/types/utility/object.hpp>
+#include <yas/types/utility/value_serializers.hpp>
+#include <yas/types/utility/object_serializers.hpp>
 
 #include <yas/buffers.hpp>
-#include <yas/detail/tools/noncopyable.hpp>
+#include <yas/version.hpp>
 
 namespace yas {
 
 /***************************************************************************/
 
-template<typename IS, typename Trait = yas::detail::default_traits>
+template<typename IS, std::size_t F = text|endian_as_host, typename Trait = yas::detail::default_traits>
 struct text_iarchive
-	:detail::text_istream<IS, Trait>
-	,detail::iarchive_information<archive_type::text, IS, as_host>
-	,private detail::noncopyable
+	:detail::text_istream<IS, F, Trait>
+	,detail::iarchive_info<F>
 {
-	using stream_type = IS;
-	using this_type = text_iarchive<IS, Trait>;
+	YAS_NONCOPYABLE(text_iarchive)
 
-	text_iarchive(IS &is, header_flag op = with_header)
-		:detail::text_istream<IS, Trait>(is)
-		,detail::iarchive_information<archive_type::text, IS, as_host>(is, op)
+	using stream_type = IS;
+	using this_type = text_iarchive<IS, F, Trait>;
+
+	text_iarchive(IS &is)
+		:detail::text_istream<IS, F, Trait>(is)
+		,detail::iarchive_info<F>(is)
 	{}
 
 	template<typename T>
 	this_type& operator& (T &&v) {
 		using namespace detail;
-		using real_type = typename std::remove_reference<typename std::remove_const<T>::type>::type;
+		using real_type = typename std::remove_reference<
+			typename std::remove_const<T>::type
+		>::type;
 		return serializer<
 			 type_properties<real_type>::value
 			,serialization_method<real_type, this_type>::value
-			,archive_type::text
+			,F
 			,real_type
 		>::load(*this, v);
 	}

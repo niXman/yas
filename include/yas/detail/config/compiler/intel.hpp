@@ -35,4 +35,10 @@
 
 #ifndef _yas__config_intel_config_hpp
 #define _yas__config_intel_config_hpp
+
+#include <yas/detail/config/endian.hpp>
+
+/**************************************************************************/
+/**************************************************************************/
+
 #endif // _yas__config_intel_config_hpp

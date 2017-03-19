@@ -44,10 +44,11 @@
 /***************************************************************************/
 
 int main() {
+	enum: std::size_t { base_flags = yas::binary|yas::seq_size_32 };
 	{
 		std::uint32_t v = 33, v2 = 0;
 		yas::mem_ostream os;
-		yas::binary_oarchive<yas::mem_ostream, yas::as_host> oa(os);
+		yas::binary_oarchive<yas::mem_ostream, base_flags|yas::endian_as_host> oa(os);
 		assert(YAS_LITTLE_ENDIAN() ? oa.is_little_endian() : 1);
 		assert(YAS_BIG_ENDIAN() ? oa.is_big_endian() : 1);
 		oa & v;
@@ -56,7 +57,7 @@ int main() {
 		std::cout << "as_host:\n" << yas::hex_dump(buf.data, buf.size) << std::endl;
 
 		yas::mem_istream is(os.get_intrusive_buffer());
-		yas::binary_iarchive<yas::mem_istream, yas::as_host> ia(is);
+		yas::binary_iarchive<yas::mem_istream, base_flags|yas::endian_as_host> ia(is);
 		assert(YAS_LITTLE_ENDIAN() ? ia.is_little_endian() : 1);
 		assert(YAS_BIG_ENDIAN() ? ia.is_big_endian() : 1);
 		ia & v2;
@@ -66,7 +67,7 @@ int main() {
 	{
 		std::uint32_t v = 33, v2 = 0;
 		yas::mem_ostream os;
-		yas::binary_oarchive<yas::mem_ostream, yas::little_endian> oa(os);
+		yas::binary_oarchive<yas::mem_ostream, base_flags|yas::endian_little> oa(os);
 		assert(oa.is_little_endian());
 		assert(!oa.is_big_endian());
 		oa & v;
@@ -75,7 +76,7 @@ int main() {
 		std::cout << "little:\n" << yas::hex_dump(buf.data, buf.size) << std::endl;
 
 		yas::mem_istream is(os.get_intrusive_buffer());
-		yas::binary_iarchive<yas::mem_istream, yas::little_endian> ia(is);
+		yas::binary_iarchive<yas::mem_istream, base_flags|yas::endian_little> ia(is);
 		assert(ia.is_little_endian());
 		assert(!ia.is_big_endian());
 		ia & v2;
@@ -85,7 +86,7 @@ int main() {
 	{
 		std::uint32_t v = 33, v2 = 0;
 		yas::mem_ostream os;
-		yas::binary_oarchive<yas::mem_ostream, yas::big_endian> oa(os);
+		yas::binary_oarchive<yas::mem_ostream, base_flags|yas::endian_big> oa(os);
 		assert(!oa.is_little_endian());
 		assert(oa.is_big_endian());
 		oa & v;
@@ -94,7 +95,7 @@ int main() {
 		std::cout << "big:\n" << yas::hex_dump(buf.data, buf.size) << std::endl;
 
 		yas::mem_istream is(os.get_intrusive_buffer());
-		yas::binary_iarchive<yas::mem_istream, yas::big_endian> ia(is);
+		yas::binary_iarchive<yas::mem_istream, base_flags|yas::endian_big> ia(is);
 		assert(!ia.is_little_endian());
 		assert(ia.is_big_endian());
 		ia & v2;
@@ -104,7 +105,7 @@ int main() {
 	{
 		std::uint32_t v = 33, v2 = 0;
 		yas::mem_ostream os;
-		yas::binary_oarchive<yas::mem_ostream, yas::little_endian> oa(os);
+		yas::binary_oarchive<yas::mem_ostream, base_flags|yas::endian_little> oa(os);
 		assert(oa.is_little_endian());
 		assert(!oa.is_big_endian());
 		oa & v;
@@ -113,12 +114,12 @@ int main() {
 		std::cout << "little:\n" << yas::hex_dump(buf.data, buf.size) << std::endl;
 
 		yas::mem_istream is(os.get_intrusive_buffer());
-		yas::binary_iarchive<yas::mem_istream, yas::big_endian> ia(is);
+		yas::binary_iarchive<yas::mem_istream, base_flags|yas::endian_big> ia(is);
 		assert(ia.is_little_endian());
 		assert(!ia.is_big_endian());
 		ia & v2;
 
-		assert(v == v2);
+		assert(v2 == 553648128);
 	}
 }
 

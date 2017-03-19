@@ -43,7 +43,6 @@
 #include <yas/text_oarchive.hpp>
 #include <yas/mem_streams.hpp>
 #include <yas/tools/hexdumper.hpp>
-#include <yas/serializers/std_types_serializers.hpp>
 
 #include <boost/program_options.hpp>
 
@@ -69,15 +68,26 @@ enum options {
 
 /***************************************************************************/
 
-struct struct_of_pods {
+struct struct_of_fundamentals {
 	bool a;
 	std::uint8_t b;
 	std::uint16_t c;
 	std::uint32_t d;
 	std::uint64_t e;
-	std::size_t f;
-	float g;
-	double h;
+	float f;
+	double g;
+
+	bool operator== (const struct_of_fundamentals &r) const {
+		return
+			a == r.a &&
+			b == r.b &&
+			c == r.c &&
+			d == r.d &&
+			e == r.e &&
+			f == r.f &&
+			g == r.g
+		;
+	}
 
 	/** boost.serialization calls only this method */
 	template<typename Archive>
@@ -88,8 +98,7 @@ struct struct_of_pods {
 			& d
 			& e
 			& f
-			& g
-			& h;
+			& g;
 	}
 
 	template<typename Archive>
@@ -100,8 +109,7 @@ struct struct_of_pods {
 			& d
 			& e
 			& f
-			& g
-			& h;
+			& g;
 	}
 };
 
@@ -165,14 +173,14 @@ template<typename T, typename OA, typename IA>
 test_result yas_test(const T &ot, T &it, const std::size_t iterations, const std::size_t preallocated) {
 	test_result res;
 	yas::mem_ostream os(preallocated);
-	OA oa(os, yas::no_header);
+	OA oa(os);
 	res.save = save(ot, oa, iterations);
 
 	res.size = os.get_intrusive_buffer().size;
 
 	const yas::intrusive_buffer buf = os.get_intrusive_buffer();
 	yas::mem_istream is(buf.data, buf.size);
-	IA ia(is, yas::no_header);
+	IA ia(is);
 	res.load = load(it, ia, iterations);
 
 	return res;
@@ -210,8 +218,8 @@ void test(int options, const T &ot, T &it, const char *pref, const char *comment
 		if ( options & test_yas ) {
 			yb = yas_test<
 				 T
-				,yas::binary_oarchive<yas::mem_ostream>
-				,yas::binary_iarchive<yas::mem_istream>
+				,yas::binary_oarchive<yas::mem_ostream, yas::binary|yas::seq_size_32|yas::no_header>
+				,yas::binary_iarchive<yas::mem_istream, yas::binary|yas::seq_size_32|yas::no_header>
 			>(ot, it, iterations, preallocated);
 			std::cout
 			<< "   yas save time    : " << yb.save.count() << " ms" << std::endl
@@ -242,8 +250,8 @@ void test(int options, const T &ot, T &it, const char *pref, const char *comment
 		if ( options & test_yas ) {
 			yt = yas_test<
 				 T
-				,yas::text_oarchive<yas::mem_ostream>
-				,yas::text_iarchive<yas::mem_istream>
+				,yas::text_oarchive<yas::mem_ostream, yas::text|yas::endian_as_host>
+				,yas::text_iarchive<yas::mem_istream, yas::text|yas::endian_as_host>
 			>(ot, it, iterations, preallocated);
 			std::cout
 			<< "   yas save time    : " << yt.save.count() << " ms" << std::endl
@@ -266,6 +274,7 @@ void test(int options, const T &ot, T &it, const char *pref, const char *comment
 		const type ovar = {BOOST_PP_TUPLE_ENUM(init)}; \
 		type ivar; \
 		test<type>(options, ovar, ivar, ">>>>>>>>: ", "test for \"" BOOST_PP_STRINGIZE(type) "\" type", iterations); \
+		assert(ivar == ovar); \
 	}
 
 #define GENERATE_TESTS_ITEM(unused, idx, seq) \
@@ -285,7 +294,7 @@ void test(int options, const T &ot, T &it, const char *pref, const char *comment
 
 int main(int ac, char **av) {
 	setvbuf(stdout, 0, _IONBF, 0);
-	std::cout << "platform bits: " << (YAS_PLATFORM_BITS()) << std::endl;
+	std::cout << "platform bits: " << (sizeof(void*) == sizeof(std::uint64_t) ? "64" : "32") << std::endl;
 
 	int options = test_boost|test_yas|test_binary|test_text;
 
@@ -334,7 +343,7 @@ int main(int ac, char **av) {
 			((std::uint64_t , (0xDEADBEAFDEADBEAF)))
 			((float         , (3.141)))
 			((double        , (3.141)))
-			((struct_of_pods, (0, 1, 0xDEAD, 0xDEADBEEF, 0xDEADBEEFDEADBEEF, 0xDEADBEEF, 3.141, 3.141)))
+			((struct_of_fundamentals, (0, 1, 0xDEAD, 0xDEADBEEF, 0xDEADBEEFDEADBEEF, 3.141, 3.141)))
 		)
 	} catch (const std::exception &ex) {
 		std::cout << "[exception]: " << ex.what() << std::endl;

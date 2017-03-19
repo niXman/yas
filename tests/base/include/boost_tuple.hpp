@@ -106,9 +106,9 @@ bool boost_tuple_test(const char* archive_type, const char* io_type) {
 		std::strlen(str); // string length
 	static const std::size_t text_expected_size =
 		archive_traits::oarchive_type::header_size()
-			+1/*space*/+2/*len of next field*/+1/*size marker*/
-			+1/*space*/+2/*len of next field*/+2/*value*/
-			+1/*space*/+2/*len of next field*/+1/*string len*/+3/*string*/
+			+1/*len of next field*/+1/*size marker*/
+			+1/*len of next field*/+2/*value*/
+			+1/*len of next field*/+1/*string len*/+3/*string*/
 	;
 
 	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
@@ -173,7 +173,7 @@ bool boost_tuple_test(const char* archive_type, const char* io_type) {
 		}
 	}
 	if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
-		if ( oa6.size() != (archive_traits::oarchive_type::header_size()+1/*space*/+2/*len of next field*/+1/*size marker*/) ) {
+		if ( oa6.size() != (archive_traits::oarchive_type::header_size()+1/*len of next field*/+1/*size marker*/) ) {
 			std::cout << "BOOST_TUPLE serialization error! [11]" << std::endl;
 			return false;
 		}

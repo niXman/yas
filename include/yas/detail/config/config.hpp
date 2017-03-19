@@ -38,32 +38,9 @@
 
 /***************************************************************************/
 
-#if __cplusplus < 201103L && _MSC_VER < 1800
+#if __cplusplus < 201103L
 #	error "C++11 or greater support is required"
 #endif
-
-#if __cplusplus >= 201103L || _MSC_VER >= 1900
-#	define YAS_CONSTEXPR constexpr
-#else
-#	define YAS_CONSTEXPR
-#endif // __cplusplus >= 201103L
-
-/***************************************************************************/
-
-#include <cstdint>
-#include <yas/detail/config/endian.hpp>
-
-/***************************************************************************/
-
-#if defined(__x86_64__)
-#	define YAS_PLATFORM_BITS_IS_32() (0)
-#	define YAS_PLATFORM_BITS_IS_64() (1)
-#else // !__x86_64__
-#	define YAS_PLATFORM_BITS_IS_32() (1)
-#	define YAS_PLATFORM_BITS_IS_64() (0)
-#endif // __x86_64__
-
-#define YAS_PLATFORM_BITS() (YAS_PLATFORM_BITS_IS_32()?32:64)
 
 /***************************************************************************/
 
@@ -80,10 +57,6 @@
 #endif
 
 #include YAS_COMPILER_CONFIG
-
-#ifndef YAS_DEFAULT_DOUBLE_PRECISION
-#	define YAS_DEFAULT_DOUBLE_PRECISION (3)
-#endif // YAS_DEFAULT_DOUBLE_PRECISION
 
 /***************************************************************************/
 

@@ -49,48 +49,18 @@ bool version_test(const char* archive_type, const char* io_type) {
 		std::cout << "VERSION test failed! archive type is not equal! [1]" << std::endl;
 		return false;
 	}
-	if ( oa->bits() != ia->bits() ) {
-		std::cout << "VERSION test failed! archive bits is not equal! [2]" << std::endl;
-		return false;
-	}
+
 	if ( oa->version() != ia->version() ) {
 		std::cout << "VERSION test failed! archive versions is not equal! [3]" << std::endl;
 		return false;
 	}
 
-	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
-		if ( oa->header_size() != archive_traits::oarchive_type::header_size() ||
-			  archive_traits::oarchive_type::header_size() != sizeof(std::uint32_t)
-		) {
-			std::cout << "VERSION test failed! bad archive header size! [4]" << std::endl;
-			return false;
-		}
-	} else if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
-		if ( oa->header_size() != archive_traits::oarchive_type::header_size() ||
-			  archive_traits::oarchive_type::header_size() != 5 /** see information.hpp */
-		) {
-			std::cout << "VERSION test failed! bad archive header size! [5]" << std::endl;
-			return false;
-		}
-	} else if ( yas::is_json_archive<typename archive_traits::oarchive_type>::value ) {
-		if ( oa->header_size() != archive_traits::oarchive_type::header_size() ||
-			  archive_traits::oarchive_type::header_size() != 1 /** see information.hpp */
-		) {
-			std::cout << "VERSION test failed! bad archive header size! [6]" << std::endl;
-			return false;
-		}
-	} else {
-		std::cout << "VERSION test failed! bad archive type! [7]" << std::endl;
+	if ( oa->header_size() != archive_traits::oarchive_type::header_size() ||
+		  archive_traits::oarchive_type::header_size() != 7
+	) {
+		std::cout << "VERSION test failed! bad archive header size! [4]" << std::endl;
 		return false;
 	}
-//   std::cout
-//   << "binary_mem_oarchive: type = " << oa.archive_type() << std::endl
-//   << "binary_mem_oarchive: bits = " << oa.bits() << std::endl
-//   << "binary_mem_oarchive: vers = " << oa.version() << std::endl << std::endl;
-//   std::cout
-//   << "binary_mem_iarchive: type = " << ia.archive_type() << std::endl
-//   << "binary_mem_iarchive: bits = " << ia.bits() << std::endl
-//   << "binary_mem_iarchive: vers = " << ia.version() << std::endl << std::endl;
 
 	return true;
 }

@@ -40,7 +40,9 @@
 
 /***************************************************************************/
 
-struct my_ostream: yas::detail::noncopyable {
+struct my_ostream {
+	YAS_NONCOPYABLE(my_ostream)
+
 	enum { bufsize = 1024 };
 
 	my_ostream()
@@ -60,7 +62,9 @@ struct my_ostream: yas::detail::noncopyable {
 	char *cur;
 };
 
-struct my_istream: yas::detail::noncopyable {
+struct my_istream {
+	YAS_NONCOPYABLE(my_istream)
+
 	my_istream(const char *ptr, const std::size_t size)
 		:cur(ptr)
 		,end(ptr+size)

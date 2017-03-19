@@ -46,11 +46,11 @@ bool array_test(const char* archive_type, const char* io_type) {
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type, io_type);
-	oa & arr1;
+	oa & YAS_OBJECT("arr1", arr1);
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type, io_type);
-	ia & arr2;
+	ia & YAS_OBJECT("arr2", arr2);
 
 	if ( arr1 != arr2 ) {
 		std::cout << "ARRAY deserialization error! [1]" << std::endl;
@@ -63,11 +63,11 @@ bool array_test(const char* archive_type, const char* io_type) {
 
 	typename archive_traits::oarchive oa2;
 	archive_traits::ocreate(oa2, archive_type, io_type);
-	oa2 & arr3;
+	oa2 & YAS_OBJECT("arr3", arr3);
 
 	typename archive_traits::iarchive ia2;
 	archive_traits::icreate(ia2, oa2, archive_type, io_type);
-	ia2 & arr4;
+	ia2 & YAS_OBJECT("arr4", arr4);
 
 	if ( arr3 != arr4 ) {
 		std::cout << "ARRAY deserialization error! [2]" << std::endl;
@@ -81,11 +81,11 @@ bool array_test(const char* archive_type, const char* io_type) {
 
 	typename archive_traits::oarchive oa3;
 	archive_traits::ocreate(oa3, archive_type, io_type);
-	oa3 & arr5;
+	oa3 & YAS_OBJECT("arr5", arr5);
 
 	typename archive_traits::iarchive ia3;
 	archive_traits::icreate(ia3, oa3, archive_type, io_type);
-	ia3 & arr6;
+	ia3 & YAS_OBJECT("arr6", arr6);
 
 	if ( arr5 != arr6 ) {
 		std::cout << "ARRAY deserialization error! [3]" << std::endl;
@@ -98,11 +98,11 @@ bool array_test(const char* archive_type, const char* io_type) {
 
 	typename archive_traits::oarchive oa4;
 	archive_traits::ocreate(oa4, archive_type, io_type);
-	oa4 & arr7;
+	oa4 & YAS_OBJECT("arr7", arr7);
 
 	typename archive_traits::iarchive ia4;
 	archive_traits::icreate(ia4, oa4, archive_type, io_type);
-	ia4 & arr8;
+	ia4 & YAS_OBJECT("arr8", arr8);
 
 	if ( arr7 != arr8 ) {
 		std::cout << "ARRAY deserialization error! [4]" << std::endl;

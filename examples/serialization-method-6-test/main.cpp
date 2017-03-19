@@ -38,7 +38,7 @@
 #include <yas/mem_streams.hpp>
 #include <yas/binary_iarchive.hpp>
 #include <yas/binary_oarchive.hpp>
-#include <yas/serializers/std_types_serializers.hpp>
+#include <yas/std_types.hpp>
 
 /***************************************************************************/
 

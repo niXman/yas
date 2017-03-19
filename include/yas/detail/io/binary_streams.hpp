@@ -37,126 +37,204 @@
 #define _yas__detail__io__binary_streams_hpp
 
 #include <yas/detail/config/config.hpp>
-
 #include <yas/detail/io/io_exceptions.hpp>
 #include <yas/detail/io/endian_conv.hpp>
-
+#include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/preprocessor/cat.hpp>
+
+#include <cstring>
 
 namespace yas {
 namespace detail {
 
 /***************************************************************************/
 
-#define YAS_ENDIAN_TEST(et) \
-	(et == big_endian && !YAS_BIG_ENDIAN()) || (et == little_endian && !YAS_LITTLE_ENDIAN())
+#define YAS_ENDIAN_TEST(F) \
+    ((F & endian_big) && !YAS_BIG_ENDIAN()) || ((F & endian_little) && !YAS_LITTLE_ENDIAN())
 
-#define YAS_SAVE_ENDIAN_SWITCH(et, var, bits) \
-	var = (YAS_ENDIAN_TEST(et) ? YAS_PP_CAT(YAS_LOCAL_TO_NETWORK, bits)(var) : var)
+/**************************************************************************/
 
-#define YAS_LOAD_ENDIAN_SWITCH(et, var, bits) \
-	var = (YAS_ENDIAN_TEST(et) ? YAS_PP_CAT(YAS_NETWORK_TO_LOCAL, bits)(var) : var)
-
-/***************************************************************************/
-
-template<typename IS, endian_t ET>
+template<typename IS, std::size_t F>
 struct binary_istream {
-	binary_istream(IS &is)
-		:is(is)
-	{}
+    binary_istream(IS &is)
+        :is(is)
+    {}
 
-	// for arrays
-	void read(void *ptr, std::size_t size) {
-		YAS_THROW_ON_READ_ERROR(size, !=, is.read(ptr, size));
-	}
+    template<typename T = std::uint64_t>
+    T read_seq_size() {
+        if (F & yas::seq_size_variadic) {
+            std::uint8_t isize = 0;
+            std::uint64_t size = 0;
 
-	// for chars & bools
-	template<typename T>
-	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char, bool)) {
-		YAS_THROW_ON_READ_ERROR(sizeof(v), !=, is.read(&v, sizeof(v)));
-	}
+            YAS_THROW_ON_READ_ERROR(sizeof(isize), !=, is.read(&isize, sizeof(isize)));
+            YAS_THROW_ON_READ_ERROR(isize, !=, is.read(&size, isize));
 
-	// for shorts
-	template<typename T>
-	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::uint16_t)) {
-		YAS_THROW_ON_READ_ERROR(sizeof(v), !=, is.read(&v, sizeof(v)));
-		YAS_LOAD_ENDIAN_SWITCH(ET, v, 16);
-	}
+            return endian_converter<YAS_ENDIAN_TEST(F)>::bswap(size);
+        }
 
-	// for 32-bit ints
-	template<typename T>
-	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t, std::uint32_t)) {
-		YAS_THROW_ON_READ_ERROR(sizeof(v), !=, is.read(&v, sizeof(v)));
-		YAS_LOAD_ENDIAN_SWITCH(ET, v, 32);
-	}
+        using seq_size_type = typename std::conditional<
+             F & seq_size_64
+            ,std::uint64_t
+            ,std::uint32_t
+        >::type;
 
-	// for 64-bit ints
-	template<typename T>
-	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t, std::uint64_t, long long)) {
-		YAS_THROW_ON_READ_ERROR(sizeof(v), !=, is.read(&v, sizeof(v)));
-		YAS_LOAD_ENDIAN_SWITCH(ET, v, 64);
-	}
+        seq_size_type size = 0;
+        YAS_THROW_ON_READ_ERROR(sizeof(size), !=, is.read(&size, sizeof(size)));
 
-	// for floats and doubles
-	template<typename T>
-	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, float, double)) {
-		std::uint8_t buf[sizeof(T)];
-		YAS_THROW_ON_READ_ERROR(sizeof(buf), !=, is.read(buf, sizeof(buf)));
-		endian_convertor<YAS_ENDIAN_TEST(ET)>::from_network(v, buf);
-	}
+        return endian_converter<YAS_ENDIAN_TEST(F)>::bswap(size);
+    }
+
+    // for arrays
+    void read(void *ptr, std::size_t size) {
+        YAS_THROW_ON_READ_ERROR(size, !=, is.read(ptr, size));
+    }
+
+    // for chars & bools
+    template<typename T>
+    void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char, bool)) {
+        YAS_THROW_ON_READ_ERROR(sizeof(v), !=, is.read(&v, sizeof(v)));
+    }
+
+    // for shorts
+    template<typename T>
+    void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::uint16_t)) {
+        YAS_THROW_ON_READ_ERROR(sizeof(v), !=, is.read(&v, sizeof(v)));
+        v = endian_converter<YAS_ENDIAN_TEST(F)>::bswap(v);
+    }
+
+    // for 32-bit ints
+    template<typename T>
+    void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t, std::uint32_t)) {
+        YAS_THROW_ON_READ_ERROR(sizeof(v), !=, is.read(&v, sizeof(v)));
+        v = endian_converter<YAS_ENDIAN_TEST(F)>::bswap(v);
+    }
+
+    // for 64-bit ints
+    template<typename T>
+    void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t, std::uint64_t)) {
+        YAS_THROW_ON_READ_ERROR(sizeof(v), !=, is.read(&v, sizeof(v)));
+        v = endian_converter<YAS_ENDIAN_TEST(F)>::bswap(v);
+    }
+
+    // for floats and doubles
+    template<typename T>
+    void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, float, double)) {
+        typename storage_type<T>::type r;
+        YAS_THROW_ON_READ_ERROR(sizeof(r), !=, is.read(&r, sizeof(r)));
+        v = endian_converter<YAS_ENDIAN_TEST(F)>::template from_network<T>(r);
+    }
 
 private:
-	IS &is;
+    IS &is;
 };
 
-template<typename OS, endian_t ET>
+/**************************************************************************/
+
+template<typename OS, std::size_t F>
 struct binary_ostream {
-	binary_ostream(OS &os)
-		:os(os)
-	{}
+    binary_ostream(OS &os)
+        :os(os)
+    {}
 
-	// for arrays
-	void write(const void *ptr, std::size_t size) {
-		YAS_THROW_ON_WRITE_ERROR(size, !=, os.write(ptr, size));
-	}
+    template<typename T>
+    void write_seq_size(T size) {
+        if (F & yas::seq_size_variadic) {
+            const std::uint8_t size_of_type =
+                YAS_SCAST(std::uint8_t,
+                    (size <= UINT8_MAX
+                        ? sizeof(std::uint8_t)
+                        : size <= UINT16_MAX
+                            ? sizeof(std::uint16_t)
+                            : size <= UINT32_MAX
+                                ? sizeof(std::uint32_t)
+                                : sizeof(std::uint64_t)
+                    )
+                )
+            ;
+            std::uint8_t buf[1 + sizeof(std::uint64_t)] = {size_of_type};
+            switch (size_of_type) {
+                case 1: {
+                    buf[1] = YAS_SCAST(std::uint8_t, size);
+                }
+                break;
+                case 2: {
+                    std::uint16_t v = YAS_SCAST(std::uint16_t, size);
+                    v = endian_converter<YAS_ENDIAN_TEST(F)>::bswap(v);
+                    std::memcpy(&buf[1], &v, sizeof(std::uint16_t));
+                }
+                break;
+                case 4: {
+                    std::uint32_t v = YAS_SCAST(std::uint32_t, size);
+                    v = endian_converter<YAS_ENDIAN_TEST(F)>::bswap(v);
+                    std::memcpy(&buf[1], &v, sizeof(std::uint32_t));
+                }
+                break;
+                case 8: {
+                    std::uint64_t v = YAS_SCAST(std::uint64_t, size);
+                    v = endian_converter<YAS_ENDIAN_TEST(F)>::bswap(v);
+                    std::memcpy(&buf[1], &v, sizeof(std::uint64_t));
+                }
+                break;
+                default: break;
+            }
 
-	// for chars & bools
-	template<typename T>
-	void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char, bool)) {
-		YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
-	}
+            YAS_THROW_ON_WRITE_ERROR(size_of_type + 1, !=, os.write(buf, size_of_type + 1));
 
-	// for shorts
-	template<typename T>
-	void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::uint16_t)) {
-		YAS_SAVE_ENDIAN_SWITCH(ET, v, 16);
-		YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
-	}
+            return;
+        }
 
-	// for 32-bit ints
-	template<typename T>
-	void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t, std::uint32_t)) {
-		YAS_SAVE_ENDIAN_SWITCH(ET, v, 32);
-		YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
-	}
+        using seq_size_type = typename std::conditional<
+             F & seq_size_64
+            ,std::uint64_t
+            ,std::uint32_t
+        >::type;
 
-	// for 64-bit ibts
-	template<typename T>
-	void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t, std::uint64_t, long long)) {
-		YAS_SAVE_ENDIAN_SWITCH(ET, v, 64);
-		YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
-	}
+        seq_size_type osize = YAS_SCAST(seq_size_type, size);
+        osize = endian_converter<YAS_ENDIAN_TEST(F)>::bswap(osize);
+        YAS_THROW_ON_WRITE_ERROR(sizeof(osize), !=, os.write(&osize, sizeof(osize)));
+    }
 
-	// for floats and doubles
-	template<typename T>
-	void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, float, double)) {
-		std::uint8_t buf[sizeof(T)];
-		endian_convertor<YAS_ENDIAN_TEST(ET)>::to_network(buf, v);
-		YAS_THROW_ON_WRITE_ERROR(sizeof(buf), !=, os.write(buf, sizeof(buf)));
-	}
+    // for arrays
+    void write(const void *ptr, std::size_t size) {
+        YAS_THROW_ON_WRITE_ERROR(size, !=, os.write(ptr, size));
+    }
+
+    // for chars & bools
+    template<typename T>
+    void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char, bool)) {
+        YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
+    }
+
+    // for shorts
+    template<typename T>
+    void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::uint16_t)) {
+        v = endian_converter<YAS_ENDIAN_TEST(F)>::bswap(v);
+        YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
+    }
+
+    // for 32-bit ints
+    template<typename T>
+    void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t, std::uint32_t)) {
+        v = endian_converter<YAS_ENDIAN_TEST(F)>::bswap(v);
+        YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
+    }
+
+    // for 64-bit ints
+    template<typename T>
+    void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t, std::uint64_t)) {
+        v = endian_converter<YAS_ENDIAN_TEST(F)>::bswap(v);
+        YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
+    }
+
+    // for floats and doubles
+    template<typename T>
+    void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, float, double)) {
+        const auto r = endian_converter<YAS_ENDIAN_TEST(F)>::to_network(v);
+        YAS_THROW_ON_WRITE_ERROR(sizeof(r), !=, os.write(&r, sizeof(r)));
+    }
 
 private:
-	OS &os;
+    OS &os;
 };
 
 /***************************************************************************/

@@ -40,7 +40,7 @@
 
 template<typename archive_traits>
 bool complex_test(const char* archive_type, const char* io_type) {
-	std::complex<float> cf1(3.14, 3.15), cf2;
+	std::complex<float> cf1(3.14f, 3.15f), cf2;
 	std::complex<double> cd1(3.16, 3.17), cd2;
 	std::complex<std::int32_t> ci1(318, 319), ci2;
 

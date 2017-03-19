@@ -36,6 +36,9 @@
 #ifndef _yas__has_method_serializer_hpp
 #define _yas__has_method_serializer_hpp
 
+#include <yas/detail/tools/cast.hpp>
+#include <yas/detail/type_traits/type_traits.hpp>
+
 namespace yas {
 namespace detail {
 
@@ -82,7 +85,7 @@ private:
 	static yes deduce(...);
 
 public:
-	enum { value = sizeof(yes) == sizeof(deduce((base*)(0))) };
+	enum { value = sizeof(yes) == sizeof(deduce(YAS_SCAST(base*, nullptr))) };
 };
 
 /***************************************************************************/
@@ -125,9 +128,10 @@ private:
 	template <typename Arg1, typename R>
 	struct impl<true, R(Arg1)> {
 		enum {
-			value = sizeof(return_value_check<Object, R>::deduce(
-				(((derived_type*)0)->serialize(*(Arg1*)0), detail::void_exp_result<Object>()
-				))) == sizeof(yes)};
+			value = sizeof(return_value_check<Object, R>::deduce((
+				(YAS_SCAST(derived_type*, nullptr))->serialize(*YAS_SCAST(Arg1*, nullptr)), detail::void_exp_result<Object>()
+			))) == sizeof(yes)
+		};
 	};
 
 public:
@@ -156,7 +160,7 @@ private:
 	static yes deduce(...);
 
 public:
-	enum { value = sizeof(yes) == sizeof(deduce((base*)(0))) };
+	enum { value = sizeof(yes) == sizeof(deduce(YAS_SCAST(base*, nullptr))) };
 };
 
 /***************************************************************************/
@@ -199,11 +203,10 @@ private:
 	template <typename Arg1, typename R>
 	struct impl<true, R(Arg1)> {
 		enum {
-			value = sizeof(
-				return_value_check<Object, R>::deduce(
-					(((const derived_type*)0)->serialize(*(Arg1*)0), detail::void_exp_result<Object>())
-				)
-			) == sizeof(yes)};
+			value = sizeof(return_value_check<Object, R>::deduce((
+				(YAS_SCAST(const derived_type*, nullptr))->serialize(*YAS_SCAST(Arg1*, nullptr)), detail::void_exp_result<Object>()
+			))) == sizeof(yes)
+		};
 	};
 
 public:

@@ -51,7 +51,12 @@ enum file_mode { file_none, file_append, file_trunc };
 
 /***************************************************************************/
 
-struct file_ostream: private detail::noncopyable {
+struct file_ostream {
+	YAS_NONCOPYABLE(file_ostream)
+
+	file_ostream(file_ostream &&) = default;
+	file_ostream& operator= (file_ostream &&) = default;
+
 	file_ostream(const char *fname, file_mode m = file_mode::file_none)
 		:file(0)
 	{
@@ -101,7 +106,12 @@ private:
 
 /***************************************************************************/
 
-struct file_istream: private detail::noncopyable {
+struct file_istream {
+	YAS_NONCOPYABLE(file_istream)
+
+	file_istream(file_istream &&) = default;
+	file_istream& operator= (file_istream &&) = default;
+
 	file_istream(const char *fname)
 		:file(std::fopen(fname, "rb"))
 	{

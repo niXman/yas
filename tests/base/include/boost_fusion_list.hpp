@@ -101,26 +101,11 @@ bool boost_fusion_list_test(const char* archive_type, const char* io_type) {
 	archive_traits::ocreate(oa4, archive_type, io_type);
 	oa4 & v5;
 
-	const size_t expected_size =
-		4+ // archive information
-		sizeof(std::uint8_t)+ // fusion::list size marker
-		sizeof(std::uint64_t)+ // first type
-		sizeof(std::uint32_t)+ // string size marker
-		strlen(str); // string length
-
-	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
-		const size_t current_size = oa4.size();
-		if ( current_size != expected_size ) {
-			std::cout << "FUSION_LIST deserialization error! [4]" << std::endl;
-			return false;
-		}
-	}
-
 	typename archive_traits::iarchive ia4;
 	archive_traits::icreate(ia4, oa4, archive_type, io_type);
 	ia4 & v6;
 	if ( v5 != v6 ) {
-		std::cout << "FUSION_LIST deserialization error! [5]" << std::endl;
+		std::cout << "FUSION_LIST deserialization error! [4]" << std::endl;
 		return false;
 	}
 
@@ -128,19 +113,11 @@ bool boost_fusion_list_test(const char* archive_type, const char* io_type) {
 	archive_traits::ocreate(oa5, archive_type, io_type);
 	oa5 & boost::fusion::make_list<boost::uint64_t, std::string>(33, "str");
 
-	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
-		const size_t current_size2 = oa5.size();
-		if ( current_size2 != expected_size ) {
-			std::cout << "FUSION_LIST deserialization error! [6]" << std::endl;
-			return false;
-		}
-	}
-
 	typename archive_traits::iarchive ia5;
 	archive_traits::icreate(ia5, oa5, archive_type, io_type);
 	ia5 & v6;
 	if ( v5 != v6 ) {
-		std::cout << "FUSION_LIST deserialization error! [7]" << std::endl;
+		std::cout << "FUSION_LIST deserialization error! [5]" << std::endl;
 		return false;
 	}
 

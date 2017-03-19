@@ -36,66 +36,68 @@
 #ifndef _yas__binary_oarchive_hpp
 #define _yas__binary_oarchive_hpp
 
-#include <yas/detail/type_traits/properties.hpp>
-#include <yas/detail/type_traits/selector.hpp>
-
+#include <yas/detail/type_traits/type_traits.hpp>
+#include <yas/detail/type_traits/serializer.hpp>
 #include <yas/detail/io/information.hpp>
 #include <yas/detail/io/binary_streams.hpp>
+#include <yas/detail/tools/noncopyable.hpp>
+#include <yas/detail/tools/limit.hpp>
 
 #include <yas/tools/base_object.hpp>
 
-#include <yas/serializers/serializer.hpp>
-#include <yas/serializers/binary/utility/pod_serializers.hpp>
-#include <yas/serializers/binary/utility/enum_serializer.hpp>
-#include <yas/serializers/binary/utility/usertype_serializers.hpp>
-#include <yas/serializers/binary/utility/autoarray_serializers.hpp>
-#include <yas/serializers/binary/utility/buffer_serializers.hpp>
-#include <yas/serializers/binary/utility/pair_serializers.hpp>
-#include <yas/serializers/binary/utility/object_serializers.hpp>
+#include <yas/types/utility/fundamental_serializers.hpp>
+#include <yas/types/utility/enum_serializer.hpp>
+#include <yas/types/utility/usertype_serializers.hpp>
+#include <yas/types/utility/autoarray_serializers.hpp>
+#include <yas/types/utility/buffer_serializers.hpp>
+#include <yas/types/utility/object.hpp>
+#include <yas/types/utility/value_serializers.hpp>
+#include <yas/types/utility/object_serializers.hpp>
 
 #include <yas/buffers.hpp>
-#include <yas/detail/tools/noncopyable.hpp>
+#include <yas/version.hpp>
 
 namespace yas {
 
 /***************************************************************************/
 
-template<typename OS, endian_t ET = as_host>
+template<typename OS, std::size_t F = binary|endian_as_host|seq_size_32>
 struct binary_oarchive
-	:detail::binary_ostream<OS, ET>
-	,detail::oarchive_information<archive_type::binary, OS, ET>
-	,private detail::noncopyable
+    :detail::binary_ostream<OS, F>
+    ,detail::oarchive_info<F>
 {
-	using stream_type = OS;
-	using this_type = binary_oarchive<OS, ET>;
+    YAS_NONCOPYABLE(binary_oarchive)
 
-	binary_oarchive(OS &os, header_flag op = with_header)
-		:detail::binary_ostream<OS, ET>(os)
-		,detail::oarchive_information<archive_type::binary, OS, ET>(os, op)
-	{}
+    using stream_type = OS;
+    using this_type = binary_oarchive<OS, F>;
 
-	template<typename T>
-	this_type& operator& (const T &v) {
-		using namespace detail;
-		return serializer<
-			 type_properties<T>::value
-			,serialization_method<T, this_type>::value
-			,archive_type::binary
-			,T
-		>::save(*this, v);
-	}
+    binary_oarchive(OS &os)
+        :detail::binary_ostream<OS, F>(os)
+        ,detail::oarchive_info<F>(os)
+    {}
 
-	this_type& serialize() { return *this; }
+    template<typename T>
+    this_type& operator& (const T &v) {
+        using namespace detail;
+        return serializer<
+             type_properties<T>::value
+            ,serialization_method<T, this_type>::value
+            ,F
+            ,T
+        >::save(*this, v);
+    }
 
-	template<typename Head, typename... Tail>
-	this_type& serialize(const Head& head, const Tail&... tail) {
-		return operator&(head).serialize(tail...);
-	}
+    this_type& serialize() { return *this; }
 
-	template<typename... Args>
-	this_type& operator()(const Args&... args) {
-		return serialize(args...);
-	}
+    template<typename Head, typename... Tail>
+    this_type& serialize(const Head &head, const Tail&... tail) {
+        return operator&(head).serialize(tail...);
+    }
+
+    template<typename... Args>
+    this_type& operator()(const Args&... args) {
+        return serialize(args...);
+    }
 };
 
 /***************************************************************************/
