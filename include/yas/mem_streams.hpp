@@ -50,53 +50,64 @@ namespace yas {
 struct mem_ostream {
     YAS_NONCOPYABLE(mem_ostream)
 
-	mem_ostream(std::size_t reserved = 1024)
-		:buf(reserved)
-		,beg(buf.data.get())
-		,cur(buf.data.get())
-		,end(buf.data.get()+buf.size)
-	{}
-	mem_ostream(void *ptr, std::size_t size)
-		:buf()
-		,beg(YAS_SCAST(char*, ptr))
-		,cur(YAS_SCAST(char*, ptr))
-		,end(YAS_SCAST(char*, ptr)+size)
-	{}
+    mem_ostream(std::size_t reserved = 1024*20)
+        :buf(reserved)
+        ,beg(buf.data.get())
+        ,cur(buf.data.get())
+        ,end(buf.data.get()+buf.size)
+    {}
+    mem_ostream(void *ptr, std::size_t size)
+        :buf()
+        ,beg(YAS_SCAST(char*, ptr))
+        ,cur(YAS_SCAST(char*, ptr))
+        ,end(YAS_SCAST(char*, ptr)+size)
+    {}
 
-	template<typename T>
-	std::size_t write(const T *tptr, const std::size_t size) {
-		const std::uint8_t *ptr = YAS_RCAST(const std::uint8_t*, tptr);
-		if ( cur+size > end ) {
-			shared_buffer::shared_array_type prev = buf.data;
-			const std::size_t olds = YAS_SCAST(std::size_t, cur-beg);
-			const std::size_t news = YAS_SCAST(std::size_t, size + (olds * YAS_SCAST(std::size_t, ((1 + std::sqrt(5)) / 1.5))));
+    template<typename T>
+    std::size_t write(const T *tptr, const std::size_t size) {
+        const std::uint8_t *ptr = YAS_RCAST(const std::uint8_t*, tptr);
+        if ( cur+size > end ) {
+            shared_buffer::shared_array_type prev = buf.data;
+            const std::size_t olds = YAS_SCAST(std::size_t, cur-beg);
+            const std::size_t news = YAS_SCAST(std::size_t,
+                size + (olds * YAS_SCAST(std::size_t, ((1 + std::sqrt(5)) / 1.5)))
+            );
 
-			buf = shared_buffer(news);
-			std::memcpy(buf.data.get(), prev.get(), olds);
+            buf = shared_buffer(news);
+            std::memcpy(buf.data.get(), prev.get(), olds);
 
-			beg = buf.data.get();
-			cur = beg+olds;
-			end = beg+news;
-		}
+            beg = buf.data.get();
+            cur = beg+olds;
+            end = beg+news;
+        }
 
-		switch (size) {
-			case sizeof(std::uint8_t ): *YAS_RCAST(std::uint8_t * , cur) = *YAS_RCAST(const std::uint8_t * , ptr); break;
-			case sizeof(std::uint16_t): *YAS_RCAST(std::uint16_t *, cur) = *YAS_RCAST(const std::uint16_t *, ptr); break;
-			case sizeof(std::uint32_t): *YAS_RCAST(std::uint32_t *, cur) = *YAS_RCAST(const std::uint32_t *, ptr); break;
-			case sizeof(std::uint64_t): *YAS_RCAST(std::uint64_t *, cur) = *YAS_RCAST(const std::uint64_t *, ptr); break;
-			default: std::memcpy(cur, ptr, size);
-		}
-		cur += size;
+        switch (size) {
+            case sizeof(std::uint8_t ):
+                *YAS_RCAST(std::uint8_t * , cur) = *YAS_RCAST(const std::uint8_t * , ptr);
+                break;
+            case sizeof(std::uint16_t):
+                *YAS_RCAST(std::uint16_t *, cur) = *YAS_RCAST(const std::uint16_t *, ptr);
+                break;
+            case sizeof(std::uint32_t):
+                *YAS_RCAST(std::uint32_t *, cur) = *YAS_RCAST(const std::uint32_t *, ptr);
+                break;
+            case sizeof(std::uint64_t):
+                *YAS_RCAST(std::uint64_t *, cur) = *YAS_RCAST(const std::uint64_t *, ptr);
+                break;
+            default:
+                std::memcpy(cur, ptr, size);
+        }
+        cur += size;
 
-		return size;
-	}
+        return size;
+    }
 
-	shared_buffer get_shared_buffer() const { return shared_buffer(buf.data, YAS_SCAST(std::size_t, cur-beg)); }
-	intrusive_buffer get_intrusive_buffer() const { return intrusive_buffer(beg, YAS_SCAST(std::size_t, cur-beg)); }
+    shared_buffer get_shared_buffer() const { return shared_buffer(buf.data, YAS_SCAST(std::size_t, cur-beg)); }
+    intrusive_buffer get_intrusive_buffer() const { return intrusive_buffer(beg, YAS_SCAST(std::size_t, cur-beg)); }
 
 private:
-	shared_buffer buf;
-	char *beg, *cur, *end;
+    shared_buffer buf;
+    char *beg, *cur, *end;
 }; // struct mem_ostream
 
 /***************************************************************************/
@@ -104,44 +115,53 @@ private:
 struct mem_istream {
     YAS_NONCOPYABLE(mem_istream);
 
-	mem_istream(const void *ptr, std::size_t size)
-		:beg(YAS_SCAST(const char*, ptr))
-		,cur(YAS_SCAST(const char*, ptr))
-		,end(YAS_SCAST(const char*, ptr)+size)
-	{}
-	mem_istream(const intrusive_buffer &buf)
-		:beg(buf.data)
-		,cur(buf.data)
-		,end(buf.data+buf.size)
-	{}
-	mem_istream(const shared_buffer &buf)
-		:beg(buf.data.get())
-		,cur(buf.data.get())
-		,end(buf.data.get()+buf.size)
-	{}
+    mem_istream(const void *ptr, std::size_t size)
+        :beg(YAS_SCAST(const char*, ptr))
+        ,cur(YAS_SCAST(const char*, ptr))
+        ,end(YAS_SCAST(const char*, ptr)+size)
+    {}
+    mem_istream(const intrusive_buffer &buf)
+        :beg(buf.data)
+        ,cur(buf.data)
+        ,end(buf.data+buf.size)
+    {}
+    mem_istream(const shared_buffer &buf)
+        :beg(buf.data.get())
+        ,cur(buf.data.get())
+        ,end(buf.data.get()+buf.size)
+    {}
 
-	template<typename T>
-	std::size_t read(T *ptr, const std::size_t size) {
-		const std::size_t avail = YAS_SCAST(std::size_t, end-cur);
-		const std::size_t copy = (avail < size) ? avail : size;
+    template<typename T>
+    std::size_t read(T *ptr, const std::size_t size) {
+        const std::size_t avail = YAS_SCAST(std::size_t, end-cur);
+        const std::size_t copy = (avail < size) ? avail : size;
 
-		switch ( copy ) {
-		case sizeof(std::uint8_t ): *YAS_RCAST(std::uint8_t *, ptr) = *YAS_RCAST(const std::uint8_t *, cur); break;
-		case sizeof(std::uint16_t): *YAS_RCAST(std::uint16_t*, ptr) = *YAS_RCAST(const std::uint16_t*, cur); break;
-		case sizeof(std::uint32_t): *YAS_RCAST(std::uint32_t*, ptr) = *YAS_RCAST(const std::uint32_t*, cur); break;
-		case sizeof(std::uint64_t): *YAS_RCAST(std::uint64_t*, ptr) = *YAS_RCAST(const std::uint64_t*, cur); break;
-		default: std::memcpy(ptr, cur, copy);
-		}
-		cur += copy;
+        switch ( copy ) {
+            case sizeof(std::uint8_t ):
+                *YAS_RCAST(std::uint8_t *, ptr) = *YAS_RCAST(const std::uint8_t *, cur);
+                break;
+            case sizeof(std::uint16_t):
+                *YAS_RCAST(std::uint16_t*, ptr) = *YAS_RCAST(const std::uint16_t*, cur);
+                break;
+            case sizeof(std::uint32_t):
+                *YAS_RCAST(std::uint32_t*, ptr) = *YAS_RCAST(const std::uint32_t*, cur);
+                break;
+            case sizeof(std::uint64_t):
+                *YAS_RCAST(std::uint64_t*, ptr) = *YAS_RCAST(const std::uint64_t*, cur);
+                break;
+            default:
+                std::memcpy(ptr, cur, copy);
+        }
+        cur += copy;
 
-		return copy;
-	}
+        return copy;
+    }
 
-	shared_buffer get_shared_buffer() const { return shared_buffer(cur, YAS_SCAST(std::size_t, end-cur)); }
-	intrusive_buffer get_intrusive_buffer() const { return intrusive_buffer(cur, YAS_SCAST(std::size_t, end-cur)); }
+    shared_buffer get_shared_buffer() const { return shared_buffer(cur, YAS_SCAST(std::size_t, end-cur)); }
+    intrusive_buffer get_intrusive_buffer() const { return intrusive_buffer(cur, YAS_SCAST(std::size_t, end-cur)); }
 
 private:
-	const char *beg, *cur, *end;
+    const char *beg, *cur, *end;
 }; // struct mem_istream
 
 /***************************************************************************/

@@ -178,7 +178,7 @@ struct binary_ostream {
 					 default: break;
 				}
 
-				YAS_THROW_ON_WRITE_ERROR(size_of_type + 1u, !=, os.write(buf, size_of_type + 1));
+				YAS_THROW_ON_WRITE_ERROR(size_of_type + 1u, !=, os.write(buf, size_of_type + 1u));
 
 				return;
 		  }
