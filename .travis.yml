@@ -19,10 +19,9 @@ before_install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
   - if [[ -f /usr/bin/g++ ]]; then sudo rm /usr/bin/g++; fi
   - sudo ln /usr/bin/g++-4.9 /usr/bin/g++
-  - wget http://sourceforge.net/projects/boost/files/boost/1.57.0/boost_1_57_0.tar.bz2
-  - tar jxf boost_1_57_0.tar.bz2
-  - cd boost_1_57_0
-  - sed 's|if (!(\*first1 != \*first2))|if (*first1 != *first2)|g' -i boost/container/vector.hpp
+  - wget http://sourceforge.net/projects/boost/files/boost/1.63.0/boost_1_63_0.tar.bz2
+  - tar jxf boost_1_63_0.tar.bz2
+  - cd boost_1_63_0
   - ./bootstrap.sh
   - sudo ./bjam release install -d0 --with-chrono --with-container --prefix=/usr/local -j4
   - sudo ldconfig
