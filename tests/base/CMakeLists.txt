@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 project(yas-base-test)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -Wsign-compare")
 
 include_directories(
     ../../include

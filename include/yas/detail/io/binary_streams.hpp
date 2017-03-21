@@ -53,7 +53,19 @@ namespace detail {
 #define YAS_ENDIAN_TEST(F) \
 	 ((F & endian_big) && !YAS_BIG_ENDIAN()) || ((F & endian_little) && !YAS_LITTLE_ENDIAN())
 
-#define YAS_CALC_STORAGE_SIZE(v) \
+#define YAS_CALC_STORAGE_SIZE_S(v) \
+    (YAS_SCAST(std::uint8_t, \
+        (v <= std::numeric_limits<std::int8_t>::max() \
+            ? sizeof(std::int8_t) \
+            : v <= std::numeric_limits<std::int16_t>::max() \
+                ? sizeof(std::int16_t) \
+                : v <= std::numeric_limits<std::int32_t>::max() \
+                    ? sizeof(std::int32_t) \
+                    : sizeof(std::int64_t) \
+        ) \
+    ))
+
+#define YAS_CALC_STORAGE_SIZE_U(v) \
     (YAS_SCAST(std::uint8_t, \
         (v <= std::numeric_limits<std::uint8_t>::max() \
             ? sizeof(std::uint8_t) \
@@ -183,7 +195,7 @@ struct binary_ostream {
         if ( F & yas::compacted ) {
             const bool neg = v < 0;
             v = (neg ? std::abs(v) : v);
-            const std::uint8_t ns = YAS_CALC_STORAGE_SIZE(v);
+            const std::uint8_t ns = YAS_CALC_STORAGE_SIZE_S(v);
             std::uint8_t buf[1 + sizeof(std::uint64_t)] = {ns};
             buf[0] |= YAS_SCAST(std::size_t, neg) << 7;
 
@@ -216,7 +228,7 @@ struct binary_ostream {
                 }
             }
 
-            YAS_THROW_ON_WRITE_ERROR(ns + 1, !=, os.write(&buf[0], ns + 1));
+            YAS_THROW_ON_WRITE_ERROR(ns+1u, !=, os.write(&buf[0], ns+1u));
         } else {
             v = endian_converter<YAS_ENDIAN_TEST(F)>::bswap(v);
             YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
@@ -227,7 +239,7 @@ struct binary_ostream {
     template<typename T>
     void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
         if ( F & yas::compacted ) {
-            const std::uint8_t ns = YAS_CALC_STORAGE_SIZE(v);
+            const std::uint8_t ns = YAS_CALC_STORAGE_SIZE_U(v);
             std::uint8_t buf[1 + sizeof(std::uint64_t)] = {ns};
 
             switch (ns) {
@@ -259,7 +271,7 @@ struct binary_ostream {
                 }
             }
 
-            YAS_THROW_ON_WRITE_ERROR(ns+1, !=, os.write(&buf[0], ns+1));
+            YAS_THROW_ON_WRITE_ERROR(ns+1u, !=, os.write(&buf[0], ns+1u));
         } else {
             v = endian_converter<YAS_ENDIAN_TEST(F)>::bswap(v);
             YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
