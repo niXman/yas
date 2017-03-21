@@ -45,12 +45,12 @@ bool endian_test(const char* archive_type, const char* io_type) {
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type, io_type);
 
-	if ( ia->is_big_endian() != oa->is_big_endian() || oa->is_big_endian() != YAS_BIG_ENDIAN() ) {
+	if ( ia->is_big_endian() != oa->is_big_endian() ) {
 		std::cout << "ENDIAN test failed! endianness is not equal! [1]" << std::endl;
 		return false;
 	}
 
-	if ( ia->is_little_endian() != oa->is_little_endian() || oa->is_little_endian() != YAS_LITTLE_ENDIAN() ) {
+	if ( ia->is_little_endian() != oa->is_little_endian() ) {
 		std::cout << "ENDIAN test failed! endianness is not equal! [2]" << std::endl;
 		return false;
 	}

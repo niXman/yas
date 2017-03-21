@@ -474,7 +474,7 @@ void tests(int &p, int &e) {
 /***************************************************************************/
 
 int main() {
-    setvbuf(stdout, 0, _IONBF, 0);
+    std::setvbuf(stdout, 0, _IONBF, 0);
 
     int passed = 0, failed = 0;
     try {
