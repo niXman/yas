@@ -40,7 +40,7 @@
 // YAS_VERSION / 100 % 1000 is the minor version
 // YAS_VERSION / 100000 is the major version
 
-#define YAS_VERSION_MAJOR 3
+#define YAS_VERSION_MAJOR 4
 #define YAS_VERSION_MINOR 0
 #define YAS_VERSION_RELEASE 0
 
@@ -53,7 +53,7 @@
 #define _YAS_STRINGIZE(x) __YAS_STRINGIZE(x)
 
 #define YAS_VERSION_STRING \
-		 _YAS_STRINGIZE(YAS_VERSION_MAJOR) \
+		_YAS_STRINGIZE(YAS_VERSION_MAJOR) \
 	"." _YAS_STRINGIZE(YAS_VERSION_MINOR) \
 	"." _YAS_STRINGIZE(YAS_VERSION_RELEASE)
 
@@ -63,7 +63,7 @@ namespace detail {
 /**************************************************************************/
 
 enum yas_version {
-	 binary_archive_version = 4
+	 binary_archive_version = 5
 	,text_archive_version = 2
 	,json_archive_version = 0
 };

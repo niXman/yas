@@ -98,12 +98,19 @@ bool boost_tuple_test(const char* archive_type, const char* io_type) {
 	archive_traits::ocreate(oa4, archive_type, io_type);
 	oa4 & v5;
 
-	static const std::size_t binary_expected_size =
-		archive_traits::oarchive_type::header_size()+ // archive header
-		sizeof(std::uint8_t)+ // fusion::vector size marker
-		sizeof(std::uint64_t)+ // first type
-		sizeof(std::uint32_t)+ // string size marker
-		std::strlen(str); // string length
+    static const std::size_t binary_expected_size =
+        archive_traits::oarchive_type::header_size()+ // archive header
+        sizeof(std::uint8_t)+ // fusion::vector size marker
+        sizeof(std::uint64_t)+ // first type
+        sizeof(std::uint64_t)+ // string size marker
+        std::strlen(str) // string length
+    ;
+    static const std::size_t binary_compacted_expected_size =
+        archive_traits::oarchive_type::header_size()+ // archive header
+        1+/*fusion::vector size marker*/
+        1+/*len of the next field*/ +1+ /*first type*/
+        2+/*string size marker*/ +std::strlen(str) // string length
+    ;
 	static const std::size_t text_expected_size =
 		archive_traits::oarchive_type::header_size()
 			+1/*len of next field*/+1/*size marker*/
@@ -112,16 +119,24 @@ bool boost_tuple_test(const char* archive_type, const char* io_type) {
 	;
 
 	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
-		const size_t current_size = oa4.size();
-		if ( current_size != binary_expected_size ) {
-			std::cout << "BOOST_TUPLE deserialization error! [4]" << std::endl;
-			return false;
-		}
+        if ( archive_traits::oarchive_type::compacted() ) {
+            const size_t current_size = oa4.size();
+            if (current_size != binary_compacted_expected_size) {
+                std::cout << "BOOST_TUPLE deserialization error! [4]" << std::endl;
+                return false;
+            }
+        } else {
+            const size_t current_size = oa4.size();
+            if (current_size != binary_expected_size) {
+                std::cout << "BOOST_TUPLE deserialization error! [5]" << std::endl;
+                return false;
+            }
+        }
 	}
 	if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
 		const size_t current_size = oa4.size();
 		if ( current_size != text_expected_size ) {
-			std::cout << "BOOST_TUPLE deserialization error! [5]" << std::endl;
+			std::cout << "BOOST_TUPLE deserialization error! [6]" << std::endl;
 			return false;
 		}
 	}
@@ -130,7 +145,7 @@ bool boost_tuple_test(const char* archive_type, const char* io_type) {
 	archive_traits::icreate(ia4, oa4, archive_type, io_type);
 	ia4 & v6;
 	if ( v5 != v6 ) {
-		std::cout << "BOOST_TUPLE deserialization error! [6]" << std::endl;
+		std::cout << "BOOST_TUPLE deserialization error! [7]" << std::endl;
 		return false;
 	}
 
@@ -139,16 +154,23 @@ bool boost_tuple_test(const char* archive_type, const char* io_type) {
 	oa5 & boost::make_tuple<std::uint64_t, std::string>(33, "str");
 
 	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
-		const size_t current_size2 = oa5.size();
-		if ( current_size2 != binary_expected_size ) {
-			std::cout << "BOOST_TUPLE deserialization error! [7]" << std::endl;
-			return false;
-		}
+        const size_t current_size = oa5.size();
+        if ( archive_traits::oarchive_type::compacted() ) {
+            if (current_size != binary_compacted_expected_size) {
+                std::cout << "BOOST_TUPLE deserialization error! [8]" << std::endl;
+                return false;
+            }
+        } else {
+            if (current_size != binary_expected_size) {
+                std::cout << "BOOST_TUPLE deserialization error! [8]" << std::endl;
+                return false;
+            }
+        }
 	}
 	if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
 		const size_t current_size = oa5.size();
 		if ( current_size != text_expected_size ) {
-			std::cout << "BOOST_TUPLE deserialization error! [8]" << std::endl;
+			std::cout << "BOOST_TUPLE deserialization error! [9]" << std::endl;
 			return false;
 		}
 	}
@@ -157,7 +179,7 @@ bool boost_tuple_test(const char* archive_type, const char* io_type) {
 	archive_traits::icreate(ia5, oa5, archive_type, io_type);
 	ia5 & v6;
 	if ( v5 != v6 ) {
-		std::cout << "BOOST_TUPLE deserialization error! [9]" << std::endl;
+		std::cout << "BOOST_TUPLE deserialization error! [10]" << std::endl;
 		return false;
 	}
 
@@ -168,13 +190,13 @@ bool boost_tuple_test(const char* archive_type, const char* io_type) {
 
 	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
 		if ( oa6.size() != (archive_traits::oarchive_type::header_size()+1) ) {
-			std::cout << "BOOST_TUPLE serialization error! [10]" << std::endl;
+			std::cout << "BOOST_TUPLE serialization error! [11]" << std::endl;
 			return false;
 		}
 	}
 	if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
 		if ( oa6.size() != (archive_traits::oarchive_type::header_size()+1/*len of next field*/+1/*size marker*/) ) {
-			std::cout << "BOOST_TUPLE serialization error! [11]" << std::endl;
+			std::cout << "BOOST_TUPLE serialization error! [12]" << std::endl;
 			return false;
 		}
 	}

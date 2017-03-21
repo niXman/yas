@@ -61,7 +61,7 @@ namespace yas {
 
 /***************************************************************************/
 
-template<typename OS, std::size_t F = binary|endian_as_host|seq_size_32>
+template<typename OS, std::size_t F = binary|endian_as_host>
 struct binary_oarchive
     :detail::binary_ostream<OS, F>
     ,detail::oarchive_info<F>

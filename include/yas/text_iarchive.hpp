@@ -65,7 +65,7 @@ namespace yas {
 template<typename IS, std::size_t F = text|endian_as_host, typename Trait = yas::detail::default_traits>
 struct text_iarchive
 	:detail::text_istream<IS, F, Trait>
-	,detail::iarchive_info<F>
+		,detail::iarchive_info<F>
 {
 	YAS_NONCOPYABLE(text_iarchive)
 
@@ -84,7 +84,7 @@ struct text_iarchive
 			typename std::remove_const<T>::type
 		>::type;
 		return serializer<
-			 type_properties<real_type>::value
+			type_properties<real_type>::value
 			,serialization_method<real_type, this_type>::value
 			,F
 			,real_type
@@ -94,13 +94,13 @@ struct text_iarchive
 	this_type& serialize() { return *this; }
 
 	template<typename Head, typename... Tail>
-	this_type& serialize(Head& head, Tail&... tail) {
-		return operator&(head).serialize(tail...);
+	this_type& serialize(Head &&head, Tail &&... tail) {
+		return operator&(std::forward<Head>(head)).serialize(std::forward<Tail>(tail)...);
 	}
 
 	template<typename... Args>
-	this_type& operator()(Args&... args) {
-		return serialize(args...);
+	this_type& operator()(Args&&... args) {
+		return serialize(std::forward<Args>(args)...);
 	}
 };
 

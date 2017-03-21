@@ -46,26 +46,17 @@ YAS_DECLARE_EXCEPTION_TYPE(io_exception);
 
 /***************************************************************************/
 
-#define YAS_THROW_ARCHIVE_IS_EMPTY() \
-	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("archive is empty"));
-
 #define YAS_THROW_BAD_ARCHIVE_INFORMATION() \
 	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("archive is corrupted or try to use \"yas::no_header\" flag"));
 
 #define YAS_THROW_BAD_ARCHIVE_VERSION() \
 	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("incompatible archive version"));
 
-#define YAS_THROW_INCOMPATIBLE_OPTIONS(msg) \
-	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("incompatible options: " msg));
-
 #define YAS_THROW_BAD_ARCHIVE_TYPE() \
 	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("incompatible archive type"));
 
 #define YAS_THROW_ARCHIVE_NO_HEADER() \
 	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("you cannot use information functions with \"yas::no_header\" flag"));
-
-#define YAS_THROW_BAD_BYTES_IN_HEADER() \
-	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("not a hex digit"));
 
 #define YAS_THROW_ON_READ_ERROR(expected, cmp, ...) \
 	if ( (expected) cmp (__VA_ARGS__) ) { \
@@ -88,6 +79,12 @@ YAS_DECLARE_EXCEPTION_TYPE(io_exception);
 
 #define YAS_THROW_BAD_FILE_MODE() \
 	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("bad file open mode"));
+
+#define YAS_THROW_BAD_COMPACTED_MODE() \
+	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("incompatible compacted/non-compacted mode"));
+
+#define YAS_THROW_BAD_TYPE_SIZEOF() \
+	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("unexpected sizeof(T)"));
 
 /***************************************************************************/
 

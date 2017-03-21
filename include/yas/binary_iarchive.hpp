@@ -61,10 +61,10 @@ namespace yas {
 
 /***************************************************************************/
 
-template<typename IS, std::size_t F = binary|endian_as_host|seq_size_32>
+template<typename IS, std::size_t F = binary|endian_as_host>
 struct binary_iarchive
 	:detail::binary_istream<IS, F>
-	,detail::iarchive_info<F>
+		,detail::iarchive_info<F>
 {
 	YAS_NONCOPYABLE(binary_iarchive)
 
@@ -83,7 +83,7 @@ struct binary_iarchive
 			typename std::remove_const<T>::type
 		>::type;
 		return serializer<
-			 type_properties<real_type>::value
+			type_properties<real_type>::value
 			,serialization_method<real_type, this_type>::value
 			,F
 			,real_type
@@ -94,12 +94,12 @@ struct binary_iarchive
 
 	template<typename Head, typename... Tail>
 	this_type& serialize(Head &&head, Tail&&... tail) {
-		return operator&(head).serialize(tail...);
+		return operator&(std::forward<Head>(head)).serialize(std::forward<Tail>(tail)...);
 	}
 
 	template<typename... Args>
 	this_type& operator()(Args&&... args) {
-		return serialize(args...);
+		return serialize(std::forward<Args>(args)...);
 	}
 };
 

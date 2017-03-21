@@ -60,8 +60,8 @@ union archive_header {
 		std::uint8_t type      :3; // archive type : 0...7: binary, text, json
 		std::uint8_t endian    :1; // endianness   : 0 - LE, 1 - BE
 		std::uint8_t bits      :1; // bitness      : 0 - 32 bit, 1 - 64 bit
-		std::uint8_t seq_size_t:2; // seq size type: 0 - 32 bit, 1 - 64 bit, 2 - variadic
-		std::uint8_t reserved  :5; // reserved
+		std::uint8_t compacted :1; // compacted    : 0 - no, 1 - yes
+		std::uint8_t reserved  :6; // reserved
 	} bits;
 
 	std::uint16_t u;
@@ -189,12 +189,14 @@ struct iarchive_info {
 			;
 
 			if ( header.bits.type != artype )
-				YAS_THROW_BAD_ARCHIVE_TYPE();
+				YAS_THROW_BAD_ARCHIVE_TYPE()
 
             constexpr std::size_t mask = options::binary|options::text|options::object;
 			if ( header.bits.version != archive_version<F & mask>::value )
-				YAS_THROW_BAD_ARCHIVE_VERSION();
+				YAS_THROW_BAD_ARCHIVE_VERSION()
 
+            if ( F & yas::compacted && !header.bits.compacted )
+                YAS_THROW_BAD_COMPACTED_MODE()
 		}
 	}
 
@@ -223,6 +225,12 @@ struct iarchive_info {
 	static constexpr options host_endian() {
 		return YAS_BIG_ENDIAN() ? options::endian_big : options::endian_little;
 	}
+
+    bool compacted() const {
+        _CHECK_IF_HEADER_INITED()
+
+        return header.bits.compacted;
+    }
 
 	std::size_t version() const {
 		_CHECK_IF_HEADER_INITED()
@@ -263,11 +271,9 @@ struct oarchive_info {
                         : 0
                 )
 			;
-            static constexpr std::uint8_t seqsize =
-                YAS_SCAST(std::uint8_t,
-                    (F & options::binary)
-                        ? ((F & options::seq_size_32) ? 0 : (F & options::seq_size_64) ? 1 : 2)
-                        : 0
+            static constexpr bool compacted =
+                YAS_SCAST(bool,
+                    (F & options::binary) ? (F & yas::compacted) : 0
                 )
 			;
             static constexpr archive_header header = {{
@@ -275,7 +281,7 @@ struct oarchive_info {
 				,YAS_SCAST(std::uint8_t, artype)
 				,YAS_SCAST(std::uint8_t, endian)
 				,YAS_SCAST(std::uint8_t, sizeof(void*)==sizeof(std::uint64_t))
-				,YAS_SCAST(std::uint8_t, seqsize)
+				,YAS_SCAST(std::uint8_t, compacted)
 				,YAS_SCAST(std::uint8_t, 0u) // reserved
 			}};
 
@@ -305,6 +311,8 @@ struct oarchive_info {
 	static constexpr options host_endian() {
 		return YAS_BIG_ENDIAN() ? options::endian_big : options::endian_little;
 	}
+
+    static constexpr bool compacted() { return YAS_SCAST(std::uint8_t, F & yas::compacted); }
 
 	static constexpr std::size_t version() { return archive_version<type()>::value; }
 

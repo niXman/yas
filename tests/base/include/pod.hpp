@@ -68,6 +68,7 @@ bool pod_test(const char* archive_type, const char* io_type) {
 			+sizeof(ui64)
 			+sizeof(f)
 			+sizeof(d)
+        ,binary_compacted_expected_size = 27
 		,text_expected_size = 37
 		,json_expected_size = 28
 	};
@@ -75,12 +76,14 @@ bool pod_test(const char* archive_type, const char* io_type) {
 	oa & YAS_OBJECT("pod", b, c, uc, s, us, i, l, i64, ui64, f, d);
 
 	switch ( archive_traits::oarchive_type::type() ) {
-		case yas::binary:
-			if ( oa.size() != archive_traits::oarchive_type::header_size()+binary_expected_size ) {
-				std::cout << "POD serialization error! [1]" << std::endl;
-				return false;
-			}
-		break;
+		case yas::binary: {
+            std::size_t exp_size = archive_traits::oarchive_type::header_size()+binary_expected_size;
+            std::size_t comp_exp_size = archive_traits::oarchive_type::header_size()+binary_compacted_expected_size;
+            if ( oa.size() != ( archive_traits::oarchive_type::compacted() ? comp_exp_size : exp_size ) ) {
+                std::cout << "POD serialization error! [1]" << std::endl;
+                return false;
+            }
+        } break;
 		case yas::text:
 			if ( oa.size() != archive_traits::oarchive_type::header_size()+text_expected_size ) {
 				std::cout << "POD serialization error! [2]" << std::endl;
@@ -100,7 +103,8 @@ bool pod_test(const char* archive_type, const char* io_type) {
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type, io_type);
-	ia & YAS_OBJECT("pod", bb, cc, uc2, ss, us2, ii, ll, ii64, uui64, ff, dd);
+    auto o = YAS_OBJECT("pod", bb, cc, uc2, ss, us2, ii, ll, ii64, uui64, ff, dd);
+	ia & o;
 
 	if ( b != bb || c != cc || uc != uc2 || s != ss || us != us2 || i != ii || l != ll || i64 != ii64 || ui64 != uui64 || f != ff || d != dd ) {
 		std::cout << "POD deserialization error! [4]" << std::endl;

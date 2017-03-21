@@ -61,7 +61,7 @@ template<
 >
 struct is_any_of: std::integral_constant<
 	bool
-	,	std::is_same<T, A1>::value
+	,  std::is_same<T, A1>::value
 	|| std::is_same<T, A2>::value
 	|| std::is_same<T, A3>::value
 	|| std::is_same<T, A4>::value
@@ -181,9 +181,6 @@ enum options: std::uint32_t {
 	,endian_big        = 1u<<5
 	,endian_as_host    = 1u<<6
 	,compacted         = 1u<<7
-	,seq_size_32       = 1u<<8
-	,seq_size_64       = 1u<<9
-	,seq_size_variadic = 1u<<10
 };
 
 template<typename Ar>
