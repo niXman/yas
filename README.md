@@ -4,6 +4,8 @@ YAS
 ===
 Yet Another Serialization
 
+-![Time](https://github.com/thekvs/cpp-serializers/raw/master/images/time.png)
+
 ===
 * YAS is created as a replacement of boost.serialization because of its insufficient speed of serialization.
 * YAS is header only library. You do not need to link it with your code.
@@ -90,3 +92,4 @@ Projects using this library
 
 * [K3](https://github.com/DaMSL/K3): K3 is a programming language for building large-scale data systems
 * [cppan](https://github.com/tarasko/cppan): Class members annotations for C++
+* [iris-crypt](https://github.com/aspectron/iris-crypt): Store Node.js modules encrypted in a package file
