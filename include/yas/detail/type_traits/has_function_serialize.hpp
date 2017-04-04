@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__has_function_serialize_hpp
-#define _yas__has_function_serialize_hpp
+#ifndef __yas__detail__type_traits__has_function_serialize_hpp
+#define __yas__detail__type_traits__has_function_serialize_hpp
 
 #include <yas/detail/tools/cast.hpp>
 
@@ -90,4 +90,4 @@ struct has_function_serialize<false, false, T, T2> {
 } // ns detail
 } // ns yas
 
-#endif // _yas__has_function_serialize_hpp
+#endif // __yas__detail__type_traits__has_function_serialize_hpp

@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__io_exceptions_hpp
-#define _yas__io_exceptions_hpp
+#ifndef __yas__detail__io__io_exceptions_hpp
+#define __yas__detail__io__io_exceptions_hpp
 
 #include <yas/detail/io/exception_base.hpp>
 
@@ -90,4 +90,4 @@ YAS_DECLARE_EXCEPTION_TYPE(io_exception);
 
 } // namespace yas
 
-#endif // _yas__io_exceptions_hpp
+#endif // __yas__detail__io__io_exceptions_hpp

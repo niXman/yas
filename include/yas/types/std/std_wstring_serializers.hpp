@@ -34,8 +34,8 @@
 // DEALINGS IN THE SOFTWARE.
 
 
-#ifndef _yas__binary__std_wstring_serializer_hpp
-#define _yas__binary__std_wstring_serializer_hpp
+#ifndef __yas__types__std__std_wstring_serializers_hpp
+#define __yas__types__std__std_wstring_serializers_hpp
 
 #include <yas/detail/tools/utf8conv.hpp>
 
@@ -76,4 +76,4 @@ struct serializer<
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__binary__std_wstring_serializer_hpp
+#endif // __yas__types__std__std_wstring_serializers_hpp

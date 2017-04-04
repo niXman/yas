@@ -11,8 +11,8 @@
 #
 # /* See http://www.boost.org for most recent version. */
 #
-# ifndef YAS_PREPROCESSOR_ARITHMETIC_DEC_HPP
-# define YAS_PREPROCESSOR_ARITHMETIC_DEC_HPP
+#ifndef __yas__detail__preprocessor__dec_hpp
+#define __yas__detail__preprocessor__dec_hpp
 #
 # include <yas/detail/preprocessor/config.hpp>
 #
@@ -285,4 +285,4 @@
 # define YAS_PP_DEC_255 254
 # define YAS_PP_DEC_256 255
 #
-# endif
+#endif // __yas__detail__preprocessor__dec_hpp

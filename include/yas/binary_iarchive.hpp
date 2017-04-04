@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__binary_iarchive_hpp
-#define _yas__binary_iarchive_hpp
+#ifndef __yas__binary_iarchive_hpp
+#define __yas__binary_iarchive_hpp
 
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/serializer.hpp>
@@ -107,4 +107,4 @@ struct binary_iarchive
 
 } // namespace yas
 
-#endif // _yas__binary_iarchive_hpp
+#endif // __yas__binary_iarchive_hpp

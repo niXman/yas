@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__binary__usertype_serializer_hpp
-#define _yas__binary__usertype_serializer_hpp
+#ifndef __yas__types__utility__usertype_serializers_hpp
+#define __yas__types__utility__usertype_serializers_hpp
 
 #include <yas/detail/type_traits/serializer.hpp>
 
@@ -136,4 +136,4 @@ struct serializer<
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__binary__usertype_serializer_hpp
+#endif // __yas__types__utility__usertype_serializers_hpp

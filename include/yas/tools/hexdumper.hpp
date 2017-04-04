@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__tools__hexdumper_hpp
-#define _yas__tools__hexdumper_hpp
+#ifndef __yas__tools__hexdumper_hpp
+#define __yas__tools__hexdumper_hpp
 
 #include <yas/detail/tools/cast.hpp>
 
@@ -199,4 +199,4 @@ inline std::string hex_dump(const std::string& str) {
 
 } // namespace yas
 
-#endif // _yas__tools__hexdumper_hpp
+#endif // __yas__tools__hexdumper_hpp

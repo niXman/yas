@@ -9,8 +9,8 @@
 #
 # /* See http://www.boost.org for most recent version. */
 #
-# ifndef YAS_PREPROCESSOR_SEQ_FOR_EACH_I_HPP
-# define YAS_PREPROCESSOR_SEQ_FOR_EACH_I_HPP
+#ifndef __yas__detail__preprocessor__seq_for_each_i_hpp
+#define __yas__detail__preprocessor__seq_for_each_i_hpp
 #
 # include <yas/detail/preprocessor/dec.hpp>
 # include <yas/detail/preprocessor/inc.hpp>
@@ -58,4 +58,4 @@
 #    define YAS_PP_SEQ_FOR_EACH_I_R_I(r, macro, data, seq) YAS_PP_FOR_ ## r((macro, data, seq (nil), 0), YAS_PP_SEQ_FOR_EACH_I_P, YAS_PP_SEQ_FOR_EACH_I_O, YAS_PP_SEQ_FOR_EACH_I_M)
 # endif
 #
-# endif
+#endif // __yas__detail__preprocessor__seq_for_each_i_hpp

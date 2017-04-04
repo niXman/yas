@@ -11,8 +11,8 @@
 #
 # /* See http://www.boost.org for most recent version. */
 #
-# ifndef YAS_PREPROCESSOR_REPETITION_ENUM_PARAMS_HPP
-# define YAS_PREPROCESSOR_REPETITION_ENUM_PARAMS_HPP
+#ifndef __yas__detail__preprocessor__enum_params_hpp
+#define __yas__detail__preprocessor__enum_params_hpp
 #
 # include <yas/detail/preprocessor/config.hpp>
 # include <yas/detail/preprocessor/comma_if.hpp>
@@ -38,4 +38,4 @@
 #    define YAS_PP_ENUM_PARAMS_Z_I(z, count, param) YAS_PP_REPEAT_ ## z(count, YAS_PP_ENUM_PARAMS_M, param)
 # endif
 #
-# endif
+#endif // __yas__detail__preprocessor__enum_params_hpp

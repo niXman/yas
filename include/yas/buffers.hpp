@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__buffers_hpp
-#define _yas__buffers_hpp
+#ifndef __yas__buffers_hpp
+#define __yas__buffers_hpp
 
 #include <yas/detail/config/config.hpp>
 
@@ -112,4 +112,4 @@ struct shared_buffer {
 
 } // namespace yas
 
-#endif // _yas__buffers_hpp
+#endif // __yas__buffers_hpp

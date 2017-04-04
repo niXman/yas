@@ -11,8 +11,8 @@
 #
 # /* See http://www.boost.org for most recent version. */
 #
-# ifndef YAS_PREPROCESSOR_STRINGIZE_HPP
-# define YAS_PREPROCESSOR_STRINGIZE_HPP
+#ifndef __yas__detail__preprocessor__stringize_hpp
+#define __yas__detail__preprocessor__stringize_hpp
 #
 # include <yas/detail/preprocessor/config.hpp>
 #
@@ -30,4 +30,4 @@
 #
 # define YAS_PP_STRINGIZE_I(text) #text
 #
-# endif
+#endif // __yas__detail__preprocessor__stringize_hpp

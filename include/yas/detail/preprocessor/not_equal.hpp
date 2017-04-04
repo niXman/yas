@@ -11,8 +11,8 @@
 #
 # /* See http://www.boost.org for most recent version. */
 #
-# ifndef YAS_PREPROCESSOR_COMPARISON_NOT_EQUAL_HPP
-# define YAS_PREPROCESSOR_COMPARISON_NOT_EQUAL_HPP
+#ifndef __yas__detail__preprocessor__not_equal_hpp
+#define __yas__detail__preprocessor__not_equal_hpp
 #
 # include <yas/detail/preprocessor/cat.hpp>
 # include <yas/detail/preprocessor/config.hpp>
@@ -811,4 +811,4 @@
 #    define YAS_PP_NOT_EQUAL_256(c, y) YAS_PP_IIF(c, YAS_PP_NIL, y##(1, YAS_PP_NIL))
 # endif
 #
-# endif
+#endif // __yas__detail__preprocessor__not_equal_hpp

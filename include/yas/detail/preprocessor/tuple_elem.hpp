@@ -12,8 +12,8 @@
 #
 # /* See http://www.boost.org for most recent version. */
 #
-# ifndef YAS_PREPROCESSOR_TUPLE_ELEM_HPP
-# define YAS_PREPROCESSOR_TUPLE_ELEM_HPP
+#ifndef __yas__detail__preprocessor__tuple_elem_hpp
+#define __yas__detail__preprocessor__tuple_elem_hpp
 #
 # include <yas/detail/preprocessor/cat.hpp>
 # include <yas/detail/preprocessor/config.hpp>
@@ -188,4 +188,4 @@
 # define YAS_PP_TUPLE_ELEM_3_1(a, b, c) b
 # define YAS_PP_TUPLE_ELEM_3_2(a, b, c) c
 #
-# endif
+#endif // __yas__detail__preprocessor__tuple_elem_hpp

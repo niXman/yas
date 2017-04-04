@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef __yas__limit_hpp
-#define __yas__limit_hpp
+#ifndef __yas__detail__tools__limit_hpp
+#define __yas__detail__tools__limit_hpp
 
 #include <yas/detail/tools/cast.hpp>
 #include <yas/detail/type_traits/type_traits.hpp>
@@ -127,4 +127,4 @@ constexpr minmax_limit<T> limit(T &&v, std::uint64_t min, std::uint64_t max) {
 
 } // ns yas
 
-#endif // __yas__limit_hpp
+#endif // __yas__detail__tools__limit_hpp

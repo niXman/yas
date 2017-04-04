@@ -11,8 +11,8 @@
 #
 # /* See http://www.boost.org for most recent version. */
 #
-# ifndef YAS_PREPROCESSOR_REPETITION_DETAIL_FOR_HPP
-# define YAS_PREPROCESSOR_REPETITION_DETAIL_FOR_HPP
+#ifndef __yas__detail__preprocessor__rep_for_impl_hpp
+#define __yas__detail__preprocessor__rep_for_impl_hpp
 #
 # include <yas/detail/preprocessor/expr_iif.hpp>
 # include <yas/detail/preprocessor/iif.hpp>
@@ -533,4 +533,4 @@
 # define YAS_PP_FOR_255_C(c, s, p, o, m) YAS_PP_IIF(c, m, YAS_PP_TUPLE_EAT_2)(256, s) YAS_PP_IIF(c, YAS_PP_FOR_256, YAS_PP_TUPLE_EAT_4)(YAS_PP_EXPR_IIF(c, o)(256, s), p, o, m)
 # define YAS_PP_FOR_256_C(c, s, p, o, m) YAS_PP_IIF(c, m, YAS_PP_TUPLE_EAT_2)(257, s) YAS_PP_IIF(c, YAS_PP_FOR_257, YAS_PP_TUPLE_EAT_4)(YAS_PP_EXPR_IIF(c, o)(257, s), p, o, m)
 #
-# endif
+#endif // __yas__detail__preprocessor__rep_for_impl_hpp

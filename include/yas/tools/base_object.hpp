@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__base_object_hpp
-#define _yas__base_object_hpp
+#ifndef __yas__tools__base_object_hpp
+#define __yas__tools__base_object_hpp
 
 namespace yas {
 
@@ -50,4 +50,4 @@ const B& base_object(const D& d) {
 
 } // namespace yas
 
-#endif // _yas__base_object_hpp
+#endif // __yas__tools__base_object_hpp

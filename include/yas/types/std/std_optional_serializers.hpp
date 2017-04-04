@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__binary__std_optional_serializer_hpp
-#define _yas__binary__std_optional_serializer_hpp
+#ifndef __yas__types__std__std_optional_serializers_hpp
+#define __yas__types__std__std_optional_serializers_hpp
 
 #if __cplusplus > 201103L
 
@@ -113,4 +113,4 @@ struct serializer<
 
 #endif // __cplusplus > 201103L
 
-#endif // _yas__binary__std_optional_serializer_hpp
+#endif // __yas__types__std__std_optional_serializers_hpp

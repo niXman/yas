@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__text_oarchive_hpp
-#define _yas__text_oarchive_hpp
+#ifndef __yas__text_oarchive_hpp
+#define __yas__text_oarchive_hpp
 
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/serializer.hpp>
@@ -105,4 +105,4 @@ struct text_oarchive
 
 } // namespace yas
 
-#endif // _yas__text_oarchive_hpp
+#endif // __yas__text_oarchive_hpp

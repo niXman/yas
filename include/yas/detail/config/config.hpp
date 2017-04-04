@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__config_hpp
-#define _yas__config_hpp
+#ifndef __yas__detail__config__config_hpp
+#define __yas__detail__config__config_hpp
 
 /***************************************************************************/
 
@@ -60,4 +60,4 @@
 
 /***************************************************************************/
 
-#endif // _yas__config_hpp
+#endif // __yas__detail__config__config_hpp

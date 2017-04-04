@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__detail__io__text_streams_hpp
-#define _yas__detail__io__text_streams_hpp
+#ifndef __yas__detail__io__text_streams_hpp
+#define __yas__detail__io__text_streams_hpp
 
 #include <yas/detail/config/config.hpp>
 
@@ -235,4 +235,4 @@ private:
 } // ns detail
 } // ns yas
 
-#endif // _yas__detail__io__text_streams_hpp
+#endif // __yas__detail__io__text_streams_hpp

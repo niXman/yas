@@ -11,11 +11,11 @@
 #
 # /* See http://www.boost.org for most recent version. */
 #
-# ifndef YAS_PREPROCESSOR_PUNCTUATION_COMMA_HPP
-# define YAS_PREPROCESSOR_PUNCTUATION_COMMA_HPP
+#ifndef __yas__detail__preprocessor__comma_hpp
+#define __yas__detail__preprocessor__comma_hpp
 #
 # /* YAS_PP_COMMA */
 #
 # define YAS_PP_COMMA() ,
 #
-# endif
+#endif // __yas__detail__preprocessor__comma_hpp

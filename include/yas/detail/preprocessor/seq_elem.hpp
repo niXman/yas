@@ -9,8 +9,8 @@
 #
 # /* See http://www.boost.org for most recent version. */
 #
-# ifndef YAS_PREPROCESSOR_SEQ_ELEM_HPP
-# define YAS_PREPROCESSOR_SEQ_ELEM_HPP
+#ifndef __yas__detail__preprocessor__seq_elem_hpp
+#define __yas__detail__preprocessor__seq_elem_hpp
 #
 # include <yas/detail/preprocessor/cat.hpp>
 # include <yas/detail/preprocessor/config.hpp>
@@ -301,4 +301,4 @@
 # define YAS_PP_SEQ_ELEM_254(_) YAS_PP_SEQ_ELEM_253
 # define YAS_PP_SEQ_ELEM_255(_) YAS_PP_SEQ_ELEM_254
 #
-# endif
+#endif // __yas__detail__preprocessor__seq_elem_hpp

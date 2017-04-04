@@ -10,8 +10,8 @@
 #
 # /* See http://www.boost.org for most recent version. */
 #
-# ifndef YAS_PREPROCESSOR_CONFIG_CONFIG_HPP
-# define YAS_PREPROCESSOR_CONFIG_CONFIG_HPP
+#ifndef __yas__detail__preprocessor__config_hpp
+#define __yas__detail__preprocessor__config_hpp
 #
 # /* YAS_PP_CONFIG_FLAGS */
 #
@@ -101,4 +101,4 @@
 #    define YAS_PP_VARIADICS 0
 # endif
 #
-# endif
+#endif // __yas__detail__preprocessor__config_hpp

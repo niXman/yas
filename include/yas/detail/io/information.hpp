@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__information_hpp
-#define _yas__information_hpp
+#ifndef __yas__detail__io__information_hpp
+#define __yas__detail__io__information_hpp
 
 #include <yas/detail/config/config.hpp>
 
@@ -325,4 +325,4 @@ struct oarchive_info {
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__information_hpp
+#endif // __yas__detail__io__information_hpp

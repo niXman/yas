@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__type_traits_hpp
-#define _yas__type_traits_hpp
+#ifndef __yas__detail__type_traits__type_traits_hpp
+#define __yas__detail__type_traits__type_traits_hpp
 
 #include <yas/detail/type_traits/has_method_serialize.hpp>
 #include <yas/detail/type_traits/has_function_serialize.hpp>
@@ -207,4 +207,4 @@ struct is_writable_archive: std::integral_constant<bool, Ar::is_writable()>
 
 } // namespace yas
 
-#endif // _yas__type_traits_hpp
+#endif // __yas__detail__type_traits__type_traits_hpp

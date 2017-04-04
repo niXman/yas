@@ -9,8 +9,8 @@
 #
 # /* See http://www.boost.org for most recent version. */
 #
-# ifndef YAS_PREPROCESSOR_CONTROL_EXPR_IIF_HPP
-# define YAS_PREPROCESSOR_CONTROL_EXPR_IIF_HPP
+#ifndef __yas__detail__preprocessor__expr_iif_hpp
+#define __yas__detail__preprocessor__expr_iif_hpp
 #
 # include <yas/detail/preprocessor/config.hpp>
 #
@@ -28,4 +28,4 @@
 # define YAS_PP_EXPR_IIF_0(expr)
 # define YAS_PP_EXPR_IIF_1(expr) expr
 #
-# endif
+#endif // __yas__detail__preprocessor__expr_iif_hpp

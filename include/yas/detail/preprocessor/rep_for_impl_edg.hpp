@@ -11,8 +11,8 @@
 #
 # /* See http://www.boost.org for most recent version. */
 #
-# ifndef YAS_PREPROCESSOR_REPETITION_DETAIL_EDG_FOR_HPP
-# define YAS_PREPROCESSOR_REPETITION_DETAIL_EDG_FOR_HPP
+#ifndef __yas__detail__preprocessor__rep_for_impl_edg_hpp
+#define __yas__detail__preprocessor__rep_for_impl_edg_hpp
 #
 # include <yas/detail/preprocessor/if.hpp>
 # include <yas/detail/preprocessor/tuple_eat.hpp>
@@ -531,4 +531,4 @@
 # define YAS_PP_FOR_255_I(s, p, o, m) YAS_PP_IF(p(256, s), m, YAS_PP_TUPLE_EAT_2)(256, s) YAS_PP_IF(p(256, s), YAS_PP_FOR_256, YAS_PP_TUPLE_EAT_4)(o(256, s), p, o, m)
 # define YAS_PP_FOR_256_I(s, p, o, m) YAS_PP_IF(p(257, s), m, YAS_PP_TUPLE_EAT_2)(257, s) YAS_PP_IF(p(257, s), YAS_PP_FOR_257, YAS_PP_TUPLE_EAT_4)(o(257, s), p, o, m)
 #
-# endif
+#endif // __yas__detail__preprocessor__rep_for_impl_edg_hpp

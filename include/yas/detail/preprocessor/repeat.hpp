@@ -11,8 +11,8 @@
 #
 # /* See http://www.boost.org for most recent version. */
 #
-# ifndef YAS_PREPROCESSOR_REPETITION_REPEAT_HPP
-# define YAS_PREPROCESSOR_REPETITION_REPEAT_HPP
+#ifndef __yas__detail__preprocessor__repeat_hpp
+#define __yas__detail__preprocessor__repeat_hpp
 #
 # include <yas/detail/preprocessor/cat.hpp>
 # include <yas/detail/preprocessor/config.hpp>
@@ -822,4 +822,4 @@
 # define YAS_PP_REPEAT_3_255(m, d) YAS_PP_REPEAT_3_254(m, d) m(4, 254, d)
 # define YAS_PP_REPEAT_3_256(m, d) YAS_PP_REPEAT_3_255(m, d) m(4, 255, d)
 #
-# endif
+#endif // __yas__detail__preprocessor__repeat_hpp

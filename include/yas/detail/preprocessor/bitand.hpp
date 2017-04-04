@@ -9,8 +9,8 @@
 #
 # /* See http://www.boost.org for most recent version. */
 #
-# ifndef YAS_PREPROCESSOR_LOGICAL_BITAND_HPP
-# define YAS_PREPROCESSOR_LOGICAL_BITAND_HPP
+#ifndef __yas__detail__preprocessor__bitand_hpp
+#define __yas__detail__preprocessor__bitand_hpp
 #
 # include <yas/detail/preprocessor/config.hpp>
 #
@@ -35,4 +35,4 @@
 # define YAS_PP_BITAND_10 0
 # define YAS_PP_BITAND_11 1
 #
-# endif
+#endif // __yas__detail__preprocessor__bitand_hpp

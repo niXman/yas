@@ -9,8 +9,8 @@
 #
 # /* See http://www.boost.org for most recent version. */
 #
-# ifndef YAS_PREPROCESSOR_LOGICAL_COMPL_HPP
-# define YAS_PREPROCESSOR_LOGICAL_COMPL_HPP
+#ifndef __yas__detail__preprocessor__compl_hpp
+#define __yas__detail__preprocessor__compl_hpp
 #
 # include <yas/detail/preprocessor/config.hpp>
 #
@@ -33,4 +33,4 @@
 # define YAS_PP_COMPL_0 1
 # define YAS_PP_COMPL_1 0
 #
-# endif
+#endif // __yas__detail__preprocessor__compl_hpp

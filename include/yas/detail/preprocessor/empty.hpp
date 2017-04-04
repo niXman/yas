@@ -11,11 +11,11 @@
 #
 # /* See http://www.boost.org for most recent version. */
 #
-# ifndef YAS_PREPROCESSOR_FACILITIES_EMPTY_HPP
-# define YAS_PREPROCESSOR_FACILITIES_EMPTY_HPP
+#ifndef __yas__detail__preprocessor__empty_hpp
+#define __yas__detail__preprocessor__empty_hpp
 #
 # /* YAS_PP_EMPTY */
 #
 # define YAS_PP_EMPTY()
 #
-# endif
+#endif // __yas__detail__preprocessor__empty_hpp

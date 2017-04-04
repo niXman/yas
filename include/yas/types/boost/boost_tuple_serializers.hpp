@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__binary__boost_tuple_serializer_hpp
-#define _yas__binary__boost_tuple_serializer_hpp
+#ifndef __yas__types__boost__boost_tuple_serializers_hpp
+#define __yas__types__boost__boost_tuple_serializers_hpp
 
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
 #include <yas/detail/tools/cast.hpp>
@@ -110,4 +110,4 @@ struct serializer<
 
 #endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 
-#endif // _yas__binary__boost_tuple_serializer_hpp
+#endif // __yas__types__boost__boost_tuple_serializers_hpp

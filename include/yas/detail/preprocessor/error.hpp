@@ -9,8 +9,8 @@
 #
 # /* See http://www.boost.org for most recent version. */
 #
-# ifndef YAS_PREPROCESSOR_DEBUG_ERROR_HPP
-# define YAS_PREPROCESSOR_DEBUG_ERROR_HPP
+#ifndef __yas__detail__preprocessor__error_hpp
+#define __yas__detail__preprocessor__error_hpp
 #
 # include <yas/detail/preprocessor/cat.hpp>
 # include <yas/detail/preprocessor/config.hpp>
@@ -30,4 +30,4 @@
 # define YAS_PP_ERROR_0x0006 YAS_PP_ERROR(0x0006, YAS_PP_ARITHMETIC_OVERFLOW)
 # define YAS_PP_ERROR_0x0007 YAS_PP_ERROR(0x0007, YAS_PP_DIVISION_BY_ZERO)
 #
-# endif
+#endif // __yas__detail__preprocessor__error_hpp

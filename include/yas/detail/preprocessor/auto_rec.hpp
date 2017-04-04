@@ -9,15 +9,11 @@
 #
 # /* See http://www.boost.org for most recent version. */
 #
+#
+#ifndef __yas__detail__preprocessor__auto_rec_hpp
+#define __yas__detail__preprocessor__auto_rec_hpp
+#
 # include <yas/detail/preprocessor/config.hpp>
-#
-# if YAS_PP_CONFIG_FLAGS() & YAS_PP_CONFIG_DMC()
-#     include <boost/preprocessor/detail/dmc/auto_rec.hpp>
-# else
-#
-# ifndef YAS_PREPROCESSOR_DETAIL_AUTO_REC_HPP
-# define YAS_PREPROCESSOR_DETAIL_AUTO_REC_HPP
-#
 # include <yas/detail/preprocessor/iif.hpp>
 #
 # /* YAS_PP_AUTO_REC */
@@ -289,5 +285,4 @@
 #                            define YAS_PP_NODE_253(p) YAS_PP_IIF(p(253), 253, 254)
 #                            define YAS_PP_NODE_255(p) YAS_PP_IIF(p(255), 255, 256)
 #
-# endif
-# endif
+#endif // __yas__detail__preprocessor__auto_rec_hpp

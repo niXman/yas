@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yal__tools__pair_object_hpp
-#define _yal__tools__pair_object_hpp
+#ifndef __yas__types__utility__object_hpp
+#define __yas__types__utility__object_hpp
 
 #include <yas/detail/preprocessor/preprocessor.hpp>
 
@@ -192,4 +192,4 @@ make_object(ConstCharPtr key, Pairs &&... pairs) {
 
 } // ns yas
 
-#endif // _yal__tools__pair_object_hpp
+#endif // __yas__types__utility__object_hpp

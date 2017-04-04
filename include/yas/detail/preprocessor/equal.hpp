@@ -11,8 +11,8 @@
 #
 # /* See http://www.boost.org for most recent version. */
 #
-# ifndef YAS_PREPROCESSOR_COMPARISON_EQUAL_HPP
-# define YAS_PREPROCESSOR_COMPARISON_EQUAL_HPP
+#ifndef __yas__detail__preprocessor__equal_hpp
+#define __yas__detail__preprocessor__equal_hpp
 #
 # include <yas/detail/preprocessor/not_equal.hpp>
 # include <yas/detail/preprocessor/config.hpp>
@@ -31,4 +31,4 @@
 #
 # define YAS_PP_EQUAL_D(d, x, y) YAS_PP_EQUAL(x, y)
 #
-# endif
+#endif // __yas__detail__preprocessor__equal_hpp

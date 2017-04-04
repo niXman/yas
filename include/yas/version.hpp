@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__version_hpp
-#define _yas__version_hpp
+#ifndef __yas__version_hpp
+#define __yas__version_hpp
 
 // YAS_VERSION % 100 is the patch level
 // YAS_VERSION / 100 % 1000 is the minor version
@@ -73,4 +73,4 @@ enum yas_version {
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__version_hpp
+#endif // __yas__version_hpp

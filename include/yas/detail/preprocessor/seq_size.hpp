@@ -9,8 +9,8 @@
 #
 # /* See http://www.boost.org for most recent version. */
 #
-# ifndef YAS_PREPROCESSOR_SEQ_SIZE_HPP
-# define YAS_PREPROCESSOR_SEQ_SIZE_HPP
+#ifndef __yas__detail__preprocessor__seq_size_hpp
+#define __yas__detail__preprocessor__seq_size_hpp
 #
 # include <yas/detail/preprocessor/cat.hpp>
 # include <yas/detail/preprocessor/config.hpp>
@@ -544,4 +544,4 @@
 # define YAS_PP_SEQ_SIZE_YAS_PP_SEQ_SIZE_255 255
 # define YAS_PP_SEQ_SIZE_YAS_PP_SEQ_SIZE_256 256
 #
-# endif
+#endif // __yas__detail__preprocessor__seq_size_hpp

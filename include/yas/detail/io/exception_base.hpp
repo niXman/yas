@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__exception_base_hpp
-#define _yas__exception_base_hpp
+#ifndef __yas__detail__io__exception_base_hpp
+#define __yas__detail__io__exception_base_hpp
 
 #include <yas/detail/preprocessor/stringize.hpp>
 
@@ -67,4 +67,4 @@ namespace yas {
 
 } // ns yas
 
-#endif // _yas__exception_base_hpp
+#endif // __yas__detail__io__exception_base_hpp

@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__has_method_serializer_hpp
-#define _yas__has_method_serializer_hpp
+#ifndef __yas__detail__type_traits__has_method_serialize_hpp
+#define __yas__detail__type_traits__has_method_serialize_hpp
 
 #include <yas/detail/tools/cast.hpp>
 #include <yas/detail/type_traits/type_traits.hpp>
@@ -218,4 +218,4 @@ public:
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__has_method_serializer_hpp
+#endif // __yas__detail__type_traits__has_method_serialize_hpp

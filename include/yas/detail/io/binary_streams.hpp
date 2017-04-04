@@ -33,14 +33,13 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__detail__io__binary_streams_hpp
-#define _yas__detail__io__binary_streams_hpp
+#ifndef __yas__detail__io__binary_streams_hpp
+#define __yas__detail__io__binary_streams_hpp
 
 #include <yas/detail/config/config.hpp>
 #include <yas/detail/io/io_exceptions.hpp>
 #include <yas/detail/io/endian_conv.hpp>
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/preprocessor/cat.hpp>
 
 #include <limits>
 #include <cstring>
@@ -294,4 +293,4 @@ private:
 } // ns detail
 } // ns yas
 
-#endif // _yas__detail__io__binary_streams_hpp
+#endif // __yas__detail__io__binary_streams_hpp

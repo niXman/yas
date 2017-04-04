@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__std_traits_hpp
-#define _yas__std_traits_hpp
+#ifndef __yas__std_traits_hpp
+#define __yas__std_traits_hpp
 
 #include <yas/detail/config/config.hpp>
 
@@ -81,4 +81,4 @@ struct std_traits {
 } // ns detail
 } // ns yas
 
-#endif // _yas__std_traits_hpp
+#endif // __yas__std_traits_hpp

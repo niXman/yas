@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__config_clang_config_hpp
-#define _yas__config_clang_config_hpp
+#ifndef __yas__detail__config__compiler__clang_hpp
+#define __yas__detail__config__compiler__clang_hpp
 
 #include <yas/detail/config/endian.hpp>
 
@@ -58,4 +58,4 @@
 
 /***************************************************************************/
 
-#endif // _yas__config_clang_config_hpp
+#endif // __yas__detail__config__compiler__clang_hpp

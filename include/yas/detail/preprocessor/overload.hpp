@@ -10,8 +10,8 @@
 #
 # /* See http://www.boost.org for most recent version. */
 #
-# ifndef YAS_PREPROCESSOR_FACILITIES_OVERLOAD_HPP
-# define YAS_PREPROCESSOR_FACILITIES_OVERLOAD_HPP
+#ifndef __yas__detail__preprocessor__overload_hpp
+#define __yas__detail__preprocessor__overload_hpp
 #
 # include <yas/detail/preprocessor/config.hpp>
 # include <yas/detail/preprocessor/cat.hpp>
@@ -23,4 +23,4 @@
 #    define YAS_PP_OVERLOAD(prefix, ...) YAS_PP_CAT(prefix, YAS_PP_VARIADIC_SIZE(__VA_ARGS__))
 # endif
 #
-# endif
+#endif // __yas__detail__preprocessor__overload_hpp

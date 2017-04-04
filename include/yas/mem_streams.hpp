@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__mem_streams_hpp
-#define _yas__mem_streams_hpp
+#ifndef __yas__mem_streams_hpp
+#define __yas__mem_streams_hpp
 
 #include <yas/detail/config/config.hpp>
 #include <yas/detail/tools/cast.hpp>
@@ -168,4 +168,4 @@ private:
 
 } // ns yas
 
-#endif // _yas__mem_streams_hpp
+#endif // __yas__mem_streams_hpp

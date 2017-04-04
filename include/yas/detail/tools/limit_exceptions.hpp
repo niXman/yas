@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef __yas__limit_exceptions_hpp
-#define __yas__limit_exceptions_hpp
+#ifndef __yas__detail__tools__limit_exceptions_hpp
+#define __yas__detail__tools__limit_exceptions_hpp
 
 #include <yas/detail/io/exception_base.hpp>
 
@@ -53,4 +53,4 @@ YAS_DECLARE_EXCEPTION_TYPE(limits_exception);
 
 } // ns yas
 
-#endif // __yas__limit_exceptions_hpp
+#endif // __yas__detail__tools__limit_exceptions_hpp

@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__binary__fusion_map_serializer_hpp
-#define _yas__binary__fusion_map_serializer_hpp
+#ifndef __yas__types__boost__boost_fusion_map_serializers_hpp
+#define __yas__types__boost__boost_fusion_map_serializers_hpp
 
 namespace yas {
 namespace detail {
@@ -48,4 +48,4 @@ namespace detail {
 } // namespace detail
 } // namespace yas
 
-#endif // _yas__binary__fusion_map_serializer_hpp
+#endif // __yas__types__boost__boost_fusion_map_serializers_hpp

@@ -11,8 +11,8 @@
 #
 # /* See http://www.boost.org for most recent version. */
 #
-# ifndef YAS_PREPROCESSOR_CONTROL_EXPR_IF_HPP
-# define YAS_PREPROCESSOR_CONTROL_EXPR_IF_HPP
+#ifndef __yas__detail__preprocessor__expr_if_hpp
+#define __yas__detail__preprocessor__expr_if_hpp
 #
 # include <yas/detail/preprocessor/config.hpp>
 # include <yas/detail/preprocessor/expr_iif.hpp>
@@ -27,4 +27,4 @@
 #    define YAS_PP_EXPR_IF_I(cond, expr) YAS_PP_EXPR_IIF(YAS_PP_BOOL(cond), expr)
 # endif
 #
-# endif
+#endif // __yas__detail__preprocessor__expr_if_hpp

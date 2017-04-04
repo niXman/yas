@@ -11,8 +11,8 @@
 #
 # /* See http://www.boost.org for most recent version. */
 #
-# ifndef YAS_PREPROCESSOR_PUNCTUATION_COMMA_IF_HPP
-# define YAS_PREPROCESSOR_PUNCTUATION_COMMA_IF_HPP
+#ifndef __yas__detail__preprocessor__comma_if_hpp
+#define __yas__detail__preprocessor__comma_if_hpp
 #
 # include <yas/detail/preprocessor/config.hpp>
 # include <yas/detail/preprocessor/if.hpp>
@@ -28,4 +28,4 @@
 #    define YAS_PP_COMMA_IF_I(cond) YAS_PP_IF(cond, YAS_PP_COMMA, YAS_PP_EMPTY)()
 # endif
 #
-# endif
+#endif // __yas__detail__preprocessor__comma_if_hpp

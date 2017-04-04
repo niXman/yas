@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__default_traits_hpp
-#define _yas__default_traits_hpp
+#ifndef __yas__defaul_traits_hpp
+#define __yas__defaul_traits_hpp
 
 #include <yas/detail/config/config.hpp>
 #include <yas/detail/tools/cast.hpp>
@@ -411,4 +411,4 @@ std::size_t default_traits::dtoa(char *buf, const std::size_t size, T v) {
 } // ns detail
 } // ns yas
 
-#endif // _yas__default_traits_hpp
+#endif // __yas__defaul_traits_hpp

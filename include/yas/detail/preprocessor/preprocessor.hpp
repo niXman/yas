@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__detail__preprocessor_hpp
-#define _yas__detail__preprocessor_hpp
+#ifndef __yas__detail__preprocessor__preprocessor_hpp
+#define __yas__detail__preprocessor__preprocessor_hpp
 
 #include <yas/detail/preprocessor/auto_rec.hpp>
 #include <yas/detail/preprocessor/bitand.hpp>
@@ -74,4 +74,4 @@
 #include <yas/detail/preprocessor/variadic_elem.hpp>
 #include <yas/detail/preprocessor/variadic_size.hpp>
 
-#endif // _yas__detail__preprocessor_hpp
+#endif // __yas__detail__preprocessor__preprocessor_hpp

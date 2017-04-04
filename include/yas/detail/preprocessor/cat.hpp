@@ -11,8 +11,8 @@
 #
 # /* See http://www.boost.org for most recent version. */
 #
-# ifndef YAS_PREPROCESSOR_CAT_HPP
-# define YAS_PREPROCESSOR_CAT_HPP
+#ifndef __yas__detail__preprocessor__cat_hpp
+#define __yas__detail__preprocessor__cat_hpp
 #
 # include <yas/detail/preprocessor/config.hpp>
 #
@@ -32,4 +32,4 @@
 #    define YAS_PP_CAT_II(p, res) res
 # endif
 #
-# endif
+#endif // __yas__detail__preprocessor__cat_hpp

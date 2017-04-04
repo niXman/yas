@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__detail__io__endian_conv_hpp
-#define _yas__detail__io__endian_conv_hpp
+#ifndef __yas__detail__io__endian_conv_hpp
+#define __yas__detail__io__endian_conv_hpp
 
 #include <yas/detail/config/config.hpp>
 #include <yas/detail/type_traits/type_traits.hpp>
@@ -143,4 +143,4 @@ struct endian_converter<true> {
 } // ns detail
 } // ns yas
 
-#endif // _yas__detail__io__endian_conv_hpp
+#endif // __yas__detail__io__endian_conv_hpp

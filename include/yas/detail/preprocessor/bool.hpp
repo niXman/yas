@@ -11,8 +11,8 @@
 #
 # /* See http://www.boost.org for most recent version. */
 #
-# ifndef YAS_PREPROCESSOR_LOGICAL_BOOL_HPP
-# define YAS_PREPROCESSOR_LOGICAL_BOOL_HPP
+#ifndef __yas__detail__preprocessor__bool_hpp
+#define __yas__detail__preprocessor__bool_hpp
 #
 # include <yas/detail/preprocessor/config.hpp>
 #
@@ -285,4 +285,4 @@
 # define YAS_PP_BOOL_255 1
 # define YAS_PP_BOOL_256 1
 #
-# endif
+#endif // __yas__detail__preprocessor__bool_hpp

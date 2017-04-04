@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas__std_types_serializers_hpp
-#define _yas__std_types_serializers_hpp
+#ifndef __yas__std_types_hpp
+#define __yas__std_types_hpp
 
 #include <yas/detail/config/config.hpp>
 
@@ -60,4 +60,4 @@
 #include <yas/types/std/std_unordered_multiset_serializers.hpp>
 #include <yas/types/std/std_unordered_multimap_serializers.hpp>
 
-#endif // _yas__std_types_serializers_hpp
+#endif // __yas__std_types_hpp
