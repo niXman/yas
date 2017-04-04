@@ -55,16 +55,16 @@ namespace detail {
 
 #pragma pack(push, 1)
 union archive_header {
-	struct {
-		std::uint8_t version   :4; // version      : 0...15
-		std::uint8_t type      :3; // archive type : 0...7: binary, text, json
-		std::uint8_t endian    :1; // endianness   : 0 - LE, 1 - BE
-		std::uint8_t bits      :1; // bitness      : 0 - 32 bit, 1 - 64 bit
-		std::uint8_t compacted :1; // compacted    : 0 - no, 1 - yes
-		std::uint8_t reserved  :6; // reserved
-	} bits;
+    struct {
+        std::uint8_t version   :4; // version      : 0...15
+        std::uint8_t type      :3; // archive type : 0...7: binary, text, json
+        std::uint8_t endian    :1; // endianness   : 0 - LE, 1 - BE
+        std::uint8_t bits      :1; // bitness      : 0 - 32 bit, 1 - 64 bit
+        std::uint8_t compacted :1; // compacted    : 0 - no, 1 - yes
+        std::uint8_t reserved  :6; // reserved
+    } bits;
 
-	std::uint16_t u;
+    std::uint16_t u;
 };
 #pragma pack(pop)
 
@@ -75,9 +75,9 @@ static_assert(sizeof(archive_header) == sizeof(std::uint16_t), "alignment error"
 #ifdef YAS_SET_HEADER_BYTES
 static_assert(sizeof(YAS_PP_STRINGIZE(YAS_SET_HEADER_BYTES)) >= 4, "header bytes error");
 static constexpr char yas_id[] = {
-	 YAS_PP_STRINGIZE(YAS_SET_HEADER_BYTES)[0]
-	,YAS_PP_STRINGIZE(YAS_SET_HEADER_BYTES)[1]
-	,YAS_PP_STRINGIZE(YAS_SET_HEADER_BYTES)[2]
+     YAS_PP_STRINGIZE(YAS_SET_HEADER_BYTES)[0]
+    ,YAS_PP_STRINGIZE(YAS_SET_HEADER_BYTES)[1]
+    ,YAS_PP_STRINGIZE(YAS_SET_HEADER_BYTES)[2]
 };
 #else
 static constexpr std::uint8_t yas_id[] = {'y', 'a', 's'};
@@ -86,65 +86,65 @@ static constexpr std::uint8_t yas_id[] = {'y', 'a', 's'};
 /**************************************************************************/
 
 struct header_ops {
-	enum { header_size = sizeof(yas_id)+sizeof(std::uint16_t)*2 };
+    enum { header_size = sizeof(yas_id) + sizeof(std::uint16_t) * 2 };
 
-	template<std::uint16_t F, typename IO>
-	static void write(IO &io, const archive_header &h) {
-		static const std::uint8_t hexchars[] = "0123456789ABCDEF";
-		static const std::uint8_t buf[header_size] = {
-			 yas_id[0], yas_id[1], yas_id[2]
+    template<std::uint16_t F, typename IO>
+    static void write(IO &io, const archive_header &h) {
+        static const std::uint8_t hexchars[] = "0123456789ABCDEF";
+        static const std::uint8_t buf[header_size] = {
+            yas_id[0], yas_id[1], yas_id[2]
 #if YAS_LITTLE_ENDIAN()
-			,hexchars[(h.u >> 12) & 0x000F]
-			,hexchars[(h.u >> 8 ) & 0x000F]
-			,hexchars[(h.u >> 4 ) & 0x000F]
-			,hexchars[(h.u      ) & 0x000F]
+            ,hexchars[(h.u >> 12) & 0x000F]
+            ,hexchars[(h.u >> 8 ) & 0x000F]
+            ,hexchars[(h.u >> 4 ) & 0x000F]
+            ,hexchars[(h.u      ) & 0x000F]
 #else
-			,hexchars[(h.u      ) & 0x000F]
-			,hexchars[(h.u >> 4 ) & 0x000F]
-			,hexchars[(h.u >> 8 ) & 0x000F]
-			,hexchars[(h.u >> 12) & 0x000F]
+            ,hexchars[(h.u      ) & 0x000F]
+            ,hexchars[(h.u >> 4 ) & 0x000F]
+            ,hexchars[(h.u >> 8 ) & 0x000F]
+            ,hexchars[(h.u >> 12) & 0x000F]
 #endif
-		};
+        };
 
-		YAS_THROW_ON_WRITE_ERROR(header_size, !=, io.write(buf, header_size));
-	}
+        YAS_THROW_ON_WRITE_ERROR(header_size, !=, io.write(buf, header_size));
+    }
 
-	template<std::uint16_t F, typename IO>
-	static void read(IO &io, archive_header &h) {
-		std::uint8_t buf[header_size];
+    template<std::uint16_t F, typename IO>
+    static void read(IO &io, archive_header &h) {
+        std::uint8_t buf[header_size];
         YAS_THROW_ON_READ_ERROR(header_size, !=, io.read(buf, header_size));
 
-		if ( 0 != std::memcmp(buf, yas_id, sizeof(yas_id)) )
-			YAS_THROW_BAD_ARCHIVE_INFORMATION();
+        if (0 != std::memcmp(buf, yas_id, sizeof(yas_id)))
+            YAS_THROW_BAD_ARCHIVE_INFORMATION();
 
-		static constexpr std::uint8_t d = std::numeric_limits<std::uint8_t>::max();
-		static constexpr std::uint8_t hexmap[256] = {
-			 d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d
-			,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d
-			,d ,d ,d ,d ,d ,d ,d ,d ,0 ,1 ,2 ,3 ,4 ,5 ,6, 7, 8, 9, d ,d
-			,d ,d ,d ,d ,d ,10,11,12,13,14,15,d ,d ,d ,d ,d ,d ,d ,d ,d
-			,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,10,11,12
-			,13,14,15,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d
-			,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d
-			,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d
-			,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d
-			,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d
-			,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d
-			,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d
-			,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d ,d
-		};
+        static constexpr std::uint8_t d = std::numeric_limits<std::uint8_t>::max();
+        static constexpr std::uint8_t hexmap[256] = {
+             d , d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d
+            ,d , d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d
+            ,d , d, d, d, d, d, d, d, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, d, d
+            ,d , d, d, d, d,10,11,12,13,14,15 ,d, d, d, d, d, d, d, d, d
+            ,d , d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d,10,11,12
+            ,13, 14,15,d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d
+            ,d , d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d
+            ,d , d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d
+            ,d , d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d
+            ,d , d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d
+            ,d , d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d
+            ,d , d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d
+            ,d , d, d, d, d, d, d, d, d, d, d, d, d, d, d, d
+        };
 
-		const std::uint8_t p0 = hexmap[buf[3]];
-		const std::uint8_t p1 = hexmap[buf[4]];
-		const std::uint8_t p2 = hexmap[buf[5]];
-		const std::uint8_t p3 = hexmap[buf[6]];
+        const std::uint8_t p0 = hexmap[buf[3]];
+        const std::uint8_t p1 = hexmap[buf[4]];
+        const std::uint8_t p2 = hexmap[buf[5]];
+        const std::uint8_t p3 = hexmap[buf[6]];
 
 #if YAS_LITTLE_ENDIAN()
-		h.u = YAS_SCAST(std::uint16_t, p0*(1<<12)+p1*(1<<8)+p2*(1<<4)+p3*(1<<0));
+        h.u = YAS_SCAST(std::uint16_t, p0*(1<<12)+p1*(1<<8)+p2*(1<<4)+p3*(1<<0));
 #else
-		h.u = YAS_SCAST(std::uint16_t, p0*(1<<0)+p1*(1<<4)+p2*(1<<8)+p3*(1<<12));
+        h.u = YAS_SCAST(std::uint16_t, p0*(1<<0)+p1*(1<<4)+p2*(1<<8)+p3*(1<<12));
 #endif
-	}
+    }
 };
 
 /***************************************************************************/
@@ -154,77 +154,75 @@ struct archive_version;
 
 template<>
 struct archive_version<options::binary> {
-	 enum { value = yas::detail::binary_archive_version };
+    enum { value = yas::detail::binary_archive_version };
 };
+
 template<>
 struct archive_version<options::text> {
-	 enum { value = yas::detail::text_archive_version };
+    enum { value = yas::detail::text_archive_version };
 };
+
 template<>
 struct archive_version<options::object> {
-	 enum { value = yas::detail::json_archive_version };
+    enum { value = yas::detail::json_archive_version };
 };
 
 #define _CHECK_IF_HEADER_INITED() \
-	if ( !header.bits.version ) YAS_THROW_ARCHIVE_NO_HEADER()
+    if ( !header.bits.version ) YAS_THROW_ARCHIVE_NO_HEADER()
 
 template<std::size_t F>
 struct iarchive_info {
-	template<typename IO>
-	iarchive_info(IO &io)
-		:header{}
-	{
-		if ( !(F & options::no_header) ) {
-			header_ops::read<F>(io, header);
+    template<typename IO>
+    iarchive_info(IO &io)
+        :header{}
+    {
+        if ( !(F & options::no_header) ) {
+            header_ops::read<F>(io, header);
 
-			static constexpr std::uint8_t artype =
-                YAS_SCAST(
-                    std::uint8_t,
-                    (F & options::binary)
-                        ? 0
-                        : (F & options::text)
-                            ? 1
-                            : 2
-                )
-			;
+            static constexpr std::uint8_t artype = YAS_SCAST(std::uint8_t,
+                (F & options::binary)
+                    ? 0
+                    : (F & options::text)
+                        ? 1
+                        : 2
+            );
 
-			if ( header.bits.type != artype )
-				YAS_THROW_BAD_ARCHIVE_TYPE()
+            if ( header.bits.type != artype )
+                YAS_THROW_BAD_ARCHIVE_TYPE()
 
             constexpr std::size_t mask = options::binary|options::text|options::object;
-			if ( header.bits.version != archive_version<F & mask>::value )
-				YAS_THROW_BAD_ARCHIVE_VERSION()
+            if ( header.bits.version != archive_version<F & mask>::value )
+                YAS_THROW_BAD_ARCHIVE_VERSION()
 
             if ( F & yas::compacted && !header.bits.compacted )
                 YAS_THROW_BAD_COMPACTED_MODE()
-		}
-	}
+        }
+    }
 
-	static constexpr std::size_t header_size() {
-		return header_ops::header_size;
-	}
+    static constexpr std::size_t header_size() { return header_ops::header_size; }
 
-	options type() const {
-		_CHECK_IF_HEADER_INITED()
+    options type() const {
+        _CHECK_IF_HEADER_INITED()
 
-		return header.bits.type == 0
-			? options::binary
-			: header.bits.type == 1
-				? options::text
-				: options::object
-		;
-	}
+        return header.bits.type == 0
+            ? options::binary
+            : header.bits.type == 1
+                ? options::text
+                : options::object
+        ;
+    }
 
-	bool is_big_endian() const {
-		_CHECK_IF_HEADER_INITED()
+    bool is_big_endian() const {
+        _CHECK_IF_HEADER_INITED()
 
-		return header.bits.endian;
-	}
-	bool is_little_endian() const { return !is_big_endian(); }
+        return header.bits.endian;
+    }
 
-	static constexpr options host_endian() {
-		return YAS_BIG_ENDIAN() ? options::endian_big : options::endian_little;
-	}
+    bool is_little_endian() const { return !is_big_endian(); }
+
+    static constexpr options host_endian() {
+        return YAS_BIG_ENDIAN() ? options::endian_big : options::endian_little;
+    }
 
     bool compacted() const {
         _CHECK_IF_HEADER_INITED()
@@ -232,17 +230,17 @@ struct iarchive_info {
         return header.bits.compacted;
     }
 
-	std::size_t version() const {
-		_CHECK_IF_HEADER_INITED()
+    std::size_t version() const {
+        _CHECK_IF_HEADER_INITED()
 
-		return header.bits.version;
-	}
+        return header.bits.version;
+    }
 
-	static constexpr bool is_readable() { return true; }
-	static constexpr bool is_writable() { return false; }
+    static constexpr bool is_readable() { return true; }
+    static constexpr bool is_writable() { return false; }
 
 private:
-	archive_header header;
+    archive_header header;
 };
 
 #undef _CHECK_IF_HEADER_INITED
@@ -251,73 +249,69 @@ private:
 
 template<std::size_t F>
 struct oarchive_info {
-	template<typename IO>
-	oarchive_info(IO &io) {
-		if ( !(F & options::no_header) ) {
-			static constexpr std::uint8_t artype =
-                YAS_SCAST(std::uint8_t,
-                    (F & options::binary)
-                        ? 0
-                        : (F & options::text)
-                            ? 1
-                            : 2
-                )
-			;
+    template<typename IO>
+    oarchive_info(IO &io) {
+        if ( !(F & options::no_header) ) {
+            static constexpr std::uint8_t artype = YAS_SCAST(std::uint8_t,
+                (F & options::binary)
+                    ? 0
+                    : (F & options::text)
+                        ? 1
+                        : 2
+            );
 
-            static constexpr std::uint8_t endian =
-                YAS_SCAST(std::uint8_t,
-                    (F & options::binary)
-                        ? ((F & options::endian_as_host) ? YAS_BIG_ENDIAN() : (F & options::endian_big) ? 1 : 0)
-                        : 0
-                )
-			;
-            static constexpr bool compacted =
-                YAS_SCAST(bool,
-                    (F & options::binary) ? (F & yas::compacted) : 0
-                )
-			;
+            static constexpr std::uint8_t endian = YAS_SCAST(std::uint8_t,
+                (F & options::binary)
+                    ? ((F & options::endian_as_host) ? YAS_BIG_ENDIAN() : (F & options::endian_big) ? 1 : 0)
+                    : 0
+            );
+            static constexpr bool compacted = YAS_SCAST(bool,
+                (F & options::binary) ? (F & yas::compacted) : 0
+            );
             static constexpr archive_header header = {{
-				 YAS_SCAST(std::uint8_t, version() & 15)
-				,YAS_SCAST(std::uint8_t, artype)
-				,YAS_SCAST(std::uint8_t, endian)
-				,YAS_SCAST(std::uint8_t, sizeof(void*)==sizeof(std::uint64_t))
-				,YAS_SCAST(std::uint8_t, compacted)
-				,YAS_SCAST(std::uint8_t, 0u) // reserved
-			}};
+                 YAS_SCAST(std::uint8_t, version() & 15)
+                ,YAS_SCAST(std::uint8_t, artype)
+                ,YAS_SCAST(std::uint8_t, endian)
+                ,YAS_SCAST(std::uint8_t, sizeof(void *) == sizeof(std::uint64_t))
+                ,YAS_SCAST(std::uint8_t, compacted)
+                ,YAS_SCAST(std::uint8_t, 0u) // reserved
+            }};
 
-			header_ops::write<F>(io, header);
-		}
-	}
+            header_ops::write<F>(io, header);
+        }
+    }
 
-	static constexpr std::size_t header_size() { return header_ops::header_size; }
+    static constexpr std::size_t header_size() { return header_ops::header_size; }
+    static constexpr std::size_t flags() { return F; }
 
-	static constexpr std::size_t flags() { return F; }
+    static constexpr options type() {
+        return (F & options::binary)
+            ? options::binary
+            : (F & options::text)
+                ? options::text
+                : options::object
+        ;
+    }
 
-	static constexpr options type() {
-		return (F & options::binary)
-			? options::binary
-			: (F & options::text)
-				? options::text
-				: options::object
-		;
-	}
+    static constexpr bool is_big_endian() {
+        return YAS_SCAST(std::uint8_t,
+            (F & options::endian_as_host) ? YAS_BIG_ENDIAN() : (F & options::endian_big)
+        );
+    }
+    static constexpr bool is_little_endian() {
+        return YAS_SCAST(std::uint8_t,
+            (F & options::endian_as_host) ? YAS_LITTLE_ENDIAN() : (F & options::endian_little)
+        );
+    }
+    static constexpr options host_endian() {
+        return YAS_BIG_ENDIAN() ? options::endian_big : options::endian_little;
+    }
 
-	static constexpr bool is_big_endian() {
-		return YAS_SCAST(std::uint8_t, (F & options::endian_as_host) ? YAS_BIG_ENDIAN() : (F & options::endian_big));
-	}
-	static constexpr bool is_little_endian() {
-		return YAS_SCAST(std::uint8_t, (F & options::endian_as_host) ? YAS_LITTLE_ENDIAN() : (F & options::endian_little));
-	}
-	static constexpr options host_endian() {
-		return YAS_BIG_ENDIAN() ? options::endian_big : options::endian_little;
-	}
+    static constexpr bool compacted() { return YAS_SCAST(std::uint8_t, (F & yas::compacted)); }
+    static constexpr std::size_t version() { return archive_version<type()>::value; }
 
-    static constexpr bool compacted() { return YAS_SCAST(std::uint8_t, F & yas::compacted); }
-
-	static constexpr std::size_t version() { return archive_version<type()>::value; }
-
-	static constexpr bool is_readable() { return false; }
-	static constexpr bool is_writable() { return true; }
+    static constexpr bool is_readable() { return false; }
+    static constexpr bool is_writable() { return true; }
 };
 
 /***************************************************************************/
