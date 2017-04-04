@@ -39,6 +39,7 @@
 #include <yas/detail/tools/cast.hpp>
 
 namespace yas {
+namespace detail {
 
 extern void serialize(int&);
 
@@ -86,6 +87,7 @@ struct has_function_serialize<false, false, T, T2> {
 
 /***************************************************************************/
 
-} // namespace yas
+} // ns detail
+} // ns yas
 
 #endif // _yas__has_function_serialize_hpp
