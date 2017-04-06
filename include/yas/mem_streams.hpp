@@ -88,6 +88,9 @@ struct mem_ostream {
             case sizeof(std::uint16_t): std::memcpy(cur, ptr, sizeof(std::uint16_t)); break;
             case sizeof(std::uint32_t): std::memcpy(cur, ptr, sizeof(std::uint32_t)); break;
             case sizeof(std::uint64_t): std::memcpy(cur, ptr, sizeof(std::uint64_t)); break;
+#if defined(__GNUC__) && defined(__SIZEOF_INT128__) // hack for detect int128 support
+            case sizeof(unsigned __int128): std::memcpy(cur, ptr, sizeof(unsigned __int128)); break;
+#endif
             default: std::memcpy(cur, ptr, size);
         }
         cur += size;
@@ -106,7 +109,7 @@ private:
 /***************************************************************************/
 
 struct mem_istream {
-    YAS_NONCOPYABLE(mem_istream);
+    YAS_NONCOPYABLE(mem_istream)
 
     mem_istream(const void *ptr, std::size_t size)
         :beg(YAS_SCAST(const char*, ptr))
@@ -136,6 +139,9 @@ struct mem_istream {
             case sizeof(std::uint16_t): std::memcpy(ptr, cur, sizeof(std::uint16_t)); break;
             case sizeof(std::uint32_t): std::memcpy(ptr, cur, sizeof(std::uint32_t)); break;
             case sizeof(std::uint64_t): std::memcpy(ptr, cur, sizeof(std::uint64_t)); break;
+#if defined(__GNUC__) && defined(__SIZEOF_INT128__) // hack for detect int128 support
+            case sizeof(unsigned __int128): std::memcpy(ptr, cur, sizeof(unsigned __int128)); break;
+#endif
             default: std::memcpy(ptr, cur, to_copy);
         }
         cur += to_copy;
