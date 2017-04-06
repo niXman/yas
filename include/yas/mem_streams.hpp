@@ -83,19 +83,12 @@ struct mem_ostream {
 
         switch (size) {
             case sizeof(std::uint8_t ):
-                *YAS_RCAST(std::uint8_t * , cur) = *YAS_RCAST(const std::uint8_t * , ptr);
-                break;
-            case sizeof(std::uint16_t):
-                *YAS_RCAST(std::uint16_t *, cur) = *YAS_RCAST(const std::uint16_t *, ptr);
-                break;
-            case sizeof(std::uint32_t):
-                *YAS_RCAST(std::uint32_t *, cur) = *YAS_RCAST(const std::uint32_t *, ptr);
-                break;
-            case sizeof(std::uint64_t):
-                *YAS_RCAST(std::uint64_t *, cur) = *YAS_RCAST(const std::uint64_t *, ptr);
-                break;
-            default:
-                std::memcpy(cur, ptr, size);
+                *YAS_RCAST(std::uint8_t*, cur) = *YAS_RCAST(const std::uint8_t*, ptr);
+            break;
+            case sizeof(std::uint16_t): std::memcpy(cur, ptr, sizeof(std::uint16_t)); break;
+            case sizeof(std::uint32_t): std::memcpy(cur, ptr, sizeof(std::uint32_t)); break;
+            case sizeof(std::uint64_t): std::memcpy(cur, ptr, sizeof(std::uint64_t)); break;
+            default: std::memcpy(cur, ptr, size);
         }
         cur += size;
 
@@ -134,27 +127,20 @@ struct mem_istream {
     template<typename T>
     std::size_t read(T *ptr, const std::size_t size) {
         const std::size_t avail = YAS_SCAST(std::size_t, end-cur);
-        const std::size_t copy = (avail < size) ? avail : size;
+        const std::size_t to_copy = (avail < size) ? avail : size;
 
-        switch ( copy ) {
+        switch ( to_copy ) {
             case sizeof(std::uint8_t ):
-                *YAS_RCAST(std::uint8_t *, ptr) = *YAS_RCAST(const std::uint8_t *, cur);
-                break;
-            case sizeof(std::uint16_t):
-                *YAS_RCAST(std::uint16_t*, ptr) = *YAS_RCAST(const std::uint16_t*, cur);
-                break;
-            case sizeof(std::uint32_t):
-                *YAS_RCAST(std::uint32_t*, ptr) = *YAS_RCAST(const std::uint32_t*, cur);
-                break;
-            case sizeof(std::uint64_t):
-                *YAS_RCAST(std::uint64_t*, ptr) = *YAS_RCAST(const std::uint64_t*, cur);
-                break;
-            default:
-                std::memcpy(ptr, cur, copy);
+                *YAS_RCAST(std::uint8_t*, ptr) = *YAS_RCAST(const std::uint8_t*, cur);
+            break;
+            case sizeof(std::uint16_t): std::memcpy(ptr, cur, sizeof(std::uint16_t)); break;
+            case sizeof(std::uint32_t): std::memcpy(ptr, cur, sizeof(std::uint32_t)); break;
+            case sizeof(std::uint64_t): std::memcpy(ptr, cur, sizeof(std::uint64_t)); break;
+            default: std::memcpy(ptr, cur, to_copy);
         }
-        cur += copy;
+        cur += to_copy;
 
-        return copy;
+        return to_copy;
     }
 
     shared_buffer get_shared_buffer() const { return shared_buffer(cur, YAS_SCAST(std::size_t, end-cur)); }
