@@ -38,7 +38,7 @@
 
 /***************************************************************************/
 
-#if defined (__GLIBC__)
+#if defined (__GLIBC__) || defined(__ANDROID__)
 #	include <endian.h>
 #	if (__BYTE_ORDER == __LITTLE_ENDIAN)
 #		define YAS_LITTLE_ENDIAN() (1)
@@ -70,11 +70,15 @@
 	|| defined(_M_ALPHA) || defined(__amd64) \
 	|| defined(__amd64__) || defined(_M_AMD64) \
 	|| defined(__x86_64) || defined(__x86_64__) \
-	|| defined(_M_X64)
+	|| defined(_M_X64) \
+	|| defined(__arm64__) \
+	|| defined(__ARM_ARCH_7S__) \
+	|| defined(__ARM_ARCH_7__) \
+	|| defined(__ARM_ARCH_7A__)
 #	define YAS_LITTLE_ENDIAN() (1)
 #	define YAS_BIG_ENDIAN() (0)
 #else
-#	error The file yas/detail/config/config.hpp needs to be set up for your CPU type.
+#	error The file yas/detail/config/endian.hpp needs to be set up for your CPU type.
 #endif
 
 /***************************************************************************/
