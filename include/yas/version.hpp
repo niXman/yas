@@ -65,7 +65,7 @@ namespace detail {
 enum yas_version {
 	 binary_archive_version = 5
 	,text_archive_version = 2
-	,json_archive_version = 0
+	,object_archive_version = 1
 };
 
 /**************************************************************************/
