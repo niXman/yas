@@ -60,19 +60,18 @@
 #endif // _YAS_HAVE_STD_EXPERIMENTAL_OPTIONAL
 
 template<typename archive_traits>
-bool optional_test(const char* archive_type, const char* io_type) {
+bool optional_test(const char* archive_type) {
 	(void)archive_type;
-	(void)io_type;
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
 	{
 		int i0 = 33;
 		boost::optional<int> o0(i0), o1;
 		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type, io_type);
+		archive_traits::ocreate(oa, archive_type);
 		oa & o0;
 
 		typename archive_traits::iarchive ia;
-		archive_traits::icreate(ia, oa, archive_type, io_type);
+		archive_traits::icreate(ia, oa, archive_type);
 		ia & o1;
 
 		if ( o0 != o1 ) {
@@ -84,11 +83,11 @@ bool optional_test(const char* archive_type, const char* io_type) {
 		const std::string s0 = "some string";
 		boost::optional<std::string> o0(s0), o1;
 		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type, io_type);
+		archive_traits::ocreate(oa, archive_type);
 		oa & o0;
 
 		typename archive_traits::iarchive ia;
-		archive_traits::icreate(ia, oa, archive_type, io_type);
+		archive_traits::icreate(ia, oa, archive_type);
 		ia & o1;
 
 		if ( o0 != o1 ) {

@@ -39,19 +39,19 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool chrono_test(const char* archive_type, const char* io_type) {
+bool chrono_test(const char* archive_type) {
 	{
 		std::chrono::duration<int, std::ratio<1>> w0{32}, r0;
 		std::chrono::duration<double, std::ratio<1>> w1{23}, r1;
 
 		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type, io_type);
+		archive_traits::ocreate(oa, archive_type);
 		oa & w0
 			& w1
 		;
 
 		typename archive_traits::iarchive ia;
-		archive_traits::icreate(ia, oa, archive_type, io_type);
+		archive_traits::icreate(ia, oa, archive_type);
 		ia & r0
 			& r1
 		;
@@ -66,11 +66,11 @@ bool chrono_test(const char* archive_type, const char* io_type) {
 		auto r0 = std::chrono::system_clock::now();
 
 		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type, io_type);
+		archive_traits::ocreate(oa, archive_type);
 		oa & w0;
 
 		typename archive_traits::iarchive ia;
-		archive_traits::icreate(ia, oa, archive_type, io_type);
+		archive_traits::icreate(ia, oa, archive_type);
 		ia & r0;
 
 		if ( r0 != w0 ) {
@@ -84,13 +84,13 @@ bool chrono_test(const char* archive_type, const char* io_type) {
 		boost::chrono::duration<double, boost::ratio<1>> w1{23}, r1;
 
 		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type, io_type);
+		archive_traits::ocreate(oa, archive_type);
 		oa & w0
 			& w1
 		;
 
 		typename archive_traits::iarchive ia;
-		archive_traits::icreate(ia, oa, archive_type, io_type);
+		archive_traits::icreate(ia, oa, archive_type);
 		ia & r0
 			& r1
 		;
@@ -104,11 +104,11 @@ bool chrono_test(const char* archive_type, const char* io_type) {
 		decltype(boost::chrono::system_clock::now()) w0 = boost::chrono::system_clock::now(), r0;
 
 		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type, io_type);
+		archive_traits::ocreate(oa, archive_type);
 		oa & w0;
 
 		typename archive_traits::iarchive ia;
-		archive_traits::icreate(ia, oa, archive_type, io_type);
+		archive_traits::icreate(ia, oa, archive_type);
 		ia & r0;
 
 		if ( r0 != w0 ) {

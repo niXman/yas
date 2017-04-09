@@ -70,12 +70,12 @@ void serialize(Archive& ar, _binary_type_for_split_function_serializers& t) {
 } // namespace yas
 
 template<typename archive_traits>
-bool split_functions_test(const char* archive_type, const char* io_type) {
+bool split_functions_test(const char* archive_type) {
 	_binary_type_for_split_function_serializers t1, t2;
 	t1.x = 33; t1.y = 44;
 
 	typename archive_traits::oarchive oa;
-	archive_traits::ocreate(oa, archive_type, io_type);
+	archive_traits::ocreate(oa, archive_type);
 	oa & t1;
 
 	if ( !_binary_type_for_split_function_serializers_save_flag ) {
@@ -84,7 +84,7 @@ bool split_functions_test(const char* archive_type, const char* io_type) {
 	}
 
 	typename archive_traits::iarchive ia;
-	archive_traits::icreate(ia, oa, archive_type, io_type);
+	archive_traits::icreate(ia, oa, archive_type);
 	ia & t2;
 
 	if ( !_binary_type_for_split_function_serializers_load_flag ) {

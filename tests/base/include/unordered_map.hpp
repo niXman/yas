@@ -39,18 +39,18 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool unordered_map_test(const char* archive_type, const char* io_type) {
+bool unordered_map_test(const char* archive_type) {
 	std::unordered_map<int, int> pod_map, pod_map2;
 	pod_map[1] = 2;
 	pod_map[2] = 3;
 	pod_map[3] = 4;
 
 	typename archive_traits::oarchive oa;
-	archive_traits::ocreate(oa, archive_type, io_type);
+	archive_traits::ocreate(oa, archive_type);
 	oa & pod_map;
 
 	typename archive_traits::iarchive ia;
-	archive_traits::icreate(ia, oa, archive_type, io_type);
+	archive_traits::icreate(ia, oa, archive_type);
 	ia & pod_map2;
 
 	if ( pod_map != pod_map2 ) {
@@ -64,11 +64,11 @@ bool unordered_map_test(const char* archive_type, const char* io_type) {
 	map[3] = "3";
 
 	typename archive_traits::oarchive oa2;
-	archive_traits::ocreate(oa2, archive_type, io_type);
+	archive_traits::ocreate(oa2, archive_type);
 	oa2 & map;
 
 	typename archive_traits::iarchive ia2;
-	archive_traits::icreate(ia2, oa2, archive_type, io_type);
+	archive_traits::icreate(ia2, oa2, archive_type);
 	ia2 & map2;
 
 	if ( map != map2 ) {
@@ -82,11 +82,11 @@ bool unordered_map_test(const char* archive_type, const char* io_type) {
 	map3["3"] = 3;
 
 	typename archive_traits::oarchive oa3;
-	archive_traits::ocreate(oa3, archive_type, io_type);
+	archive_traits::ocreate(oa3, archive_type);
 	oa3 & map3;
 
 	typename archive_traits::iarchive ia3;
-	archive_traits::icreate(ia3, oa3, archive_type, io_type);
+	archive_traits::icreate(ia3, oa3, archive_type);
 	ia3 & map4;
 
 	if ( map3 != map4 ) {
@@ -94,7 +94,7 @@ bool unordered_map_test(const char* archive_type, const char* io_type) {
 		return false;
 	}
 
-#if defined(YAS_HAS_BOOST_UNORDERED)
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
 	boost::unordered_map<int, int> map5, map6;
 	map5.insert(std::make_pair(1, 2));
 	map5.insert(std::make_pair(2, 3));
@@ -102,18 +102,18 @@ bool unordered_map_test(const char* archive_type, const char* io_type) {
 	map5.insert(std::make_pair(4, 5));
 
 	typename archive_traits::oarchive oa4;
-	archive_traits::ocreate(oa4, archive_type, io_type);
+	archive_traits::ocreate(oa4, archive_type);
 	oa4 & map5;
 
 	typename archive_traits::iarchive ia4;
-	archive_traits::icreate(ia4, oa4, archive_type, io_type);
+	archive_traits::icreate(ia4, oa4, archive_type);
 	ia4 & map6;
 
 	if ( map5 != map6 ) {
 		std::cout << "UNORDERED_MAP deserialization error! [4]" << std::endl;
 		return false;
 	}
-#endif // defined(YAS_HAS_BOOST_UNORDERED)
+#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 	return true;
 }
 

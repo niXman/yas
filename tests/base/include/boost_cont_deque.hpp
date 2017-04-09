@@ -39,7 +39,7 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool boost_cont_deque_test(const char* archive_type, const char* io_type) {
+bool boost_cont_deque_test(const char* archive_type) {
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
 	boost::container::deque<int> deq1, deq2;
 	deq1.push_back(0);
@@ -54,11 +54,11 @@ bool boost_cont_deque_test(const char* archive_type, const char* io_type) {
 	deq1.push_back(9);
 
 	typename archive_traits::oarchive oa;
-	archive_traits::ocreate(oa, archive_type, io_type);
+	archive_traits::ocreate(oa, archive_type);
 	oa & deq1;
 
 	typename archive_traits::iarchive ia;
-	archive_traits::icreate(ia, oa, archive_type, io_type);
+	archive_traits::icreate(ia, oa, archive_type);
 	ia & deq2;
 
 	if ( deq1 != deq2 ) {
@@ -72,11 +72,11 @@ bool boost_cont_deque_test(const char* archive_type, const char* io_type) {
 	deq3.push_back("3");
 
 	typename archive_traits::oarchive oa2;
-	archive_traits::ocreate(oa2, archive_type, io_type);
+	archive_traits::ocreate(oa2, archive_type);
 	oa2 & deq3;
 
 	typename archive_traits::iarchive ia2;
-	archive_traits::icreate(ia2, oa2, archive_type, io_type);
+	archive_traits::icreate(ia2, oa2, archive_type);
 	ia2 & deq4;
 
 	if ( deq3 != deq4 ) {

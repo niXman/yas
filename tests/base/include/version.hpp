@@ -39,11 +39,11 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool version_test(const char* archive_type, const char* io_type) {
+bool version_test(const char* archive_type) {
 	typename archive_traits::oarchive oa;
-	archive_traits::ocreate(oa, archive_type, io_type);
+	archive_traits::ocreate(oa, archive_type);
 	typename archive_traits::iarchive ia;
-	archive_traits::icreate(ia, oa, archive_type, io_type);
+	archive_traits::icreate(ia, oa, archive_type);
 
 	if ( oa->type() != ia->type() ) {
 		std::cout << "VERSION test failed! archive type is not equal! [1]" << std::endl;

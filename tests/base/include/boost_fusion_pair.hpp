@@ -39,14 +39,14 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool boost_fusion_pair_test(const char* archive_type, const char* io_type) {
+bool boost_fusion_pair_test(const char* archive_type) {
 	boost::fusion::pair<std::size_t, unsigned char> p1('f'), p2;
 	typename archive_traits::oarchive oa;
-	archive_traits::ocreate(oa, archive_type, io_type);
+	archive_traits::ocreate(oa, archive_type);
 	oa & p1;
 
 	typename archive_traits::iarchive ia;
-	archive_traits::icreate(ia, oa, archive_type, io_type);
+	archive_traits::icreate(ia, oa, archive_type);
 	ia & p2;
 
 	if ( p1 != p2 ) {
@@ -62,11 +62,11 @@ bool boost_fusion_pair_test(const char* archive_type, const char* io_type) {
 
 	boost::fusion::pair<std::size_t, std::vector<std::string> > p3(vec), p4;
 	typename archive_traits::oarchive oa2;
-	archive_traits::ocreate(oa2, archive_type, io_type);
+	archive_traits::ocreate(oa2, archive_type);
 	oa2 & p3;
 
 	typename archive_traits::iarchive ia2;
-	archive_traits::icreate(ia2, oa2, archive_type, io_type);
+	archive_traits::icreate(ia2, oa2, archive_type);
 	ia2 & p4;
 
 	if ( p3 != p4 ) {

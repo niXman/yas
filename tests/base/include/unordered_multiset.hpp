@@ -39,7 +39,7 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool unordered_multiset_test(const char* archive_type, const char* io_type) {
+bool unordered_multiset_test(const char* archive_type) {
 	std::unordered_multiset<int> set1, set2;
 	set1.insert(0);
 	set1.insert(1);
@@ -49,11 +49,11 @@ bool unordered_multiset_test(const char* archive_type, const char* io_type) {
 	set1.insert(5);
 
 	typename archive_traits::oarchive oa;
-	archive_traits::ocreate(oa, archive_type, io_type);
+	archive_traits::ocreate(oa, archive_type);
 	oa & set1;
 
 	typename archive_traits::iarchive ia;
-	archive_traits::icreate(ia, oa, archive_type, io_type);
+	archive_traits::icreate(ia, oa, archive_type);
 	ia & set2;
 
 	if ( set1.size() != 6 || set2.size() != 6 || set1 != set2 ) {
@@ -70,11 +70,11 @@ bool unordered_multiset_test(const char* archive_type, const char* io_type) {
 	set3.insert("5");
 
 	typename archive_traits::oarchive oa2;
-	archive_traits::ocreate(oa2, archive_type, io_type);
+	archive_traits::ocreate(oa2, archive_type);
 	oa2 & set3;
 
 	typename archive_traits::iarchive ia2;
-	archive_traits::icreate(ia2, oa2, archive_type, io_type);
+	archive_traits::icreate(ia2, oa2, archive_type);
 	ia2 & set4;
 
 	if ( set3.size() != 6 || set4.size() != 6 || set3 != set4 ) {
@@ -82,7 +82,7 @@ bool unordered_multiset_test(const char* archive_type, const char* io_type) {
 		return false;
 	}
 
-#if defined(YAS_HAS_BOOST_UNORDERED)
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
 	boost::unordered_multiset<int> set5, set6;
 	set5.insert(0);
 	set5.insert(1);
@@ -96,11 +96,11 @@ bool unordered_multiset_test(const char* archive_type, const char* io_type) {
 	set5.insert(8);
 
 	typename archive_traits::oarchive oa3;
-	archive_traits::ocreate(oa3, archive_type, io_type);
+	archive_traits::ocreate(oa3, archive_type);
 	oa3 & set5;
 
 	typename archive_traits::iarchive ia3;
-	archive_traits::icreate(ia3, oa3, archive_type, io_type);
+	archive_traits::icreate(ia3, oa3, archive_type);
 	ia3 & set6;
 
 	if ( set5.size() != 10 || set6.size() != 10 || set5 != set6 ) {
@@ -114,18 +114,18 @@ bool unordered_multiset_test(const char* archive_type, const char* io_type) {
 	set7.insert("3");
 
 	typename archive_traits::oarchive oa4;
-	archive_traits::ocreate(oa4, archive_type, io_type);
+	archive_traits::ocreate(oa4, archive_type);
 	oa4 & set7;
 
 	typename archive_traits::iarchive ia4;
-	archive_traits::icreate(ia4, oa4, archive_type, io_type);
+	archive_traits::icreate(ia4, oa4, archive_type);
 	ia4 & set8;
 
 	if ( set7.size() != 3 || set8.size() != 3 || set7 != set8 ) {
 		std::cout << "UNORDERED_MULTISET deserialization error! [4]" << std::endl;
 		return false;
 	}
-#endif // defined(YAS_HAS_BOOST_UNORDERED)
+#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 	return true;
 }
 

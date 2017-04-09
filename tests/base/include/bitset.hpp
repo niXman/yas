@@ -39,7 +39,7 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool bitset_test(const char* archive_type, const char* io_type) {
+bool bitset_test(const char* archive_type) {
 	std::bitset<33> bs1, bs2;
 	bs1[2] = 1;
 	bs1[9] = 1;
@@ -49,11 +49,11 @@ bool bitset_test(const char* archive_type, const char* io_type) {
 	bs1[8] = 1;
 
 	typename archive_traits::oarchive oa;
-	archive_traits::ocreate(oa, archive_type, io_type);
+	archive_traits::ocreate(oa, archive_type);
 	oa & bs1;
 
 	typename archive_traits::iarchive ia;
-	archive_traits::icreate(ia, oa, archive_type, io_type);
+	archive_traits::icreate(ia, oa, archive_type);
 	ia & bs2;
 
 	if ( bs1 != bs2 ) {

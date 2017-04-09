@@ -39,18 +39,17 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool buffer_test(const char* archive_type, const char* io_type) {
+bool buffer_test(const char* archive_type) {
 	static const char str1[] = "intrusive buffer test";
 	yas::intrusive_buffer buf1(str1, sizeof(str1)-1);
 
 	typename archive_traits::oarchive oa1;
-	archive_traits::ocreate(oa1, archive_type, io_type);
+	archive_traits::ocreate(oa1, archive_type);
 	oa1 & buf1;
 
 	// binary
 	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
 		if ( archive_traits::oarchive_type::flags() & yas::compacted ) {
-            oa1.dump();
 			static const std::uint8_t size32_le[] = {
 				 0x79,0x61,0x73,0x30,0x33,0x30,0x35,0x01,0x15,0x69,0x6e,0x74,0x72,0x75
 				,0x73,0x69,0x76,0x65,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
@@ -107,7 +106,7 @@ bool buffer_test(const char* archive_type, const char* io_type) {
 	static const char str2[] = "shared buffer test";
 	yas::shared_buffer buf2(str2, sizeof(str2)-1);
 	typename archive_traits::oarchive oa2;
-	archive_traits::ocreate(oa2, archive_type, io_type);
+	archive_traits::ocreate(oa2, archive_type);
 	oa2 & buf2;
 
 	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ){

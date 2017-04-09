@@ -39,9 +39,8 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool header_test(const char* archive_type, const char* io_type) {
+bool header_test(const char* archive_type) {
 	(void)archive_type;
-	(void)io_type;
 
     {
         using oa = yas::binary_oarchive<yas::mem_ostream>;

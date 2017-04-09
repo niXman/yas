@@ -39,7 +39,7 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool boost_cont_list_test(const char* archive_type, const char* io_type) {
+bool boost_cont_list_test(const char* archive_type) {
 	boost::container::list<int> ilist1, ilist2;
 	ilist1.push_back(2);
 	ilist1.push_back(3);
@@ -50,11 +50,11 @@ bool boost_cont_list_test(const char* archive_type, const char* io_type) {
 	ilist1.push_back(54);
 
 	typename archive_traits::oarchive oa1;
-	archive_traits::ocreate(oa1, archive_type, io_type);
+	archive_traits::ocreate(oa1, archive_type);
 	oa1 & ilist1;
 
 	typename archive_traits::iarchive ia1;
-	archive_traits::icreate(ia1, oa1, archive_type, io_type);
+	archive_traits::icreate(ia1, oa1, archive_type);
 	ia1 & ilist2;
 
 	if ( ilist1 != ilist2 ) {
@@ -70,11 +70,11 @@ bool boost_cont_list_test(const char* archive_type, const char* io_type) {
 	slist1.push_back("976");
 
 	typename archive_traits::oarchive oa2;
-	archive_traits::ocreate(oa2, archive_type, io_type);
+	archive_traits::ocreate(oa2, archive_type);
 	oa2 & slist1;
 
 	typename archive_traits::iarchive ia2;
-	archive_traits::icreate(ia2, oa2, archive_type, io_type);
+	archive_traits::icreate(ia2, oa2, archive_type);
 	ia2 & slist2;
 
 	if ( slist1 != slist2 ) {

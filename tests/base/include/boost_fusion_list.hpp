@@ -42,15 +42,15 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool boost_fusion_list_test(const char* archive_type, const char* io_type) {
+bool boost_fusion_list_test(const char* archive_type) {
 	boost::fusion::list<int, double> v1(33, 3.14), v2;
 
 	typename archive_traits::oarchive oa;
-	archive_traits::ocreate(oa, archive_type, io_type);
+	archive_traits::ocreate(oa, archive_type);
 	oa & v1;
 
 	typename archive_traits::iarchive ia;
-	archive_traits::icreate(ia, oa, archive_type, io_type);
+	archive_traits::icreate(ia, oa, archive_type);
 	ia & v2;
 	if ( v1 != v2 ) {
 		std::cout << "FUSION_LIST deserialization error! [1]" << std::endl;
@@ -68,11 +68,11 @@ bool boost_fusion_list_test(const char* archive_type, const char* io_type) {
 	> v3("1", set), v4;
 
 	typename archive_traits::oarchive oa2;
-	archive_traits::ocreate(oa2, archive_type, io_type);
+	archive_traits::ocreate(oa2, archive_type);
 	oa2 & v3;
 
 	typename archive_traits::iarchive ia2;
-	archive_traits::icreate(ia2, oa2, archive_type, io_type);
+	archive_traits::icreate(ia2, oa2, archive_type);
 	ia2 & v4;
 	if ( v3 != v4 ) {
 		std::cout << "FUSION_LIST deserialization error! [2]" << std::endl;
@@ -82,11 +82,11 @@ bool boost_fusion_list_test(const char* archive_type, const char* io_type) {
 	boost::fusion::list<int, int> vv;
 
 	typename archive_traits::oarchive oa3;
-	archive_traits::ocreate(oa3, archive_type, io_type);
+	archive_traits::ocreate(oa3, archive_type);
 	oa3 & boost::fusion::make_list(33,44);
 
 	typename archive_traits::iarchive ia3;
-	archive_traits::icreate(ia3, oa3, archive_type, io_type);
+	archive_traits::icreate(ia3, oa3, archive_type);
 	ia3 & vv;
 
 	if ( vv != boost::fusion::make_list(33,44) ) {
@@ -98,11 +98,11 @@ bool boost_fusion_list_test(const char* archive_type, const char* io_type) {
 	boost::fusion::list<boost::uint64_t, std::string> v5(33, str), v6;
 
 	typename archive_traits::oarchive oa4;
-	archive_traits::ocreate(oa4, archive_type, io_type);
+	archive_traits::ocreate(oa4, archive_type);
 	oa4 & v5;
 
 	typename archive_traits::iarchive ia4;
-	archive_traits::icreate(ia4, oa4, archive_type, io_type);
+	archive_traits::icreate(ia4, oa4, archive_type);
 	ia4 & v6;
 	if ( v5 != v6 ) {
 		std::cout << "FUSION_LIST deserialization error! [4]" << std::endl;
@@ -110,11 +110,11 @@ bool boost_fusion_list_test(const char* archive_type, const char* io_type) {
 	}
 
 	typename archive_traits::oarchive oa5;
-	archive_traits::ocreate(oa5, archive_type, io_type);
+	archive_traits::ocreate(oa5, archive_type);
 	oa5 & boost::fusion::make_list<boost::uint64_t, std::string>(33, "str");
 
 	typename archive_traits::iarchive ia5;
-	archive_traits::icreate(ia5, oa5, archive_type, io_type);
+	archive_traits::icreate(ia5, oa5, archive_type);
 	ia5 & v6;
 	if ( v5 != v6 ) {
 		std::cout << "FUSION_LIST deserialization error! [5]" << std::endl;

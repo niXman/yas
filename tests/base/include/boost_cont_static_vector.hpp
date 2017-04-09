@@ -39,7 +39,7 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool boost_cont_static_vector_test(const char* archive_type, const char* io_type) {
+bool boost_cont_static_vector_test(const char* archive_type) {
 	boost::container::static_vector<int, 5> v, vv;
 	v.push_back(0);
 	v.push_back(1);
@@ -48,11 +48,11 @@ bool boost_cont_static_vector_test(const char* archive_type, const char* io_type
 	v.push_back(4);
 
 	typename archive_traits::oarchive oa;
-	archive_traits::ocreate(oa, archive_type, io_type);
+	archive_traits::ocreate(oa, archive_type);
 	oa & v;
 
 	typename archive_traits::iarchive ia;
-	archive_traits::icreate(ia, oa, archive_type, io_type);
+	archive_traits::icreate(ia, oa, archive_type);
 	ia & vv;
 
 	if ( v != vv ) {

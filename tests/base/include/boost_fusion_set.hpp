@@ -39,8 +39,7 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool boost_fusion_set_test(const char* archive_type, const char* io_type) {
-	((void)io_type);
+bool boost_fusion_set_test(const char* archive_type) {
 	((void)archive_type);
 #if 0
 

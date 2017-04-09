@@ -39,7 +39,7 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool multiset_test(const char* archive_type, const char* io_type) {
+bool multiset_test(const char* archive_type) {
 	std::multiset<int> set1, set2;
 	set1.insert(0);
 	set1.insert(1);
@@ -53,11 +53,11 @@ bool multiset_test(const char* archive_type, const char* io_type) {
 	set1.insert(9);
 
 	typename archive_traits::oarchive oa;
-	archive_traits::ocreate(oa, archive_type, io_type);
+	archive_traits::ocreate(oa, archive_type);
 	oa & set1;
 
 	typename archive_traits::iarchive ia;
-	archive_traits::icreate(ia, oa, archive_type, io_type);
+	archive_traits::icreate(ia, oa, archive_type);
 	ia & set2;
 
 	if ( set1.size() != 10 || set2.size() != 10 || set1 != set2 ) {
@@ -71,11 +71,11 @@ bool multiset_test(const char* archive_type, const char* io_type) {
 	set3.insert("3");
 
 	typename archive_traits::oarchive oa2;
-	archive_traits::ocreate(oa2, archive_type, io_type);
+	archive_traits::ocreate(oa2, archive_type);
 	oa2 & set3;
 
 	typename archive_traits::iarchive ia2;
-	archive_traits::icreate(ia2, oa2, archive_type, io_type);
+	archive_traits::icreate(ia2, oa2, archive_type);
 	ia2 & set4;
 
 	if ( set3.size() != 3 || set4.size() != 3 || set3 != set4 ) {

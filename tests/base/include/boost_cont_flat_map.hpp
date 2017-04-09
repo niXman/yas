@@ -39,7 +39,7 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool boost_cont_flat_map_test(const char* archive_type, const char* io_type) {
+bool boost_cont_flat_map_test(const char* archive_type) {
 	boost::container::flat_map<int, int> pod_map, pod_map2;
 	pod_map.emplace(1, 2);
 	pod_map.emplace(1, 2);
@@ -47,11 +47,11 @@ bool boost_cont_flat_map_test(const char* archive_type, const char* io_type) {
 	pod_map.emplace(3, 4);
 
 	typename archive_traits::oarchive oa;
-	archive_traits::ocreate(oa, archive_type, io_type);
+	archive_traits::ocreate(oa, archive_type);
 	oa & pod_map;
 
 	typename archive_traits::iarchive ia;
-	archive_traits::icreate(ia, oa, archive_type, io_type);
+	archive_traits::icreate(ia, oa, archive_type);
 	ia & pod_map2;
 
 	if ( pod_map != pod_map2 ) {
@@ -65,11 +65,11 @@ bool boost_cont_flat_map_test(const char* archive_type, const char* io_type) {
 	map.emplace(3, "3");
 
 	typename archive_traits::oarchive oa2;
-	archive_traits::ocreate(oa2, archive_type, io_type);
+	archive_traits::ocreate(oa2, archive_type);
 	oa2 & map;
 
 	typename archive_traits::iarchive ia2;
-	archive_traits::icreate(ia2, oa2, archive_type, io_type);
+	archive_traits::icreate(ia2, oa2, archive_type);
 	ia2 & map2;
 
 	if ( map != map2 ) {
@@ -83,11 +83,11 @@ bool boost_cont_flat_map_test(const char* archive_type, const char* io_type) {
 	map3.emplace("3", 3);
 
 	typename archive_traits::oarchive oa3;
-	archive_traits::ocreate(oa3, archive_type, io_type);
+	archive_traits::ocreate(oa3, archive_type);
 	oa3 & map3;
 
 	typename archive_traits::iarchive ia3;
-	archive_traits::icreate(ia3, oa3, archive_type, io_type);
+	archive_traits::icreate(ia3, oa3, archive_type);
 	ia3 & map4;
 
 	if ( map3 != map4 ) {

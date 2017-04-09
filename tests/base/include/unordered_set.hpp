@@ -42,7 +42,7 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool unordered_set_test(const char* archive_type, const char* io_type) {
+bool unordered_set_test(const char* archive_type) {
 	std::unordered_set<int> set1, set2;
 	set1.insert(0);
 	set1.insert(1);
@@ -57,11 +57,11 @@ bool unordered_set_test(const char* archive_type, const char* io_type) {
 	int expected1 = std::accumulate(set1.begin(), set1.end(), 0);
 
 	typename archive_traits::oarchive oa;
-	archive_traits::ocreate(oa, archive_type, io_type);
+	archive_traits::ocreate(oa, archive_type);
 	oa & set1;
 
 	typename archive_traits::iarchive ia;
-	archive_traits::icreate(ia, oa, archive_type, io_type);
+	archive_traits::icreate(ia, oa, archive_type);
 	ia & set2;
 
 	if ( expected1 != std::accumulate(set2.begin(), set2.end(), 0) ) {
@@ -81,11 +81,11 @@ bool unordered_set_test(const char* archive_type, const char* io_type) {
 	std::sort(expected2.begin(), expected2.end());
 
 	typename archive_traits::oarchive oa2;
-	archive_traits::ocreate(oa2, archive_type, io_type);
+	archive_traits::ocreate(oa2, archive_type);
 	oa2 & set3;
 
 	typename archive_traits::iarchive ia2;
-	archive_traits::icreate(ia2, oa2, archive_type, io_type);
+	archive_traits::icreate(ia2, oa2, archive_type);
 	ia2 & set4;
 
 	std::string res2 = std::accumulate(set4.begin(), set4.end(), std::string());
@@ -95,7 +95,7 @@ bool unordered_set_test(const char* archive_type, const char* io_type) {
 		return false;
 	}
 
-#if defined(YAS_HAS_BOOST_UNORDERED)
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
 	boost::unordered_set<int> set5, set6;
 	set5.insert(0);
 	set5.insert(1);
@@ -110,11 +110,11 @@ bool unordered_set_test(const char* archive_type, const char* io_type) {
 	int expected3 = std::accumulate(set5.begin(), set5.end(), 0);
 
 	typename archive_traits::oarchive oa3;
-	archive_traits::ocreate(oa3, archive_type, io_type);
+	archive_traits::ocreate(oa3, archive_type);
 	oa3 & set5;
 
 	typename archive_traits::iarchive ia3;
-	archive_traits::icreate(ia3, oa3, archive_type, io_type);
+	archive_traits::icreate(ia3, oa3, archive_type);
 	ia3 & set6;
 
 	if ( expected3 != std::accumulate(set6.begin(), set6.end(), 0) ) {
@@ -133,11 +133,11 @@ bool unordered_set_test(const char* archive_type, const char* io_type) {
 	std::sort(expected4.begin(), expected4.end());
 
 	typename archive_traits::oarchive oa4;
-	archive_traits::ocreate(oa4, archive_type, io_type);
+	archive_traits::ocreate(oa4, archive_type);
 	oa4 & set7;
 
 	typename archive_traits::iarchive ia4;
-	archive_traits::icreate(ia4, oa4, archive_type, io_type);
+	archive_traits::icreate(ia4, oa4, archive_type);
 	ia4 & set8;
 
 	std::string res4 = std::accumulate(set8.begin(), set8.end(), std::string());
@@ -146,7 +146,7 @@ bool unordered_set_test(const char* archive_type, const char* io_type) {
 		std::cout << "UNORDERED_SET deserialization error! [4]" << std::endl;
 		return false;
 	}
-#endif // defined(YAS_HAS_BOOST_UNORDERED)
+#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 	return true;
 }
 

@@ -43,15 +43,15 @@ enum enum_test_enum1 { _1_1, _1_2, _1_3, _1_4 };
 enum class enum_test_enum2: char { _2_1, _2_2, _2_3, _2_4 };
 
 template<typename archive_traits>
-bool enum_test(const char* archive_type, const char* io_type) {
+bool enum_test(const char* archive_type) {
 	typename archive_traits::oarchive oa1;
-	archive_traits::ocreate(oa1, archive_type, io_type);
+	archive_traits::ocreate(oa1, archive_type);
 	oa1 & _1_2
 		 & _1_4;
 
 	enum_test_enum1 e11, e12;
 	typename archive_traits::iarchive ia1;
-	archive_traits::icreate(ia1, oa1, archive_type, io_type);
+	archive_traits::icreate(ia1, oa1, archive_type);
 
 	ia1 & e11
 		 & e12;
@@ -61,13 +61,13 @@ bool enum_test(const char* archive_type, const char* io_type) {
 	}
 
 	typename archive_traits::oarchive oa2;
-	archive_traits::ocreate(oa2, archive_type, io_type);
+	archive_traits::ocreate(oa2, archive_type);
 	oa2 & enum_test_enum2::_2_1
 		 & enum_test_enum2::_2_3;
 
 	enum_test_enum2 e21, e22;
 	typename archive_traits::iarchive ia2;
-	archive_traits::icreate(ia2, oa2, archive_type, io_type);
+	archive_traits::icreate(ia2, oa2, archive_type);
 	ia2 & e21
 		 & e22;
 	if ( e21 != enum_test_enum2::_2_1 || e22 != enum_test_enum2::_2_3) {

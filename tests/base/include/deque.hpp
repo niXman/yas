@@ -39,15 +39,15 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool deque_test(const char* archive_type, const char* io_type) {
+bool deque_test(const char* archive_type) {
 	std::deque<int> deq1 = {0,1,2,3,4,5,6,7,8,9}, deq2;
 
 	typename archive_traits::oarchive oa;
-	archive_traits::ocreate(oa, archive_type, io_type);
+	archive_traits::ocreate(oa, archive_type);
 	oa & deq1;
 
 	typename archive_traits::iarchive ia;
-	archive_traits::icreate(ia, oa, archive_type, io_type);
+	archive_traits::icreate(ia, oa, archive_type);
 	ia & deq2;
 
 	if ( deq1 != deq2 ) {
@@ -58,11 +58,11 @@ bool deque_test(const char* archive_type, const char* io_type) {
 	std::deque<std::string> deq3 = {"1","2","3"}, deq4;
 
 	typename archive_traits::oarchive oa2;
-	archive_traits::ocreate(oa2, archive_type, io_type);
+	archive_traits::ocreate(oa2, archive_type);
 	oa2 & deq3;
 
 	typename archive_traits::iarchive ia2;
-	archive_traits::icreate(ia2, oa2, archive_type, io_type);
+	archive_traits::icreate(ia2, oa2, archive_type);
 	ia2 & deq4;
 
 	if ( deq3 != deq4 ) {

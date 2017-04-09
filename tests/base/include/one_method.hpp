@@ -59,12 +59,12 @@ struct _binary_type_with_one_method_serializer {
 } // ns
 
 template<typename archive_traits>
-bool one_method_test(const char* archive_type, const char* io_type) {
+bool one_method_test(const char* archive_type) {
 	_binary_type_with_one_method_serializer t1, t2;
 	t1.x = 33; t1.y = 44;
 
 	typename archive_traits::oarchive oa;
-	archive_traits::ocreate(oa, archive_type, io_type);
+	archive_traits::ocreate(oa, archive_type);
 	oa & t1;
 
 	if ( !_binary_type_with_one_method_serializer_flag ) {
@@ -75,7 +75,7 @@ bool one_method_test(const char* archive_type, const char* io_type) {
 	_binary_type_with_one_method_serializer_flag = false;
 
 	typename archive_traits::iarchive ia;
-	archive_traits::icreate(ia, oa, archive_type, io_type);
+	archive_traits::icreate(ia, oa, archive_type);
 	ia & t2;
 
 	if ( !_binary_type_with_one_method_serializer_flag ) {

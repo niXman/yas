@@ -39,15 +39,15 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool boost_cont_wstring_test(const char* archive_type, const char* io_type) {
+bool boost_cont_wstring_test(const char* archive_type) {
 	boost::container::wstring ws(L"wstring wstring"), wss;
 
 	typename archive_traits::oarchive oa;
-	archive_traits::ocreate(oa, archive_type, io_type);
+	archive_traits::ocreate(oa, archive_type);
 	oa & ws;
 
 	typename archive_traits::iarchive ia;
-	archive_traits::icreate(ia, oa, archive_type, io_type);
+	archive_traits::icreate(ia, oa, archive_type);
 	ia & wss;
 
 	if ( ws != wss ) {

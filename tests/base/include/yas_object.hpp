@@ -56,18 +56,18 @@ struct type0 {
 }
 
 template<typename archive_traits>
-bool yas_object_test(const char* archive_type, const char* io_type) {
+bool yas_object_test(const char* archive_type) {
 	{
 		int i0 = 3, i1 = 0;
 		auto o0 = YAS_OBJECT("object0", i0);
 		auto o1 = YAS_OBJECT("object1", i1);
 
 		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type, io_type);
+		archive_traits::ocreate(oa, archive_type);
 		oa & o0;
 
 		typename archive_traits::iarchive ia;
-		archive_traits::icreate(ia, oa, archive_type, io_type);
+		archive_traits::icreate(ia, oa, archive_type);
 		ia & o1;
 
 		if ( i0 != i1 ) {
@@ -82,11 +82,11 @@ bool yas_object_test(const char* archive_type, const char* io_type) {
 		auto o1 = YAS_OBJECT("object1", i1);
 
 		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type, io_type);
+		archive_traits::ocreate(oa, archive_type);
 		oa & o0;
 
 		typename archive_traits::iarchive ia;
-		archive_traits::icreate(ia, oa, archive_type, io_type);
+		archive_traits::icreate(ia, oa, archive_type);
 		ia & o1;
 
 		if ( i0 != i1 ) {
@@ -98,11 +98,11 @@ bool yas_object_test(const char* archive_type, const char* io_type) {
 		int i0 = 3, i1 = 0;
 
 		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type, io_type);
+		archive_traits::ocreate(oa, archive_type);
 		oa & YAS_OBJECT("object0", i0);
 
 		typename archive_traits::iarchive ia;
-		archive_traits::icreate(ia, oa, archive_type, io_type);
+		archive_traits::icreate(ia, oa, archive_type);
 		ia & YAS_OBJECT("object1", i1);
 
 		if ( i0 != i1 ) {
@@ -114,11 +114,11 @@ bool yas_object_test(const char* archive_type, const char* io_type) {
 		_yas_object_test_::type0 t0(3), t1(0);
 
 		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type, io_type);
+		archive_traits::ocreate(oa, archive_type);
 		oa & t0;
 
 		typename archive_traits::iarchive ia;
-		archive_traits::icreate(ia, oa, archive_type, io_type);
+		archive_traits::icreate(ia, oa, archive_type);
 		ia & t1;
 
 		if ( t0.v != t1.v ) {

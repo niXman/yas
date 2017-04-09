@@ -65,7 +65,7 @@ namespace yas {
 template<typename IS, std::size_t F = text|endian_as_host, typename Trait = yas::detail::default_traits>
 struct text_iarchive
 	:detail::text_istream<IS, F, Trait>
-		,detail::iarchive_info<F>
+	,detail::iarchive_info<F>
 {
 	YAS_NONCOPYABLE(text_iarchive)
 

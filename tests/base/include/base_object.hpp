@@ -70,16 +70,16 @@ struct derived: base {
 } // namespace
 
 template<typename archive_traits>
-bool base_object_test(const char* archive_type, const char* io_type) {
+bool base_object_test(const char* archive_type) {
 	derived d1, d2;
 	d1.x = 2;d1.y = 5;
 
 	typename archive_traits::oarchive oa;
-	archive_traits::ocreate(oa, archive_type, io_type);
+	archive_traits::ocreate(oa, archive_type);
 	oa & YAS_OBJECT("save_d1", d1);
 
 	typename archive_traits::iarchive ia;
-	archive_traits::icreate(ia, oa, archive_type, io_type);
+	archive_traits::icreate(ia, oa, archive_type);
 	ia & YAS_OBJECT("load_d2", d2);
 
 	if ( d1.x != d2.x || d1.y != d2.y ) {

@@ -125,14 +125,9 @@
 
 /***************************************************************************/
 
-enum class io_type { mem, file };
-
-template<io_type, typename, typename>
-struct concrete_archive_traits;
-
 // mem archives traits
 template<typename OA, typename IA>
-struct concrete_archive_traits<io_type::mem, OA, IA> {
+struct archive_traits {
     typedef OA oarchive_type;
     typedef IA iarchive_type;
 
@@ -170,9 +165,9 @@ struct concrete_archive_traits<io_type::mem, OA, IA> {
         static constexpr yas::options host_endian() { return oarchive_type::host_endian(); }
         std::size_t size() const { return stream.get_intrusive_buffer().size; }
 
-        void dump() {
+        void dump(std::ostream &os = std::cout) {
             const yas::intrusive_buffer buf = stream.get_intrusive_buffer();
-            std::cout << yas::hex_dump(buf.data, buf.size) << std::endl;
+            os << yas::hex_dump(buf.data, buf.size) << std::endl;
         }
 
         bool compare(const void *ptr, std::uint32_t size) const {
@@ -186,9 +181,8 @@ struct concrete_archive_traits<io_type::mem, OA, IA> {
         std::unique_ptr<oarchive_type> oa;
     };
 
-    static void ocreate(oarchive &oa, const char *archive_type, const char *io_type) {
+    static void ocreate(oarchive &oa, const char *archive_type) {
         ((void) archive_type);
-        ((void) io_type);
         oa.oa.reset(new oarchive_type(oa.stream));
     }
 
@@ -226,9 +220,9 @@ struct concrete_archive_traits<io_type::mem, OA, IA> {
         static constexpr yas::options host_endian() { return iarchive_type::host_endian(); }
         std::size_t size() const { return stream->get_intrusive_buffer().size; }
 
-        void dump() {
+        void dump(std::ostream &os = std::cout) {
             const yas::intrusive_buffer buf = stream->get_intrusive_buffer();
-            std::cout << yas::hex_dump(buf.data, buf.size) << std::endl;
+            os << yas::hex_dump(buf.data, buf.size) << std::endl;
         }
 
         bool compare(const void *ptr, std::uint32_t size) const {
@@ -242,9 +236,8 @@ struct concrete_archive_traits<io_type::mem, OA, IA> {
         std::unique_ptr<iarchive_type> ia;
     };
 
-    static void icreate(iarchive &ia, oarchive &oa, const char *archive_type, const char *io_type) {
+    static void icreate(iarchive &ia, oarchive &oa, const char *archive_type) {
         ((void) archive_type);
-        ((void) io_type);
         ia.stream.reset(new typename iarchive_type::stream_type(oa.stream.get_intrusive_buffer()));
         ia.ia.reset(new iarchive_type(*(ia.stream)));
     }
@@ -252,162 +245,24 @@ struct concrete_archive_traits<io_type::mem, OA, IA> {
 
 /***************************************************************************/
 
-// file archives traits
-template<typename OA, typename IA>
-struct concrete_archive_traits<io_type::file, OA, IA> {
-    typedef OA oarchive_type;
-    typedef IA iarchive_type;
-
-    struct oarchive {
-        oarchive()
-            :stream{}
-            ,oa{}
-        {}
-
-        virtual ~oarchive() {
-            std::remove(fname.c_str());
-        }
-
-        oarchive_type* operator->() { return oa.get(); }
-
-        template<typename T>
-        oarchive_type& operator&(const T &v) { return (*(oa) & v); }
-
-        oarchive_type& serialize() { return *oa; }
-
-        template<typename Head, typename... Tail>
-        oarchive_type& serialize(const Head &head, const Tail&... tail) {
-            oa->operator&(head).serialize(tail...);
-
-            return *oa;
-        }
-
-        template<typename... Ts>
-        oarchive_type& operator()(const Ts&... ts) {
-            oa->serialize(ts...);
-
-            return *oa;
-        }
-
-        static constexpr bool is_little_endian() { return oarchive_type::is_little_endian(); }
-        static constexpr bool is_big_endian() { return oarchive_type::is_big_endian(); }
-        static constexpr yas::options host_endian() { return oarchive_type::host_endian(); }
-
-        std::size_t size() {
-            stream->flush();
-            std::ifstream f(fname);
-            f.seekg(0, std::ios::end);
-            return YAS_SCAST(std::size_t, f.tellg());
-        }
-
-        void dump() {
-            const auto size = this->size();
-            std::string str(size, 0);
-            std::ifstream f(fname, std::ios::binary);
-            assert(f);
-            f.read(&str[0], YAS_SCAST(std::streamsize, size));
-            std::cout << yas::hex_dump(str.c_str(), size) << std::endl;
-        }
-
-        bool compare(const void *ptr, std::uint32_t size) {
-            if (this->size() != size) return false;
-            std::string str(size, 0);
-            std::ifstream f(fname, std::ios::binary);
-            assert(f);
-            f.read(&str[0], size);
-            return memcmp(str.c_str(), ptr, size) == 0;
-        }
-
-        std::string fname;
-        std::unique_ptr<typename oarchive_type::stream_type> stream;
-        std::unique_ptr<oarchive_type> oa;
-    };
-
-    static void ocreate(oarchive &oa, const char *archive_type, const char *io_type) {
-        ((void) io_type);
-
-        static std::uint32_t oa_cnt = 0;
-
-        oa.fname += archive_type;
-        oa.fname += "_";
-        oa.fname += std::to_string(oa_cnt++);
-        oa.fname += ".bin";
-        oa.stream.reset(new typename oarchive_type::stream_type(oa.fname.c_str(), yas::file_trunc));
-        oa.oa.reset(new oarchive_type(*(oa.stream)));
-    }
-
-    struct iarchive {
-        iarchive()
-            :stream{}
-            ,ia{}
-        {}
-
-        virtual ~iarchive() {}
-
-        iarchive_type* operator->() { return ia.get(); }
-
-        template<typename T>
-        iarchive_type& operator&(T &&v) { return (*(ia) & std::forward<T>(v)); }
-
-        iarchive_type &serialize() { return *ia; }
-
-        template<typename Head, typename... Tail>
-        iarchive_type& serialize(Head &&head, Tail&&... tail) {
-            ia->operator&(head).serialize(tail...);
-
-            return *ia;
-        }
-
-        template<typename... Ts>
-        iarchive_type& operator()(Ts&&... ts) {
-            serialize(ts...);
-
-            return *ia;
-        }
-
-        bool is_little_endian() { return ia->is_little_endian(); }
-        bool is_big_endian() { return ia->is_big_endian(); }
-        static constexpr yas::options host_endian() { return iarchive_type::host_endian(); }
-
-        std::string fname;
-        std::unique_ptr<typename iarchive_type::stream_type> stream;
-        std::unique_ptr<iarchive_type> ia;
-    };
-
-    static void icreate(iarchive &ia, oarchive &oa, const char *archive_type, const char *io_type) {
-        ((void) archive_type);
-        ((void) io_type);
-        oa.stream->flush();
-        ia.fname = oa.fname;
-        ia.stream.reset(new typename iarchive_type::stream_type(oa.fname.c_str()));
-        ia.ia.reset(new iarchive_type(*(ia.stream)));
-    }
-};
-
-/***************************************************************************/
-
 #define YAS_RUN_TEST(testname, passcnt, failcnt) { \
-	 const char *artype = \
-		  (yas::is_binary_archive<OA>::value ? "binary" \
-				: yas::is_text_archive<OA>::value ? "text" \
-					 : yas::is_object_archive<OA>::value ? "json" \
-		  : "unknown" \
-	 ); \
-	 const char *iotype = (iot == io_type::mem ? "mem" : "file"); \
-	 std::fprintf( \
-			stdout \
-		  ,"%-6s %-4s: %-24s -> %s\n" \
-		  ,artype /* 1 */ \
-		  ,iotype /* 2 */ \
-		  ,#testname /* 3 */ \
-		  ,(testname##_test<concrete_archive_traits<iot, OA, IA>>(artype, iotype) \
-				?(++passcnt,"passed") \
-				:(++failcnt,"failed!") \
-		  ) /* 4 */ \
-	 ); \
+    const char *artype = \
+    (yas::is_binary_archive<OA>::value ? "binary" \
+        : yas::is_text_archive<OA>::value ? "text" \
+            : yas::is_object_archive<OA>::value ? "object" \
+                : "unknown" \
+    ); \
+    std::fprintf(stdout,"%-6s: %-24s -> ",artype, #testname); \
+    std::fflush(stdout); \
+    \
+    const bool passed = testname##_test<archive_traits<OA, IA>>(artype); \
+    if ( passed ) { ++passcnt; } else { ++failcnt; } \
+    \
+    std::fprintf(stdout, "%s\n", (passed ? "passed" : "failed")); \
+    std::fflush(stdout); \
 }
 
-template<io_type iot, typename OA, typename IA>
+template<typename OA, typename IA>
 void tests(int &p, int &e) {
     YAS_RUN_TEST(header, p, e);
     YAS_RUN_TEST(endian, p, e);
@@ -478,11 +333,10 @@ int main() {
 
     int passed = 0, failed = 0;
     try {
-        constexpr std::size_t opts = yas::binary|yas::endian_as_host;
-        tests<io_type::mem, yas::binary_oarchive<yas::mem_ostream, opts>, yas::binary_iarchive<yas::mem_istream, opts>>(passed, failed);
-        tests<io_type::file, yas::binary_oarchive<yas::file_ostream, opts>, yas::binary_iarchive<yas::file_istream, opts>>(passed, failed);
-        tests<io_type::mem, yas::text_oarchive<yas::mem_ostream>, yas::text_iarchive<yas::mem_istream>>(passed, failed);
-        tests<io_type::file, yas::text_oarchive<yas::file_ostream>, yas::text_iarchive<yas::file_istream>>(passed, failed);
+        constexpr std::size_t binary_opts = yas::binary|yas::endian_as_host;
+        constexpr std::size_t text_opts = yas::text|yas::endian_as_host;
+        tests<yas::binary_oarchive<yas::mem_ostream, binary_opts>, yas::binary_iarchive<yas::mem_istream, binary_opts>>(passed, failed);
+        tests<yas::text_oarchive<yas::mem_ostream, text_opts>, yas::text_iarchive<yas::mem_istream, text_opts>>(passed, failed);
     } catch (const std::exception &ex) {
         std::cout << "[std::exception]: " << ex.what() << std::endl;
         return EXIT_FAILURE;
@@ -496,7 +350,7 @@ int main() {
     << "> passed tests: " << passed << std::endl
     << "> failed tests: " << failed << std::endl
     << "> host endian : " << (YAS_LITTLE_ENDIAN() ? "little" : "big") << std::endl
-    << "> host bits   : " << (sizeof(void *) == sizeof(std::uint64_t) ? "64" : "32") << std::endl
+    << "> host bits   : " << sizeof(void *)*CHAR_BIT << std::endl
     << "> YAS version : " << YAS_VERSION_STRING << std::endl
     << "/***************************************************/" << std::endl;
 

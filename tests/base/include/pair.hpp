@@ -39,15 +39,15 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool pair_test(const char* archive_type, const char* io_type) {
+bool pair_test(const char* archive_type) {
 	std::pair<std::wstring, std::string> p = std::make_pair(L"wstring wstring", "string string"), pp;
 
 	typename archive_traits::oarchive oa;
-	archive_traits::ocreate(oa, archive_type, io_type);
+	archive_traits::ocreate(oa, archive_type);
 	oa & p;
 
 	typename archive_traits::iarchive ia;
-	archive_traits::icreate(ia, oa, archive_type, io_type);
+	archive_traits::icreate(ia, oa, archive_type);
 	ia & pp;
 
 	if ( p != pp ) {
