@@ -33,25 +33,25 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__wstring_hpp__included_
-#define _yas_test__wstring_hpp__included_
+#ifndef __yas__tests__base__include__wstring_hpp
+#define __yas__tests__base__include__wstring_hpp
 
 /***************************************************************************/
 
 template<typename archive_traits>
-bool wstring_test(const char* archive_type) {
+bool wstring_test(std::ostream &log, const char* archive_type) {
 	std::wstring ws(L"wstring wstring"), wss;
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & ws;
+	oa & YAS_OBJECT("ws", ws);
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & wss;
+	ia & YAS_OBJECT("wss", wss);
 
 	if ( ws != wss ) {
-		std::cout << "WSTRING deserialization error!" << std::endl;
+		YAS_TEST_REPORT(log, "WSTRING deserialization error!");
 		return false;
 	}
 
@@ -60,4 +60,4 @@ bool wstring_test(const char* archive_type) {
 
 /***************************************************************************/
 
-#endif // _yas_test__wstring_hpp__included_
+#endif // __yas__tests__base__include__wstring_hpp

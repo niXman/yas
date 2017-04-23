@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__one_method_hpp__included_
-#define _yas_test__one_method_hpp__included_
+#ifndef __yas__tests__base__include__one_method_hpp
+#define __yas__tests__base__include__one_method_hpp
 
 /***************************************************************************/
 
@@ -50,8 +50,7 @@ struct _binary_type_with_one_method_serializer {
 
 	template<typename Archive>
 	void serialize(Archive& ar) {
-		ar & x
-			& y;
+		ar & YAS_OBJECT("onemem", x, y);
 		_binary_type_with_one_method_serializer_flag = true;
 	}
 };
@@ -59,16 +58,16 @@ struct _binary_type_with_one_method_serializer {
 } // ns
 
 template<typename archive_traits>
-bool one_method_test(const char* archive_type) {
+bool one_method_test(std::ostream &log, const char* archive_type) {
 	_binary_type_with_one_method_serializer t1, t2;
 	t1.x = 33; t1.y = 44;
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & t1;
+	oa & YAS_OBJECT("t1", t1);
 
 	if ( !_binary_type_with_one_method_serializer_flag ) {
-		std::cout << "method serialize() is not called!" << std::endl;
+		YAS_TEST_REPORT(log, "method serialize() is not called!");
 		return false;
 	}
 
@@ -76,15 +75,15 @@ bool one_method_test(const char* archive_type) {
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & t2;
+	ia & YAS_OBJECT("t2", t2);
 
 	if ( !_binary_type_with_one_method_serializer_flag ) {
-		std::cout << "method serialize() is not called!" << std::endl;
+		YAS_TEST_REPORT(log, "method serialize() is not called!");
 		return false;
 	}
 
 	if ( t1.x != t2.x || t1.y != t2.y ) {
-		std::cout << "ONE METHOD deserialization error!" << std::endl;
+		YAS_TEST_REPORT(log, "ONE METHOD deserialization error!");
 		return false;
 	}
 
@@ -93,4 +92,4 @@ bool one_method_test(const char* archive_type) {
 
 /***************************************************************************/
 
-#endif // _yas_test__one_method_hpp__included_
+#endif // __yas__tests__base__include__one_method_hpp

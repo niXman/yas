@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__optional_hpp__included_
-#define _yas_test__optional_hpp__included_
+#ifndef __yas__tests__base__include__optional_hpp
+#define __yas__tests__base__include__optional_hpp
 
 /***************************************************************************/
 
@@ -60,7 +60,7 @@
 #endif // _YAS_HAVE_STD_EXPERIMENTAL_OPTIONAL
 
 template<typename archive_traits>
-bool optional_test(const char* archive_type) {
+bool optional_test(std::ostream &log, const char* archive_type) {
 	(void)archive_type;
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
 	{
@@ -68,14 +68,14 @@ bool optional_test(const char* archive_type) {
 		boost::optional<int> o0(i0), o1;
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type);
-		oa & o0;
+		oa & YAS_OBJECT("o0", o0);
 
 		typename archive_traits::iarchive ia;
 		archive_traits::icreate(ia, oa, archive_type);
-		ia & o1;
+		ia & YAS_OBJECT("o1", o1);
 
 		if ( o0 != o1 ) {
-			std::cout << "OPTIONAL serialization error! [1]" << std::endl;
+			YAS_TEST_REPORT(log, "OPTIONAL serialization error!");
 			return false;
 		}
 	}
@@ -84,14 +84,14 @@ bool optional_test(const char* archive_type) {
 		boost::optional<std::string> o0(s0), o1;
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type);
-		oa & o0;
+		oa & YAS_OBJECT("o0", o0);
 
 		typename archive_traits::iarchive ia;
 		archive_traits::icreate(ia, oa, archive_type);
-		ia & o1;
+		ia & YAS_OBJECT("o1", o1);
 
 		if ( o0 != o1 ) {
-			std::cout << "OPTIONAL serialization error! [2]" << std::endl;
+			YAS_TEST_REPORT(log, "OPTIONAL serialization error!");
 			return false;
 		}
 	}
@@ -102,14 +102,14 @@ bool optional_test(const char* archive_type) {
 		_YAS_STD_OPTIONAL_NS::optional<int> o0(i0), o1;
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type, io_type);
-		oa & o0;
+		oa & YAS_OBJECT("o0", o0);
 
 		typename archive_traits::iarchive ia;
 		archive_traits::icreate(ia, oa, archive_type, io_type);
-		ia & o1;
+		ia & YAS_OBJECT("o1", o1);
 
 		if ( o0 != o1 ) {
-			std::cout << "OPTIONAL serialization error! [3]" << std::endl;
+			YAS_TEST_REPORT(log, "OPTIONAL serialization error!");
 			return false;
 		}
 	}
@@ -118,14 +118,14 @@ bool optional_test(const char* archive_type) {
 		_YAS_STD_OPTIONAL_NS::optional<std::string> o0(s0), o1;
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type, io_type);
-		oa & o0;
+		oa & YAS_OBJECT("o0", o0);
 
 		typename archive_traits::iarchive ia;
 		archive_traits::icreate(ia, oa, archive_type, io_type);
-		ia & o1;
+		ia & YAS_OBJECT("o1", o1);
 
 		if ( o0 != o1 ) {
-			std::cout << "OPTIONAL serialization error! [4]" << std::endl;
+			YAS_TEST_REPORT(log, "OPTIONAL serialization error!");
 			return false;
 		}
 	}
@@ -140,4 +140,4 @@ bool optional_test(const char* archive_type) {
 #undef _YAS_HAVE_STD_EXPERIMENTAL_OPTIONAL
 #undef _YAS_STD_OPTIONAL_NS
 
-#endif // _yas_test__optional_hpp__included_
+#endif // __yas__tests__base__include__optional_hpp

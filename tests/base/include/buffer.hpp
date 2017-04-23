@@ -33,116 +33,167 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__buffer_hpp__included_
-#define _yas_test__buffer_hpp__included_
+#ifndef __yas__tests__base__include__buffer_hpp
+#define __yas__tests__base__include__buffer_hpp
 
 /***************************************************************************/
 
 template<typename archive_traits>
-bool buffer_test(const char* archive_type) {
+bool buffer_test(std::ostream &log, const char* archive_type) {
 	static const char str1[] = "intrusive buffer test";
 	yas::intrusive_buffer buf1(str1, sizeof(str1)-1);
 
 	typename archive_traits::oarchive oa1;
 	archive_traits::ocreate(oa1, archive_type);
-	oa1 & buf1;
+	oa1 & YAS_OBJECT("buf1", buf1);
 
 	// binary
 	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
 		if ( archive_traits::oarchive_type::flags() & yas::compacted ) {
-			static const std::uint8_t size32_le[] = {
+			static const std::uint8_t arr_le[] = {
 				 0x79,0x61,0x73,0x30,0x33,0x30,0x35,0x01,0x15,0x69,0x6e,0x74,0x72,0x75
 				,0x73,0x69,0x76,0x65,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
 			};
-			static const std::uint8_t size32_be[] = {
+			static const std::uint8_t arr_be[] = {
 				 0x79,0x61,0x73,0x30,0x30,0x38,0x34,0x00,0x00,0x00,0x15,0x69,0x6e,0x74,0x72,0x75
 				,0x73,0x69,0x76,0x65,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
 			};
 
-			const std::uint8_t *ptr  = oa1.is_little_endian() ? size32_le : size32_be;
-			const std::size_t   size = oa1.is_little_endian() ? sizeof(size32_le) : sizeof(size32_be);
+			const std::uint8_t *ptr  = oa1.is_little_endian() ? arr_le : arr_be;
+			const std::size_t   size = oa1.is_little_endian() ? sizeof(arr_le) : sizeof(arr_be);
 			if ( oa1.size() != size ) {
-				std::cout << "BUFFER intrusive serialization error! [1.1]" << std::endl;
+                YAS_TEST_REPORT(log, "BUFFER intrusive serialization error!");
 				return false;
 			}
 			if ( !oa1.compare(ptr, size) ) {
-				std::cout << "BUFFER intrusive serialization error! [2.1]" << std::endl;
+                YAS_TEST_REPORT(log, "BUFFER intrusive serialization error!");
 				return false;
 			}
 		} else {
-			static const std::uint8_t sizevar_le[] = {
+			static const std::uint8_t arr_le[] = {
                  0x79,0x61,0x73,0x30,0x31,0x30,0x35,0x15,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x69,0x6e,0x74
                 ,0x72,0x75,0x73,0x69,0x76,0x65,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
 			};
-			static const std::uint8_t sizevar_be[] = {
-				 0x79,0x61,0x73,0x30,0x32,0x38,0x34,0x01,0x15,0x69,0x6e,0x74,0x72,0x75,0x73
-			    ,0x69,0x76,0x65,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
-			};
+			static const std::uint8_t arr_be[] = {
+                 0x79,0x61,0x73,0x30,0x31,0x38,0x35,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x15,0x69,0x6e,0x74
+                ,0x72,0x75,0x73,0x69,0x76,0x65,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
+            };
 
-			const std::uint8_t *ptr  = oa1.is_little_endian() ? sizevar_le : sizevar_be;
-			const std::size_t   size = oa1.is_little_endian() ? sizeof(sizevar_le) : sizeof(sizevar_be);
+			const std::uint8_t *ptr  = oa1.is_little_endian() ? arr_le : arr_be;
+			const std::size_t   size = oa1.is_little_endian() ? sizeof(arr_le) : sizeof(arr_be);
 			if ( oa1.size() != size ) {
-				std::cout << "BUFFER intrusive serialization error! [1.3]" << std::endl;
+                YAS_TEST_REPORT(log, "BUFFER intrusive serialization error!");
 				return false;
 			}
 			if ( !oa1.compare(ptr, size) ) {
-				std::cout << "BUFFER intrusive serialization error! [2.3]" << std::endl;
+                YAS_TEST_REPORT(log, "BUFFER intrusive serialization error!");
 				return false;
 			}
 		}
 	// text
 	} else if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
+        static const std::uint8_t arr_le[] = {
+             0x79,0x61,0x73,0x30,0x31,0x31,0x32,0x32,0x32,0x31,0x69,0x6e,0x74,0x72,0x75
+            ,0x73,0x69,0x76,0x65,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
+        };
+        static const std::uint8_t arr_be[] = {
+            0x79,0x61,0x73,0x30,0x32,0x38,0x34,0x01,0x15,0x69,0x6e,0x74,0x72,0x75,0x73
+            ,0x69,0x76,0x65,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
+        };
 
-//		if ( oa1.size() != res_size ) {
-//			std::cout << "BUFFER intrusive serialization error! [3]" << std::endl;
-//			return false;
-//		}
-//		if ( !oa1.compare(res_ptr, res_size) ) {
-//			std::cout << "BUFFER intrusive serialization error! [4]" << std::endl;
-//			return false;
-//		}
-	}
+        const std::uint8_t *ptr  = oa1.is_little_endian() ? arr_le : arr_be;
+        const std::size_t   size = oa1.is_little_endian() ? sizeof(arr_le) : sizeof(arr_be);
+        if ( oa1.size() != size ) {
+            YAS_TEST_REPORT(log, "BUFFER intrusive serialization error!");
+            return false;
+        }
+        if ( !oa1.compare(ptr, size) ) {
+            YAS_TEST_REPORT(log, "BUFFER intrusive serialization error!");
+            return false;
+        }
+    // object
+	} else if ( yas::is_object_archive<typename archive_traits::oarchive_type>::value ) {
+        YAS_TEST_REPORT(log, "BUFFER intrusive serialization UNIMPLEMENTED");
+    }
 
 	static const char str2[] = "shared buffer test";
 	yas::shared_buffer buf2(str2, sizeof(str2)-1);
 	typename archive_traits::oarchive oa2;
 	archive_traits::ocreate(oa2, archive_type);
-	oa2 & buf2;
+	oa2 & YAS_OBJECT("buf2", buf2);
 
+    // binary
 	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ){
+        if ( archive_traits::oarchive_type::flags() & yas::compacted ) {
+            static const std::uint8_t arr_le[] = {
+                 0x79,0x61,0x73,0x30,0x33,0x30,0x35,0x01,0x12,0x73,0x68,0x61,0x72
+                ,0x65,0x64,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
+            };
+            static const std::uint8_t arr_be[] = {
+                0x79,0x61,0x73,0x30,0x30,0x38,0x34,0x00,0x00,0x00,0x15,0x69,0x6e,0x74,0x72,0x75
+                ,0x73,0x69,0x76,0x65,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
+            };
 
-//		if ( oa2.size() != res_size ) {
-//			std::cout << "BUFFER shared serialization error! [5]" << std::endl;
-//			return false;
-//		}
-//		if ( !oa2.compare(res_ptr, res_size) ) {
-//			std::cout << "BUFFER shared serialization error! [6]" << std::endl;
-//			return false;
-//		}
+            const std::uint8_t *ptr  = oa2.is_little_endian() ? arr_le : arr_be;
+            const std::size_t   size = oa2.is_little_endian() ? sizeof(arr_le) : sizeof(arr_be);
+            if ( oa2.size() != size ) {
+                YAS_TEST_REPORT(log, "BUFFER shared serialization error!");
+                return false;
+            }
+            if ( !oa2.compare(ptr, size) ) {
+                YAS_TEST_REPORT(log, "BUFFER shared serialization error!");
+                return false;
+            }
+        } else {
+            static const std::uint8_t arr_le[] = {
+                 0x79,0x61,0x73,0x30,0x31,0x30,0x35,0x12,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x73
+                ,0x68,0x61,0x72,0x65,0x64,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
+            };
+            static const std::uint8_t arr_be[] = {
+                 0x79,0x61,0x73,0x30,0x31,0x38,0x35,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x12,0x73
+                ,0x68,0x61,0x72,0x65,0x64,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
+            };
+
+            const std::uint8_t *ptr  = oa2.is_little_endian() ? arr_le : arr_be;
+            const std::size_t   size = oa2.is_little_endian() ? sizeof(arr_le) : sizeof(arr_be);
+            if ( oa2.size() != size ) {
+                YAS_TEST_REPORT(log, "BUFFER shared serialization error!");
+                return false;
+            }
+            if ( !oa2.compare(ptr, size) ) {
+                YAS_TEST_REPORT(log, "BUFFER shared serialization error!");
+                return false;
+            }
+        }
+    // text
 	} else if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
-//		if ( oa2.size() != res_size ) {
-//			std::cout << "BUFFER shared serialization error! [7]" << std::endl;
-//			return false;
-//		}
-//		if ( !oa2.compare(res_ptr, res_size) ) {
-//			std::cout << "BUFFER shared serialization error! [8]" << std::endl;
-//			return false;
-//		}
-//		typename archive_traits::iarchive ia1;
-//		archive_traits::icreate(ia1, oa2, archive_type, io_type);
-//		yas::shared_buffer buf4;
-//		ia1 & buf4;
-//		if ( buf4.size != sizeof(str2)-1 || memcmp(str2, buf4.data.get(), buf4.size) ) {
-//			std::cout << "BUFFER shared deserialization error! [9]" << std::endl;
-//			return false;
-//		}
-	}
+        static const std::uint8_t arr_le[] = {
+             0x79,0x61,0x73,0x30,0x31,0x31,0x32,0x32,0x31,0x38,0x73,0x68,0x61,0x72
+            ,0x65,0x64,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
+        };
+        static const std::uint8_t arr_be[] = {
+             0x79,0x61,0x73,0x30,0x31,0x30,0x35,0x12,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x73
+            ,0x68,0x61,0x72,0x65,0x64,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
+        };
+
+        const std::uint8_t *ptr  = oa2.is_little_endian() ? arr_le : arr_be;
+        const std::size_t   size = oa2.is_little_endian() ? sizeof(arr_le) : sizeof(arr_be);
+        if ( oa2.size() != size ) {
+            YAS_TEST_REPORT(log, "BUFFER shared serialization error!");
+            return false;
+        }
+        if ( !oa2.compare(ptr, size) ) {
+            YAS_TEST_REPORT(log, "BUFFER shared serialization error!");
+            return false;
+        }
+    // object
+	} else if ( yas::is_object_archive<typename archive_traits::oarchive_type>::value ) {
+        YAS_TEST_REPORT(log, "BUFFER intrusive serialization UNIMPLEMENTED");
+    }
 
 	return true;
 }
 
-#undef XOR
-
 /***************************************************************************/
 
-#endif // _yas_test__buffer_hpp__included_
+#endif // __yas__tests__base__include__buffer_hpp

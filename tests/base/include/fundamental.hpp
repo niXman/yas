@@ -33,13 +33,13 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__pod_hpp__included_
-#define _yas_test__pod_hpp__included_
+#ifndef __yas__tests__base__include__pod_hpp
+#define __yas__tests__base__include__pod_hpp
 
 /***************************************************************************/
 
 template<typename archive_traits>
-bool pod_test(const char *archive_type) {
+bool fundamental_test(std::ostream &log, const char *archive_type) {
     typename archive_traits::oarchive oa;
     archive_traits::ocreate(oa, archive_type);
 
@@ -86,24 +86,24 @@ bool pod_test(const char *archive_type) {
             std::size_t exp_size = archive_traits::oarchive_type::header_size() + binary_expected_size;
             std::size_t comp_exp_size = archive_traits::oarchive_type::header_size() + binary_compacted_expected_size;
             if (oa.size() != (archive_traits::oarchive_type::compacted() ? comp_exp_size : exp_size)) {
-                std::cout << "POD serialization error! [1]" << std::endl;
+                YAS_TEST_REPORT(log, "POD serialization error!");
                 return false;
             }
         } break;
         case yas::text: {
             if (oa.size() != archive_traits::oarchive_type::header_size() + text_expected_size) {
-                std::cout << "POD serialization error! [2]" << std::endl;
+                YAS_TEST_REPORT(log, "POD serialization error!");
                 return false;
             }
         } break;
         case yas::object: {
             if (oa.size() != archive_traits::oarchive_type::header_size() + object_expected_size) {
-                std::cout << "POD serialization error! [3]" << std::endl;
+                YAS_TEST_REPORT(log, "POD serialization error!");
                 return false;
             }
         } break;
         default:
-            std::cout << "POD serialization bad archive type!" << std::endl;
+            YAS_TEST_REPORT(log, "POD serialization bad archive type!");
             return false;
     }
 
@@ -115,7 +115,7 @@ bool pod_test(const char *archive_type) {
     if (b != bb || c != cc || uc != uc2 || s != ss || us != us2 || i != ii
         || l != ll || i64 != ii64 || ui64 != uui64 || f != ff || d != dd || i64max != ii64max || u64max != iu64max)
     {
-        std::cout << "POD deserialization error! [4]" << std::endl;
+        YAS_TEST_REPORT(log, "POD deserialization error!");
         return false;
     }
 
@@ -124,4 +124,4 @@ bool pod_test(const char *archive_type) {
 
 /***************************************************************************/
 
-#endif // _yas_test__pod_hpp__included_
+#endif // __yas__tests__base__include__pod_hpp

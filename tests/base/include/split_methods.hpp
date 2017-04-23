@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__split_methods_hpp__included_
-#define _yas_test__split_methods_hpp__included_
+#ifndef __yas__tests__base__include__split_methods_hpp
+#define __yas__tests__base__include__split_methods_hpp
 
 /***************************************************************************/
 
@@ -51,14 +51,12 @@ struct _binary_type_with_split_method_serializers {
 
 	template<typename Archive>
 	void serialize(Archive& ar) const {
-		ar & x
-			& y;
+		ar & YAS_OBJECT("splitmem", x, y);
 		_binary_type_with_split_method_serializers_save_flag = true;
 	}
 	template<typename Archive>
 	void serialize(Archive& ar) {
-		ar & x
-			& y;
+		ar & YAS_OBJECT("splitmem", x, y);
 		_binary_type_with_split_method_serializers_load_flag = true;
 	}
 };
@@ -66,30 +64,30 @@ struct _binary_type_with_split_method_serializers {
 } // ns
 
 template<typename archive_traits>
-bool split_methods_test(const char* archive_type) {
+bool split_methods_test(std::ostream &log, const char* archive_type) {
 	_binary_type_with_split_method_serializers t1, t2;
 	t1.x = 33; t1.y = 44;
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & t1;
+	oa & YAS_OBJECT("t1", t1);
 
 	if ( !_binary_type_with_split_method_serializers_save_flag ) {
-		std::cout << "method serialize() for save is not called!" << std::endl;
+		YAS_TEST_REPORT(log, "method serialize() for save is not called!")
 		return false;
 	}
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & t2;
+	ia & YAS_OBJECT("t2", t2);
 
 	if ( !_binary_type_with_split_method_serializers_load_flag ) {
-		std::cout << "method serialize() for load is not called!" << std::endl;
+		YAS_TEST_REPORT(log, "method serialize() for load is not called!");
 		return false;
 	}
 
 	if ( t1.x != t2.x || t1.y != t2.y ) {
-		std::cout << "SPLIT METHOD deserialization error!" << std::endl;
+		YAS_TEST_REPORT(log, "SPLIT METHOD deserialization error!");
 		return false;
 	}
 
@@ -98,4 +96,4 @@ bool split_methods_test(const char* archive_type) {
 
 /***************************************************************************/
 
-#endif // _yas_test__split_methods_hpp__included_
+#endif // __yas__tests__base__include__split_methods_hpp

@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__one_function_hpp__included_
-#define _yas_test__one_function_hpp__included_
+#ifndef __yas__tests__base__include__one_function_hpp
+#define __yas__tests__base__include__one_function_hpp
 
 /***************************************************************************/
 
@@ -55,24 +55,23 @@ namespace yas {
 
 template<typename Archive>
 void serialize(Archive& ar, _binary_type_with_one_serializer& t) {
-	ar & t.x
-		& t.y;
+	ar & YAS_OBJECT("onefunc", t.x, t.y);
 	_binary_type_with_one_serializer_flag = true;
 }
 
 } // namespace yas
 
 template<typename archive_traits>
-bool one_function_test(const char* archive_type) {
+bool one_function_test(std::ostream &log, const char* archive_type) {
 	_binary_type_with_one_serializer type, type2;
 	type.x = 33; type.y = 44;
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & type;
+	oa & YAS_OBJECT("type", type);
 
 	if ( !_binary_type_with_one_serializer_flag ) {
-		std::cout << "free function serialize() is not called! [1]" << std::endl;
+		YAS_TEST_REPORT(log, "free function serialize() is not called!");
 		return false;
 	}
 
@@ -80,15 +79,15 @@ bool one_function_test(const char* archive_type) {
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & type2;
+	ia & YAS_OBJECT("type2", type2);
 
 	if ( !_binary_type_with_one_serializer_flag ) {
-		std::cout << "free function serialize() is not called! [2]" << std::endl;
+		YAS_TEST_REPORT(log, "free function serialize() is not called!");
 		return false;
 	}
 
 	if ( type.x != type2.x || type.y != type2.y ) {
-		std::cout << "ONE FUNCTION test failed!" << std::endl;
+		YAS_TEST_REPORT(log, "ONE FUNCTION test failed!");
 		return false;
 	}
 
@@ -97,4 +96,4 @@ bool one_function_test(const char* archive_type) {
 
 /***************************************************************************/
 
-#endif // _yas_test__one_function_hpp__included_
+#endif // __yas__tests__base__include__one_function_hpp

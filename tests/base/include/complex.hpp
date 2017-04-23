@@ -33,13 +33,13 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__complex_hpp
-#define _yas_test__complex_hpp
+#ifndef __yas__tests__base__include__complex_hpp
+#define __yas__tests__base__include__complex_hpp
 
 /***************************************************************************/
 
 template<typename archive_traits>
-bool complex_test(const char* archive_type) {
+bool complex_test(std::ostream &log, const char* archive_type) {
 	std::complex<float> cf1(3.14f, 3.15f), cf2;
 	std::complex<double> cd1(3.16, 3.17), cd2;
 	std::complex<std::int32_t> ci1(318, 319), ci2;
@@ -47,42 +47,42 @@ bool complex_test(const char* archive_type) {
 	{
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type);
-		oa & cf1;
+		oa & YAS_OBJECT("cf1", cf1);
 
 		typename archive_traits::iarchive ia;
 		archive_traits::icreate(ia, oa, archive_type);
-		ia & cf2;
+		ia & YAS_OBJECT("cf2", cf2);
 	}
 	if ( cf1 != cf2 ) {
-		std::cout << "COMPLEX deserialization error! [1]" << std::endl;
+		YAS_TEST_REPORT(log, "COMPLEX deserialization error!");
 		return false;
 	}
 
 	{
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type);
-		oa & cd1;
+		oa & YAS_OBJECT("cd1", cd1);
 
 		typename archive_traits::iarchive ia;
 		archive_traits::icreate(ia, oa, archive_type);
-		ia & cd2;
+		ia & YAS_OBJECT("cd2", cd2);
 	}
 	if ( cd1 != cd2 ) {
-		std::cout << "COMPLEX deserialization error! [2]" << std::endl;
+		YAS_TEST_REPORT(log, "COMPLEX deserialization error!");
 		return false;
 	}
 
 	{
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type);
-		oa & ci1;
+		oa & YAS_OBJECT("ci1", ci1);
 
 		typename archive_traits::iarchive ia;
 		archive_traits::icreate(ia, oa, archive_type);
-		ia & ci2;
+		ia & YAS_OBJECT("ci2", ci2);
 	}
 	if ( ci1 != ci2 ) {
-		std::cout << "COMPLEX deserialization error! [3]" << std::endl;
+		YAS_TEST_REPORT(log, "COMPLEX deserialization error!");
 		return false;
 	}
 
@@ -91,4 +91,4 @@ bool complex_test(const char* archive_type) {
 
 /***************************************************************************/
 
-#endif // _yas_test__complex_hpp
+#endif // __yas__tests__base__include__complex_hpp

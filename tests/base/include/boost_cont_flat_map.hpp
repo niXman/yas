@@ -33,13 +33,13 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__boost_cont_flat_map_hpp
-#define _yas_test__boost_cont_flat_map_hpp
+#ifndef __yas__tests__base__include__boost_cont_flat_map_hpp
+#define __yas__tests__base__include__boost_cont_flat_map_hpp
 
 /***************************************************************************/
 
 template<typename archive_traits>
-bool boost_cont_flat_map_test(const char* archive_type) {
+bool boost_cont_flat_map_test(std::ostream &log, const char* archive_type) {
 	boost::container::flat_map<int, int> pod_map, pod_map2;
 	pod_map.emplace(1, 2);
 	pod_map.emplace(1, 2);
@@ -48,14 +48,14 @@ bool boost_cont_flat_map_test(const char* archive_type) {
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & pod_map;
+	oa & YAS_OBJECT("pod_map", pod_map);
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & pod_map2;
+	ia & YAS_OBJECT("pod_map2", pod_map2);
 
 	if ( pod_map != pod_map2 ) {
-		std::cout << "BOOST::CONTAINER::FLAT_MAP deserialization error![1]" << std::endl;
+		YAS_TEST_REPORT(log, "BOOST::CONTAINER::FLAT_MAP deserialization error!");
 		return false;
 	}
 
@@ -66,14 +66,14 @@ bool boost_cont_flat_map_test(const char* archive_type) {
 
 	typename archive_traits::oarchive oa2;
 	archive_traits::ocreate(oa2, archive_type);
-	oa2 & map;
+	oa2 & YAS_OBJECT("map", map);
 
 	typename archive_traits::iarchive ia2;
 	archive_traits::icreate(ia2, oa2, archive_type);
-	ia2 & map2;
+	ia2 & YAS_OBJECT("map2", map2);
 
 	if ( map != map2 ) {
-		std::cout << "BOOST::CONTAINER::FLAT_MAP deserialization error![2]" << std::endl;
+		YAS_TEST_REPORT(log, "BOOST::CONTAINER::FLAT_MAP deserialization error!");
 		return false;
 	}
 
@@ -84,14 +84,14 @@ bool boost_cont_flat_map_test(const char* archive_type) {
 
 	typename archive_traits::oarchive oa3;
 	archive_traits::ocreate(oa3, archive_type);
-	oa3 & map3;
+	oa3 & YAS_OBJECT("map3", map3);
 
 	typename archive_traits::iarchive ia3;
 	archive_traits::icreate(ia3, oa3, archive_type);
-	ia3 & map4;
+	ia3 & YAS_OBJECT("map4", map4);
 
 	if ( map3 != map4 ) {
-		std::cout << "BOOST::CONTAINER::FLAT_MAP deserialization error![3]" << std::endl;
+		YAS_TEST_REPORT(log, "BOOST::CONTAINER::FLAT_MAP deserialization error!");
 		return false;
 	}
 
@@ -100,4 +100,4 @@ bool boost_cont_flat_map_test(const char* archive_type) {
 
 /***************************************************************************/
 
-#endif // _yas_test__boost_cont_flat_map_hpp
+#endif // __yas__tests__base__include__boost_cont_flat_map_hpp

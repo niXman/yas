@@ -33,13 +33,13 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__vector_hpp__included_
-#define _yas_test__vector_hpp__included_
+#ifndef __yas__tests__base__include__vector_hpp
+#define __yas__tests__base__include__vector_hpp
 
 /***************************************************************************/
 
 template<typename archive_traits>
-bool vector_test(const char* archive_type) {
+bool vector_test(std::ostream &log, const char* archive_type) {
 	std::vector<int> v, vv;
 	v.push_back(0);
 	v.push_back(1);
@@ -54,14 +54,14 @@ bool vector_test(const char* archive_type) {
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & v;
+	oa & YAS_OBJECT("v", v);
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & vv;
+	ia & YAS_OBJECT("vv", vv);
 
 	if ( v != vv ) {
-		std::cout << "STD::VECTOR deserialization error!" << std::endl;
+		YAS_TEST_REPORT(log, "STD::VECTOR deserialization error!");
 		return false;
 	}
 
@@ -70,4 +70,4 @@ bool vector_test(const char* archive_type) {
 
 /***************************************************************************/
 
-#endif // _yas_test__vector_hpp__included_
+#endif // __yas__tests__base__include__vector_hpp

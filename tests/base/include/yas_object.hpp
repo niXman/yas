@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__yas_object_hpp__included_
-#define _yas_test__yas_object_hpp__included_
+#ifndef __yas__tests__base__include__yas_object_hpp
+#define __yas__tests__base__include__yas_object_hpp
 
 /***************************************************************************/
 
@@ -56,7 +56,7 @@ struct type0 {
 }
 
 template<typename archive_traits>
-bool yas_object_test(const char* archive_type) {
+bool yas_object_test(std::ostream &log, const char* archive_type) {
 	{
 		int i0 = 3, i1 = 0;
 		auto o0 = YAS_OBJECT("object0", i0);
@@ -71,7 +71,7 @@ bool yas_object_test(const char* archive_type) {
 		ia & o1;
 
 		if ( i0 != i1 ) {
-			std::cout << "YAS_OBJECT deserialization error! [1]" << std::endl;
+			YAS_TEST_REPORT(log, "YAS_OBJECT deserialization error!");
 			return false;
 		}
 	}
@@ -90,7 +90,7 @@ bool yas_object_test(const char* archive_type) {
 		ia & o1;
 
 		if ( i0 != i1 ) {
-			std::cout << "YAS_OBJECT deserialization error! [2]" << std::endl;
+			YAS_TEST_REPORT(log, "YAS_OBJECT deserialization error!");
 			return false;
 		}
 	}
@@ -106,7 +106,7 @@ bool yas_object_test(const char* archive_type) {
 		ia & YAS_OBJECT("object1", i1);
 
 		if ( i0 != i1 ) {
-			std::cout << "YAS_OBJECT deserialization error! [3]" << std::endl;
+			YAS_TEST_REPORT(log, "YAS_OBJECT deserialization error!");
 			return false;
 		}
 	}
@@ -115,14 +115,14 @@ bool yas_object_test(const char* archive_type) {
 
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type);
-		oa & t0;
+		oa & YAS_OBJECT("t0", t0);
 
 		typename archive_traits::iarchive ia;
 		archive_traits::icreate(ia, oa, archive_type);
-		ia & t1;
+		ia & YAS_OBJECT("t1", t1);
 
 		if ( t0.v != t1.v ) {
-			std::cout << "YAS_OBJECT deserialization error! [4]" << std::endl;
+			YAS_TEST_REPORT(log, "YAS_OBJECT deserialization error!");
 			return false;
 		}
 	}
@@ -132,4 +132,4 @@ bool yas_object_test(const char* archive_type) {
 
 /***************************************************************************/
 
-#endif // _yas_test__yas_object_hpp__included_
+#endif // __yas__tests__base__include__yas_object_hpp

@@ -33,13 +33,14 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__header_hpp
-#define _yas_test__header_hpp
+#ifndef __yas__tests__base__include__header_hpp
+#define __yas__tests__base__include__header_hpp
 
 /***************************************************************************/
 
 template<typename archive_traits>
-bool header_test(const char* archive_type) {
+bool header_test(std::ostream &log, const char* archive_type) {
+    (void)log;
 	(void)archive_type;
 
     {
@@ -62,4 +63,4 @@ bool header_test(const char* archive_type) {
 
 /***************************************************************************/
 
-#endif // _yas_test__header_hpp
+#endif // __yas__tests__base__include__header_hpp

@@ -33,24 +33,24 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__boost_fusion_vector_hpp__included_
-#define _yas_test__boost_fusion_vector_hpp__included_
+#ifndef __yas__tests__base__include__boost_fusion_vector_hpp
+#define __yas__tests__base__include__boost_fusion_vector_hpp
 
 /***************************************************************************/
 
 template<typename archive_traits>
-bool boost_fusion_vector_test(const char* archive_type) {
+bool boost_fusion_vector_test(std::ostream &log, const char* archive_type) {
 	boost::fusion::vector<int, double> v1(33, 3.14), v2;
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & v1;
+	oa & YAS_OBJECT("v1", v1);
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & v2;
+	ia & YAS_OBJECT("v2", v2);
 	if ( v1 != v2 ) {
-		std::cout << "FUSION_VECTOR deserialization error! [1]" << std::endl;
+		YAS_TEST_REPORT(log, "FUSION_VECTOR deserialization error!");
 		return false;
 	}
 
@@ -66,13 +66,13 @@ bool boost_fusion_vector_test(const char* archive_type) {
 
 	typename archive_traits::oarchive oa2;
 	archive_traits::ocreate(oa2, archive_type);
-	oa2 & v3;
+	oa2 & YAS_OBJECT("v3", v3);
 
 	typename archive_traits::iarchive ia2;
 	archive_traits::icreate(ia2, oa2, archive_type);
-	ia2 & v4;
+	ia2 & YAS_OBJECT("v4", v4);
 	if ( v3 != v4 ) {
-		std::cout << "FUSION_VECTOR deserialization error! [2]" << std::endl;
+		YAS_TEST_REPORT(log, "FUSION_VECTOR deserialization error!");
 		return false;
 	}
 
@@ -80,14 +80,14 @@ bool boost_fusion_vector_test(const char* archive_type) {
 
 	typename archive_traits::oarchive oa3;
 	archive_traits::ocreate(oa3, archive_type);
-	oa3 & boost::fusion::make_vector(33,44);
+	oa3 & YAS_OBJECT("v", boost::fusion::make_vector(33,44));
 
 	typename archive_traits::iarchive ia3;
 	archive_traits::icreate(ia3, oa3, archive_type);
-	ia3 & vv;
+	ia3 & YAS_OBJECT("vv", vv);
 
 	if ( vv != boost::fusion::make_vector(33,44) ) {
-		std::cout << "FUSION_VECTOR deserialization error! [3]" << std::endl;
+		YAS_TEST_REPORT(log, "FUSION_VECTOR deserialization error!");
 		return false;
 	}
 
@@ -96,7 +96,7 @@ bool boost_fusion_vector_test(const char* archive_type) {
 
 	typename archive_traits::oarchive oa4;
 	archive_traits::ocreate(oa4, archive_type);
-	oa4 & v5;
+	oa4 & YAS_OBJECT("v5", v5);
 
     static const std::size_t binary_expected_size =
         archive_traits::oarchive_type::header_size()+ // archive header
@@ -123,13 +123,13 @@ bool boost_fusion_vector_test(const char* archive_type) {
 		if ( archive_traits::oarchive_type::compacted() ) {
             const size_t current_size = oa4.size();
             if (current_size != binary_compacted_expected_size) {
-                std::cout << "FUSION_VECTOR deserialization error! [4]" << std::endl;
+				YAS_TEST_REPORT(log, "FUSION_VECTOR deserialization error!");
                 return false;
             }
         } else {
             const size_t current_size = oa4.size();
             if (current_size != binary_expected_size) {
-                std::cout << "FUSION_VECTOR deserialization error! [5]" << std::endl;
+				YAS_TEST_REPORT(log, "FUSION_VECTOR deserialization error!");
                 return false;
             }
         }
@@ -137,34 +137,35 @@ bool boost_fusion_vector_test(const char* archive_type) {
 	if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
 		const size_t current_size = oa4.size();
 		if ( current_size != text_expected_size ) {
-			std::cout << "FUSION_VECTOR deserialization error! [6]" << std::endl;
+			YAS_TEST_REPORT(log, "FUSION_VECTOR deserialization error!");
 			return false;
 		}
 	}
 
 	typename archive_traits::iarchive ia4;
 	archive_traits::icreate(ia4, oa4, archive_type);
-	ia4 & v6;
+	ia4 & YAS_OBJECT("v6", v6);
 	if ( v5 != v6 ) {
-		std::cout << "FUSION_VECTOR deserialization error! [7]" << std::endl;
+		YAS_TEST_REPORT(log, "FUSION_VECTOR deserialization error!");
 		return false;
 	}
 
 	typename archive_traits::oarchive oa5;
 	archive_traits::ocreate(oa5, archive_type);
-	oa5 & boost::fusion::make_vector<boost::uint64_t, std::string>(33, "str");
+	auto v = boost::fusion::make_vector<boost::uint64_t, std::string>(33, "str");
+	oa5 & YAS_OBJECT("v", std::move(v));
 
 	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
         if ( archive_traits::oarchive_type::compacted() ) {
             const size_t current_size2 = oa5.size();
             if (current_size2 != binary_compacted_expected_size) {
-                std::cout << "FUSION_VECTOR deserialization error! [8]" << std::endl;
+				YAS_TEST_REPORT(log, "FUSION_VECTOR deserialization error!");
                 return false;
             }
         } else {
             const size_t current_size2 = oa5.size();
             if (current_size2 != binary_expected_size) {
-                std::cout << "FUSION_VECTOR deserialization error! [9]" << std::endl;
+				YAS_TEST_REPORT(log, "FUSION_VECTOR deserialization error!");
                 return false;
             }
         }
@@ -172,66 +173,66 @@ bool boost_fusion_vector_test(const char* archive_type) {
 	if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
 		const size_t current_size = oa5.size();
 		if ( current_size != text_expected_size ) {
-			std::cout << "FUSION_VECTOR deserialization error! [10]" << std::endl;
+			YAS_TEST_REPORT(log, "FUSION_VECTOR deserialization error!");
 			return false;
 		}
 	}
 
 	typename archive_traits::iarchive ia5;
 	archive_traits::icreate(ia5, oa5, archive_type);
-	ia5 & v6;
+	ia5 & YAS_OBJECT("vv6", v6);
 	if ( v5 != v6 ) {
-		std::cout << "FUSION_VECTOR deserialization error! [11]" << std::endl;
+		YAS_TEST_REPORT(log, "FUSION_VECTOR deserialization error!");
 		return false;
 	}
 
 	boost::fusion::vector<> vv0, vv1;
 	typename archive_traits::oarchive oa6;
 	archive_traits::ocreate(oa6, archive_type);
-	oa6 & vv0;
+	oa6 & YAS_OBJECT("vv0", vv0);
 
 	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
 		if ( oa6.size() != (archive_traits::oarchive_type::header_size()+1) ) {
-			std::cout << "FUSION_VECTOR serialization error! [10]" << std::endl;
+			YAS_TEST_REPORT(log, "FUSION_VECTOR serialization error!");
 			return false;
 		}
 	}
 	if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
 		if ( oa6.size() != (archive_traits::oarchive_type::header_size()+1/*len of next field*/+1/*size marker*/) ) {
-			std::cout << "FUSION_VECTOR serialization error! [11]" << std::endl;
+			YAS_TEST_REPORT(log, "FUSION_VECTOR serialization error!");
 			return false;
 		}
 	}
 
 	typename archive_traits::iarchive ia6;
 	archive_traits::icreate(ia6, oa6, archive_type);
-	ia6 & vv1;
+	ia6 & YAS_OBJECT("vv1", vv1);
 
 	boost::fusion::vector0<> ve0, ve1;
 	typename archive_traits::oarchive oa7;
 	archive_traits::ocreate(oa7, archive_type);
-	oa7 & ve0;
+	oa7 & YAS_OBJECT("ve0", ve0);
 
 	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
 		if ( oa7.size() != (archive_traits::oarchive_type::header_size()+1) ) {
-			std::cout << "FUSION_VECTOR serialization error! [12]" << std::endl;
+			YAS_TEST_REPORT(log, "FUSION_VECTOR serialization error!");
 			return false;
 		}
 	}
 	if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
 		if ( oa7.size() != (archive_traits::oarchive_type::header_size()+1/*len of next field*/+1/*size marker*/) ) {
-			std::cout << "FUSION_VECTOR serialization error! [13]" << std::endl;
+			YAS_TEST_REPORT(log, "FUSION_VECTOR serialization error!");
 			return false;
 		}
 	}
 
 	typename archive_traits::iarchive ia7;
 	archive_traits::icreate(ia7, oa7, archive_type);
-	ia7 & ve1;
+	ia7 & YAS_OBJECT("ve1", ve1);
 
 	return true;
 }
 
 /***************************************************************************/
 
-#endif // _yas_test__boost_fusion_vector_hpp__included_
+#endif // __yas__tests__base__include__boost_fusion_vector_hpp

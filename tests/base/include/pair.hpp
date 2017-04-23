@@ -33,25 +33,25 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__pair_hpp__included_
-#define _yas_test__pair_hpp__included_
+#ifndef __yas__tests__base__include__pair_hpp
+#define __yas__tests__base__include__pair_hpp
 
 /***************************************************************************/
 
 template<typename archive_traits>
-bool pair_test(const char* archive_type) {
+bool pair_test(std::ostream &log, const char* archive_type) {
 	std::pair<std::wstring, std::string> p = std::make_pair(L"wstring wstring", "string string"), pp;
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & p;
+	oa & YAS_OBJECT("p", p);
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & pp;
+	ia & YAS_OBJECT("pp", pp);
 
 	if ( p != pp ) {
-		std::cout << "PAIR deserialization error!" << std::endl;
+		YAS_TEST_REPORT(log, "PAIR deserialization error!");
 		return false;
 	}
 
@@ -60,4 +60,4 @@ bool pair_test(const char* archive_type) {
 
 /***************************************************************************/
 
-#endif // _yas_test__pair_hpp__included_
+#endif // __yas__tests__base__include__pair_hpp

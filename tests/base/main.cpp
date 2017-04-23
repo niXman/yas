@@ -33,11 +33,6 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#include <iostream>
-#include <fstream>
-#include <cassert>
-#include <cstdio>
-
 #include <yas/mem_streams.hpp>
 #include <yas/file_streams.hpp>
 
@@ -60,6 +55,13 @@
 #include <boost/fusion/include/comparison.hpp>
 #endif // YAS_SERIALIZE_BOOST_TYPES
 
+/***************************************************************************/
+
+#define YAS_TEST_REPORT(log, msg) \
+    log << __FILE__ << "(" << __LINE__ << "): " << msg << std::endl;
+
+/***************************************************************************/
+
 #include "include/array.hpp"
 #include "include/auto_array.hpp"
 #include "include/base_object.hpp"
@@ -70,6 +72,7 @@
 #include "include/endian.hpp"
 #include "include/enum.hpp"
 #include "include/forward_list.hpp"
+#include "include/fundamental.hpp"
 #include "include/header.hpp"
 
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
@@ -104,7 +107,6 @@
 #include "include/multiset.hpp"
 #include "include/optional.hpp"
 #include "include/pair.hpp"
-#include "include/pod.hpp"
 #include "include/deque.hpp"
 #include "include/set.hpp"
 #include "include/string.hpp"
@@ -122,6 +124,11 @@
 #include "include/split_methods.hpp"
 #include "include/serialization_methods.hpp"
 #include "include/yas_object.hpp"
+
+#include <iostream>
+#include <fstream>
+#include <cassert>
+#include <cstdio>
 
 /***************************************************************************/
 
@@ -245,7 +252,7 @@ struct archive_traits {
 
 /***************************************************************************/
 
-#define YAS_RUN_TEST(testname, passcnt, failcnt) { \
+#define YAS_RUN_TEST(log, testname, passcnt, failcnt) { \
     const char *artype = \
     (yas::is_binary_archive<OA>::value ? "binary" \
         : yas::is_text_archive<OA>::value ? "text" \
@@ -255,7 +262,7 @@ struct archive_traits {
     std::fprintf(stdout,"%-6s: %-24s -> ",artype, #testname); \
     std::fflush(stdout); \
     \
-    const bool passed = testname##_test<archive_traits<OA, IA>>(artype); \
+    const bool passed = testname##_test<archive_traits<OA, IA>>(log, artype); \
     if ( passed ) { ++passcnt; } else { ++failcnt; } \
     \
     std::fprintf(stdout, "%s\n", (passed ? "passed" : "failed")); \
@@ -263,80 +270,229 @@ struct archive_traits {
 }
 
 template<typename OA, typename IA>
-void tests(int &p, int &e) {
-    YAS_RUN_TEST(header, p, e);
-    YAS_RUN_TEST(endian, p, e);
-    YAS_RUN_TEST(version, p, e);
-    YAS_RUN_TEST(pod, p, e);
-    YAS_RUN_TEST(enum, p, e);
-    YAS_RUN_TEST(base_object, p, e);
-    YAS_RUN_TEST(auto_array, p, e);
-    YAS_RUN_TEST(array, p, e);
-    YAS_RUN_TEST(bitset, p, e);
-    YAS_RUN_TEST(buffer, p, e);
-    YAS_RUN_TEST(chrono, p, e)
-    YAS_RUN_TEST(complex, p, e);
-    YAS_RUN_TEST(string, p, e);
-    YAS_RUN_TEST(wstring, p, e);
-    YAS_RUN_TEST(pair, p, e);
-    YAS_RUN_TEST(tuple, p, e);
-    YAS_RUN_TEST(vector, p, e);
-    YAS_RUN_TEST(list, p, e);
-    YAS_RUN_TEST(forward_list, p, e);
-    YAS_RUN_TEST(map, p, e);
-    YAS_RUN_TEST(deque, p, e);
-    YAS_RUN_TEST(set, p, e);
-    YAS_RUN_TEST(multimap, p, e);
-    YAS_RUN_TEST(multiset, p, e);
-    YAS_RUN_TEST(unordered_map, p, e);
-    YAS_RUN_TEST(unordered_set, p, e);
-    YAS_RUN_TEST(unordered_multimap, p, e);
-    YAS_RUN_TEST(unordered_multiset, p, e);
-    YAS_RUN_TEST(optional, p, e);
+void tests(std::ostream &log, int &p, int &e) {
+    YAS_RUN_TEST(log, header, p, e);
+    YAS_RUN_TEST(log, endian, p, e);
+    YAS_RUN_TEST(log, version, p, e);
+    YAS_RUN_TEST(log, fundamental, p, e);
+    YAS_RUN_TEST(log, enum, p, e);
+    YAS_RUN_TEST(log, base_object, p, e);
+    YAS_RUN_TEST(log, auto_array, p, e);
+    YAS_RUN_TEST(log, array, p, e);
+    YAS_RUN_TEST(log, bitset, p, e);
+    YAS_RUN_TEST(log, buffer, p, e);
+    YAS_RUN_TEST(log, chrono, p, e)
+    YAS_RUN_TEST(log, complex, p, e);
+    YAS_RUN_TEST(log, string, p, e);
+    YAS_RUN_TEST(log, wstring, p, e);
+    YAS_RUN_TEST(log, pair, p, e);
+    YAS_RUN_TEST(log, tuple, p, e);
+    YAS_RUN_TEST(log, vector, p, e);
+    YAS_RUN_TEST(log, list, p, e);
+    YAS_RUN_TEST(log, forward_list, p, e);
+    YAS_RUN_TEST(log, map, p, e);
+    YAS_RUN_TEST(log, deque, p, e);
+    YAS_RUN_TEST(log, set, p, e);
+    YAS_RUN_TEST(log, multimap, p, e);
+    YAS_RUN_TEST(log, multiset, p, e);
+    YAS_RUN_TEST(log, unordered_map, p, e);
+    YAS_RUN_TEST(log, unordered_set, p, e);
+    YAS_RUN_TEST(log, unordered_multimap, p, e);
+    YAS_RUN_TEST(log, unordered_multiset, p, e);
+    YAS_RUN_TEST(log, optional, p, e);
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
-    YAS_RUN_TEST(boost_fusion_pair, p, e);
-    YAS_RUN_TEST(boost_fusion_tuple, p, e);
-    YAS_RUN_TEST(boost_fusion_vector, p, e);
-    YAS_RUN_TEST(boost_fusion_list, p, e);
-    YAS_RUN_TEST(boost_fusion_set, p, e);
-    YAS_RUN_TEST(boost_fusion_map, p, e);
-    YAS_RUN_TEST(boost_cont_string, p, e);
-    YAS_RUN_TEST(boost_cont_wstring, p, e);
-    YAS_RUN_TEST(boost_cont_vector, p, e);
-    YAS_RUN_TEST(boost_cont_static_vector, p, e);
-    YAS_RUN_TEST(boost_cont_stable_vector, p, e);
-    YAS_RUN_TEST(boost_cont_list, p, e);
-    YAS_RUN_TEST(boost_cont_slist, p, e);
-    YAS_RUN_TEST(boost_cont_map, p, e);
-    YAS_RUN_TEST(boost_cont_multimap, p, e);
-    YAS_RUN_TEST(boost_cont_set, p, e);
-    YAS_RUN_TEST(boost_cont_multiset, p, e);
-    YAS_RUN_TEST(boost_cont_flat_map, p, e);
-    YAS_RUN_TEST(boost_cont_flat_multimap, p, e);
-    YAS_RUN_TEST(boost_cont_flat_set, p, e);
-    YAS_RUN_TEST(boost_cont_flat_multiset, p, e);
-    YAS_RUN_TEST(boost_cont_deque, p, e);
-    YAS_RUN_TEST(boost_tuple, p, e);
+    YAS_RUN_TEST(log, boost_fusion_pair, p, e);
+    YAS_RUN_TEST(log, boost_fusion_tuple, p, e);
+    YAS_RUN_TEST(log, boost_fusion_vector, p, e);
+    YAS_RUN_TEST(log, boost_fusion_list, p, e);
+    YAS_RUN_TEST(log, boost_fusion_set, p, e);
+    YAS_RUN_TEST(log, boost_fusion_map, p, e);
+    YAS_RUN_TEST(log, boost_cont_string, p, e);
+    YAS_RUN_TEST(log, boost_cont_wstring, p, e);
+    YAS_RUN_TEST(log, boost_cont_vector, p, e);
+    YAS_RUN_TEST(log, boost_cont_static_vector, p, e);
+    YAS_RUN_TEST(log, boost_cont_stable_vector, p, e);
+    YAS_RUN_TEST(log, boost_cont_list, p, e);
+    YAS_RUN_TEST(log, boost_cont_slist, p, e);
+    YAS_RUN_TEST(log, boost_cont_map, p, e);
+    YAS_RUN_TEST(log, boost_cont_multimap, p, e);
+    YAS_RUN_TEST(log, boost_cont_set, p, e);
+    YAS_RUN_TEST(log, boost_cont_multiset, p, e);
+    YAS_RUN_TEST(log, boost_cont_flat_map, p, e);
+    YAS_RUN_TEST(log, boost_cont_flat_multimap, p, e);
+    YAS_RUN_TEST(log, boost_cont_flat_set, p, e);
+    YAS_RUN_TEST(log, boost_cont_flat_multiset, p, e);
+    YAS_RUN_TEST(log, boost_cont_deque, p, e);
+    YAS_RUN_TEST(log, boost_tuple, p, e);
 #endif // YAS_SERIALIZE_BOOST_TYPES
-    YAS_RUN_TEST(one_function, p, e);
-    YAS_RUN_TEST(split_functions, p, e);
-    YAS_RUN_TEST(one_method, p, e);
-    YAS_RUN_TEST(split_methods, p, e);
-    YAS_RUN_TEST(serialization_methods, p, e);
-    YAS_RUN_TEST(yas_object, p, e);
+    YAS_RUN_TEST(log, one_function, p, e);
+    YAS_RUN_TEST(log, split_functions, p, e);
+    YAS_RUN_TEST(log, one_method, p, e);
+    YAS_RUN_TEST(log, split_methods, p, e);
+    YAS_RUN_TEST(log, serialization_methods, p, e);
+    YAS_RUN_TEST(log, yas_object, p, e);
 }
 
 /***************************************************************************/
 
-int main() {
-    std::setvbuf(stdout, 0, _IONBF, 0);
+struct options {
+    options(char **argv)
+        :msg{}
+        ,binary{false}
+        ,text{false}
+        ,object{false}
+        ,endian_big{false}
+        ,endian_little{false}
+        ,compacted{false}
+        ,logn{0}
+    {
+        for ( char **arg = argv+1; *arg; ++arg ) {
+            static const std::map<std::string, std::function<void()>> map = {
+                 {"binary"    , [this]{binary=true;       }}
+                ,{"text"      , [this]{text=true;         }}
+                ,{"object"    , [this]{object=true;       }}
+                ,{"ebig"      , [this]{endian_big=true;   }}
+                ,{"elittle"   , [this]{endian_little=true;}}
+                ,{"compacted" , [this]{compacted=true;    }}
+                ,{"log=stdout", [this]{logn=log_stdout;   }}
+                ,{"log=stderr", [this]{logn=log_stderr;   }}
+                ,{"log=file"  , [this]{logn=log_file;     }}
+            };
+
+            auto it = map.find(*arg);
+            if ( it == map.end() ) {
+                msg = "bad option: ";
+                msg += *arg;
+
+                return;
+            }
+
+            it->second();
+        }
+
+        int artype = binary+text+object;
+        if ( artype == 0 ) {
+            msg = "one of binary/text/object should be specified. terminate.";
+
+            return;
+        }
+        if ( artype > 1 ) {
+            msg = "only one of binary/text/object can be specified. terminate.";
+
+            return;
+        }
+
+        if ( binary ) {
+            if (!endian_big && !endian_little) {
+                endian_big = YAS_BIG_ENDIAN();
+                endian_little = YAS_LITTLE_ENDIAN();
+            }
+            if ( endian_big && endian_little ) {
+                msg = "only one of big/little can be specified. terminate.";
+
+                return;
+            }
+        }
+
+        if ( !binary ) {
+            if ( compacted ) {
+                msg = "\"compacted\" can be specified only for \"binary\" archives. terminate.";
+
+                return;
+            }
+
+            if ( endian_big || endian_little ) {
+                msg = "\"ebig\" or \"elittle\" can be specified only for \"binary\" archives. terminate.";
+
+                return;
+            }
+        }
+    }
+
+    std::string msg;
+    bool binary;
+    bool text;
+    bool object;
+    bool endian_big;
+    bool endian_little;
+    bool compacted;
+
+    enum { log_stdout, log_stderr, log_file };
+    int logn;
+};
+
+/***************************************************************************/
+
+int main(int, char **argv) {
+    options opts(argv);
+    if ( !opts.msg.empty() ) {
+        std::cerr << "command line parse error: " << opts.msg << std::endl;
+
+        return EXIT_FAILURE;
+    }
+
+    std::unique_ptr<std::ofstream> logfile;
+    if ( opts.logn == options::log_file ) {
+        const char *fname = std::strrchr(argv[0], '/');
+        assert(fname != nullptr);
+
+        logfile.reset(new std::ofstream(fname+1, std::ios::out|std::ios::trunc));
+        assert(logfile->good());
+    }
+
+    std::ostream &log = YAS_SCAST(std::ostream &, (
+        opts.logn == options::log_stdout
+            ? std::cout
+            : opts.logn == options::log_stderr
+                ? std::cerr
+                : *logfile
+    ));
 
     int passed = 0, failed = 0;
     try {
-        constexpr std::size_t binary_opts = yas::binary|yas::endian_as_host;
-        constexpr std::size_t text_opts = yas::text|yas::endian_as_host;
-        tests<yas::binary_oarchive<yas::mem_ostream, binary_opts>, yas::binary_iarchive<yas::mem_istream, binary_opts>>(passed, failed);
-        tests<yas::text_oarchive<yas::mem_ostream, text_opts>, yas::text_iarchive<yas::mem_istream, text_opts>>(passed, failed);
+        if ( opts.binary ) {
+            if ( opts.endian_little ) {
+                if ( opts.compacted ) {
+                    constexpr std::size_t binary_opts = yas::binary|yas::endian_little|yas::compacted;
+                    tests<
+                         yas::binary_oarchive<yas::mem_ostream, binary_opts>
+                        ,yas::binary_iarchive<yas::mem_istream, binary_opts>
+                    >(log, passed, failed);
+                } else {
+                    constexpr std::size_t binary_opts = yas::binary|yas::endian_little;
+                    tests<
+                         yas::binary_oarchive<yas::mem_ostream, binary_opts>
+                        ,yas::binary_iarchive<yas::mem_istream, binary_opts>
+                    >(log, passed, failed);
+                }
+            } else {
+                if ( opts.compacted ) {
+                    constexpr std::size_t binary_opts = yas::binary|yas::endian_big|yas::compacted;
+                    tests<
+                         yas::binary_oarchive<yas::mem_ostream, binary_opts>
+                        ,yas::binary_iarchive<yas::mem_istream, binary_opts>
+                    >(log, passed, failed);
+                } else {
+                    constexpr std::size_t binary_opts = yas::binary|yas::endian_big;
+                    tests<
+                         yas::binary_oarchive<yas::mem_ostream, binary_opts>
+                        ,yas::binary_iarchive<yas::mem_istream, binary_opts>
+                    >(log, passed, failed);
+                }
+            }
+        }
+
+        if ( opts.text ) {
+            constexpr std::size_t text_opts = yas::text;
+            tests<
+                 yas::text_oarchive<yas::mem_ostream, text_opts>
+                ,yas::text_iarchive<yas::mem_istream, text_opts>
+            >(log, passed, failed);
+        }
+
+        if ( opts.object ) {
+            // TODO
+        }
     } catch (const std::exception &ex) {
         std::cout << "[std::exception]: " << ex.what() << std::endl;
         return EXIT_FAILURE;

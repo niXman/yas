@@ -33,13 +33,13 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__list_hpp__included_
-#define _yas_test__list_hpp__included_
+#ifndef __yas__tests__base__include__list_hpp
+#define __yas__tests__base__include__list_hpp
 
 /***************************************************************************/
 
 template<typename archive_traits>
-bool list_test(const char* archive_type) {
+bool list_test(std::ostream &log, const char* archive_type) {
 	std::list<int> ilist1, ilist2;
 	ilist1.push_back(2);
 	ilist1.push_back(3);
@@ -51,14 +51,14 @@ bool list_test(const char* archive_type) {
 
 	typename archive_traits::oarchive oa1;
 	archive_traits::ocreate(oa1, archive_type);
-	oa1 & ilist1;
+	oa1 & YAS_OBJECT("ilist1", ilist1);
 
 	typename archive_traits::iarchive ia1;
 	archive_traits::icreate(ia1, oa1, archive_type);
-	ia1 & ilist2;
+	ia1 & YAS_OBJECT("ilist2", ilist2);
 
 	if ( ilist1 != ilist2 ) {
-		std::cout << "LIST deserialization error! [1]" << std::endl;
+		YAS_TEST_REPORT(log, "LIST deserialization error!");
 		return false;
 	}
 
@@ -71,14 +71,14 @@ bool list_test(const char* archive_type) {
 
 	typename archive_traits::oarchive oa2;
 	archive_traits::ocreate(oa2, archive_type);
-	oa2 & slist1;
+	oa2 & YAS_OBJECT("slist1", slist1);
 
 	typename archive_traits::iarchive ia2;
 	archive_traits::icreate(ia2, oa2, archive_type);
-	ia2 & slist2;
+	ia2 & YAS_OBJECT("slist2", slist2);
 
 	if ( slist1 != slist2 ) {
-		std::cout << "LIST deserialization error! [2]" << std::endl;
+		YAS_TEST_REPORT(log, "LIST deserialization error!");
 		return false;
 	}
 
@@ -87,4 +87,4 @@ bool list_test(const char* archive_type) {
 
 /***************************************************************************/
 
-#endif // _yas_test__list_hpp__included_
+#endif // __yas__tests__base__include__list_hpp

@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__enum_hpp__included_
-#define _yas_test__enum_hpp__included_
+#ifndef __yas__tests__base__include__enum_hpp
+#define __yas__tests__base__include__enum_hpp
 
 /***************************************************************************/
 
@@ -43,35 +43,31 @@ enum enum_test_enum1 { _1_1, _1_2, _1_3, _1_4 };
 enum class enum_test_enum2: char { _2_1, _2_2, _2_3, _2_4 };
 
 template<typename archive_traits>
-bool enum_test(const char* archive_type) {
+bool enum_test(std::ostream &log, const char* archive_type) {
 	typename archive_traits::oarchive oa1;
 	archive_traits::ocreate(oa1, archive_type);
-	oa1 & _1_2
-		 & _1_4;
+	oa1 & YAS_OBJECT("e0", _1_2, _1_4);
 
 	enum_test_enum1 e11, e12;
 	typename archive_traits::iarchive ia1;
 	archive_traits::icreate(ia1, oa1, archive_type);
 
-	ia1 & e11
-		 & e12;
+	ia1 & YAS_OBJECT("e1", e11, e12);
 	if ( e11 != _1_2 || e12 != _1_4 ) {
-		std::cout << "ENUM deserialization error! [1]" << std::endl;
+		YAS_TEST_REPORT(log, "ENUM deserialization error!");
 		return false;
 	}
 
 	typename archive_traits::oarchive oa2;
 	archive_traits::ocreate(oa2, archive_type);
-	oa2 & enum_test_enum2::_2_1
-		 & enum_test_enum2::_2_3;
+	oa2 & YAS_OBJECT("e2", enum_test_enum2::_2_1, enum_test_enum2::_2_3);
 
 	enum_test_enum2 e21, e22;
 	typename archive_traits::iarchive ia2;
 	archive_traits::icreate(ia2, oa2, archive_type);
-	ia2 & e21
-		 & e22;
+	ia2 & YAS_OBJECT("e3", e21, e22);
 	if ( e21 != enum_test_enum2::_2_1 || e22 != enum_test_enum2::_2_3) {
-		std::cout << "ENUM deserialization error! [2]" << std::endl;
+		YAS_TEST_REPORT(log, "ENUM deserialization error!");
 		return false;
 	}
 
@@ -80,4 +76,4 @@ bool enum_test(const char* archive_type) {
 
 /***************************************************************************/
 
-#endif // _yas_test__enum_hpp__included_
+#endif // __yas__tests__base__include__enum_hpp

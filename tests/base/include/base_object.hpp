@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__base_object_hpp__included_
-#define _yas_test__base_object_hpp__included_
+#ifndef __yas__tests__base__include__base_object_hpp
+#define __yas__tests__base__include__base_object_hpp
 
 /***************************************************************************/
 
@@ -70,7 +70,7 @@ struct derived: base {
 } // namespace
 
 template<typename archive_traits>
-bool base_object_test(const char* archive_type) {
+bool base_object_test(std::ostream &log, const char* archive_type) {
 	derived d1, d2;
 	d1.x = 2;d1.y = 5;
 
@@ -83,7 +83,7 @@ bool base_object_test(const char* archive_type) {
 	ia & YAS_OBJECT("load_d2", d2);
 
 	if ( d1.x != d2.x || d1.y != d2.y ) {
-		std::cout << "BASE_OBJECT deserialization error!" << std::endl;
+		YAS_TEST_REPORT(log, "BASE_OBJECT deserialization error!");
 		return false;
 	}
 
@@ -92,5 +92,5 @@ bool base_object_test(const char* archive_type) {
 
 /***************************************************************************/
 
-#endif // _yas_test__base_object_hpp__included_
+#endif // __yas__tests__base__include__base_object_hpp
 

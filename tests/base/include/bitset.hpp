@@ -33,13 +33,13 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__bitset_hpp__included_
-#define _yas_test__bitset_hpp__included_
+#ifndef __yas__tests__base__include__bitset_hpp
+#define __yas__tests__base__include__bitset_hpp
 
 /***************************************************************************/
 
 template<typename archive_traits>
-bool bitset_test(const char* archive_type) {
+bool bitset_test(std::ostream &log, const char* archive_type) {
 	std::bitset<33> bs1, bs2;
 	bs1[2] = 1;
 	bs1[9] = 1;
@@ -50,14 +50,14 @@ bool bitset_test(const char* archive_type) {
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & bs1;
+	oa & YAS_OBJECT("bs1", bs1);
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & bs2;
+	ia & YAS_OBJECT("bs2", bs2);
 
 	if ( bs1 != bs2 ) {
-		std::cout << "BITSET deserialization error!" << std::endl;
+		YAS_TEST_REPORT(log, "BITSET deserialization error!");
 		return false;
 	}
 
@@ -66,4 +66,4 @@ bool bitset_test(const char* archive_type) {
 
 /***************************************************************************/
 
-#endif // _yas_test__bitset_hpp__included_
+#endif // __yas__tests__base__include__bitset_hpp

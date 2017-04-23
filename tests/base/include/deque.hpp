@@ -33,25 +33,25 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__deque_hpp
-#define _yas_test__deque_hpp
+#ifndef __yas__tests__base__include__deque_hpp
+#define __yas__tests__base__include__deque_hpp
 
 /***************************************************************************/
 
 template<typename archive_traits>
-bool deque_test(const char* archive_type) {
+bool deque_test(std::ostream &log, const char* archive_type) {
 	std::deque<int> deq1 = {0,1,2,3,4,5,6,7,8,9}, deq2;
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & deq1;
+	oa & YAS_OBJECT("deq1", deq1);
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & deq2;
+	ia & YAS_OBJECT("deq2", deq2);
 
 	if ( deq1 != deq2 ) {
-		std::cout << "DEQUE deserialization error!" << std::endl;
+		YAS_TEST_REPORT(log, "DEQUE deserialization error!");
 		return false;
 	}
 
@@ -59,14 +59,14 @@ bool deque_test(const char* archive_type) {
 
 	typename archive_traits::oarchive oa2;
 	archive_traits::ocreate(oa2, archive_type);
-	oa2 & deq3;
+	oa2 & YAS_OBJECT("deq3", deq3);
 
 	typename archive_traits::iarchive ia2;
 	archive_traits::icreate(ia2, oa2, archive_type);
-	ia2 & deq4;
+	ia2 & YAS_OBJECT("deq4", deq4);
 
 	if ( deq3 != deq4 ) {
-		std::cout << "DEQUE deserialization error!" << std::endl;
+		YAS_TEST_REPORT(log, "DEQUE deserialization error!");
 		return false;
 	}
 
@@ -75,4 +75,4 @@ bool deque_test(const char* archive_type) {
 
 /***************************************************************************/
 
-#endif // _yas_test__deque_hpp
+#endif // __yas__tests__base__include__deque_hpp

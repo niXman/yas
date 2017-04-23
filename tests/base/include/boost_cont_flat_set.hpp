@@ -33,13 +33,13 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__boost_cont_flat_set_hpp
-#define _yas_test__boost_cont_flat_set_hpp
+#ifndef __yas__tests__base__include__boost_cont_flat_set_hpp
+#define __yas__tests__base__include__boost_cont_flat_set_hpp
 
 /***************************************************************************/
 
 template<typename archive_traits>
-bool boost_cont_flat_set_test(const char* archive_type) {
+bool boost_cont_flat_set_test(std::ostream &log, const char* archive_type) {
 	boost::container::flat_set<int> set1, set2;
 	set1.emplace(0);
 	set1.emplace(1);
@@ -54,14 +54,14 @@ bool boost_cont_flat_set_test(const char* archive_type) {
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & set1;
+	oa & YAS_OBJECT("set1", set1);
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & set2;
+	ia & YAS_OBJECT("set2", set2);
 
 	if ( set1 != set2 ) {
-		std::cout << "BOOST::CONTAINER::FLAT_SET deserialization error![1]" << std::endl;
+		YAS_TEST_REPORT(log, "BOOST::CONTAINER::FLAT_SET deserialization error!");
 		return false;
 	}
 
@@ -72,14 +72,14 @@ bool boost_cont_flat_set_test(const char* archive_type) {
 
 	typename archive_traits::oarchive oa2;
 	archive_traits::ocreate(oa2, archive_type);
-	oa2 & set3;
+	oa2 & YAS_OBJECT("set3", set3);
 
 	typename archive_traits::iarchive ia2;
 	archive_traits::icreate(ia2, oa2, archive_type);
-	ia2 & set4;
+	ia2 & YAS_OBJECT("set4", set4);
 
 	if ( set3 != set4 ) {
-		std::cout << "BOOST::CONTAINER::FLAT_SET deserialization error![2]" << std::endl;
+		YAS_TEST_REPORT(log, "BOOST::CONTAINER::FLAT_SET deserialization error!");
 		return false;
 	}
 
@@ -88,4 +88,4 @@ bool boost_cont_flat_set_test(const char* archive_type) {
 
 /***************************************************************************/
 
-#endif // _yas_test__boost_cont_flat_set_hpp
+#endif // __yas__tests__base__include__boost_cont_flat_set_hpp

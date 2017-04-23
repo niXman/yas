@@ -33,13 +33,13 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__array_hpp__included_
-#define _yas_test__array_hpp__included_
+#ifndef __yas__tests__base__include__array_hpp
+#define __yas__tests__base__include__array_hpp
 
 /***************************************************************************/
 
 template<typename archive_traits>
-bool array_test(const char* archive_type) {
+bool array_test(std::ostream &log, const char* archive_type) {
 	std::array<int, 10> arr1 = {
 		{0,1,2,3,4,5,6,7,8,9}
 	}, arr2;
@@ -53,7 +53,7 @@ bool array_test(const char* archive_type) {
 	ia & YAS_OBJECT("arr2", arr2);
 
 	if ( arr1 != arr2 ) {
-		std::cout << "ARRAY deserialization error! [1]" << std::endl;
+        YAS_TEST_REPORT(log, "ARRAY deserialization error!");
 		return false;
 	}
 
@@ -70,7 +70,7 @@ bool array_test(const char* archive_type) {
 	ia2 & YAS_OBJECT("arr4", arr4);
 
 	if ( arr3 != arr4 ) {
-		std::cout << "ARRAY deserialization error! [2]" << std::endl;
+        YAS_TEST_REPORT(log, "ARRAY deserialization error! [2]");
 		return false;
 	}
 
@@ -88,7 +88,7 @@ bool array_test(const char* archive_type) {
 	ia3 & YAS_OBJECT("arr6", arr6);
 
 	if ( arr5 != arr6 ) {
-		std::cout << "ARRAY deserialization error! [3]" << std::endl;
+        YAS_TEST_REPORT(log, "ARRAY deserialization error! [3]");
 		return false;
 	}
 
@@ -105,7 +105,7 @@ bool array_test(const char* archive_type) {
 	ia4 & YAS_OBJECT("arr8", arr8);
 
 	if ( arr7 != arr8 ) {
-		std::cout << "ARRAY deserialization error! [4]" << std::endl;
+        YAS_TEST_REPORT(log, "ARRAY deserialization error! [4]");
 		return false;
 	}
 #endif // defined(YAS_SERIALIZE_BOOST_TYPES)
@@ -114,4 +114,4 @@ bool array_test(const char* archive_type) {
 
 /***************************************************************************/
 
-#endif // _yas_test__array_hpp__included_
+#endif // __yas__tests__base__include__array_hpp

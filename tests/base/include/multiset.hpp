@@ -33,13 +33,13 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__multiset_hpp__included_
-#define _yas_test__multiset_hpp__included_
+#ifndef __yas__tests__base__include__multiset_hpp
+#define __yas__tests__base__include__multiset_hpp
 
 /***************************************************************************/
 
 template<typename archive_traits>
-bool multiset_test(const char* archive_type) {
+bool multiset_test(std::ostream &log, const char* archive_type) {
 	std::multiset<int> set1, set2;
 	set1.insert(0);
 	set1.insert(1);
@@ -54,14 +54,14 @@ bool multiset_test(const char* archive_type) {
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & set1;
+	oa & YAS_OBJECT("set1", set1);
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & set2;
+	ia & YAS_OBJECT("set2", set2);
 
 	if ( set1.size() != 10 || set2.size() != 10 || set1 != set2 ) {
-		std::cout << "MULTISET deserialization error!" << std::endl;
+		YAS_TEST_REPORT(log, "MULTISET deserialization error!");
 		return false;
 	}
 
@@ -72,14 +72,14 @@ bool multiset_test(const char* archive_type) {
 
 	typename archive_traits::oarchive oa2;
 	archive_traits::ocreate(oa2, archive_type);
-	oa2 & set3;
+	oa2 & YAS_OBJECT("set3", set3);
 
 	typename archive_traits::iarchive ia2;
 	archive_traits::icreate(ia2, oa2, archive_type);
-	ia2 & set4;
+	ia2 & YAS_OBJECT("set4", set4);
 
 	if ( set3.size() != 3 || set4.size() != 3 || set3 != set4 ) {
-		std::cout << "MULTISET deserialization error!" << std::endl;
+		YAS_TEST_REPORT(log, "MULTISET deserialization error!");
 		return false;
 	}
 
@@ -88,4 +88,4 @@ bool multiset_test(const char* archive_type) {
 
 /***************************************************************************/
 
-#endif // _yas_test__multiset_hpp__included_
+#endif // __yas__tests__base__include__multiset_hpp

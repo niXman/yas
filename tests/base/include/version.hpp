@@ -33,32 +33,32 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__version_hpp__included_
-#define _yas_test__version_hpp__included_
+#ifndef __yas__tests__base__include__version_hpp
+#define __yas__tests__base__include__version_hpp
 
 /***************************************************************************/
 
 template<typename archive_traits>
-bool version_test(const char* archive_type) {
+bool version_test(std::ostream &log, const char* archive_type) {
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
 
 	if ( oa->type() != ia->type() ) {
-		std::cout << "VERSION test failed! archive type is not equal! [1]" << std::endl;
+		YAS_TEST_REPORT(log, "VERSION test failed! archive type is not equal!");
 		return false;
 	}
 
 	if ( oa->version() != ia->version() ) {
-		std::cout << "VERSION test failed! archive versions is not equal! [3]" << std::endl;
+		YAS_TEST_REPORT(log, "VERSION test failed! archive versions is not equal!");
 		return false;
 	}
 
 	if ( oa->header_size() != archive_traits::oarchive_type::header_size() ||
 		  archive_traits::oarchive_type::header_size() != 7
 	) {
-		std::cout << "VERSION test failed! bad archive header size! [4]" << std::endl;
+		YAS_TEST_REPORT(log, "VERSION test failed! bad archive header size!");
 		return false;
 	}
 
@@ -67,4 +67,4 @@ bool version_test(const char* archive_type) {
 
 /***************************************************************************/
 
-#endif // _yas_test__version_hpp__included_
+#endif // __yas__tests__base__include__version_hpp

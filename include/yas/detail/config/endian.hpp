@@ -70,11 +70,9 @@
 	|| defined(_M_ALPHA) || defined(__amd64) \
 	|| defined(__amd64__) || defined(_M_AMD64) \
 	|| defined(__x86_64) || defined(__x86_64__) \
-	|| defined(_M_X64) \
-	|| defined(__arm64__) \
-	|| defined(__ARM_ARCH_7S__) \
-	|| defined(__ARM_ARCH_7__) \
-	|| defined(__ARM_ARCH_7A__)
+	|| defined(_M_X64) || defined(__arm64__) \
+	|| defined(__ARM_ARCH_7__) || defined(__ARM_ARCH_7A__) \
+	|| defined(__ARM_ARCH_7S__)
 #	define YAS_LITTLE_ENDIAN() (1)
 #	define YAS_BIG_ENDIAN() (0)
 #else

@@ -33,17 +33,18 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__boost_fusion_map_hpp__included_
-#define _yas_test__boost_fusion_map_hpp__included_
+#ifndef __yas__tests__base__include__boost_fusion_map_hpp
+#define __yas__tests__base__include__boost_fusion_map_hpp
 
 /***************************************************************************/
 
 template<typename archive_traits>
-bool boost_fusion_map_test(const char* archive_type) {
+bool boost_fusion_map_test(std::ostream &log, const char* archive_type) {
+	((void)log);
 	((void)archive_type);
 	return true;
 }
 
 /***************************************************************************/
 
-#endif // _yas_test__boost_fusion_map_hpp__included_
+#endif // __yas__tests__base__include__boost_fusion_map_hpp

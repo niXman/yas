@@ -33,13 +33,13 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__auto_array_hpp__included_
-#define _yas_test__auto_array_hpp__included_
+#ifndef __yas__tests__base__include__auto_array_hpp
+#define __yas__tests__base__include__auto_array_hpp
 
 /***************************************************************************/
 
 template<typename archive_traits>
-bool auto_array_test(const char *archive_type) {
+bool auto_array_test(std::ostream &log, const char *archive_type) {
     enum {
         array_size = 6
     };
@@ -64,7 +64,7 @@ bool auto_array_test(const char *archive_type) {
         archive_traits::icreate(ia, oa, archive_type);
         ia & YAS_OBJECT("ca2", ca2);
         if (memcmp(ca1, ca2, array_size * sizeof(ca1[0]))) {
-            std::cout << "AUTO_ARRAY deserialization error! [1]" << std::endl;
+            YAS_TEST_REPORT(log, "AUTO_ARRAY deserialization error! [1]");
             return false;
         }
     }
@@ -76,7 +76,7 @@ bool auto_array_test(const char *archive_type) {
         archive_traits::icreate(ia, oa, archive_type);
         ia & YAS_OBJECT("uca2", uca2);
         if (memcmp(uca1, uca2, array_size * sizeof(uca1[0]))) {
-            std::cout << "AUTO_ARRAY deserialization error! [2]" << std::endl;
+            YAS_TEST_REPORT(log, "AUTO_ARRAY deserialization error! [2]");
             return false;
         }
     }
@@ -88,7 +88,7 @@ bool auto_array_test(const char *archive_type) {
         archive_traits::icreate(ia, oa, archive_type);
         ia & YAS_OBJECT("sa2", sa2);
         if (memcmp(sa1, sa2, array_size * sizeof(sa1[0]))) {
-            std::cout << "AUTO_ARRAY deserialization error! [3]" << std::endl;
+            YAS_TEST_REPORT(log, "AUTO_ARRAY deserialization error! [3]");
             return false;
         }
     }
@@ -100,7 +100,7 @@ bool auto_array_test(const char *archive_type) {
         archive_traits::icreate(ia, oa, archive_type);
         ia & YAS_OBJECT("usa2", usa2);
         if (memcmp(usa1, usa2, array_size * sizeof(usa1[0]))) {
-            std::cout << "AUTO_ARRAY deserialization error! [4]" << std::endl;
+            YAS_TEST_REPORT(log, "AUTO_ARRAY deserialization error! [4]");
             return false;
         }
     }
@@ -112,7 +112,7 @@ bool auto_array_test(const char *archive_type) {
         archive_traits::icreate(ia, oa, archive_type);
         ia & YAS_OBJECT("ia2", ia2);
         if (memcmp(ia1, ia2, array_size * sizeof(ia1[0]))) {
-            std::cout << "AUTO_ARRAY deserialization error! [5]" << std::endl;
+            YAS_TEST_REPORT(log, "AUTO_ARRAY deserialization error! [5]");
             return false;
         }
     }
@@ -124,7 +124,7 @@ bool auto_array_test(const char *archive_type) {
         archive_traits::icreate(ia, oa, archive_type);
         ia & YAS_OBJECT("uia2", uia2);
         if (memcmp(uia1, uia2, array_size * sizeof(uia1[0]))) {
-            std::cout << "AUTO_ARRAY deserialization error! [6]" << std::endl;
+            YAS_TEST_REPORT(log, "AUTO_ARRAY deserialization error! [6]");
             return false;
         }
     }
@@ -136,7 +136,7 @@ bool auto_array_test(const char *archive_type) {
         archive_traits::icreate(ia, oa, archive_type);
         ia & YAS_OBJECT("i64a2", i64a2);
         if (memcmp(i64a1, i64a2, array_size * sizeof(i64a1[0]))) {
-            std::cout << "AUTO_ARRAY deserialization error! [7]" << std::endl;
+            YAS_TEST_REPORT(log, "AUTO_ARRAY deserialization error! [7]");
             return false;
         }
     }
@@ -148,7 +148,7 @@ bool auto_array_test(const char *archive_type) {
         archive_traits::icreate(ia, oa, archive_type);
         ia & YAS_OBJECT("ui64a2", ui64a2);
         if (memcmp(ui64a1, ui64a2, array_size * sizeof(ui64a1[0]))) {
-            std::cout << "AUTO_ARRAY deserialization error! [8]" << std::endl;
+            YAS_TEST_REPORT(log, "AUTO_ARRAY deserialization error! [8]");
             return false;
         }
     }
@@ -161,12 +161,12 @@ bool auto_array_test(const char *archive_type) {
         ia & YAS_OBJECT("da2", da2);
         if (yas::is_binary_archive<typename archive_traits::oarchive_type>::value) {
             if (memcmp(da1, da2, array_size * sizeof(da1[0]))) {
-                std::cout << "AUTO_ARRAY deserialization error! [11]" << std::endl;
+                YAS_TEST_REPORT(log, "AUTO_ARRAY deserialization error! [11]");
                 return false;
             }
         } else {
             if (!std::equal(da1, da1 + array_size, da2)) {
-                std::cout << "AUTO_ARRAY deserialization error! [11]" << std::endl;
+                YAS_TEST_REPORT(log, "AUTO_ARRAY deserialization error! [11]");
                 return false;
             }
         }
@@ -180,12 +180,12 @@ bool auto_array_test(const char *archive_type) {
         ia & YAS_OBJECT("fa2", fa2);
         if (yas::is_binary_archive<typename archive_traits::oarchive_type>::value) {
             if (memcmp(fa1, fa2, array_size * sizeof(fa1[0]))) {
-                std::cout << "AUTO_ARRAY deserialization error! [12]" << std::endl;
+                YAS_TEST_REPORT(log, "AUTO_ARRAY deserialization error! [12]");
                 return false;
             }
         } else {
             if (!std::equal(fa1, fa1 + array_size, fa2)) {
-                std::cout << "AUTO_ARRAY deserialization error! [12]" << std::endl;
+                YAS_TEST_REPORT(log, "AUTO_ARRAY deserialization error! [12]");
                 return false;
             }
         }
@@ -198,7 +198,7 @@ bool auto_array_test(const char *archive_type) {
         archive_traits::icreate(ia, oa, archive_type);
         ia & YAS_OBJECT("stra2", stra2);
         if (!std::equal(stra1, stra1 + array_size, stra2)) {
-            std::cout << "AUTO_ARRAY deserialization error! [13]" << std::endl;
+            YAS_TEST_REPORT(log, "AUTO_ARRAY deserialization error! [13]");
             return false;
         }
     }
@@ -208,4 +208,4 @@ bool auto_array_test(const char *archive_type) {
 
 /***************************************************************************/
 
-#endif // _yas_test__auto_array_hpp__included_
+#endif // __yas__tests__base__include__auto_array_hpp

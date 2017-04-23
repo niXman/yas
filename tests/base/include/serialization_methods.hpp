@@ -33,42 +33,42 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__serialization_methods_hpp__included_
-#define _yas_test__serialization_methods_hpp__included_
+#ifndef __yas__tests__base__include__serialization_methods_hpp
+#define __yas__tests__base__include__serialization_methods_hpp
 
 template<typename archive_traits>
-bool serialization_methods_test(const char* archive_type) {
+bool serialization_methods_test(std::ostream &log, const char* archive_type) {
 	int w0=0, w1=1, w2=2, w3=3;
 	int r0=0, r1=0, r2=0, r3=0;
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa.serialize(w0, w1, w2, w3);
+	oa.serialize(YAS_OBJECT("o0", w0, w1, w2, w3));
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia.serialize(r0, r1, r2, r3);
+	ia.serialize(YAS_OBJECT("o1", r0, r1, r2, r3));
 
 	if ( r0!=w0 || r1!=w1 || r2!=w2 || r3!=w3) {
-		std::cout << "SERIALIZATION METHODS error! [1]" << std::endl;
+		YAS_TEST_REPORT(log, "SERIALIZATION METHODS error!");
 		return false;
 	}
 
 	r0=0,r1=0,r2=0,r3=0;
 	typename archive_traits::oarchive oa2;
 	archive_traits::ocreate(oa2, archive_type);
-	oa2(w0, w1, w2, w3);
+	oa2(YAS_OBJECT("o2", w0, w1, w2, w3));
 
 	typename archive_traits::iarchive ia2;
 	archive_traits::icreate(ia2, oa2, archive_type);
-	ia2(r0, r1, r2, r3);
+	ia2(YAS_OBJECT("o3", r0, r1, r2, r3));
 
 	if ( r0!=w0 || r1!=w1 || r2!=w2 || r3!=w3) {
-		std::cout << "SERIALIZATION METHODS error! [2]" << std::endl;
+		YAS_TEST_REPORT(log, "SERIALIZATION METHODS error!");
 		return false;
 	}
 
 	return true;
 }
 
-#endif // _yas_test__serialization_methods_hpp__included_
+#endif // __yas__tests__base__include__serialization_methods_hpp

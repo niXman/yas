@@ -33,25 +33,25 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__endian_hpp
-#define _yas_test__endian_hpp
+#ifndef __yas__tests__base__include__endian_hpp
+#define __yas__tests__base__include__endian_hpp
 
 /***************************************************************************/
 
 template<typename archive_traits>
-bool endian_test(const char* archive_type) {
+bool endian_test(std::ostream &log, const char* archive_type) {
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
 
 	if ( ia->is_big_endian() != oa->is_big_endian() ) {
-		std::cout << "ENDIAN test failed! endianness is not equal! [1]" << std::endl;
+		YAS_TEST_REPORT(log, "ENDIAN test failed! endianness is not equal!");
 		return false;
 	}
 
 	if ( ia->is_little_endian() != oa->is_little_endian() ) {
-		std::cout << "ENDIAN test failed! endianness is not equal! [2]" << std::endl;
+		YAS_TEST_REPORT(log, "ENDIAN test failed! endianness is not equal!");
 		return false;
 	}
 
@@ -60,4 +60,4 @@ bool endian_test(const char* archive_type) {
 
 /***************************************************************************/
 
-#endif // _yas_test__endian_hpp
+#endif // __yas__tests__base__include__endian_hpp

@@ -33,31 +33,29 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef _yas_test__chrono_hpp
-#define _yas_test__chrono_hpp
+#ifndef __yas__tests__base__include__chrono_hpp
+#define __yas__tests__base__include__chrono_hpp
 
 /***************************************************************************/
 
 template<typename archive_traits>
-bool chrono_test(const char* archive_type) {
+bool chrono_test(std::ostream &log, const char* archive_type) {
 	{
 		std::chrono::duration<int, std::ratio<1>> w0{32}, r0;
 		std::chrono::duration<double, std::ratio<1>> w1{23}, r1;
 
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type);
-		oa & w0
-			& w1
+		oa & YAS_OBJECT("o0", w0, w1);
 		;
 
 		typename archive_traits::iarchive ia;
 		archive_traits::icreate(ia, oa, archive_type);
-		ia & r0
-			& r1
+		ia & YAS_OBJECT("o1", r0, r1);
 		;
 
 		if ( r0 != w0 || r1 != w1 ) {
-			std::cout << "CHRONO serialization error! [1]" << std::endl;
+			YAS_TEST_REPORT(log, "CHRONO serialization error!");
 			return false;
 		}
 	}
@@ -67,14 +65,14 @@ bool chrono_test(const char* archive_type) {
 
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type);
-		oa & w0;
+		oa & YAS_OBJECT("w0", w0);
 
 		typename archive_traits::iarchive ia;
 		archive_traits::icreate(ia, oa, archive_type);
-		ia & r0;
+		ia & YAS_OBJECT("r0", r0);
 
 		if ( r0 != w0 ) {
-			std::cout << "CHRONO serialization error! [2]" << std::endl;
+			YAS_TEST_REPORT(log, "CHRONO serialization error!");
 			return false;
 		}
 	}
@@ -85,18 +83,16 @@ bool chrono_test(const char* archive_type) {
 
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type);
-		oa & w0
-			& w1
+		oa & YAS_OBJECT("o2", w0, w1);
 		;
 
 		typename archive_traits::iarchive ia;
 		archive_traits::icreate(ia, oa, archive_type);
-		ia & r0
-			& r1
+		ia & YAS_OBJECT("o3", r0, r1);
 		;
 
 		if ( r0 != w0 || r1 != w1 ) {
-			std::cout << "CHRONO serialization error! [3]" << std::endl;
+			YAS_TEST_REPORT(log, "CHRONO serialization error!");
 			return false;
 		}
 	}
@@ -105,14 +101,14 @@ bool chrono_test(const char* archive_type) {
 
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type);
-		oa & w0;
+		oa & YAS_OBJECT("w0", w0);
 
 		typename archive_traits::iarchive ia;
 		archive_traits::icreate(ia, oa, archive_type);
-		ia & r0;
+		ia & YAS_OBJECT("r0", r0);
 
 		if ( r0 != w0 ) {
-			std::cout << "CHRONO serialization error! [4]" << std::endl;
+			YAS_TEST_REPORT(log, "CHRONO serialization error!");
 			return false;
 		}
 	}
@@ -123,4 +119,4 @@ bool chrono_test(const char* archive_type) {
 
 /***************************************************************************/
 
-#endif // _yas_test__chrono_hpp
+#endif // __yas__tests__base__include__chrono_hpp
