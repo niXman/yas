@@ -1,0 +1,23 @@
+os: Visual Studio 2015
+
+platform:
+  - x64
+
+configuration:
+  - Release
+
+matrix:
+  fast_finish: true
+
+build_script:
+  - CD
+  - cd ..
+  - CD
+  - cd yas
+  - CD
+  - echo %configuration%
+  - mkdir build
+  - cd build
+  - cmake --version
+  - cmake .. -DCMAKE_BUILD_TYPE=Release
+  - cmake --build . --config %configuration%
