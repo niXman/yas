@@ -46,6 +46,7 @@ set(SOURCE_FILES
     include/endian.hpp
     include/enum.hpp
     include/forward_list.hpp
+    include/fundamental.hpp
     include/list.hpp
     include/map.hpp
     include/multimap.hpp
@@ -54,7 +55,6 @@ set(SOURCE_FILES
     include/one_method.hpp
     include/optional.hpp
     include/pair.hpp
-    include/pod.hpp
     include/serialization_methods.hpp
     include/set.hpp
     include/split_functions.hpp
