@@ -13,7 +13,7 @@ build_script:
   - CD
   - cd ..
   - CD
-  - cd yas
+  - cd yas/tests/base
   - CD
   - echo %configuration%
   - mkdir build
