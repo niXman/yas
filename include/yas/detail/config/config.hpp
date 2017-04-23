@@ -44,7 +44,7 @@
 #  endif
 #else
 # if __cplusplus < 201103L
-#  error "C++11 or greater support is required"
+#  error "C++11 or greater is required"
 # endif
 #endif
 
