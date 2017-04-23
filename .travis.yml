@@ -34,5 +34,3 @@ script:
   - "cd $TRAVIS_BUILD_DIR/tests/base"
   - "make"
   - "./yas-base-test binary"
-  - "./yas-base-test binary compacted"
-  - "./yas-base-test text"
