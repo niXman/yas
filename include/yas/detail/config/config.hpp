@@ -38,8 +38,14 @@
 
 /***************************************************************************/
 
-#if __cplusplus < 201103L
-#	error "C++11 or greater support is required"
+#if defined(_MSC_VER)
+#  if _MSC_VER < 1900
+#   error "Visual Studio 2015 or greater is required"
+#  endif
+#else
+# if __cplusplus < 201103L
+#  error "C++11 or greater support is required"
+# endif
 #endif
 
 /***************************************************************************/
