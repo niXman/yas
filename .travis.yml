@@ -23,18 +23,19 @@ notifications:
 before_install:
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
   - sudo apt-get update -q
-  - sudo apt-get install g++-6 clang-3.8 -y
-  - sudo rm -f /usr/bin/gcc
-  - sudo rm -f /usr/bin/g++
-  - sudo cp -f /usr/bin/gcc-6 /usr/bin/gcc
-  - sudo cp -f /usr/bin/g++-6 /usr/bin/g++
-  - sudo rm -f /usr/bin/clang
-  - sudo rm -f /usr/bin/clang++
-  - sudo cp -f /usr/bin/clang-3.8 /usr/bin/clang
-  - sudo cp -f /usr/bin/clang++-3.8 /usr/bin/clang++
-  - wget http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.bz2
-  - tar jxf boost_1_64_0.tar.bz2
-  - sudo cp -r boost_1_64_0/boost /usr/local/include
+  - sudo apt-get upgrade -y
+#  - sudo apt-get install g++-6 clang-3.8 -y
+#  - sudo rm -f /usr/bin/gcc
+#  - sudo rm -f /usr/bin/g++
+#  - sudo cp -f /usr/bin/gcc-6 /usr/bin/gcc
+#  - sudo cp -f /usr/bin/g++-6 /usr/bin/g++
+#  - sudo rm -f /usr/bin/clang
+#  - sudo rm -f /usr/bin/clang++
+#  - sudo cp -f /usr/bin/clang-3.8 /usr/bin/clang
+#  - sudo cp -f /usr/bin/clang++-3.8 /usr/bin/clang++
+#  - wget http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.bz2
+#  - tar jxf boost_1_64_0.tar.bz2
+#  - sudo cp -r boost_1_64_0/boost /usr/local/include
 
 install:
   - g++ --version
