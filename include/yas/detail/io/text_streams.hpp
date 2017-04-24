@@ -85,7 +85,7 @@ struct text_istream {
 		char buf;
 
 		YAS_THROW_ON_READ_ERROR(sizeof(buf), !=, is.read(&buf, sizeof(buf)));
-		v = YAS_SCAST(T, buf-'0');
+		v = (buf-'0') != 0;
 	}
 
 	// for signed 16/32/64 bits
