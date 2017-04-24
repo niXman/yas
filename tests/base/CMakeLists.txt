@@ -4,17 +4,23 @@ project(yas-base-test)
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
     add_definitions(
+        -DBOOST_ERROR_CODE_HEADER_ONLY
+        -DBOOST_CHRONO_HEADER_ONLY
         -DYAS_SERIALIZE_BOOST_TYPES
     )
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
     add_definitions(
+        -DBOOST_ERROR_CODE_HEADER_ONLY
+        -DBOOST_CHRONO_HEADER_ONLY
         -DYAS_SERIALIZE_BOOST_TYPES
     )
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14")
     include_directories("C:/Libraries/boost_1_63_0")
     add_definitions(
+        -DBOOST_ERROR_CODE_HEADER_ONLY
+        -DBOOST_CHRONO_HEADER_ONLY
         -D_CRT_SECURE_NO_WARNINGS
     )
 endif()
@@ -85,15 +91,3 @@ set(SOURCE_FILES
 )
 
 add_executable(yas-base-test ${SOURCE_FILES})
-
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    target_link_libraries(yas-base-test
-        boost_system
-        boost_chrono
-    )
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    target_link_libraries(yas-base-test
-        boost_system
-        boost_chrono
-    )
-endif()
