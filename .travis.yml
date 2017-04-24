@@ -29,14 +29,14 @@ before_install:
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
   - sudo apt-get update -q
   - sudo apt-get install g++-4.9 clang-3.8 -y
-  - sudo rm /usr/bin/gcc
-  - sudo rm /usr/bin/g++
-  - sudo cp /usr/bin/gcc-4.9 /usr/bin/gcc
-  - sudo cp /usr/bin/g++-4.9 /usr/bin/g++
-  - sudo rm /usr/bin/clang
-  - sudo rm /usr/bin/clang++
-  - sudo cp /usr/bin/clang-3.8 /usr/bin/clang
-  - sudo cp /usr/bin/clang++-3.8 /usr/bin/clang++
+  - sudo rm -f /usr/bin/gcc
+  - sudo rm -f /usr/bin/g++
+  - sudo cp -f /usr/bin/gcc-4.9 /usr/bin/gcc
+  - sudo cp -f /usr/bin/g++-4.9 /usr/bin/g++
+  - sudo rm -f /usr/bin/clang
+  - sudo rm -f /usr/bin/clang++
+  - sudo cp -f /usr/bin/clang-3.8 /usr/bin/clang
+  - sudo cp -f /usr/bin/clang++-3.8 /usr/bin/clang++
 #  - find /usr/include -maxdepth 1 -name '*' -type d | sort
 #  - wget http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.bz2
 #  - tar jxf boost_1_64_0.tar.bz2
