@@ -45,9 +45,11 @@ before_script:
   - cd $TRAVIS_BUILD_DIR/tests/base
   - mkdir build
   - cd build
+  - echo "CC=$CC, CXX=$CXX"
   - cmake -DCMAKE_BUILD_TYPE=$CONFIG ..
 
 script:
   - cd $TRAVIS_BUILD_DIR/tests/base/build
+  - echo "CC=$CC, CXX=$CXX"
   - cmake --build . --config $CONFIG
   - ./yas-base-test binary
