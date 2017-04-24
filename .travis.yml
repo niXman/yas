@@ -4,11 +4,6 @@ os:
   - linux
 #  - osx
 
-addons:
-  apt:
-    packages:
-    - libboost-all-dev
-
 dist: trusty
 sudo: required
 
