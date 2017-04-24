@@ -12,10 +12,6 @@ addons:
 dist: trusty
 sudo: required
 
-compiler:
-  - clang
-  - gcc
-
 env:
   - CONFIG=Release
   #- CONFIG=Debug
