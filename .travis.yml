@@ -42,15 +42,16 @@ before_install:
 
 install:
   - g++ --version
+  - clang++ --version
   - cmake --version
 
 before_script:
-   - cd $TRAVIS_BUILD_DIR/tests/base
-   - mkdir build
-   - cd build
-   - cmake -DCMAKE_BUILD_TYPE=$CONFIG ..
+  - cd $TRAVIS_BUILD_DIR/tests/base
+  - mkdir build
+  - cd build
+  - cmake -DCMAKE_BUILD_TYPE=$CONFIG ..
 
 script:
-   - cd $TRAVIS_BUILD_DIR/tests/base/build
-   - cmake --build . --config $CONFIG
-   - ./yas-base-test binary
+  - cd $TRAVIS_BUILD_DIR/tests/base/build
+  - cmake --build . --config $CONFIG
+  - ./yas-base-test binary
