@@ -302,12 +302,12 @@ public:
     }
 
     static constexpr bool is_big_endian() {
-        return YAS_SCAST(std::uint8_t,
+        return YAS_SCAST(bool,
             (F & options::endian_as_host) ? YAS_BIG_ENDIAN() : (F & options::endian_big)
         );
     }
     static constexpr bool is_little_endian() {
-        return YAS_SCAST(std::uint8_t,
+        return YAS_SCAST(bool,
             (F & options::endian_as_host) ? YAS_LITTLE_ENDIAN() : (F & options::endian_little)
         );
     }
@@ -315,7 +315,7 @@ public:
         return YAS_BIG_ENDIAN() ? options::endian_big : options::endian_little;
     }
 
-    static constexpr bool compacted() { return YAS_SCAST(std::uint8_t, (F & yas::compacted)); }
+    static constexpr bool compacted() { return YAS_SCAST(bool, (F & yas::compacted)); }
     static constexpr std::size_t version() { return archive_version<type()>::value; }
 
     static constexpr bool is_readable() { return false; }
