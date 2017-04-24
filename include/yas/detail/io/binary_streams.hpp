@@ -84,16 +84,16 @@ struct binary_istream {
         :is(is)
     {}
 
-    template<typename T = std::uint64_t>
+    template<typename T = std::size_t>
     T read_seq_size() {
         if ( F & yas::compacted ) {
-            T v{};
-            read(v);
+            T size{};
+            read(size);
 
-            return v;
+            return size;
         }
 
-        std::uint64_t size = 0;
+        T size = 0;
         YAS_THROW_ON_READ_ERROR(sizeof(size), !=, is.read(&size, sizeof(size)));
 
         return endian_converter<YAS_ENDIAN_TEST(F)>::bswap(size);
