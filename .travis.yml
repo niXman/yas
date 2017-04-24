@@ -26,6 +26,7 @@ notifications:
    on_failure: always
 
 before_install:
+  - find /usr/include -name '*' -type d -maxdepth 1
 #  - wget http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.bz2
 #  - tar jxf boost_1_64_0.tar.bz2
 #  - cp -r boost_1_64_0/boost /usr/local/include
