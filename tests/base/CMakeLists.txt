@@ -12,7 +12,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
         -DYAS_SERIALIZE_BOOST_TYPES
     )
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++11")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14")
     include_directories("C:/Libraries/boost_1_63_0")
     add_definitions(
         -D_CRT_SECURE_NO_WARNINGS
