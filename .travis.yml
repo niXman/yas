@@ -12,9 +12,9 @@ addons:
 dist: trusty
 sudo: required
 
-compiler:
-  - clang
-  - gcc
+#compiler:
+#  - clang
+#  - gcc
 
 env:
   - CONFIG=Release
