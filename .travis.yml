@@ -33,6 +33,8 @@ before_install:
   - sudo rm /usr/bin/g++
   - sudo cp /usr/bin/gcc-4.9 /usr/bin/gcc
   - sudo cp /usr/bin/g++-4.9 /usr/bin/g++
+  - sudo rm /usr/bin/clang
+  - sudo rm /usr/bin/clang++
   - sudo cp /usr/bin/clang-3.8 /usr/bin/clang
   - sudo cp /usr/bin/clang++-3.8 /usr/bin/clang++
 #  - find /usr/include -maxdepth 1 -name '*' -type d | sort
