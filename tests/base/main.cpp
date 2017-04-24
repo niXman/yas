@@ -126,7 +126,9 @@
 #include "include/yas_object.hpp"
 
 #include <iostream>
-#include <fstream>
+#include <functional>
+#include <map>
+
 #include <cassert>
 #include <cstdio>
 
