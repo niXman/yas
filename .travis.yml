@@ -4,6 +4,11 @@ os:
   - linux
   - osx
 
+addons:
+  apt:
+    packages:
+      - libboost-all-dev
+
 dist: trusty
 sudo: required
 
@@ -21,9 +26,9 @@ notifications:
    on_failure: always
 
 before_install:
-  - wget http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.bz2
-  - tar jxf boost_1_64_0.tar.bz2
-  - cp -r boost_1_64_0/boost /usr/local/include
+#  - wget http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.bz2
+#  - tar jxf boost_1_64_0.tar.bz2
+#  - cp -r boost_1_64_0/boost /usr/local/include
 
 install:
   - g++ --version
