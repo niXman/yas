@@ -38,7 +38,9 @@ before_install:
   - sudo cp -r boost_1_64_0/boost /usr/local/include
 
 install:
-  - g++ --version
+  - export CC=/usr/bin/gcc-6
+  - export CXX=/usr/bin/g++-6
+  - $CXX --version
 #  - clang++ --version
   - cmake --version
 
@@ -46,13 +48,9 @@ before_script:
   - cd $TRAVIS_BUILD_DIR/tests/base
   - mkdir build
   - cd build
-  - export CC=/usr/bin/gcc-6
-  - export CXX=/usr/bin/g++-6
   - cmake -DCMAKE_BUILD_TYPE=$CONFIG ..
 
 script:
   - cd $TRAVIS_BUILD_DIR/tests/base/build
-  - export CC=/usr/bin/gcc-6
-  - export CXX=/usr/bin/g++-6
-  - cmake -DCMAKE_VERBOSE_MAKEFILE=ON --build . --config $CONFIG
+  - cmake --build . --config $CONFIG
   - ./yas-base-test binary
