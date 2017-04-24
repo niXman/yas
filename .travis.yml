@@ -54,5 +54,5 @@ script:
   - cd $TRAVIS_BUILD_DIR/tests/base/build
   - export CC=/usr/bin/gcc-6
   - export CXX=/usr/bin/g++-6
-  - cmake --build . --config $CONFIG
+  - cmake -DCMAKE_VERBOSE_MAKEFILE=ON --build . --config $CONFIG
   - ./yas-base-test binary
