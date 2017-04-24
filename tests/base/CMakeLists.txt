@@ -84,10 +84,6 @@ set(SOURCE_FILES
     main.cpp
 )
 
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    link_directories("C:/Libraries/boost_1_63_0/libs')
-endif()
-
 add_executable(yas-base-test ${SOURCE_FILES})
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
