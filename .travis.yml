@@ -8,7 +8,7 @@ dist: trusty
 sudo: required
 
 compiler:
-  - clang
+#  - clang
   - gcc
 
 env:
@@ -23,33 +23,34 @@ notifications:
 before_install:
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
   - sudo apt-get update -q
-  - sudo apt-get install g++-6 clang-3.8 -y
-  - sudo rm -f /usr/bin/gcc
-  - sudo rm -f /usr/bin/g++
-  - sudo cp -f /usr/bin/gcc-6 /usr/bin/gcc
-  - sudo cp -f /usr/bin/g++-6 /usr/bin/g++
-  - sudo rm -f /usr/bin/clang
-  - sudo rm -f /usr/bin/clang++
-  - sudo cp -f /usr/bin/clang-3.8 /usr/bin/clang
-  - sudo cp -f /usr/bin/clang++-3.8 /usr/bin/clang++
+#  - sudo apt-get upgrade -y
+  - sudo apt-get install g++-6 -y
+#  - sudo rm -f /usr/bin/gcc
+#  - sudo rm -f /usr/bin/g++
+#  - sudo cp -f /usr/bin/gcc-6 /usr/bin/gcc
+#  - sudo cp -f /usr/bin/g++-6 /usr/bin/g++
+#  - sudo rm -f /usr/bin/clang
+#  - sudo rm -f /usr/bin/clang++
+#  - sudo cp -f /usr/bin/clang-3.8 /usr/bin/clang
+#  - sudo cp -f /usr/bin/clang++-3.8 /usr/bin/clang++
   - wget http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.bz2
   - tar jxf boost_1_64_0.tar.bz2
   - sudo cp -r boost_1_64_0/boost /usr/local/include
 
 install:
-  - g++ --version
-  - clang++ --version
+  - export CC=/usr/bin/gcc-6
+  - export CXX=/usr/bin/g++-6
+  - $CXX --version
+#  - clang++ --version
   - cmake --version
 
 before_script:
   - cd $TRAVIS_BUILD_DIR/tests/base
   - mkdir build
   - cd build
-  - echo "CC=$CC, CXX=$CXX"
   - cmake -DCMAKE_BUILD_TYPE=$CONFIG ..
 
 script:
   - cd $TRAVIS_BUILD_DIR/tests/base/build
-  - echo "CC=$CC, CXX=$CXX"
   - cmake --build . --config $CONFIG
   - ./yas-base-test binary
