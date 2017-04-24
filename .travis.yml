@@ -8,8 +8,6 @@ addons:
   apt:
     packages:
     - libboost-all-dev
-    - gcc
-    - g++
 
 dist: trusty
 sudo: required
@@ -28,7 +26,10 @@ notifications:
    on_failure: always
 
 before_install:
-  - find /usr/include -maxdepth 1 -name '*' -type d | sort
+  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+  - sudo apt-get update -q
+  - sudo apt-get install g++-4.9 -y
+#  - find /usr/include -maxdepth 1 -name '*' -type d | sort
 #  - wget http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.bz2
 #  - tar jxf boost_1_64_0.tar.bz2
 #  - cp -r boost_1_64_0/boost /usr/local/include
