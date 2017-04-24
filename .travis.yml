@@ -23,10 +23,7 @@ notifications:
 before_install:
   - wget http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.bz2
   - tar jxf boost_1_64_0.tar.bz2
-  - cd boost_1_64_0
-  - ./bootstrap.sh
-  - sudo ./bjam release install -d0 --with-chrono --with-container --prefix=/usr/local -j4
-  - sudo ldconfig
+  - cp -r boost_1_64_0/boost /usr/local/include
 
 install:
   - g++ --version
