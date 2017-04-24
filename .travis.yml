@@ -7,7 +7,7 @@ os:
 addons:
   apt:
     packages:
-      - libboost-all-dev
+    - libboost-all-dev
 
 dist: xenial
 sudo: required
