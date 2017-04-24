@@ -56,10 +56,9 @@ struct text_istream {
 		:is(is)
 	{}
 
-	template<typename T = std::uint64_t>
+	template<typename T = std::size_t>
 	T read_seq_size() {
-		T size = 0;
-
+		T size{};
 		read(size);
 
 		return size;
