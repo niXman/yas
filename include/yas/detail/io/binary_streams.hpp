@@ -84,7 +84,7 @@ struct binary_istream {
         :is(is)
     {}
 
-    template<typename T = std::size_t>
+    template<typename T = std::uint64_t>
     T read_seq_size() {
         if ( F & yas::compacted ) {
             T size{};
@@ -114,7 +114,6 @@ struct binary_istream {
     template<typename T>
     void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t)) {
         if ( F & yas::compacted ) {
-            v = T{};
             std::uint8_t ns{};
 
             YAS_THROW_ON_READ_ERROR(sizeof(ns), !=, is.read(&ns, sizeof(ns)));
@@ -135,7 +134,6 @@ struct binary_istream {
     template<typename T>
     void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
         if ( F & yas::compacted ) {
-            v = T{};
             std::uint8_t ns{};
 
             YAS_THROW_ON_READ_ERROR(sizeof(ns), !=, is.read(&ns, sizeof(ns)));

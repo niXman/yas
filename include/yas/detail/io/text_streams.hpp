@@ -207,7 +207,7 @@ struct text_ostream {
 	template<typename T>
 	void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, float)) {
 		char buf[std::numeric_limits<T>::max_exponent10 + 20];
-		std::size_t len = Trait::ftoa(buf+1, sizeof(buf), v);
+		std::size_t len = Trait::ftoa(buf+1, sizeof(buf)-1, v);
 
 		buf[0] = YAS_SCAST(char, '0'+len);
 
@@ -218,7 +218,7 @@ struct text_ostream {
 	template<typename T>
 	void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, double)) {
 		char buf[std::numeric_limits<T>::max_exponent10 + 20];
-		std::size_t len = Trait::dtoa(buf+1, sizeof(buf), v);
+		std::size_t len = Trait::dtoa(buf+1, sizeof(buf)-1, v);
 
 		buf[0] = YAS_SCAST(char, '0'+len);
 

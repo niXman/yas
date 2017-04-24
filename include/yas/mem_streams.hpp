@@ -89,7 +89,7 @@ struct mem_ostream {
             case sizeof(std::uint32_t): std::memcpy(cur, ptr, sizeof(std::uint32_t)); break;
             case sizeof(std::uint64_t): std::memcpy(cur, ptr, sizeof(std::uint64_t)); break;
 #if defined(__GNUC__) && defined(__SIZEOF_INT128__) // hack for detect int128 support
-            case sizeof(unsigned __int128): std::memcpy(cur, ptr, sizeof(unsigned __int128)); break;
+            case sizeof(__int128     ): std::memcpy(cur, ptr, sizeof(__int128)     ); break;
 #endif
             default: std::memcpy(cur, ptr, size);
         }
@@ -140,7 +140,7 @@ struct mem_istream {
             case sizeof(std::uint32_t): std::memcpy(ptr, cur, sizeof(std::uint32_t)); break;
             case sizeof(std::uint64_t): std::memcpy(ptr, cur, sizeof(std::uint64_t)); break;
 #if defined(__GNUC__) && defined(__SIZEOF_INT128__) // hack for detect int128 support
-            case sizeof(unsigned __int128): std::memcpy(ptr, cur, sizeof(unsigned __int128)); break;
+            case sizeof(__int128)     : std::memcpy(ptr, cur, sizeof(__int128)     ); break;
 #endif
             default: std::memcpy(ptr, cur, to_copy);
         }
