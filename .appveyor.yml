@@ -22,4 +22,4 @@ build_script:
   - cmake --version
   - cmake .. -DCMAKE_BUILD_TYPE=Release
   - cmake --build . --config %configuration%
-  - ./yas-base-test binary
+  - yas-base-test.exe binary
