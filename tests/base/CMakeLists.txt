@@ -8,7 +8,10 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++11")
     include_directories("C:/Libraries/boost_1_63_0")
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    add_definitions(
+        -D_CRT_SECURE_NO_WARNINGS
+        -DBOOST_FUSION_HAS_VARIADIC_VECTOR
+    )
 endif()
 
 include_directories(
