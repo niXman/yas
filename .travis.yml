@@ -8,6 +8,8 @@ addons:
   apt:
     packages:
     - libboost-all-dev
+    - gcc
+    - g++
 
 dist: trusty
 sudo: required
