@@ -39,6 +39,6 @@ before_script:
    - cmake -DCMAKE_BUILD_TYPE=$CONFIG ..
 
 script:
-   - cd $TRAVIS_BUILD_DIR/tests/base
+   - cd $TRAVIS_BUILD_DIR/tests/base/build
    - cmake --build . --config $CONFIG
    - ./yas-base-test binary
