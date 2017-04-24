@@ -10,7 +10,6 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     include_directories("C:/Libraries/boost_1_63_0")
     add_definitions(
         -D_CRT_SECURE_NO_WARNINGS
-        -DBOOST_FUSION_HAS_VARIADIC_VECTOR
     )
 endif()
 
