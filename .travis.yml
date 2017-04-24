@@ -9,7 +9,7 @@ addons:
     packages:
     - libboost-all-dev
 
-dist: xenial
+dist: trusty
 sudo: required
 
 compiler:
