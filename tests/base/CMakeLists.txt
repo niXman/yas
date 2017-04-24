@@ -84,9 +84,25 @@ set(SOURCE_FILES
     main.cpp
 )
 
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    link_directories("C:/Libraries/boost_1_63_0/libs'
+endif()
+
 add_executable(yas-base-test ${SOURCE_FILES})
 
-target_link_libraries(yas-base-test
-    boost_system
-    boost_chrono
-)
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    target_link_libraries(yas-base-test
+        boost_system
+        boost_chrono
+    )
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    target_link_libraries(yas-base-test
+        boost_system
+        boost_chrono
+    )
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    target_link_libraries(yas-base-test
+        boost_system
+        boost_chrono
+    )
+endif()
