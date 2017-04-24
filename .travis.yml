@@ -39,4 +39,4 @@ before_script:
 
 script:
   - cmake --build . --config $CONFIG
-  ./yas-base-test binary
+  - ./yas-base-test binary
