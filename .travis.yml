@@ -11,9 +11,9 @@ compiler:
 #  - clang
   - gcc
 
-env:
-  - CONFIG=Release
-  #- CONFIG=Debug
+#env:
+#  - CONFIG=Release
+#  - CONFIG=Debug
 
 notifications:
  email:
