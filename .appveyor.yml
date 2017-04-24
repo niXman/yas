@@ -10,7 +10,6 @@ matrix:
   fast_finish: true
 
 build_script:
-  - dir C:\Libraries\boost_1_63_0\boost
   - CD
   - cd ..
   - CD
