@@ -42,18 +42,18 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool boost_fusion_list_test(std::ostream &log, const char* archive_type) {
-	boost::fusion::list<int, double> v1(33, 3.14), v2;
+bool boost_fusion_list_test(std::ostream &log, const char *archive_type, const char *test_name) {
+	boost::fusion::list<int, double> list1(33, 3.14), list2;
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & YAS_OBJECT("v1", v1);
+	oa & YAS_OBJECT_NVP("obj", ("list", list1));
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & YAS_OBJECT("v2", v2);
-	if ( v1 != v2 ) {
-		YAS_TEST_REPORT(log, "FUSION_LIST deserialization error!");
+	ia & YAS_OBJECT_NVP("obj", ("list", list2));
+	if ( list1 != list2 ) {
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
@@ -65,62 +65,62 @@ bool boost_fusion_list_test(std::ostream &log, const char* archive_type) {
 	boost::fusion::list<
 		std::string,
 		std::set<std::string>
-	> v3("1", set), v4;
+	> list3("1", set), list4;
 
 	typename archive_traits::oarchive oa2;
 	archive_traits::ocreate(oa2, archive_type);
-	oa2 & YAS_OBJECT("v3", v3);
+	oa2 & YAS_OBJECT_NVP("obj", ("list", list3));
 
 	typename archive_traits::iarchive ia2;
 	archive_traits::icreate(ia2, oa2, archive_type);
-	ia2 & YAS_OBJECT("v4", v4);
-	if ( v3 != v4 ) {
-		YAS_TEST_REPORT(log, "FUSION_LIST deserialization error!");
+	ia2 & YAS_OBJECT_NVP("obj", ("list", list4));
+	if ( list3 != list4 ) {
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
 
 	typename archive_traits::oarchive oa3;
 	archive_traits::ocreate(oa3, archive_type);
-	oa3 & YAS_OBJECT("v5", boost::fusion::make_list(33,44));
+	oa3 & YAS_OBJECT_NVP("obj", ("list", boost::fusion::make_list(33,44)));
 
-	boost::fusion::list<int, int> v6;
+	boost::fusion::list<int, int> list5;
 	typename archive_traits::iarchive ia3;
 	archive_traits::icreate(ia3, oa3, archive_type);
-	ia3 & YAS_OBJECT("v6", v6);
+	ia3 & YAS_OBJECT_NVP("obj", ("list", list5));
 
-	if ( v6 != boost::fusion::make_list(33,44) ) {
-		YAS_TEST_REPORT(log, "FUSION_LIST deserialization error!");
+	if ( list5 != boost::fusion::make_list(33,44) ) {
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
 	static const char str[] = "str";
-	boost::fusion::list<boost::uint64_t, std::string> v7(33, str), v8;
+	boost::fusion::list<boost::uint64_t, std::string> list6(33, str), list7;
 
 	typename archive_traits::oarchive oa4;
 	archive_traits::ocreate(oa4, archive_type);
-	oa4 & YAS_OBJECT("v7", v7);
+	oa4 & YAS_OBJECT_NVP("obj", ("list", list6));
 
 	typename archive_traits::iarchive ia4;
 	archive_traits::icreate(ia4, oa4, archive_type);
-	ia4 & YAS_OBJECT("v8", v8);
+	ia4 & YAS_OBJECT_NVP("obj", ("list", list7));
 
-	if ( v7 != v8 ) {
-		YAS_TEST_REPORT(log, "FUSION_LIST deserialization error!");
+	if ( list6 != list7 ) {
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
 	typename archive_traits::oarchive oa5;
 	archive_traits::ocreate(oa5, archive_type);
     auto v9 = boost::fusion::make_list<boost::uint64_t, std::string>(33, "str");
-	oa5 & YAS_OBJECT("v9", std::move(v9));
+	oa5 & YAS_OBJECT_NVP("obj", ("list", std::move(v9)));
 
 	typename archive_traits::iarchive ia5;
 	archive_traits::icreate(ia5, oa5, archive_type);
-	ia5 & YAS_OBJECT("v8", v8);
+	ia5 & YAS_OBJECT_NVP("obj", ("list", list7));
 
-	if ( v7 != v8 ) {
-		YAS_TEST_REPORT(log, "FUSION_LIST deserialization error!");
+	if ( list6 != list7 ) {
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 

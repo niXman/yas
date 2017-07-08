@@ -39,28 +39,37 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool version_test(std::ostream &log, const char* archive_type) {
+bool version_test(std::ostream &log, const char *archive_type, const char *test_name) {
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
 
 	if ( oa->type() != ia->type() ) {
-		YAS_TEST_REPORT(log, "VERSION test failed! archive type is not equal!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
 	if ( oa->version() != ia->version() ) {
-		YAS_TEST_REPORT(log, "VERSION test failed! archive versions is not equal!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
-	if ( oa->header_size() != archive_traits::oarchive_type::header_size() ||
-		  archive_traits::oarchive_type::header_size() != 7
-	) {
-		YAS_TEST_REPORT(log, "VERSION test failed! bad archive header size!");
-		return false;
-	}
+	if ( oa->type() == yas::json ) {
+        if ( oa->header_size() != archive_traits::oarchive_type::header_size() ||
+             archive_traits::oarchive_type::header_size() != 0)
+        {
+			YAS_TEST_REPORT(log, archive_type, test_name);
+            return false;
+        }
+    } else {
+        if ( oa->header_size() != archive_traits::oarchive_type::header_size() ||
+             archive_traits::oarchive_type::header_size() != 7)
+        {
+			YAS_TEST_REPORT(log, archive_type, test_name);
+            return false;
+        }
+    }
 
 	return true;
 }

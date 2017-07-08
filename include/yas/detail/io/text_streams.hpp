@@ -69,7 +69,10 @@ struct text_istream {
 		YAS_THROW_ON_READ_ERROR(size, !=, is.read(ptr, size));
 	}
 
-	// for chars only
+    template<std::size_t N>
+    bool read_and_check(const char (&)[N]) { return true; }
+
+    // for chars only
 	template<typename T>
 	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char)) {
 		char buf;
@@ -78,6 +81,9 @@ struct text_istream {
 
 		v = YAS_SCAST(T, buf);
 	}
+	// stub for json_istream
+	template<typename T>
+	void ungetch(T) {}
 
 	// for bools only
 	template<typename T>
@@ -148,9 +154,17 @@ struct text_istream {
 		v = Trait::template atod<T>(buf, n);
 	}
 
+	/////////////////////////////////////////////////////////////////////////
+
+	void start_object_node(const char *, std::size_t) {}
+    void start_array_node() {}
+	void finish_node() {}
+
 private:
 	IS &is;
 };
+
+/**************************************************************************/
 
 template<typename OS, std::size_t F, typename Trait>
 struct text_ostream {
@@ -164,7 +178,8 @@ struct text_ostream {
 	}
 
 	// for arrays
-	void write(const void *ptr, std::size_t size) {
+	template<typename T>
+	void write(const T *ptr, std::size_t size) {
 		YAS_THROW_ON_WRITE_ERROR(size, !=, os.write(ptr, size));
 	}
 
@@ -224,6 +239,12 @@ struct text_ostream {
 
 		YAS_THROW_ON_WRITE_ERROR(len+1, !=, os.write(buf, len+1));
 	}
+
+    // stub for json-streams
+	void start_object_node(const char *, std::size_t) {}
+	void start_array_node() {}
+	void finish_node() {}
+	void write_key(const char *, std::size_t) {}
 
 private:
 	OS &os;

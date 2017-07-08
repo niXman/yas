@@ -39,10 +39,10 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool vector_test(std::ostream &log, const char* archive_type) {
+bool vector_test(std::ostream &log, const char *archive_type, const char *test_name) {
 	std::vector<int> v, vv;
-	v.push_back(0);
-	v.push_back(1);
+	v.push_back(65464);
+	v.push_back(32767);
 	v.push_back(2);
 	v.push_back(3);
 	v.push_back(4);
@@ -54,14 +54,14 @@ bool vector_test(std::ostream &log, const char* archive_type) {
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & YAS_OBJECT("v", v);
+	oa & YAS_OBJECT_NVP("obj", ("v", v));
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & YAS_OBJECT("vv", vv);
+	ia & YAS_OBJECT_NVP("obj", ("v", vv));
 
 	if ( v != vv ) {
-		YAS_TEST_REPORT(log, "STD::VECTOR deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 

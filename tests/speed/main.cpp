@@ -89,7 +89,7 @@ struct struct_of_fundamentals {
 		;
 	}
 
-	/** boost.serialization calls only this method */
+    /** boost.serialization calls only this memfn */
 	template<typename Archive>
 	void serialize(Archive& ar, const unsigned int) {
 		ar & a
@@ -218,8 +218,8 @@ void test(int options, const T &ot, T &it, const char *pref, const char *comment
 		if ( options & test_yas ) {
 			yb = yas_test<
 				 T
-				,yas::binary_oarchive<yas::mem_ostream, yas::binary|yas::seq_size_32|yas::no_header>
-				,yas::binary_iarchive<yas::mem_istream, yas::binary|yas::seq_size_32|yas::no_header>
+                ,yas::binary_oarchive<yas::mem_ostream, yas::binary|yas::no_header>
+                ,yas::binary_iarchive<yas::mem_istream, yas::binary|yas::no_header>
 			>(ot, it, iterations, preallocated);
 			std::cout
 			<< "   yas save time    : " << yb.save.count() << " ms" << std::endl
@@ -250,8 +250,8 @@ void test(int options, const T &ot, T &it, const char *pref, const char *comment
 		if ( options & test_yas ) {
 			yt = yas_test<
 				 T
-				,yas::text_oarchive<yas::mem_ostream, yas::text|yas::endian_as_host>
-				,yas::text_iarchive<yas::mem_istream, yas::text|yas::endian_as_host>
+                ,yas::text_oarchive<yas::mem_ostream, yas::text|yas::no_header>
+                ,yas::text_iarchive<yas::mem_istream, yas::text|yas::no_header>
 			>(ot, it, iterations, preallocated);
 			std::cout
 			<< "   yas save time    : " << yt.save.count() << " ms" << std::endl

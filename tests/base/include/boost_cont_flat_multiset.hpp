@@ -39,7 +39,7 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool boost_cont_flat_multiset_test(std::ostream &log, const char* archive_type) {
+bool boost_cont_flat_multiset_test(std::ostream &log, const char *archive_type, const char *test_name) {
 	boost::container::flat_multiset<int> set1, set2;
 	set1.emplace(0);
 	set1.emplace(1);
@@ -54,14 +54,14 @@ bool boost_cont_flat_multiset_test(std::ostream &log, const char* archive_type) 
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & YAS_OBJECT("set1", set1);
+	oa & YAS_OBJECT_NVP("obj", ("set", set1));
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & YAS_OBJECT("set2", set2);
+	ia & YAS_OBJECT_NVP("obj", ("set", set2));
 
 	if ( set1.size() != 10 || set2.size() != 10 || set1 != set2 ) {
-		YAS_TEST_REPORT(log, "BOOST::CONTAINER::FLAT_MULTISET deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
@@ -72,14 +72,14 @@ bool boost_cont_flat_multiset_test(std::ostream &log, const char* archive_type) 
 
 	typename archive_traits::oarchive oa2;
 	archive_traits::ocreate(oa2, archive_type);
-	oa2 & YAS_OBJECT("set3", set3);
+	oa2 & YAS_OBJECT_NVP("obj", ("set", set3));
 
 	typename archive_traits::iarchive ia2;
 	archive_traits::icreate(ia2, oa2, archive_type);
-	ia2 & YAS_OBJECT("set4", set4);
+	ia2 & YAS_OBJECT_NVP("obj", ("set", set4));
 
 	if ( set3.size() != 3 || set4.size() != 3 || set3 != set4 ) {
-		YAS_TEST_REPORT(log, "BOOST::CONTAINER::FLAT_MULTISET deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 

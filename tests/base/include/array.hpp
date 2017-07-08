@@ -39,21 +39,21 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool array_test(std::ostream &log, const char* archive_type) {
+bool array_test(std::ostream &log, const char *archive_type, const char *test_name) {
 	std::array<int, 10> arr1 = {
 		{0,1,2,3,4,5,6,7,8,9}
-	}, arr2;
+	}, arr2{};
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & YAS_OBJECT("arr1", arr1);
+	oa & YAS_OBJECT_NVP("obj", ("arr", arr1));
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & YAS_OBJECT("arr2", arr2);
+	ia & YAS_OBJECT_NVP("obj", ("arr", arr2));
 
 	if ( arr1 != arr2 ) {
-        YAS_TEST_REPORT(log, "ARRAY deserialization error!");
+        YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
@@ -63,32 +63,32 @@ bool array_test(std::ostream &log, const char* archive_type) {
 
 	typename archive_traits::oarchive oa2;
 	archive_traits::ocreate(oa2, archive_type);
-	oa2 & YAS_OBJECT("arr3", arr3);
+	oa2 & YAS_OBJECT_NVP("obj", ("arr", arr3));
 
 	typename archive_traits::iarchive ia2;
 	archive_traits::icreate(ia2, oa2, archive_type);
-	ia2 & YAS_OBJECT("arr4", arr4);
+	ia2 & YAS_OBJECT_NVP("obj", ("arr", arr4));
 
 	if ( arr3 != arr4 ) {
-        YAS_TEST_REPORT(log, "ARRAY deserialization error! [2]");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
 	boost::array<int, 10> arr5 = {
 		{0,1,2,3,4,5,6,7,8,9}
-	}, arr6;
+	}, arr6{};
 
 	typename archive_traits::oarchive oa3;
 	archive_traits::ocreate(oa3, archive_type);
-	oa3 & YAS_OBJECT("arr5", arr5);
+	oa3 & YAS_OBJECT_NVP("obj", ("arr", arr5));
 
 	typename archive_traits::iarchive ia3;
 	archive_traits::icreate(ia3, oa3, archive_type);
-	ia3 & YAS_OBJECT("arr6", arr6);
+	ia3 & YAS_OBJECT_NVP("obj", ("arr", arr6));
 
 	if ( arr5 != arr6 ) {
-        YAS_TEST_REPORT(log, "ARRAY deserialization error! [3]");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
@@ -98,14 +98,14 @@ bool array_test(std::ostream &log, const char* archive_type) {
 
 	typename archive_traits::oarchive oa4;
 	archive_traits::ocreate(oa4, archive_type);
-	oa4 & YAS_OBJECT("arr7", arr7);
+	oa4 & YAS_OBJECT_NVP("obj", ("arr", arr7));
 
 	typename archive_traits::iarchive ia4;
 	archive_traits::icreate(ia4, oa4, archive_type);
-	ia4 & YAS_OBJECT("arr8", arr8);
+	ia4 & YAS_OBJECT_NVP("obj", ("arr", arr8));
 
 	if ( arr7 != arr8 ) {
-        YAS_TEST_REPORT(log, "ARRAY deserialization error! [4]");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 #endif // defined(YAS_SERIALIZE_BOOST_TYPES)

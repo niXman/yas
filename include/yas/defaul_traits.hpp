@@ -98,6 +98,7 @@ T default_traits::atou(const char *str_, std::size_t size) {
 		case  3: v = YAS_SCAST(T, v+(str[size- 3]-'0')*100ull);
 		case  2: v = YAS_SCAST(T, v+(str[size- 2]-'0')*10ull);
 		case  1: v = YAS_SCAST(T, v+(str[size- 1]-'0')*1ull);
+        default: break;
 	}
 
 	return YAS_SCAST(T, v);
@@ -132,6 +133,7 @@ T default_traits::atoi(const char *str, std::size_t size) {
 		case  3: v = YAS_SCAST(T, v+(str[size- 3]-'0')*100ll);
 		case  2: v = YAS_SCAST(T, v+(str[size- 2]-'0')*10ll);
 		case  1: v = YAS_SCAST(T, v+(str[size- 1]-'0')*1ll);
+        default: break;
 	}
 
 	return YAS_SCAST(T, sign ? -v : v);
@@ -173,6 +175,7 @@ std::size_t default_traits::utoa(char *buf, const std::size_t, T v) {
 		case 3 : *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10;
 		case 2 : *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10;
 		case 1 : *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10;
+        default: break;
 	}
 
 	return len;
@@ -212,6 +215,7 @@ std::size_t default_traits::itoa(char *buf, const std::size_t, T v) {
 		case 3 : *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10;
 		case 2 : *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10;
 		case 1 : *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10;
+        default: break;
 	}
 
 	return len;

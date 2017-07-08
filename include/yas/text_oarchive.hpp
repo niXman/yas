@@ -51,26 +51,31 @@
 #include <yas/types/utility/usertype_serializers.hpp>
 #include <yas/types/utility/autoarray_serializers.hpp>
 #include <yas/types/utility/buffer_serializers.hpp>
-#include <yas/types/utility/object.hpp>
 #include <yas/types/utility/value_serializers.hpp>
 #include <yas/types/utility/object_serializers.hpp>
 
 #include <yas/buffers.hpp>
+#include <yas/object.hpp>
 #include <yas/version.hpp>
 
 namespace yas {
 
 /***************************************************************************/
 
-template<typename OS, std::size_t F = text|endian_as_host, typename Trait = yas::detail::default_traits>
+template<
+     typename OS
+    ,std::size_t F = text|ehost
+    ,typename Trait = yas::detail::default_traits
+>
 struct text_oarchive
 	:detail::text_ostream<OS, F, Trait>
 	,detail::oarchive_info<F>
 {
 	YAS_NONCOPYABLE(text_oarchive)
+	YAS_MOVABLE(text_oarchive)
 
 	using stream_type = OS;
-	using this_type = text_oarchive<OS, F, Trait>;
+    using this_type = text_oarchive<OS, F, Trait>;
 
 	text_oarchive(OS &os)
 		:detail::text_ostream<OS, F, Trait>(os)

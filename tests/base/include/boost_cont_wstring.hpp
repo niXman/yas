@@ -39,19 +39,19 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool boost_cont_wstring_test(std::ostream &log, const char* archive_type) {
+bool boost_cont_wstring_test(std::ostream &log, const char *archive_type, const char *test_name) {
 	boost::container::wstring ws(L"wstring wstring"), wss;
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & YAS_OBJECT("ws", ws);
+	oa & YAS_OBJECT_NVP("obj", ("ws", ws));
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & YAS_OBJECT("wss", wss);
+	ia & YAS_OBJECT_NVP("obj", ("ws", wss));
 
 	if ( ws != wss ) {
-		YAS_TEST_REPORT(log, "BOOST::COTAINER::WSTRING deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 

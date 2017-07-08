@@ -39,7 +39,7 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool bitset_test(std::ostream &log, const char* archive_type) {
+bool bitset_test(std::ostream &log, const char* archive_type, const char *test_name) {
 	std::bitset<33> bs1, bs2;
 	bs1[2] = 1;
 	bs1[9] = 1;
@@ -50,14 +50,14 @@ bool bitset_test(std::ostream &log, const char* archive_type) {
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & YAS_OBJECT("bs1", bs1);
+	oa & YAS_OBJECT_NVP("obj", ("bs", bs1));
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & YAS_OBJECT("bs2", bs2);
+	ia & YAS_OBJECT_NVP("obj", ("bs", bs2));
 
 	if ( bs1 != bs2 ) {
-		YAS_TEST_REPORT(log, "BITSET deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 

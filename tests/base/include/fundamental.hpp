@@ -39,25 +39,25 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool fundamental_test(std::ostream &log, const char *archive_type) {
+bool fundamental_test(std::ostream &log, const char *archive_type, const char *test_name) {
     typename archive_traits::oarchive oa;
     archive_traits::ocreate(oa, archive_type);
 
-    bool b = true, bb;
-    std::int8_t c = '1', cc;
-    std::uint8_t uc = '2', uc2;
-    std::int16_t s = 3, ss;
-    std::uint16_t us = 4, us2;
-    std::int32_t i = 5, ii;
-    std::uint32_t l = 6, ll;
-    std::int64_t i64 = 7, ii64;
-    std::uint64_t ui64 = 8, uui64;
+    bool b = true, b2{};
+    std::int8_t c = '1', c2{};
+    std::uint8_t uc = '2', uc2{};
+    std::int16_t s = 3, s2{};
+    std::uint16_t us = 4, us2{};
+    std::int32_t i = 5, i2{};
+    std::uint32_t l = 6, l2{};
+    std::int64_t i64 = 7, i642{};
+    std::uint64_t u64 = 8, u642{};
 
-    std::int64_t i64max = std::numeric_limits<std::int64_t>::max(), ii64max;
-    std::uint64_t u64max = std::numeric_limits<std::uint64_t>::max(), iu64max;
+    std::int64_t i64max = std::numeric_limits<std::int64_t>::max(), i64max2{};
+    std::uint64_t u64max = std::numeric_limits<std::uint64_t>::max(), u64max2{};
 
-    float f = 3.14f, ff;
-    double d = 3.14, dd;
+    float f = 3.14f, f2{};
+    double d = 3.14, d2{};
 
     enum {
         binary_expected_size =
@@ -69,54 +69,89 @@ bool fundamental_test(std::ostream &log, const char *archive_type) {
             +sizeof(i)
             +sizeof(l)
             +sizeof(i64)
-            +sizeof(ui64)
+            +sizeof(u64)
             +sizeof(f)
             +sizeof(d)
             +sizeof(i64max)
             +sizeof(u64max)
         ,binary_compacted_expected_size = 45
         ,text_expected_size = 78
-        ,object_expected_size = 28
+        ,json_expected_size = 155
     };
 
-    oa & YAS_OBJECT("pod", b, c, uc, s, us, i, l, i64, ui64, f, d, i64max, u64max);
+    auto o0 = YAS_OBJECT_NVP(
+         "obj"
+        ,("b", b)
+        ,("c", c)
+        ,("uc", uc)
+        ,("s", s)
+        ,("us", us)
+        ,("i", i)
+        ,("l", l)
+        ,("i64", i64)
+        ,("u64", u64)
+        ,("f", f)
+        ,("d", d)
+        ,("i64max", i64max)
+        ,("u64max", u64max)
+    );
+    oa & o0;
 
     switch (archive_traits::oarchive_type::type()) {
         case yas::binary: {
             std::size_t exp_size = archive_traits::oarchive_type::header_size() + binary_expected_size;
             std::size_t comp_exp_size = archive_traits::oarchive_type::header_size() + binary_compacted_expected_size;
-            if (oa.size() != (archive_traits::oarchive_type::compacted() ? comp_exp_size : exp_size)) {
-                YAS_TEST_REPORT(log, "POD serialization error!");
+            if ( oa.size() != (archive_traits::oarchive_type::compacted() ? comp_exp_size : exp_size) ) {
+                YAS_TEST_REPORT(log, archive_type, test_name);
                 return false;
             }
         } break;
         case yas::text: {
-            if (oa.size() != archive_traits::oarchive_type::header_size() + text_expected_size) {
-                YAS_TEST_REPORT(log, "POD serialization error!");
+            if ( oa.size() != archive_traits::oarchive_type::header_size() + text_expected_size ) {
+                YAS_TEST_REPORT(log, archive_type, test_name);
                 return false;
             }
         } break;
-        case yas::object: {
-            if (oa.size() != archive_traits::oarchive_type::header_size() + object_expected_size) {
-                YAS_TEST_REPORT(log, "POD serialization error!");
+        case yas::json: {
+            if ( oa.size() != archive_traits::oarchive_type::header_size() + json_expected_size ) {
+                YAS_TEST_REPORT(log, archive_type, test_name);
                 return false;
             }
         } break;
         default:
-            YAS_TEST_REPORT(log, "POD serialization bad archive type!");
+            YAS_TEST_REPORT(log, archive_type, test_name);
             return false;
     }
 
-    typename archive_traits::iarchive ia;
-    archive_traits::icreate(ia, oa, archive_type);
-    auto o = YAS_OBJECT("pod", bb, cc, uc2, ss, us2, ii, ll, ii64, uui64, ff, dd, ii64max, iu64max);
-    ia & o;
-
-    if (b != bb || c != cc || uc != uc2 || s != ss || us != us2 || i != ii
-        || l != ll || i64 != ii64 || ui64 != uui64 || f != ff || d != dd || i64max != ii64max || u64max != iu64max)
     {
-        YAS_TEST_REPORT(log, "POD deserialization error!");
-        return false;
+        typename archive_traits::iarchive ia;
+        archive_traits::icreate(ia, oa, archive_type);
+
+        auto i0 = YAS_OBJECT_NVP(
+             "obj"
+            ,("b", b2)
+            ,("c", c2)
+            ,("uc", uc2)
+            ,("s", s2)
+            ,("us", us2)
+            ,("i", i2)
+            ,("l", l2)
+            ,("i64", i642)
+            ,("u64", u642)
+            ,("f", f2)
+            ,("d", d2)
+            ,("i64max", i64max2)
+            ,("u64max", u64max2)
+        );
+        ia & i0;
+
+        if ( b != b2 || c != c2 || uc != uc2 || s != s2 || us != us2 || i != i2
+             || l != l2 || i64 != i642 || u64 != u642 || f != f2 || d != d2
+             || i64max != i64max2 || u64max != u64max2 )
+        {
+            YAS_TEST_REPORT(log, archive_type, test_name);
+            return false;
+        }
     }
 
     return true;

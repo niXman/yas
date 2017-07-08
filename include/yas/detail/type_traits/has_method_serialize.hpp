@@ -39,6 +39,8 @@
 #include <yas/detail/tools/cast.hpp>
 #include <yas/detail/type_traits/type_traits.hpp>
 
+#include <type_traits>
+
 namespace yas {
 namespace detail {
 

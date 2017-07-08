@@ -36,6 +36,7 @@
 #ifndef __yas__detail__type_traits__type_traits_hpp
 #define __yas__detail__type_traits__type_traits_hpp
 
+#include <yas/detail/config/endian.hpp>
 #include <yas/detail/type_traits/has_method_serialize.hpp>
 #include <yas/detail/type_traits/has_function_serialize.hpp>
 #include <yas/version.hpp>
@@ -79,16 +80,6 @@ struct is_array_of_fundamentals
 	:std::integral_constant<
 		 bool
 		,std::is_array<T>::value && std::is_fundamental<typename std::remove_all_extents<T>::type>::value
-	>
-{};
-
-/***************************************************************************/
-
-template<typename T, std::size_t N>
-struct is_fundamental_and_sizeof_is:
-	std::integral_constant<
-		 bool
-		,std::is_fundamental<T>::value && sizeof(T) == N
 	>
 {};
 
@@ -173,14 +164,16 @@ public:
 /***************************************************************************/
 
 enum options: std::uint32_t {
-	 binary            = 1u<<0
-	,text              = 1u<<1
-	,object            = 1u<<2
-	,no_header         = 1u<<3
-	,endian_little     = 1u<<4
-	,endian_big        = 1u<<5
-	,endian_as_host    = 1u<<6
-	,compacted         = 1u<<7
+	 binary    = 1u<<0
+	,text      = 1u<<1
+	,json      = 1u<<2
+	,no_header = 1u<<3
+	,elittle   = 1u<<4
+	,ebig      = 1u<<5
+	,ehost     = 1u<<6
+	,compacted = 1u<<7
+	,mem       = 1u<<8
+    ,file      = 1u<<9
 };
 
 template<typename Ar>
@@ -192,7 +185,7 @@ struct is_text_archive: std::integral_constant<bool, Ar::type() == options::text
 {};
 
 template<typename Ar>
-struct is_object_archive: std::integral_constant<bool, Ar::type() == options::object>
+struct is_json_archive: std::integral_constant<bool, Ar::type() == options::json>
 {};
 
 template<typename Ar>
@@ -202,6 +195,24 @@ struct is_readable_archive: std::integral_constant<bool, Ar::is_readable()>
 template<typename Ar>
 struct is_writable_archive: std::integral_constant<bool, Ar::is_writable()>
 {};
+
+/***************************************************************************/
+
+namespace detail {
+
+template<
+     std::size_t F
+    ,typename T
+    ,bool Tok = std::is_integral<T>::value || std::is_enum<T>::value
+>
+struct can_be_processed_as_byte_array: std::integral_constant<bool,
+    (is_any_of<T, char, signed char, unsigned char>::value) || // text/json
+    ((F & yas::binary) && Tok && sizeof(T) == 1) ||
+    ((F & yas::binary) && Tok && (!(F & yas::compacted) && (!__YAS_BSWAP_NEEDED(F))))
+>
+{};
+
+} // ns detail
 
 /***************************************************************************/
 

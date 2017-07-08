@@ -39,9 +39,11 @@
 #include <yas/detail/config/config.hpp>
 #include <yas/detail/tools/cast.hpp>
 #include <yas/detail/tools/noncopyable.hpp>
+#include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/buffers.hpp>
 
 #include <cmath>
+#include <cstring>
 
 namespace yas {
 
@@ -49,6 +51,7 @@ namespace yas {
 
 struct mem_ostream {
     YAS_NONCOPYABLE(mem_ostream)
+    YAS_MOVABLE(mem_ostream)
 
     mem_ostream(std::size_t reserved = 1024*20)
         :buf(reserved)
@@ -65,7 +68,6 @@ struct mem_ostream {
 
     template<typename T>
     std::size_t write(const T *tptr, const std::size_t size) {
-        const std::uint8_t *ptr = YAS_RCAST(const std::uint8_t*, tptr);
         if ( cur+size > end ) {
             shared_buffer::shared_array_type prev = buf.data;
             const std::size_t olds = YAS_SCAST(std::size_t, cur-beg);
@@ -81,15 +83,18 @@ struct mem_ostream {
             end = beg+news;
         }
 
-        switch (size) {
-            case sizeof(std::uint8_t ):
-                *YAS_RCAST(std::uint8_t*, cur) = *YAS_RCAST(const std::uint8_t*, ptr);
-            break;
-            case sizeof(std::uint16_t): std::memcpy(cur, ptr, sizeof(std::uint16_t)); break;
-            case sizeof(std::uint32_t): std::memcpy(cur, ptr, sizeof(std::uint32_t)); break;
-            case sizeof(std::uint64_t): std::memcpy(cur, ptr, sizeof(std::uint64_t)); break;
+        const std::uint8_t *ptr = YAS_RCAST(const std::uint8_t*, tptr);
+        switch ( size ) {
+            case 1 : std::memcpy(cur, ptr, 1); break;
+            case 2 : std::memcpy(cur, ptr, 2); break;
+            case 3 : std::memcpy(cur, ptr, 3); break;
+            case 4 : std::memcpy(cur, ptr, 4); break;
+            case 5 : std::memcpy(cur, ptr, 5); break;
+            case 8 : std::memcpy(cur, ptr, 8); break;
+            case 9 : std::memcpy(cur, ptr, 9); break;
 #if defined(__GNUC__) && defined(__SIZEOF_INT128__) // hack for detect int128 support
-            case sizeof(__int128     ): std::memcpy(cur, ptr, sizeof(__int128)     ); break;
+            case 16: std::memcpy(cur, ptr, 16); break;
+            case 17: std::memcpy(cur, ptr, 17); break;
 #endif
             default: std::memcpy(cur, ptr, size);
         }
@@ -110,6 +115,7 @@ private:
 
 struct mem_istream {
     YAS_NONCOPYABLE(mem_istream)
+    YAS_MOVABLE(mem_istream)
 
     mem_istream(const void *ptr, std::size_t size)
         :beg(YAS_SCAST(const char*, ptr))
@@ -129,18 +135,18 @@ struct mem_istream {
 
     template<typename T>
     std::size_t read(T *ptr, const std::size_t size) {
-        const std::size_t avail = YAS_SCAST(std::size_t, end-cur);
-        const std::size_t to_copy = (avail < size) ? avail : size;
-
+        const std::size_t to_copy = std::min(YAS_SCAST(std::size_t, end-cur), size);
         switch ( to_copy ) {
-            case sizeof(std::uint8_t ):
-                *YAS_RCAST(std::uint8_t*, ptr) = *YAS_RCAST(const std::uint8_t*, cur);
-            break;
-            case sizeof(std::uint16_t): std::memcpy(ptr, cur, sizeof(std::uint16_t)); break;
-            case sizeof(std::uint32_t): std::memcpy(ptr, cur, sizeof(std::uint32_t)); break;
-            case sizeof(std::uint64_t): std::memcpy(ptr, cur, sizeof(std::uint64_t)); break;
+            case 1 : std::memcpy(ptr, cur, 1); break;
+            case 2 : std::memcpy(ptr, cur, 2); break;
+            case 3 : std::memcpy(ptr, cur, 3); break;
+            case 4 : std::memcpy(ptr, cur, 4); break;
+            case 5 : std::memcpy(ptr, cur, 5); break;
+            case 8 : std::memcpy(ptr, cur, 8); break;
+            case 9 : std::memcpy(ptr, cur, 9); break;
 #if defined(__GNUC__) && defined(__SIZEOF_INT128__) // hack for detect int128 support
-            case sizeof(__int128)     : std::memcpy(ptr, cur, sizeof(__int128)     ); break;
+            case 16: std::memcpy(ptr, cur, 16); break;
+            case 17: std::memcpy(ptr, cur, 17); break;
 #endif
             default: std::memcpy(ptr, cur, to_copy);
         }
@@ -148,6 +154,8 @@ struct mem_istream {
 
         return to_copy;
     }
+
+    bool ungetch(char) { --cur; return true; }
 
     shared_buffer get_shared_buffer() const { return shared_buffer(cur, YAS_SCAST(std::size_t, end-cur)); }
     intrusive_buffer get_intrusive_buffer() const { return intrusive_buffer(cur, YAS_SCAST(std::size_t, end-cur)); }

@@ -38,36 +38,36 @@
 
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
 
-#include <yas/types/boost/boost_array_serializers.hpp>
-#include <yas/types/boost/boost_chrono_serializers.hpp>
-#include <yas/types/boost/boost_optional_serializers.hpp>
-#include <yas/types/boost/boost_tuple_serializers.hpp>
-#include <yas/types/boost/boost_unordered_set_serializers.hpp>
-#include <yas/types/boost/boost_unordered_map_serializers.hpp>
-#include <yas/types/boost/boost_unordered_multimap_serializers.hpp>
-#include <yas/types/boost/boost_unordered_multiset_serializers.hpp>
-#include <yas/types/boost/boost_fusion_pair_serializers.hpp>
-#include <yas/types/boost/boost_fusion_vector_serializers.hpp>
-#include <yas/types/boost/boost_fusion_list_serializers.hpp>
-#include <yas/types/boost/boost_fusion_map_serializers.hpp>
-#include <yas/types/boost/boost_fusion_set_serializers.hpp>
-#include <yas/types/boost/boost_fusion_tuple_serializers.hpp>
-#include <yas/types/boost/boost_container_string_serializers.hpp>
-#include <yas/types/boost/boost_container_wstring_serializers.hpp>
-#include <yas/types/boost/boost_container_vector_serializers.hpp>
-#include <yas/types/boost/boost_container_static_vector_serializers.hpp>
-#include <yas/types/boost/boost_container_stable_vector_serializers.hpp>
-#include <yas/types/boost/boost_container_list_serializers.hpp>
-#include <yas/types/boost/boost_container_slist_serializers.hpp>
-#include <yas/types/boost/boost_container_deque_serializers.hpp>
-#include <yas/types/boost/boost_container_map_serializers.hpp>
-#include <yas/types/boost/boost_container_multimap_serializers.hpp>
-#include <yas/types/boost/boost_container_set_serializers.hpp>
-#include <yas/types/boost/boost_container_multiset_serializers.hpp>
-#include <yas/types/boost/boost_container_flat_map_serializers.hpp>
-#include <yas/types/boost/boost_container_flat_multimap_serializers.hpp>
-#include <yas/types/boost/boost_container_flat_set_serializers.hpp>
-#include <yas/types/boost/boost_container_flat_multiset_serializers.hpp>
+#include <yas/types/boost/array.hpp>
+#include <yas/types/boost/chrono.hpp>
+#include <yas/types/boost/optional.hpp>
+#include <yas/types/boost/tuple.hpp>
+#include <yas/types/boost/unordered_set.hpp>
+#include <yas/types/boost/unordered_map.hpp>
+#include <yas/types/boost/unordered_multimap.hpp>
+#include <yas/types/boost/unordered_multiset.hpp>
+#include <yas/types/boost/fusion_pair.hpp>
+#include <yas/types/boost/fusion_vector.hpp>
+#include <yas/types/boost/fusion_list.hpp>
+#include <yas/types/boost/fusion_map.hpp>
+#include <yas/types/boost/fusion_set.hpp>
+#include <yas/types/boost/fusion_tuple.hpp>
+#include <yas/types/boost/container_string.hpp>
+#include <yas/types/boost/container_wstring.hpp>
+#include <yas/types/boost/container_vector.hpp>
+#include <yas/types/boost/container_static_vector.hpp>
+#include <yas/types/boost/container_stable_vector.hpp>
+#include <yas/types/boost/container_list.hpp>
+#include <yas/types/boost/container_slist.hpp>
+#include <yas/types/boost/container_deque.hpp>
+#include <yas/types/boost/container_map.hpp>
+#include <yas/types/boost/container_multimap.hpp>
+#include <yas/types/boost/container_set.hpp>
+#include <yas/types/boost/container_multiset.hpp>
+#include <yas/types/boost/container_flat_map.hpp>
+#include <yas/types/boost/container_flat_multimap.hpp>
+#include <yas/types/boost/container_flat_set.hpp>
+#include <yas/types/boost/container_flat_multiset.hpp>
 
 #endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 

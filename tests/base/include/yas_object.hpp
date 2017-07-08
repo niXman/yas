@@ -38,59 +38,64 @@
 
 /***************************************************************************/
 
-namespace _yas_object_test_ {
+namespace _yas_object_test {
 
-struct type0 {
+struct type {
 	int v;
 
-	type0(int v)
+	type(int v)
 		:v(v)
 	{}
 
 	template<typename Archive>
 	void serialize(Archive &ar) {
-		ar & YAS_OBJECT("type0", v);
+		auto o = YAS_OBJECT("type0", v);
+		ar & o;
 	}
 };
 
-}
+} // ns _yas_object_test
 
 template<typename archive_traits>
-bool yas_object_test(std::ostream &log, const char* archive_type) {
+bool yas_object_test(std::ostream &log, const char *archive_type, const char *test_name) {
 	{
 		int i0 = 3, i1 = 0;
-		auto o0 = YAS_OBJECT("object0", i0);
-		auto o1 = YAS_OBJECT("object1", i1);
 
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type);
+
+        auto o0 = YAS_OBJECT("object0", i0);
 		oa & o0;
 
 		typename archive_traits::iarchive ia;
 		archive_traits::icreate(ia, oa, archive_type);
+
+        auto o1 = YAS_OBJECT_NVP("object1", ("i0", i1));
 		ia & o1;
 
 		if ( i0 != i1 ) {
-			YAS_TEST_REPORT(log, "YAS_OBJECT deserialization error!");
+			YAS_TEST_REPORT(log, archive_type, test_name);
 			return false;
 		}
 	}
 	{
 		const int i0 = 4;
 		int i1 = 0;
-		auto o0 = YAS_OBJECT("object0", i0);
-		auto o1 = YAS_OBJECT("object1", i1);
 
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type);
+
+        auto o0 = YAS_OBJECT("object0", i0);
 		oa & o0;
 
 		typename archive_traits::iarchive ia;
 		archive_traits::icreate(ia, oa, archive_type);
+
+        auto o1 = YAS_OBJECT_NVP("object1", ("i0", i1));
 		ia & o1;
 
 		if ( i0 != i1 ) {
-			YAS_TEST_REPORT(log, "YAS_OBJECT deserialization error!");
+			YAS_TEST_REPORT(log, archive_type, test_name);
 			return false;
 		}
 	}
@@ -103,26 +108,26 @@ bool yas_object_test(std::ostream &log, const char* archive_type) {
 
 		typename archive_traits::iarchive ia;
 		archive_traits::icreate(ia, oa, archive_type);
-		ia & YAS_OBJECT("object1", i1);
+		ia & YAS_OBJECT_NVP("object1", ("i0", i1));
 
 		if ( i0 != i1 ) {
-			YAS_TEST_REPORT(log, "YAS_OBJECT deserialization error!");
+			YAS_TEST_REPORT(log, archive_type, test_name);
 			return false;
 		}
 	}
 	{
-		_yas_object_test_::type0 t0(3), t1(0);
+        _yas_object_test::type t0(3), t1(0);
 
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type);
-		oa & YAS_OBJECT("t0", t0);
+		oa & t0;
 
 		typename archive_traits::iarchive ia;
 		archive_traits::icreate(ia, oa, archive_type);
-		ia & YAS_OBJECT("t1", t1);
+		ia & t1;
 
 		if ( t0.v != t1.v ) {
-			YAS_TEST_REPORT(log, "YAS_OBJECT deserialization error!");
+			YAS_TEST_REPORT(log, archive_type, test_name);
 			return false;
 		}
 	}

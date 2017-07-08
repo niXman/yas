@@ -74,9 +74,8 @@ struct max_limit {
     {}
 
     template<typename L, typename V>
-    void check(const L l, const V &) const {
-        const bool ok = YAS_SCAST(std::uint64_t, l) <= max;
-        if (!ok) YAS_THROW_LIMIT_EXCEEDED()
+    bool check(const L l, const V &) const {
+        return YAS_SCAST(std::uint64_t, l) <= max;
     }
 
     type val;
@@ -101,9 +100,8 @@ struct minmax_limit {
     {}
 
     template<typename L, typename V>
-    void check(const L l, const V &) const {
-        const bool ok = (min <= YAS_SCAST(std::uint64_t, l) && YAS_SCAST(std::uint64_t, l) <= max);
-        if (!ok) YAS_THROW_LIMIT_EXCEEDED()
+    bool check(const L l, const V &) const {
+        return (min <= YAS_SCAST(std::uint64_t, l) && YAS_SCAST(std::uint64_t, l) <= max);
     }
 
     type val;

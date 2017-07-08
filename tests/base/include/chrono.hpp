@@ -39,23 +39,21 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool chrono_test(std::ostream &log, const char* archive_type) {
+bool chrono_test(std::ostream &log, const char *archive_type, const char *test_name) {
 	{
-		std::chrono::duration<int, std::ratio<1>> w0{32}, r0;
-		std::chrono::duration<double, std::ratio<1>> w1{23}, r1;
+		std::chrono::duration<int, std::ratio<1>> w0{32}, r0{};
+		std::chrono::duration<double, std::ratio<1>> w1{23}, r1{};
 
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type);
-		oa & YAS_OBJECT("o0", w0, w1);
-		;
+		oa & YAS_OBJECT_NVP("obj", ("v0", w0), ("v1", w1));
 
 		typename archive_traits::iarchive ia;
 		archive_traits::icreate(ia, oa, archive_type);
-		ia & YAS_OBJECT("o1", r0, r1);
-		;
+		ia & YAS_OBJECT_NVP("obj", ("v0", r0), ("v1", r1));
 
 		if ( r0 != w0 || r1 != w1 ) {
-			YAS_TEST_REPORT(log, "CHRONO serialization error!");
+			YAS_TEST_REPORT(log, archive_type, test_name);
 			return false;
 		}
 	}
@@ -65,50 +63,48 @@ bool chrono_test(std::ostream &log, const char* archive_type) {
 
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type);
-		oa & YAS_OBJECT("w0", w0);
+		oa & YAS_OBJECT_NVP("obj", ("v0", w0));
 
 		typename archive_traits::iarchive ia;
 		archive_traits::icreate(ia, oa, archive_type);
-		ia & YAS_OBJECT("r0", r0);
+		ia & YAS_OBJECT_NVP("obj", ("v0", r0));
 
 		if ( r0 != w0 ) {
-			YAS_TEST_REPORT(log, "CHRONO serialization error!");
+			YAS_TEST_REPORT(log, archive_type, test_name);
 			return false;
 		}
 	}
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
 	{
-		boost::chrono::duration<int, boost::ratio<1>> w0{32}, r0;
-		boost::chrono::duration<double, boost::ratio<1>> w1{23}, r1;
+		boost::chrono::duration<int, boost::ratio<1>> w0{32}, r0{};
+		boost::chrono::duration<double, boost::ratio<1>> w1{23}, r1{};
 
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type);
-		oa & YAS_OBJECT("o2", w0, w1);
-		;
+		oa & YAS_OBJECT_NVP("obj", ("v0", w0), ("v1", w1));
 
 		typename archive_traits::iarchive ia;
 		archive_traits::icreate(ia, oa, archive_type);
-		ia & YAS_OBJECT("o3", r0, r1);
-		;
+		ia & YAS_OBJECT_NVP("obj", ("v0", r0), ("v1", r1));
 
 		if ( r0 != w0 || r1 != w1 ) {
-			YAS_TEST_REPORT(log, "CHRONO serialization error!");
+			YAS_TEST_REPORT(log, archive_type, test_name);
 			return false;
 		}
 	}
 	{
-		decltype(boost::chrono::system_clock::now()) w0 = boost::chrono::system_clock::now(), r0;
+		decltype(boost::chrono::system_clock::now()) w0 = boost::chrono::system_clock::now(), r0{};
 
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type);
-		oa & YAS_OBJECT("w0", w0);
+		oa & YAS_OBJECT_NVP("obj", ("v0", w0));
 
 		typename archive_traits::iarchive ia;
 		archive_traits::icreate(ia, oa, archive_type);
-		ia & YAS_OBJECT("r0", r0);
+		ia & YAS_OBJECT_NVP("obj", ("v0", r0));
 
 		if ( r0 != w0 ) {
-			YAS_TEST_REPORT(log, "CHRONO serialization error!");
+			YAS_TEST_REPORT(log, archive_type, test_name);
 			return false;
 		}
 	}

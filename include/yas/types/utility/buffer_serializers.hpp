@@ -1,3 +1,4 @@
+
 // Copyright (c) 2010-2017 niXman (i dot nixman dog gmail dot com). All
 // rights reserved.
 //
@@ -37,7 +38,10 @@
 
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/serializer.hpp>
+#include <yas/detail/tools/base64.hpp>
+#include <yas/detail/io/serialization_exception.hpp>
 
+#include <yas/object.hpp>
 #include <yas/buffers.hpp>
 
 namespace yas {
@@ -54,10 +58,29 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& save(Archive& ar, const intrusive_buffer& buf) {
-		ar.write_seq_size(buf.size);
-		ar.write(buf.data, buf.size);
+		if ( F & yas::json ) {
+            const std::string data(buf.data, buf.size);
+            const std::size_t size = buf.size;
+            const auto o = YAS_OBJECT("intrusive_buffer", data, size);
+            ar & o;
+//            if ( !buf.data ) {
+//                static const char arr[] = "null,\"b64size\":0";
+//                ar.write(arr, sizeof(arr)-1);
+//            } else {
+//                ar.write("\"", 1);
+//                auto b64size = modp_b64_encode(ar, buf.data, buf.size);
+//                static const char arr[] = "\",\"b64size\":";
+//                ar.write(arr, sizeof(arr)-1);
+//                ar.write(b64size);
+//            }
+        } else {
+            ar.write_seq_size(buf.size);
+            ar.write(buf.data, buf.size);
+        }
+
 		return ar;
 	}
+    
 	template<typename Archive>
 	static Archive& load(Archive& ar, intrusive_buffer &) {
 		return ar;
@@ -74,17 +97,39 @@ struct serializer<
 	shared_buffer
 > {
 	template<typename Archive>
-	static Archive& save(Archive& ar, const shared_buffer& buf) {
-		ar.write_seq_size(buf.size);
-		ar.write(buf.data.get(), buf.size);
+	static Archive& save(Archive& ar, const shared_buffer &buf) {
+        if ( F & yas::json ) {
+            if ( !buf.data ) {
+                static const char arr[] = "null,\"b64size\":0";
+                ar.write(arr, sizeof(arr)-1);
+            } else {
+                ar.write("\"", 1);
+                auto b64size = modp_b64_encode(ar, buf.data.get(), buf.size);
+                static const char arr[] = "\",\"b64size\":";
+                ar.write(arr, sizeof(arr)-1);
+                ar.write(b64size);
+            }
+        } else {
+            ar.write_seq_size(buf.size);
+            ar.write(buf.data.get(), buf.size);
+        }
+
 		return ar;
 	}
 
 	template<typename Archive>
-	static Archive& load(Archive& ar, shared_buffer& buf) {
-		buf.size = ar.read_seq_size();
-		buf.data.reset(new char[buf.size], &shared_buffer::deleter);
-		ar.read(buf.data.get(), buf.size);
+	static Archive& load(Archive& ar, shared_buffer &buf) {
+        if ( F & yas::json ) {
+            if ( F & yas::compacted ) {
+            } else {
+                YAS_THROW_JSON_NONCOMPACTED_MODE_IS_NOT_IMPLEMENTED();
+            }
+        } else {
+            buf.size = ar.read_seq_size();
+            buf.data.reset(new char[buf.size], &shared_buffer::deleter);
+            ar.read(buf.data.get(), buf.size);
+        }
+
 		return ar;
 	}
 };

@@ -39,22 +39,22 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool unordered_map_test(std::ostream &log, const char* archive_type) {
-	std::unordered_map<int, int> pod_map, pod_map2;
-	pod_map[1] = 2;
-	pod_map[2] = 3;
-	pod_map[3] = 4;
+bool unordered_map_test(std::ostream &log, const char *archive_type, const char *test_name) {
+	std::unordered_map<int, int> imap, imap2;
+	imap[1] = 2;
+	imap[2] = 3;
+	imap[3] = 4;
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & YAS_OBJECT("pod_map", pod_map);
+	oa & YAS_OBJECT_NVP("obj", ("map", imap));
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & YAS_OBJECT("pod_map2", pod_map2);
+	ia & YAS_OBJECT_NVP("obj", ("map", imap2));
 
-	if ( pod_map != pod_map2 ) {
-		YAS_TEST_REPORT(log, "UNORDERED_MAP deserialization error!");
+	if ( imap != imap2 ) {
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
@@ -65,14 +65,14 @@ bool unordered_map_test(std::ostream &log, const char* archive_type) {
 
 	typename archive_traits::oarchive oa2;
 	archive_traits::ocreate(oa2, archive_type);
-	oa2 & YAS_OBJECT("map", map);
+	oa2 & YAS_OBJECT_NVP("obj", ("map", map));
 
 	typename archive_traits::iarchive ia2;
 	archive_traits::icreate(ia2, oa2, archive_type);
-	ia2 & YAS_OBJECT("map2", map2);
+	ia2 & YAS_OBJECT_NVP("obj", ("map", map2));
 
 	if ( map != map2 ) {
-		YAS_TEST_REPORT(log, "UNORDERED_MAP deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
@@ -83,14 +83,14 @@ bool unordered_map_test(std::ostream &log, const char* archive_type) {
 
 	typename archive_traits::oarchive oa3;
 	archive_traits::ocreate(oa3, archive_type);
-	oa3 & YAS_OBJECT("map3", map3);
+	oa3 & YAS_OBJECT_NVP("obj", ("map", map3));
 
 	typename archive_traits::iarchive ia3;
 	archive_traits::icreate(ia3, oa3, archive_type);
-	ia3 & YAS_OBJECT("map4", map4);
+	ia3 & YAS_OBJECT_NVP("obj", ("map", map4));
 
 	if ( map3 != map4 ) {
-		YAS_TEST_REPORT(log, "UNORDERED_MAP deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
@@ -103,14 +103,14 @@ bool unordered_map_test(std::ostream &log, const char* archive_type) {
 
 	typename archive_traits::oarchive oa4;
 	archive_traits::ocreate(oa4, archive_type);
-	oa4 & YAS_OBJECT("map5", map5);
+	oa4 & YAS_OBJECT_NVP("obj", ("map", map5));
 
 	typename archive_traits::iarchive ia4;
 	archive_traits::icreate(ia4, oa4, archive_type);
-	ia4 & YAS_OBJECT("map6", map6);
+	ia4 & YAS_OBJECT_NVP("obj", ("map", map6));
 
 	if ( map5 != map6 ) {
-		YAS_TEST_REPORT(log, "UNORDERED_MAP deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 #endif // defined(YAS_SERIALIZE_BOOST_TYPES)

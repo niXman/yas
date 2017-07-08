@@ -53,24 +53,35 @@ struct serializer<
 	 F,
 	 T
 > {
-	 template<typename Archive>
-	 static Archive& save(Archive& ar, const T& v) {
-		  ar.write(YAS_SCAST(std::uint8_t, sizeof(T)));
-		  ar.write(YAS_SCAST(typename std::underlying_type<T>::type, v));
-		  return ar;
-	 }
+    template<typename Archive>
+    static Archive& save(Archive& ar, const T& v) {
+        const auto u = YAS_SCAST(typename std::underlying_type<T>::type, v);
+        if ( can_be_processed_as_byte_array<F, T>::value ) {
+            std::uint8_t buf[1+sizeof(T)] = {sizeof(T)};
+            std::memcpy(&buf[1], &u, sizeof(u));
+            ar.write(buf, sizeof(buf));
+        } else {
+            ar & u;
+        }
 
-	 template<typename Archive>
-	 static Archive& load(Archive& ar, T& v) {
-		  std::uint8_t size = 0;
-		  ar.read(size);
-		  typename std::underlying_type<T>::type t;
-		  if ( sizeof(t) != size ) YAS_THROW_BAD_SIZE_OF_ENUM();
+        return ar;
+    }
 
-		  ar.read(t);
-		  v = YAS_SCAST(T, t);
-		  return ar;
-	 }
+    template<typename Archive>
+    static Archive& load(Archive& ar, T& v) {
+        typename std::underlying_type<T>::type u{};
+        if ( can_be_processed_as_byte_array<F, T>::value ) {
+            std::uint8_t size{};
+            ar.read(&size, sizeof(size));
+            if ( sizeof(u) != size ) YAS_THROW_BAD_SIZE_OF_ENUM();
+            ar.read(&u, sizeof(u));
+        } else {
+            ar & u;
+        }
+        v = YAS_SCAST(T, u);
+
+        return ar;
+    }
 };
 
 /***************************************************************************/

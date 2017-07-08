@@ -38,36 +38,44 @@
 
 /***************************************************************************/
 
-enum enum_test_enum1 { _1_1, _1_2, _1_3, _1_4 };
-
-enum class enum_test_enum2: char { _2_1, _2_2, _2_3, _2_4 };
-
 template<typename archive_traits>
-bool enum_test(std::ostream &log, const char* archive_type) {
+bool enum_test(std::ostream &log, const char *archive_type, const char *test_name) {
 	typename archive_traits::oarchive oa1;
 	archive_traits::ocreate(oa1, archive_type);
-	oa1 & YAS_OBJECT("e0", _1_2, _1_4);
 
-	enum_test_enum1 e11, e12;
+	enum enum_test_enum1 { _1_1, _1_2, _1_3, _1_4 };
+	enum class enum_test_enum2: char { _2_1, _2_2, _2_3, _2_4 };
+
+	oa1 & YAS_OBJECT_NVP("obj", ("e11", _1_2), ("e14", _1_4));
+
+	enum_test_enum1 e11{}, e14{};
 	typename archive_traits::iarchive ia1;
 	archive_traits::icreate(ia1, oa1, archive_type);
 
-	ia1 & YAS_OBJECT("e1", e11, e12);
-	if ( e11 != _1_2 || e12 != _1_4 ) {
-		YAS_TEST_REPORT(log, "ENUM deserialization error!");
+	ia1 & YAS_OBJECT_NVP("obj", ("e11", e11), ("e14", e14));
+	if ( e11 != _1_2 || e14 != _1_4 ) {
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
 	typename archive_traits::oarchive oa2;
 	archive_traits::ocreate(oa2, archive_type);
-	oa2 & YAS_OBJECT("e2", enum_test_enum2::_2_1, enum_test_enum2::_2_3);
+	oa2 & YAS_OBJECT_NVP(
+         "obj"
+        ,("e21", enum_test_enum2::_2_1)
+        ,("e23", enum_test_enum2::_2_3)
+	);
 
-	enum_test_enum2 e21, e22;
+	enum_test_enum2 e21{}, e23{};
 	typename archive_traits::iarchive ia2;
 	archive_traits::icreate(ia2, oa2, archive_type);
-	ia2 & YAS_OBJECT("e3", e21, e22);
-	if ( e21 != enum_test_enum2::_2_1 || e22 != enum_test_enum2::_2_3) {
-		YAS_TEST_REPORT(log, "ENUM deserialization error!");
+    ia2 & YAS_OBJECT_NVP(
+         "obj"
+        ,("e21", e21)
+        ,("e23", e23)
+    );
+	if ( e21 != enum_test_enum2::_2_1 || e23 != enum_test_enum2::_2_3) {
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 

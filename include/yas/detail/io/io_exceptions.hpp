@@ -47,44 +47,44 @@ YAS_DECLARE_EXCEPTION_TYPE(io_exception);
 /***************************************************************************/
 
 #define YAS_THROW_BAD_ARCHIVE_INFORMATION() \
-	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("archive is corrupted or try to use \"yas::no_header\" flag"));
+	YAS_THROW_EXCEPTION(::yas::io_exception, "archive is corrupted or try to use \"yas::no_header\" flag");
 
 #define YAS_THROW_BAD_ARCHIVE_VERSION() \
-	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("incompatible archive version"));
+	YAS_THROW_EXCEPTION(::yas::io_exception, "incompatible archive version");
 
 #define YAS_THROW_BAD_ARCHIVE_TYPE() \
-	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("incompatible archive type"));
+	YAS_THROW_EXCEPTION(::yas::io_exception, "incompatible archive type");
 
 #define YAS_THROW_ARCHIVE_NO_HEADER() \
-	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("you cannot use information functions with \"yas::no_header\" flag"));
+	YAS_THROW_EXCEPTION(::yas::io_exception, "you cannot use information functions with \"yas::no_header\" flag");
 
 #define YAS_THROW_ON_READ_ERROR(expected, cmp, ...) \
 	if ( (expected) cmp (__VA_ARGS__) ) { \
-		throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("can't read requested bytes")); \
+		YAS_THROW_EXCEPTION(::yas::io_exception, "can't read requested bytes"); \
 	}
 
 #define YAS_THROW_ON_WRITE_ERROR(expected, cmp, ...) \
 	if ( (expected) cmp (__VA_ARGS__) ) { \
-		throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("can't write requested bytes")); \
+		YAS_THROW_EXCEPTION(::yas::io_exception, "can't write requested bytes"); \
 	}
 
 #define YAS_THROW_FILE_ALREADY_EXISTS() \
-	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("file already exists"));
+	YAS_THROW_EXCEPTION(::yas::io_exception, "file already exists");
 
 #define YAS_THROW_FILE_IS_NOT_EXISTS() \
-	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("file is not exists"));
+	YAS_THROW_EXCEPTION(::yas::io_exception, "file is not exists");
 
 #define YAS_THROW_ERROR_OPENING_FILE() \
-	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("error opening file"));
+	YAS_THROW_EXCEPTION(::yas::io_exception, "error opening file");
 
 #define YAS_THROW_BAD_FILE_MODE() \
-	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("bad file open mode"));
+	YAS_THROW_EXCEPTION(::yas::io_exception, "bad file open mode");
 
 #define YAS_THROW_BAD_COMPACTED_MODE() \
-	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("incompatible compacted/non-compacted mode"));
+	YAS_THROW_EXCEPTION(::yas::io_exception, "incompatible compacted/non-compacted mode");
 
 #define YAS_THROW_BAD_TYPE_SIZEOF() \
-	throw ::yas::io_exception(YAS_EXCEPTION_MAKE_MSG("unexpected sizeof(T)"));
+	YAS_THROW_EXCEPTION(::yas::io_exception, "unexpected sizeof(T)");
 
 /***************************************************************************/
 

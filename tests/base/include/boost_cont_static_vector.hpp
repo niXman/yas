@@ -39,7 +39,7 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool boost_cont_static_vector_test(std::ostream &log, const char* archive_type) {
+bool boost_cont_static_vector_test(std::ostream &log, const char *archive_type, const char *test_name) {
 	boost::container::static_vector<int, 5> v, vv;
 	v.push_back(0);
 	v.push_back(1);
@@ -49,14 +49,14 @@ bool boost_cont_static_vector_test(std::ostream &log, const char* archive_type) 
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & YAS_OBJECT("v", v);
+	oa & YAS_OBJECT_NVP("obj", ("v", v));
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & YAS_OBJECT("vv", vv);
+	ia & YAS_OBJECT_NVP("obj", ("v", vv));
 
 	if ( v != vv ) {
-		YAS_TEST_REPORT(log, "BOOST::CONTAINER::STATIC_VECTOR deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 

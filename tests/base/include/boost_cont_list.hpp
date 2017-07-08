@@ -39,7 +39,7 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool boost_cont_list_test(std::ostream &log, const char* archive_type) {
+bool boost_cont_list_test(std::ostream &log, const char *archive_type, const char *test_name) {
 	boost::container::list<int> ilist1, ilist2;
 	ilist1.push_back(2);
 	ilist1.push_back(3);
@@ -51,14 +51,14 @@ bool boost_cont_list_test(std::ostream &log, const char* archive_type) {
 
 	typename archive_traits::oarchive oa1;
 	archive_traits::ocreate(oa1, archive_type);
-	oa1 & YAS_OBJECT("ilist1", ilist1);
+	oa1 & YAS_OBJECT_NVP("obj", ("list", ilist1));
 
 	typename archive_traits::iarchive ia1;
 	archive_traits::icreate(ia1, oa1, archive_type);
-	ia1 & YAS_OBJECT("ilist2", ilist2);
+	ia1 & YAS_OBJECT_NVP("obj", ("list", ilist2));
 
 	if ( ilist1 != ilist2 ) {
-		YAS_TEST_REPORT(log, "BOOST::CONTAINER::LIST deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
@@ -71,14 +71,14 @@ bool boost_cont_list_test(std::ostream &log, const char* archive_type) {
 
 	typename archive_traits::oarchive oa2;
 	archive_traits::ocreate(oa2, archive_type);
-	oa2 & YAS_OBJECT("slist1", slist1);
+	oa2 & YAS_OBJECT_NVP("obj", ("list", slist1));
 
 	typename archive_traits::iarchive ia2;
 	archive_traits::icreate(ia2, oa2, archive_type);
-	ia2 & YAS_OBJECT("slist2", slist2);
+	ia2 & YAS_OBJECT_NVP("obj", ("list", slist2));
 
 	if ( slist1 != slist2 ) {
-		YAS_TEST_REPORT(log, "BOOST::CONTAINER::LIST deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 

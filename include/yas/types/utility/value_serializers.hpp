@@ -40,7 +40,7 @@
 #include <yas/detail/type_traits/serializer.hpp>
 #include <yas/detail/io/serialization_exception.hpp>
 
-#include <yas/types/utility/object.hpp>
+#include <yas/object.hpp>
 
 namespace yas {
 namespace detail {
@@ -56,19 +56,30 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& save(Archive& ar, const value<T> &v) {
-        if ( F & yas::object ) {
-            ar.write("\"", 1);
-            ar.write(v.key, v.klen);
-            ar.write("\":", 2);
+		if ( F & yas::json ) {
+            ar.write_key(v.key, v.klen);
         }
-		ar & v.val;
 
-        return ar;
+		return (ar & v.val);
 	}
 
 	template<typename Archive>
 	static Archive& load(Archive& ar, value<T> &v) {
-		return ar & v.val;
+		if ( F & yas::json ) {
+            if ( F & yas::compacted ) {
+                YAS_THROW_IF_BAD_JSON_CHARS(ar, "\"");
+
+                YAS_THROW_IF_BAD_JSON_KEY(ar, v.key, v.klen);
+
+                YAS_THROW_IF_BAD_JSON_CHARS(ar, "\":");
+
+                return (ar & v.val);
+            } else {
+                YAS_THROW_JSON_NONCOMPACTED_MODE_IS_NOT_IMPLEMENTED();
+            }
+        }
+
+		return (ar & v.val);
 	}
 };
 

@@ -40,7 +40,7 @@
 #include <yas/detail/type_traits/serializer.hpp>
 #include <yas/detail/tools/cast.hpp>
 
-#include <yas/types/utility/object.hpp>
+#include <yas/object.hpp>
 
 namespace yas {
 namespace detail {
@@ -52,23 +52,47 @@ struct serializer<
     type_prop::not_a_fundamental,
     ser_method::use_internal_serializer,
     F,
-    object_t<Pairs...>
+    object<Pairs...>
 > {
     template<typename Archive>
-    static Archive& save(Archive &ar, const object_t<Pairs...> &o) {
-        if ( F & yas::object ) ar.write("{", 1);
+    static Archive& save(Archive &ar, const object<Pairs...> &o) {
+        if ( F & yas::json ) {
+            // case for empty object
+            if ( std::tuple_size<typename object<Pairs...>::type>::value == 0 ) {
+                ar.write("{}", 2);
+
+                return ar;
+            }
+
+            ar.start_object_node(o.key, o.klen);
+        }
+
         apply(ar, o.pairs);
-        if ( F & yas::object ) ar.write("}", 1);
+
+        if ( F & yas::json ) {
+            ar.finish_node();
+        }
 
         return ar;
     }
 
     template<typename Archive>
-    static Archive& load(Archive &ar, object_t<Pairs...> &o) {
-        return apply(ar, o.pairs);
+    static Archive& load(Archive &ar, object<Pairs...> &o) {
+        if ( F & yas::json ) {
+            ar.start_object_node(o.key, o.klen);
+        }
+
+        apply(ar, o.pairs);
+
+        if ( F & yas::json ) {
+            ar.finish_node();
+        }
+
+        return ar;
     }
 
 private:
+    // save
     template<std::size_t I = 0, typename Archive, typename... Tp>
     static typename std::enable_if<I == sizeof...(Tp), Archive &>::type
     apply(Archive &ar, const std::tuple<Tp...> &) { return ar; }
@@ -77,11 +101,15 @@ private:
     static typename std::enable_if<I < sizeof...(Tp), Archive &>::type
     apply(Archive &ar, const std::tuple<Tp...> &t) {
         ar & std::get<I>(t);
-        if ( (F & yas::object) && I+1 < sizeof...(Tp) ) ar.write(",", 1);
+
+        if ( (F & yas::json) && I+1 < sizeof...(Tp) ) {
+            ar.write(",", 1);
+        }
 
         return apply<I+1>(ar, t);
     }
 
+    // load
     template<std::size_t I = 0, typename Archive, typename... Tp>
     static typename std::enable_if<I == sizeof...(Tp), Archive &>::type
     apply(Archive &ar, std::tuple<Tp...> &) { return ar; }
@@ -90,6 +118,10 @@ private:
     static typename std::enable_if<I < sizeof...(Tp), Archive &>::type
     apply(Archive &ar, std::tuple<Tp...> &t) {
         ar & std::get<I>(t);
+
+        if ( (F & yas::json) && I+1 < sizeof...(Tp) ) {
+            YAS_THROW_IF_BAD_JSON_CHARS(ar, ",");
+        }
 
         return apply<I+1>(ar, t);
     }

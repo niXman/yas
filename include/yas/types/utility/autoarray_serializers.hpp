@@ -1,3 +1,4 @@
+
 // Copyright (c) 2010-2017 niXman (i dot nixman dog gmail dot com). All
 // rights reserved.
 //
@@ -39,6 +40,7 @@
 #include <yas/detail/type_traits/serializer.hpp>
 #include <yas/detail/io/serialization_exception.hpp>
 #include <yas/detail/tools/cast.hpp>
+#include <yas/types/concepts/const_sized_array.hpp>
 
 namespace yas {
 namespace detail {
@@ -47,47 +49,20 @@ namespace detail {
 
 template<std::size_t F, typename T, size_t N>
 struct serializer<
-	 type_prop::is_array_of_fundamentals,
-	 ser_method::use_internal_serializer,
-	 F,
-	 T[N]
+    type_prop::is_array_of_fundamentals,
+    ser_method::use_internal_serializer,
+    F,
+    T[N]
 > {
-	 // for chars and bools only
-	 template<typename Archive, typename U>
-	 static Archive& save(Archive& ar, const U(&v)[N], YAS_ENABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char, bool)) {
-		  ar.write_seq_size(N-1);
-		  ar.write(v, N-1);
-		  return ar;
-	 }
+    template<typename Archive>
+    static Archive& save(Archive& ar, const T(&v)[N]) {
+        return concepts::const_sized_array::save<N, F>(ar, std::begin(v), std::end(v));
+    }
 
-	 // others
-	 template<typename Archive, typename U>
-	 static Archive& save(Archive& ar, const U(&v)[N], YAS_DISABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char, bool)) {
-		  ar.write_seq_size(N);
-		  for ( const auto &it: v ) {
-				ar.write(it);
-		  }
-		  return ar;
-	 }
-
-	 template<typename Archive, typename U>
-	 static Archive& load(Archive& ar, U(&v)[N], YAS_ENABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char, bool)) {
-		  const auto size = ar.read_seq_size();
-		  if ( size != N-1 ) YAS_THROW_BAD_ARRAY_SIZE();
-		  ar.read(v, size);
-		  v[size] = 0;
-		  return ar;
-	 }
-
-	 template<typename Archive, typename U>
-	 static Archive& load(Archive& ar, U(&v)[N], YAS_DISABLE_IF_IS_ANY_OF(U, char, signed char, unsigned char, bool)) {
-		  const auto size = ar.read_seq_size();
-		  if ( size != N ) YAS_THROW_BAD_ARRAY_SIZE();
-		  for ( auto &it: v ) {
-				ar.read(it);
-		  }
-		  return ar;
-	 }
+    template<typename Archive>
+    static Archive& load(Archive& ar, T(&v)[N]) {
+        return concepts::const_sized_array::load<N, F>(ar, std::begin(v), std::end(v));
+    }
 };
 
 /***************************************************************************/
@@ -101,22 +76,12 @@ struct serializer<
 > {
 	 template<typename Archive>
 	 static Archive& save(Archive& ar, const T(&v)[N]) {
-		  ar.write(YAS_SCAST(std::uint32_t, N));
-		  for ( const auto &it: v ) {
-				ar & it;
-		  }
-		  return ar;
+         return concepts::const_sized_array::save<N, F>(ar, std::begin(v), std::end(v));
 	 }
 
 	 template<typename Archive>
 	 static Archive& load(Archive& ar, T(&v)[N]) {
-		  std::uint32_t size = 0;
-		  ar.read(size);
-		  if ( size != N ) YAS_THROW_BAD_ARRAY_SIZE();
-		  for ( auto &it: v ) {
-				ar & it;
-		  }
-		  return ar;
+         return concepts::const_sized_array::load<N, F>(ar, std::begin(v), std::end(v));
 	 }
 };
 

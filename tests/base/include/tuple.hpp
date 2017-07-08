@@ -39,18 +39,18 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool tuple_test(std::ostream &log, const char* archive_type) {
+bool tuple_test(std::ostream &log, const char *archive_type, const char *test_name) {
 	std::tuple<int, double> v1(33, 3.14), v2;
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & YAS_OBJECT("v1", v1);
+	oa & YAS_OBJECT_NVP("obj", ("v", v1));
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & YAS_OBJECT("v2", v2);
+	ia & YAS_OBJECT_NVP("obj", ("v", v2));
 	if ( v1 != v2 ) {
-		YAS_TEST_REPORT(log, "STD_TUPLE deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
@@ -66,13 +66,13 @@ bool tuple_test(std::ostream &log, const char* archive_type) {
 
 	typename archive_traits::oarchive oa2;
 	archive_traits::ocreate(oa2, archive_type);
-	oa2 & YAS_OBJECT("v3", v3);
+	oa2 & YAS_OBJECT_NVP("obj", ("v", v3));
 
 	typename archive_traits::iarchive ia2;
 	archive_traits::icreate(ia2, oa2, archive_type);
-	ia2 & YAS_OBJECT("v4", v4);
+	ia2 & YAS_OBJECT_NVP("obj", ("v", v4));
 	if ( v3 != v4 ) {
-		YAS_TEST_REPORT(log, "STD_TUPLE deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
@@ -80,14 +80,14 @@ bool tuple_test(std::ostream &log, const char* archive_type) {
 
 	typename archive_traits::oarchive oa3;
 	archive_traits::ocreate(oa3, archive_type);
-	oa3 & YAS_OBJECT("v", std::make_tuple(33,44));
+	oa3 & YAS_OBJECT_NVP("obj", ("v", std::make_tuple(33,44)));
 
 	typename archive_traits::iarchive ia3;
 	archive_traits::icreate(ia3, oa3, archive_type);
-	ia3 & YAS_OBJECT("vv", vv);
+	ia3 & YAS_OBJECT_NVP("obj", ("v", vv));
 
 	if ( vv != std::make_tuple(33,44) ) {
-		YAS_TEST_REPORT(log, "STD_TUPLE deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
@@ -96,52 +96,52 @@ bool tuple_test(std::ostream &log, const char* archive_type) {
 
 	typename archive_traits::oarchive oa4;
 	archive_traits::ocreate(oa4, archive_type);
-	oa4 & YAS_OBJECT("v5", v5);
+	oa4 & YAS_OBJECT_NVP("obj", ("v", v5));
 
 	typename archive_traits::iarchive ia4;
 	archive_traits::icreate(ia4, oa4, archive_type);
-	ia4 & YAS_OBJECT("v6", v6);
+	ia4 & YAS_OBJECT_NVP("obj", ("v", v6));
 	if ( v5 != v6 ) {
-		YAS_TEST_REPORT(log, "STD_TUPLE deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
 	typename archive_traits::oarchive oa5;
 	archive_traits::ocreate(oa5, archive_type);
 	auto vvv = std::make_tuple<std::uint64_t, std::string>(33, "str");
-	oa5 & YAS_OBJECT("vvv", std::move(vvv));
+	oa5 & YAS_OBJECT_NVP("obj", ("v", std::move(vvv)));
 
 	typename archive_traits::iarchive ia5;
 	archive_traits::icreate(ia5, oa5, archive_type);
-	ia5 & YAS_OBJECT("v6", v6);
+	ia5 & YAS_OBJECT_NVP("obj", ("v", v6));
 	if ( v5 != v6 ) {
-		YAS_TEST_REPORT(log, "STD_TUPLE deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
 	std::tuple<> et0, et1;
 	typename archive_traits::oarchive oa6;
 	archive_traits::ocreate(oa6, archive_type);
-	oa6 & YAS_OBJECT("et0", et0);
+	oa6 & YAS_OBJECT_NVP("obj", ("et", et0));
 
 	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
 		const size_t current_size = oa6.size();
 		if ( current_size != (archive_traits::oarchive_type::header_size()+1) ) {
-			YAS_TEST_REPORT(log, "STD_TUPLE serialization error!");
+			YAS_TEST_REPORT(log, archive_type, test_name);
 			return false;
 		}
 	}
 	if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
 		const size_t current_size = oa6.size();
 		if ( current_size != (archive_traits::oarchive_type::header_size()+1/*len of next field*/+1/*size marker*/) ) {
-			YAS_TEST_REPORT(log, "STD_TUPLE serialization error!");
+			YAS_TEST_REPORT(log, archive_type, test_name);
 			return false;
 		}
 	}
 
 	typename archive_traits::iarchive ia6;
 	archive_traits::icreate(ia6, oa6, archive_type);
-	ia6 & YAS_OBJECT("et1", et1);
+	ia6 & YAS_OBJECT_NVP("obj", ("et", et1));
 
 	return true;
 }

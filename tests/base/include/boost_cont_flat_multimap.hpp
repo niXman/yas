@@ -39,23 +39,23 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool boost_cont_flat_multimap_test(std::ostream &log, const char* archive_type) {
+bool boost_cont_flat_multimap_test(std::ostream &log, const char *archive_type, const char *test_name) {
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
-	boost::container::flat_multimap<int, int> pod_map, pod_map2;
-	pod_map.emplace(1, 2);
-	pod_map.emplace(3, 3);
-	pod_map.emplace(3, 4);
+	boost::container::flat_multimap<int, int> int_map, int_map2;
+	int_map.emplace(1, 2);
+	int_map.emplace(3, 3);
+	int_map.emplace(3, 4);
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & YAS_OBJECT("pod_map", pod_map);
+	oa & YAS_OBJECT_NVP("obj", ("int_map", int_map));
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & YAS_OBJECT("pod_map2", pod_map2);
+	ia & YAS_OBJECT_NVP("obj", ("int_map", int_map2));
 
-	if ( pod_map != pod_map2 ) {
-	YAS_TEST_REPORT(log, "BOOST::CONTAINER::FLAT_MULTIMAP deserialization error!");
+	if ( int_map != int_map2 ) {
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
@@ -66,14 +66,14 @@ bool boost_cont_flat_multimap_test(std::ostream &log, const char* archive_type) 
 
 	typename archive_traits::oarchive oa2;
 	archive_traits::ocreate(oa2, archive_type);
-	oa2 & YAS_OBJECT("map", map);
+	oa2 & YAS_OBJECT_NVP("obj", ("map", map));
 
 	typename archive_traits::iarchive ia2;
 	archive_traits::icreate(ia2, oa2, archive_type);
-	ia2 & YAS_OBJECT("map2", map2);
+	ia2 & YAS_OBJECT_NVP("obj", ("map", map2));
 
 	if ( map != map2 ) {
-		YAS_TEST_REPORT(log, "BOOST::CONTAINER::FLAT_MULTIMAP deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
@@ -84,14 +84,14 @@ bool boost_cont_flat_multimap_test(std::ostream &log, const char* archive_type) 
 
 	typename archive_traits::oarchive oa3;
 	archive_traits::ocreate(oa3, archive_type);
-	oa3 & YAS_OBJECT("map3", map3);
+	oa3 & YAS_OBJECT_NVP("obj", ("map", map3));
 
 	typename archive_traits::iarchive ia3;
 	archive_traits::icreate(ia3, oa3, archive_type);
-	ia3 & YAS_OBJECT("map4", map4);
+	ia3 & YAS_OBJECT_NVP("obj", ("map", map4));
 
 	if ( map3 != map4 ) {
-		YAS_TEST_REPORT(log, "BOOST::CONTAINER::FLAT_MULTIMAP deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 

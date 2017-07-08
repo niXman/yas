@@ -39,14 +39,15 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool header_test(std::ostream &log, const char* archive_type) {
+bool header_test(std::ostream &log, const char* archive_type, const char *test_name) {
     (void)log;
 	(void)archive_type;
+    (void)test_name;
 
     {
         using oa = yas::binary_oarchive<yas::mem_ostream>;
         static_assert(oa::type() == yas::binary, "");
-        static_assert(YAS_BIG_ENDIAN() ? oa::is_big_endian() : oa::is_little_endian(), "");
+        static_assert(YAS_BIG_ENDIAN ? oa::is_big_endian() : oa::is_little_endian(), "");
         static_assert(oa::is_writable(), "");
         static_assert(!oa::is_readable(), "");
     }
@@ -58,6 +59,15 @@ bool header_test(std::ostream &log, const char* archive_type) {
         yas::mem_istream is(os.get_intrusive_buffer());
         yas::binary_iarchive<yas::mem_istream> ia(is);
     }
+
+    {
+        static_assert(yas::binary_oarchive<yas::mem_ostream>::flags() & yas::ehost, "");
+        static_assert(yas::text_oarchive<yas::mem_ostream>::flags() & yas::ehost, "");
+
+        static_assert(!(yas::binary_oarchive<yas::mem_ostream, yas::binary|yas::ebig>::flags() & yas::ehost), "");
+        static_assert(!(yas::text_oarchive<yas::mem_ostream, yas::text|yas::elittle>::flags() & yas::ehost), "");
+    }
+
     return true;
 }
 

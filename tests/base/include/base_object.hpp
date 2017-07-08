@@ -38,24 +38,23 @@
 
 /***************************************************************************/
 
-namespace {
+namespace _base_object_test {
 
 struct base {
-	int x;
-
     base()
         :x{}
     {}
 
 	template<typename archive_type>
 	void serialize(archive_type& ar) {
-		ar & YAS_OBJECT("base", x);
+        auto o = YAS_OBJECT("base", x);
+		ar & o;
 	}
+
+    int x;
 };
 
 struct derived: base {
-	int y;
-
     derived()
         :y{}
     {}
@@ -63,27 +62,31 @@ struct derived: base {
 	template<typename archive_type>
 	void serialize(archive_type& ar) {
 		auto &x = yas::base_object<base>(*this);
-		ar & YAS_OBJECT("derived", x, y);
+        auto o = YAS_OBJECT("derived", y, x);
+		ar & o;
 	}
+
+	int y;
 };
 
-} // namespace
+} // ns _base_object_test
 
 template<typename archive_traits>
-bool base_object_test(std::ostream &log, const char* archive_type) {
-	derived d1, d2;
-	d1.x = 2;d1.y = 5;
+bool base_object_test(std::ostream &log, const char* archive_type, const char *test_name) {
+    _base_object_test::derived d1, d2;
+	d1.x = 2;
+    d1.y = 5;
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & YAS_OBJECT("save_d1", d1);
+	oa & d1;
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & YAS_OBJECT("load_d2", d2);
+	ia & d2;
 
 	if ( d1.x != d2.x || d1.y != d2.y ) {
-		YAS_TEST_REPORT(log, "BASE_OBJECT deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 

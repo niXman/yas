@@ -39,18 +39,18 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool boost_tuple_test(std::ostream &log, const char* archive_type) {
-	boost::tuple<int, double> v1(33, 3.14), v2;
+bool boost_tuple_test(std::ostream &log, const char *archive_type, const char *test_name) {
+	boost::tuple<int, double> t1(33, 3.14), t2;
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & YAS_OBJECT("v1", v1);
+	oa & YAS_OBJECT_NVP("obj", ("tuple", t1));
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & YAS_OBJECT("v2", v2);
-	if ( v1 != v2 ) {
-		YAS_TEST_REPORT(log, "BOOST_TUPLE deserialization error!");
+	ia & YAS_OBJECT_NVP("obj", ("tuple", t2));
+	if ( t1 != t2 ) {
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
@@ -62,41 +62,41 @@ bool boost_tuple_test(std::ostream &log, const char* archive_type) {
 	boost::tuple<
 		std::string,
 		std::set<std::string>
-	> v3("1", std::move(set)), v4;
+	> t3("1", std::move(set)), t4;
 
 	typename archive_traits::oarchive oa2;
 	archive_traits::ocreate(oa2, archive_type);
-	oa2 & YAS_OBJECT("v3", v3);
+	oa2 & YAS_OBJECT_NVP("obj", ("tuple", t3));
 
 	typename archive_traits::iarchive ia2;
 	archive_traits::icreate(ia2, oa2, archive_type);
-	ia2 & YAS_OBJECT("v4", v4);
-	if ( v3 != v4 ) {
-		YAS_TEST_REPORT(log, "BOOST_TUPLE deserialization error!");
+	ia2 & YAS_OBJECT_NVP("obj", ("tuple", t4));
+	if ( t3 != t4 ) {
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
-	boost::tuple<int, int> vv;
+	boost::tuple<int, int> tt;
 
 	typename archive_traits::oarchive oa3;
 	archive_traits::ocreate(oa3, archive_type);
-	oa3 & YAS_OBJECT("v", boost::make_tuple(33,44));
+	oa3 & YAS_OBJECT_NVP("obj", ("tuple", boost::make_tuple(33,44)));
 
 	typename archive_traits::iarchive ia3;
 	archive_traits::icreate(ia3, oa3, archive_type);
-	ia3 & YAS_OBJECT("vv", vv);
+	ia3 & YAS_OBJECT_NVP("obj", ("tuple", tt));
 
-	if ( vv != boost::make_tuple(33,44) ) {
-		YAS_TEST_REPORT(log, "BOOST_TUPLE deserialization error!");
+	if ( tt != boost::make_tuple(33,44) ) {
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
 	static const char str[] = "str";
-	boost::tuple<std::uint64_t, std::string> v5(33, str), v6;
+	boost::tuple<std::uint64_t, std::string> t5(33, str), t6;
 
 	typename archive_traits::oarchive oa4;
 	archive_traits::ocreate(oa4, archive_type);
-	oa4 & YAS_OBJECT("v5", v5);
+	oa4 & YAS_OBJECT_NVP("obj", ("tuple", t5));
 
     static const std::size_t binary_expected_size =
         archive_traits::oarchive_type::header_size()+ // archive header
@@ -122,13 +122,13 @@ bool boost_tuple_test(std::ostream &log, const char* archive_type) {
         if ( archive_traits::oarchive_type::compacted() ) {
             const size_t current_size = oa4.size();
             if (current_size != binary_compacted_expected_size) {
-				YAS_TEST_REPORT(log, "BOOST_TUPLE deserialization error!");
+				YAS_TEST_REPORT(log, archive_type, test_name);
                 return false;
             }
         } else {
             const size_t current_size = oa4.size();
             if (current_size != binary_expected_size) {
-				YAS_TEST_REPORT(log, "BOOST_TUPLE deserialization error!");
+				YAS_TEST_REPORT(log, archive_type, test_name);
                 return false;
             }
         }
@@ -136,34 +136,34 @@ bool boost_tuple_test(std::ostream &log, const char* archive_type) {
 	if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
 		const size_t current_size = oa4.size();
 		if ( current_size != text_expected_size ) {
-			YAS_TEST_REPORT(log, "BOOST_TUPLE deserialization error!");
+			YAS_TEST_REPORT(log, archive_type, test_name);
 			return false;
 		}
 	}
 
 	typename archive_traits::iarchive ia4;
 	archive_traits::icreate(ia4, oa4, archive_type);
-	ia4 & YAS_OBJECT("v6", v6);
-	if ( v5 != v6 ) {
-		YAS_TEST_REPORT(log, "BOOST_TUPLE deserialization error!");
+	ia4 & YAS_OBJECT_NVP("obj", ("tuple", t6));
+	if ( t5 != t6 ) {
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
 	typename archive_traits::oarchive oa5;
 	archive_traits::ocreate(oa5, archive_type);
 	auto v = boost::make_tuple<std::uint64_t, std::string>(33, "str");
-	oa5 & YAS_OBJECT("v", std::move(v));
+	oa5 & YAS_OBJECT_NVP("obj", ("tuple", std::move(v)));
 
 	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
         const size_t current_size = oa5.size();
         if ( archive_traits::oarchive_type::compacted() ) {
             if (current_size != binary_compacted_expected_size) {
-				YAS_TEST_REPORT(log, "BOOST_TUPLE deserialization error!");
+				YAS_TEST_REPORT(log, archive_type, test_name);
                 return false;
             }
         } else {
             if (current_size != binary_expected_size) {
-				YAS_TEST_REPORT(log, "BOOST_TUPLE deserialization error!");
+				YAS_TEST_REPORT(log, archive_type, test_name);
                 return false;
             }
         }
@@ -171,40 +171,40 @@ bool boost_tuple_test(std::ostream &log, const char* archive_type) {
 	if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
 		const size_t current_size = oa5.size();
 		if ( current_size != text_expected_size ) {
-			YAS_TEST_REPORT(log, "BOOST_TUPLE deserialization error!");
+			YAS_TEST_REPORT(log, archive_type, test_name);
 			return false;
 		}
 	}
 
 	typename archive_traits::iarchive ia5;
 	archive_traits::icreate(ia5, oa5, archive_type);
-	ia5 & YAS_OBJECT("v6", v6);
-	if ( v5 != v6 ) {
-		YAS_TEST_REPORT(log, "BOOST_TUPLE deserialization error!");
+	ia5 & YAS_OBJECT_NVP("obj", ("tuple", t6));
+	if ( t5 != t6 ) {
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
 	boost::tuple<> et0, et1;
 	typename archive_traits::oarchive oa6;
 	archive_traits::ocreate(oa6, archive_type);
-	oa6 & YAS_OBJECT("et0", et0);
+	oa6 & YAS_OBJECT_NVP("obj", ("tuple", et0));
 
 	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
 		if ( oa6.size() != (archive_traits::oarchive_type::header_size()+1) ) {
-			YAS_TEST_REPORT(log, "BOOST_TUPLE serialization error!");
+			YAS_TEST_REPORT(log, archive_type, test_name);
 			return false;
 		}
 	}
 	if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
 		if ( oa6.size() != (archive_traits::oarchive_type::header_size()+1/*len of next field*/+1/*size marker*/) ) {
-			YAS_TEST_REPORT(log, "BOOST_TUPLE serialization error!");
+			YAS_TEST_REPORT(log, archive_type, test_name);
 			return false;
 		}
 	}
 
 	typename archive_traits::iarchive ia6;
 	archive_traits::icreate(ia6, oa6, archive_type);
-	ia6 & YAS_OBJECT("et1", et1);
+	ia6 & YAS_OBJECT_NVP("obj", ("tuple", et1));
 
 	return true;
 }

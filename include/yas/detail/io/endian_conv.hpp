@@ -65,14 +65,7 @@ struct endian_converter;
 template<>
 struct endian_converter<false> {
 	template<typename T>
-	static T bswap(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::uint16_t))
-	{ return v; }
-	template<typename T>
-	static T bswap(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t, std::uint32_t))
-	{ return v; }
-	template<typename T>
-	static T bswap(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t, std::uint64_t))
-	{ return v; }
+	static T bswap(const T &v) { return v; }
 
 	template<typename T>
 	static typename storage_type<T>::type

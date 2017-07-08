@@ -39,19 +39,19 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool endian_test(std::ostream &log, const char* archive_type) {
+bool endian_test(std::ostream &log, const char *archive_type, const char *test_name) {
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
 
 	if ( ia->is_big_endian() != oa->is_big_endian() ) {
-		YAS_TEST_REPORT(log, "ENDIAN test failed! endianness is not equal!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
 	if ( ia->is_little_endian() != oa->is_little_endian() ) {
-		YAS_TEST_REPORT(log, "ENDIAN test failed! endianness is not equal!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 

@@ -39,19 +39,19 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool deque_test(std::ostream &log, const char* archive_type) {
+bool deque_test(std::ostream &log, const char *archive_type, const char *test_name) {
 	std::deque<int> deq1 = {0,1,2,3,4,5,6,7,8,9}, deq2;
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & YAS_OBJECT("deq1", deq1);
+	oa & YAS_OBJECT_NVP("obj", ("deq", deq1));
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & YAS_OBJECT("deq2", deq2);
+	ia & YAS_OBJECT_NVP("obj", ("deq", deq2));
 
 	if ( deq1 != deq2 ) {
-		YAS_TEST_REPORT(log, "DEQUE deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
@@ -59,14 +59,14 @@ bool deque_test(std::ostream &log, const char* archive_type) {
 
 	typename archive_traits::oarchive oa2;
 	archive_traits::ocreate(oa2, archive_type);
-	oa2 & YAS_OBJECT("deq3", deq3);
+	oa2 & YAS_OBJECT_NVP("obj", ("deq", deq3));
 
 	typename archive_traits::iarchive ia2;
 	archive_traits::icreate(ia2, oa2, archive_type);
-	ia2 & YAS_OBJECT("deq4", deq4);
+	ia2 & YAS_OBJECT_NVP("obj", ("deq", deq4));
 
 	if ( deq3 != deq4 ) {
-		YAS_TEST_REPORT(log, "DEQUE deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 

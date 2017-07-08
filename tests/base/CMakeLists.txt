@@ -69,14 +69,15 @@ set(SOURCE_FILES
     include/map.hpp
     include/multimap.hpp
     include/multiset.hpp
-    include/one_function.hpp
-    include/one_method.hpp
+    include/one_func.hpp
+    include/one_memfn.hpp
     include/optional.hpp
     include/pair.hpp
-    include/serialization_methods.hpp
+    include/serialize.hpp
+    include/serialization.hpp
     include/set.hpp
-    include/split_functions.hpp
-    include/split_methods.hpp
+    include/split_func.hpp
+    include/split_memfn.hpp
     include/string.hpp
     include/tuple.hpp
     include/unordered_map.hpp

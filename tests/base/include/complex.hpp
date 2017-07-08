@@ -39,50 +39,49 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool complex_test(std::ostream &log, const char* archive_type) {
+bool complex_test(std::ostream &log, const char *archive_type, const char *test_name) {
 	std::complex<float> cf1(3.14f, 3.15f), cf2;
-	std::complex<double> cd1(3.16, 3.17), cd2;
-	std::complex<std::int32_t> ci1(318, 319), ci2;
-
 	{
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type);
-		oa & YAS_OBJECT("cf1", cf1);
+		oa & YAS_OBJECT_NVP("obj", ("v0", cf1));
 
 		typename archive_traits::iarchive ia;
 		archive_traits::icreate(ia, oa, archive_type);
-		ia & YAS_OBJECT("cf2", cf2);
+		ia & YAS_OBJECT_NVP("obj", ("v0", cf2));
 	}
 	if ( cf1 != cf2 ) {
-		YAS_TEST_REPORT(log, "COMPLEX deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
+	std::complex<double> cd1(3.16, 3.17), cd2;
 	{
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type);
-		oa & YAS_OBJECT("cd1", cd1);
+		oa & YAS_OBJECT_NVP("obj", ("v0", cd1));
 
 		typename archive_traits::iarchive ia;
 		archive_traits::icreate(ia, oa, archive_type);
-		ia & YAS_OBJECT("cd2", cd2);
+		ia & YAS_OBJECT_NVP("obj", ("v0", cd2));
 	}
 	if ( cd1 != cd2 ) {
-		YAS_TEST_REPORT(log, "COMPLEX deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
+	std::complex<std::int32_t> ci1(318, 319), ci2;
 	{
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type);
-		oa & YAS_OBJECT("ci1", ci1);
+		oa & YAS_OBJECT_NVP("obj", ("v0", ci1));
 
 		typename archive_traits::iarchive ia;
 		archive_traits::icreate(ia, oa, archive_type);
-		ia & YAS_OBJECT("ci2", ci2);
+		ia & YAS_OBJECT_NVP("obj", ("v0", ci2));
 	}
 	if ( ci1 != ci2 ) {
-		YAS_TEST_REPORT(log, "COMPLEX deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 

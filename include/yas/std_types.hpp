@@ -38,26 +38,26 @@
 
 #include <yas/detail/config/config.hpp>
 
-#include <yas/types/std/std_pair_serializers.hpp>
-#include <yas/types/std/std_bitset_serializers.hpp>
-#include <yas/types/std/std_chrono_serializers.hpp>
-#include <yas/types/std/std_optional_serializers.hpp>
-#include <yas/types/std/std_complex_serializers.hpp>
-#include <yas/types/std/std_string_serializers.hpp>
-#include <yas/types/std/std_wstring_serializers.hpp>
-#include <yas/types/std/std_vector_serializers.hpp>
-#include <yas/types/std/std_list_serializers.hpp>
-#include <yas/types/std/std_forward_list_serializers.hpp>
-#include <yas/types/std/std_map_serializers.hpp>
-#include <yas/types/std/std_set_serializers.hpp>
-#include <yas/types/std/std_deque_serializers.hpp>
-#include <yas/types/std/std_multimap_serializers.hpp>
-#include <yas/types/std/std_multiset_serializers.hpp>
-#include <yas/types/std/std_array_serializers.hpp>
-#include <yas/types/std/std_tuple_serializers.hpp>
-#include <yas/types/std/std_unordered_set_serializers.hpp>
-#include <yas/types/std/std_unordered_map_serializers.hpp>
-#include <yas/types/std/std_unordered_multiset_serializers.hpp>
-#include <yas/types/std/std_unordered_multimap_serializers.hpp>
+#include <yas/types/std/pair.hpp>
+#include <yas/types/std/bitset.hpp>
+#include <yas/types/std/chrono.hpp>
+#include <yas/types/std/optional.hpp>
+#include <yas/types/std/complex.hpp>
+#include <yas/types/std/string.hpp>
+#include <yas/types/std/wstring.hpp>
+#include <yas/types/std/vector.hpp>
+#include <yas/types/std/list.hpp>
+#include <yas/types/std/forward_list.hpp>
+#include <yas/types/std/map.hpp>
+#include <yas/types/std/set.hpp>
+#include <yas/types/std/deque.hpp>
+#include <yas/types/std/multimap.hpp>
+#include <yas/types/std/multiset.hpp>
+#include <yas/types/std/array.hpp>
+#include <yas/types/std/tuple.hpp>
+#include <yas/types/std/unordered_set.hpp>
+#include <yas/types/std/unordered_map.hpp>
+#include <yas/types/std/unordered_multiset.hpp>
+#include <yas/types/std/unordered_multimap.hpp>
 
 #endif // __yas__std_types_hpp

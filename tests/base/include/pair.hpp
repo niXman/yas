@@ -39,19 +39,19 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool pair_test(std::ostream &log, const char* archive_type) {
+bool pair_test(std::ostream &log, const char *archive_type, const char *test_name) {
 	std::pair<std::wstring, std::string> p = std::make_pair(L"wstring wstring", "string string"), pp;
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & YAS_OBJECT("p", p);
+	oa & YAS_OBJECT_NVP("obj", ("p", p));
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & YAS_OBJECT("pp", pp);
+	ia & YAS_OBJECT_NVP("obj", ("p", pp));
 
 	if ( p != pp ) {
-		YAS_TEST_REPORT(log, "PAIR deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 

@@ -39,9 +39,10 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool boost_fusion_set_test(std::ostream &log, const char* archive_type) {
+bool boost_fusion_set_test(std::ostream &log, const char *archive_type, const char *test_name) {
 	((void)log);
 	((void)archive_type);
+    ((void)test_name);
 
 	return true;
 }

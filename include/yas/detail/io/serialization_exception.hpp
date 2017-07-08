@@ -47,22 +47,45 @@ YAS_DECLARE_EXCEPTION_TYPE(serialization_exception)
 /***************************************************************************/
 
 #define YAS_THROW_BAD_ARRAY_SIZE() \
-	YAS_THROW_EXCEPTION(serialization_exception, "bad array size");
+	YAS_THROW_EXCEPTION(::yas::serialization_exception, "bad array size");
 
 #define YAS_THROW_SPACE_IS_EXPECTED() \
-	YAS_THROW_EXCEPTION(serialization_exception, "space symbol is expected");
+	YAS_THROW_EXCEPTION(::yas::serialization_exception, "space symbol is expected");
 
 #define YAS_THROW_BAD_SIZE_OF_ENUM() \
-	YAS_THROW_EXCEPTION(serialization_exception, "bad size of enum");
+	YAS_THROW_EXCEPTION(::yas::serialization_exception, "bad size of enum");
 
 #define YAS_THROW_BAD_BITSET_SIZE() \
-	YAS_THROW_EXCEPTION(serialization_exception, "bad bitset size");
+	YAS_THROW_EXCEPTION(::yas::serialization_exception, "bad bitset size");
 
 #define YAS_THROW_BAD_BITSET_STORAGE_SIZE() \
-	YAS_THROW_EXCEPTION(serialization_exception, "bad bitset storage size");
+	YAS_THROW_EXCEPTION(::yas::serialization_exception, "bad bitset storage size");
 
 #define YAS_THROW_BAD_SIZE_ON_DESERIALIZE(type) \
-	YAS_THROW_EXCEPTION(serialization_exception, "bad size on deserialize " type);
+	YAS_THROW_EXCEPTION(::yas::serialization_exception, "bad size on deserialize " type);
+
+#define YAS_THROW_IF_BAD_JSON_CHARS(ar, chars) \
+    if ( !(ar.read_and_check(chars)) ) { \
+        YAS_THROW_EXCEPTION(::yas::serialization_exception, "no expected chars '" chars "'"); \
+    }
+
+#define YAS_THROW_IF_BAD_JSON_KEY(ar, keystr, keylen) { \
+        char keybuf[1024]; \
+        const std::size_t minlen = std::min(sizeof(keybuf), keylen); \
+        ar.read(keybuf, minlen); \
+        if ( std::memcmp(keybuf, keystr, minlen) ) { \
+            YAS_THROW_EXCEPTION(::yas::serialization_exception, "bad or unexpected json key"); \
+        } \
+    }
+
+#define YAS_THROW_JSON_NONCOMPACTED_MODE_IS_NOT_IMPLEMENTED() \
+    YAS_THROW_EXCEPTION(::yas::serialization_exception, "currently json archives supports only \"yas::compacted\" mode");
+
+#define YAS_THROW_INVALID_JSON_STRING(msg) \
+    YAS_THROW_EXCEPTION(::yas::serialization_exception, msg);
+
+#define YAS_THROW_BASE64_ERROR(msg) \
+    YAS_THROW_EXCEPTION(::yas::serialization_exception, msg);
 
 /***************************************************************************/
 

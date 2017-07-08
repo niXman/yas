@@ -49,8 +49,8 @@ int main() {
 		std::uint32_t v = 33, v2 = 0;
 		yas::mem_ostream os;
 		yas::binary_oarchive<yas::mem_ostream, base_flags|yas::endian_as_host> oa(os);
-		assert(YAS_LITTLE_ENDIAN() ? oa.is_little_endian() : 1);
-		assert(YAS_BIG_ENDIAN() ? oa.is_big_endian() : 1);
+		assert(YAS_LITTLE_ENDIAN ? oa.is_little_endian() : 1);
+		assert(YAS_BIG_ENDIAN ? oa.is_big_endian() : 1);
 		oa & v;
 
 		const yas::intrusive_buffer buf = os.get_intrusive_buffer();
@@ -58,8 +58,8 @@ int main() {
 
 		yas::mem_istream is(os.get_intrusive_buffer());
 		yas::binary_iarchive<yas::mem_istream, base_flags|yas::endian_as_host> ia(is);
-		assert(YAS_LITTLE_ENDIAN() ? ia.is_little_endian() : 1);
-		assert(YAS_BIG_ENDIAN() ? ia.is_big_endian() : 1);
+		assert(YAS_LITTLE_ENDIAN ? ia.is_little_endian() : 1);
+		assert(YAS_BIG_ENDIAN ? ia.is_big_endian() : 1);
 		ia & v2;
 
 		assert(v == v2);

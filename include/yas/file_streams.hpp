@@ -47,28 +47,38 @@ namespace yas {
 
 /***************************************************************************/
 
-enum file_mode { file_none, file_append, file_trunc };
+enum file_mode {
+     file_trunc  = 1u<<0
+    ,file_append = 1u<<1
+    ,file_nobuf  = 1u<<2
+};
 
 /***************************************************************************/
 
 struct file_ostream {
 	YAS_NONCOPYABLE(file_ostream)
+    YAS_MOVABLE(file_ostream)
 
-	file_ostream(file_ostream &&) = default;
-	file_ostream& operator= (file_ostream &&) = default;
-
-	file_ostream(const char *fname, file_mode m = file_mode::file_none)
-		:file(0)
+	file_ostream(const char *fname, std::size_t m = 0)
+		:file(nullptr)
 	{
 		const bool exists = file_exists(fname);
-		if ( m == file_mode::file_none && exists )
-			YAS_THROW_FILE_ALREADY_EXISTS();
-		if ( m == file_mode::file_append && !exists )
-			YAS_THROW_FILE_IS_NOT_EXISTS();
+		if ( exists && !m ) {
+            YAS_THROW_FILE_ALREADY_EXISTS();
+        }
+		if ( !exists && (m & file_append) ) {
+            YAS_THROW_FILE_IS_NOT_EXISTS();
+        }
 
-		file = std::fopen(fname, file_mode_str(m));
-		if ( !file )
-			YAS_THROW_ERROR_OPENING_FILE();
+        const char *fmode = file_mode_str(m);
+		file = std::fopen(fname, fmode);
+		if ( !file ) {
+            YAS_THROW_ERROR_OPENING_FILE();
+        }
+
+        if ( m & file_nobuf ) {
+            std::setvbuf(file, nullptr, _IONBF, 0);
+        }
 	}
 	virtual ~file_ostream() {
 		std::fclose(file);
@@ -81,17 +91,16 @@ struct file_ostream {
 	void flush() { std::fflush(file); }
 
 private:
-	static const char* file_mode_str(file_mode m) {
-		switch ( m ) {
-			case file_mode::file_none:
-			case file_mode::file_trunc:
-				return "wb";
-			case file_mode::file_append:
-				return "ab";
-			default:
-				YAS_THROW_BAD_FILE_MODE();
-		}
-	}
+	static const char* file_mode_str(std::size_t m) {
+        m &= ~file_nobuf;
+        if ( !m || (m & file_trunc) ) {
+            return "wb";
+        } else if ( m & file_append ) {
+            return "ab";
+        }
+
+        YAS_THROW_BAD_FILE_MODE();
+    }
 	static bool file_exists(const char *fname) {
 		FILE* file = std::fopen(fname, "r");
 		if ( file ) {
@@ -108,15 +117,18 @@ private:
 
 struct file_istream {
 	YAS_NONCOPYABLE(file_istream)
+    YAS_MOVABLE(file_istream)
 
-	file_istream(file_istream &&) = default;
-	file_istream& operator= (file_istream &&) = default;
-
-	file_istream(const char *fname)
+	file_istream(const char *fname, std::size_t m = 0)
 		:file(std::fopen(fname, "rb"))
 	{
-		if ( !file )
-			YAS_THROW_ERROR_OPENING_FILE();
+		if ( !file ) {
+            YAS_THROW_ERROR_OPENING_FILE();
+        }
+
+        if ( m & file_nobuf ) {
+            std::setvbuf(file, nullptr, _IONBF, 0);
+        }
 	}
 	virtual ~file_istream() {
 		std::fclose(file);
@@ -125,6 +137,8 @@ struct file_istream {
 	std::size_t read(void *ptr, std::size_t size) {
 		return std::fread(ptr, 1, size, file);
 	}
+
+	bool ungetch(char ch) { return std::ungetc(ch, file) == ch; }
 
 private:
 	std::FILE *file;

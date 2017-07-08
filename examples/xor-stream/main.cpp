@@ -33,50 +33,50 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#include <iostream>
-#include <string>
-
 #include <yas/mem_streams.hpp>
 #include <yas/text_oarchive.hpp>
 #include <yas/text_iarchive.hpp>
 #include <yas/std_types.hpp>
+#include <yas/tools/hexdumper.hpp>
+
+#include <iostream>
 
 /***************************************************************************/
 
 struct my_ostream: yas::mem_ostream {
-	my_ostream(const char key)
-		:yas::mem_ostream()
-		,key(key)
-	{}
+    my_ostream(const char key)
+        :yas::mem_ostream()
+        ,key(key)
+    {}
 
-	std::size_t write(const void *ptr, const std::size_t size) {
-		const char *sp = ((const char*)ptr);
-		for ( std::size_t idx = 0; idx < size; ++idx ) {
-			const char ch = *sp++ ^ key;
-			yas::mem_ostream::write(&ch, sizeof(ch));
-		}
-		return size;
-	}
+    std::size_t write(const void *ptr, const std::size_t size) {
+        const char *sp = ((const char*)ptr);
+        for ( std::size_t idx = 0; idx < size; ++idx ) {
+            const char ch = *sp++ ^ key;
+            yas::mem_ostream::write(&ch, sizeof(ch));
+        }
+        return size;
+    }
 
 private:
-	const char key;
+    const char key;
 };
 
 struct my_istream: yas::mem_istream {
-	my_istream(const yas::intrusive_buffer &buf, const char key)
-		:yas::mem_istream(buf)
-		,key(key)
-	{}
+    my_istream(const yas::intrusive_buffer &buf, const char key)
+        :yas::mem_istream(buf)
+        ,key(key)
+    {}
 
-	std::size_t read(void *ptr, const std::size_t size) {
-		char *sp = ((char*)ptr);
-		for ( std::size_t idx = 0; idx < size; ++idx ) {
-			char ch = 0;
-			yas::mem_istream::read(&ch, sizeof(ch));
-			*sp++ = (ch ^ key);
-		}
-		return size;
-	}
+    std::size_t read(void *ptr, const std::size_t size) {
+        char *sp = ((char*)ptr);
+        for ( std::size_t idx = 0; idx < size; ++idx ) {
+            char ch = 0;
+            yas::mem_istream::read(&ch, sizeof(ch));
+            *sp++ = (ch ^ key);
+        }
+        return size;
+    }
 
 private:
 	const char key;
@@ -85,19 +85,24 @@ private:
 /***************************************************************************/
 
 int main() {
-	const char key = 0x33;
-	std::string src = "my mega super string", dst;
+    const char key = 0x33;
+    std::string src = "my mega super string", dst;
 
-	my_ostream os(key);
-	yas::text_oarchive<my_ostream> oa(os);
-	oa & src;
+    my_ostream os(key);
+    yas::text_oarchive<my_ostream> oa(os);
+    oa & YAS_OBJECT_NVP("object", ("v", src));
 
-	my_istream is(os.get_intrusive_buffer(), key);
-	yas::text_iarchive<my_istream> ia(is);
-	ia & dst;
+    const yas::intrusive_buffer ibuf = os.get_intrusive_buffer();
+    std::cout << "hexdump:" << std::endl;
+    yas::hex_dump(std::cout, ibuf.data, ibuf.size);
+    std::cout << std::endl;
 
-	if ( src != dst )
-		YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
+    my_istream is(ibuf, key);
+    yas::text_iarchive<my_istream> ia(is);
+    ia & YAS_OBJECT_NVP("object", ("v", dst));
+
+    if ( src != dst )
+        YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
 }
 
 /***************************************************************************/

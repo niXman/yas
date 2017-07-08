@@ -39,7 +39,7 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool boost_cont_deque_test(std::ostream &log, const char* archive_type) {
+bool boost_cont_deque_test(std::ostream &log, const char* archive_type, const char *test_name) {
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
 	boost::container::deque<int> deq1, deq2;
 	deq1.push_back(0);
@@ -55,14 +55,14 @@ bool boost_cont_deque_test(std::ostream &log, const char* archive_type) {
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & YAS_OBJECT("deq1", deq1);
+	oa & YAS_OBJECT_NVP("obj", ("deq", deq1));
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & YAS_OBJECT("deq2", deq2);
+	ia & YAS_OBJECT_NVP("obj", ("deq", deq2));
 
 	if ( deq1 != deq2 ) {
-		YAS_TEST_REPORT(log, "BOOST::CONTAINER::DEQUE deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
@@ -73,14 +73,14 @@ bool boost_cont_deque_test(std::ostream &log, const char* archive_type) {
 
 	typename archive_traits::oarchive oa2;
 	archive_traits::ocreate(oa2, archive_type);
-	oa2 & YAS_OBJECT("deq3", deq3);
+	oa2 & YAS_OBJECT_NVP("obj", ("deq", deq3));
 
 	typename archive_traits::iarchive ia2;
 	archive_traits::icreate(ia2, oa2, archive_type);
-	ia2 & YAS_OBJECT("deq4", deq4);
+	ia2 & YAS_OBJECT_NVP("obj", ("deq4", deq4));
 
 	if ( deq3 != deq4 ) {
-		YAS_TEST_REPORT(log, "BOOST::CONTAINER::DEQUE deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 

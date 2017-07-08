@@ -51,26 +51,31 @@
 #include <yas/types/utility/usertype_serializers.hpp>
 #include <yas/types/utility/autoarray_serializers.hpp>
 #include <yas/types/utility/buffer_serializers.hpp>
-#include <yas/types/utility/object.hpp>
 #include <yas/types/utility/value_serializers.hpp>
 #include <yas/types/utility/object_serializers.hpp>
 
 #include <yas/buffers.hpp>
+#include <yas/object.hpp>
 #include <yas/version.hpp>
 
 namespace yas {
 
 /***************************************************************************/
 
-template<typename IS, std::size_t F = text|endian_as_host, typename Trait = yas::detail::default_traits>
+template<
+     typename IS
+    ,std::size_t F = text|ehost
+    ,typename Trait = yas::detail::default_traits
+>
 struct text_iarchive
 	:detail::text_istream<IS, F, Trait>
 	,detail::iarchive_info<F>
 {
 	YAS_NONCOPYABLE(text_iarchive)
+	YAS_MOVABLE(text_iarchive)
 
 	using stream_type = IS;
-	using this_type = text_iarchive<IS, F, Trait>;
+    using this_type = text_iarchive<IS, F, Trait>;
 
 	text_iarchive(IS &is)
 		:detail::text_istream<IS, F, Trait>(is)
@@ -84,7 +89,7 @@ struct text_iarchive
 			typename std::remove_const<T>::type
 		>::type;
 		return serializer<
-			type_properties<real_type>::value
+			 type_properties<real_type>::value
 			,serialization_method<real_type, this_type>::value
 			,F
 			,real_type
@@ -95,7 +100,7 @@ struct text_iarchive
 
 	template<typename Head, typename... Tail>
 	this_type& serialize(Head &&head, Tail &&... tail) {
-		return operator&(std::forward<Head>(head)).serialize(std::forward<Tail>(tail)...);
+		return operator& (std::forward<Head>(head)).serialize(std::forward<Tail>(tail)...);
 	}
 
 	template<typename... Args>

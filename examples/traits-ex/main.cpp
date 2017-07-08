@@ -44,97 +44,96 @@
 
 struct my_traits {
 	// integer -> c-string
-	template<typename T>
-	static std::size_t itoa(char *buf, const std::size_t bufsize, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t)) {
-		return std::snprintf(buf, bufsize, "%d", (v+2));
-	}
-	template<typename T>
-	static std::size_t itoa(char *buf, const std::size_t bufsize, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t)) {
-		return std::snprintf(buf, bufsize, "%d", (v+6));
-	}
-	template<typename T>
-	static std::size_t itoa(char *buf, const std::size_t bufsize, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t)) {
-		return std::snprintf(buf, bufsize, "%" PRId64, (v+10));
-	}
-	template<typename T>
-	static std::size_t utoa(char *buf, const std::size_t bufsize, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t)) {
-		return std::snprintf(buf, bufsize, "%u", (v+4));
-	}
-	template<typename T>
-	static std::size_t utoa(char *buf, const std::size_t bufsize, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint32_t)) {
-		return std::snprintf(buf, bufsize, "%u", (v+8));
-	}
-	template<typename T>
-	static std::size_t utoa(char *buf, const std::size_t bufsize, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint64_t)) {
-		return std::snprintf(buf, bufsize, "%" PRIu64, (v+12));
-	}
+    template<typename T>
+    static std::size_t itoa(char *buf, const std::size_t bufsize, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t)) {
+        return std::snprintf(buf, bufsize, "%d", (v+2));
+    }
+    template<typename T>
+    static std::size_t itoa(char *buf, const std::size_t bufsize, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t)) {
+        return std::snprintf(buf, bufsize, "%d", (v+6));
+    }
+    template<typename T>
+    static std::size_t itoa(char *buf, const std::size_t bufsize, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t)) {
+        return std::snprintf(buf, bufsize, "%" PRId64, (v+10));
+    }
+    template<typename T>
+    static std::size_t utoa(char *buf, const std::size_t bufsize, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t)) {
+        return std::snprintf(buf, bufsize, "%u", (v+4));
+    }
+    template<typename T>
+    static std::size_t utoa(char *buf, const std::size_t bufsize, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint32_t)) {
+        return std::snprintf(buf, bufsize, "%u", (v+8));
+    }
+    template<typename T>
+    static std::size_t utoa(char *buf, const std::size_t bufsize, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint64_t)) {
+        return std::snprintf(buf, bufsize, "%" PRIu64, (v+12));
+    }
 
-	// c-string -> integer
-	template<typename T>
-	static T atoi(const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t)) {
-		return std::strtol(str, 0, 10);
-	}
-	template<typename T>
-	static T atoi(const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t)) {
-		return std::strtol(str, 0, 10);
-	}
-	template<typename T>
-	static T atoi(const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t)) {
-		return std::strtol(str, 0, 10);
-	}
-	template<typename T>
-	static T atou(const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t)) {
-		return std::strtoul(str, 0, 10);
-	}
-	template<typename T>
-	static T atou(const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint32_t)) {
-		return std::strtoul(str, 0, 10);
-	}
-	template<typename T>
-	static T atou(const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint64_t)) {
-		return std::strtoul(str, 0, 10);
-	}
+    // c-string -> integer
+    template<typename T>
+    static T atoi(const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t)) {
+        return std::strtol(str, 0, 10);
+    }
+    template<typename T>
+    static T atoi(const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t)) {
+        return std::strtol(str, 0, 10);
+    }
+    template<typename T>
+    static T atoi(const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t)) {
+        return std::strtol(str, 0, 10);
+    }
+    template<typename T>
+    static T atou(const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t)) {
+        return std::strtoul(str, 0, 10);
+    }
+    template<typename T>
+    static T atou(const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint32_t)) {
+        return std::strtoul(str, 0, 10);
+    }
+    template<typename T>
+    static T atou(const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint64_t)) {
+        return std::strtoul(str, 0, 10);
+    }
 }; // struct my_traits
 
 /***************************************************************************/
 
 template<typename T>
 void test(T val, T expected) {
-	T dst = 0;
-	yas::mem_ostream os;
-	yas::text_oarchive<
-		 yas::mem_ostream
-		,yas::text|yas::endian_as_host
-		,my_traits
-	> oa(os);
-	oa & val;
+    T dst = 0;
+    yas::mem_ostream os;
+    yas::text_oarchive<
+         yas::mem_ostream
+        ,yas::text|yas::endian_as_host
+        ,my_traits
+    > oa(os);
+    oa & YAS_OBJECT_NVP("object", ("v", val));
 
-	yas::mem_istream is(os.get_intrusive_buffer());
-	yas::text_iarchive<
-		 yas::mem_istream
-		,yas::text|yas::endian_as_host
-		,my_traits
-	> ia(is);
-	ia & dst;
+    yas::mem_istream is(os.get_intrusive_buffer());
+    yas::text_iarchive<
+         yas::mem_istream
+        ,yas::text|yas::endian_as_host
+        ,my_traits
+    > ia(is);
+    ia & YAS_OBJECT_NVP("object", ("v", dst));
 
-	if ( dst != expected ) {
-		YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
-	}
+    if ( dst != expected )
+        YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
 }
 
 /***************************************************************************/
 
 int main() {
-	try {
-		test<std::int16_t >(2, 4);
-		test<std::uint16_t>(2, 6);
-		test<std::int32_t >(2, 8);
-		test<std::uint32_t>(2, 10);
-		test<std::int64_t >(2, 12);
-		test<std::uint64_t>(2, 14);
-	} catch (const std::exception &ex) {
-		std::cout << "[exception]: " << ex.what() << std::endl;
-	}
+    try {
+        test<std::int16_t >(2, 4);
+        test<std::uint16_t>(2, 6);
+        test<std::int32_t >(2, 8);
+        test<std::uint32_t>(2, 10);
+        test<std::int64_t >(2, 12);
+        test<std::uint64_t>(2, 14);
+    } catch (const std::exception &ex) {
+        std::cout << "[exception]: " << ex.what() << std::endl;
+    }
 }
 
 /***************************************************************************/

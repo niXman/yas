@@ -39,18 +39,18 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool string_test(std::ostream &log, const char* archive_type) {
+bool string_test(std::ostream &log, const char *archive_type, const char *test_name) {
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	std::string s("string string"), ss;
-	oa & YAS_OBJECT("s", s);
+	std::string s("发送日期 string"), ss;
+	oa & YAS_OBJECT_NVP("obj", ("s", s));
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & YAS_OBJECT("ss", ss);
+    ia & YAS_OBJECT_NVP("obj", ("s", ss));
 
 	if ( ss != s ) {
-		YAS_TEST_REPORT(log, "STD::STRING deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 

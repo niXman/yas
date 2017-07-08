@@ -50,26 +50,27 @@
 #include <yas/types/utility/usertype_serializers.hpp>
 #include <yas/types/utility/autoarray_serializers.hpp>
 #include <yas/types/utility/buffer_serializers.hpp>
-#include <yas/types/utility/object.hpp>
 #include <yas/types/utility/value_serializers.hpp>
 #include <yas/types/utility/object_serializers.hpp>
 
 #include <yas/buffers.hpp>
+#include <yas/object.hpp>
 #include <yas/version.hpp>
 
 namespace yas {
 
 /***************************************************************************/
 
-template<typename IS, std::size_t F = binary|endian_as_host>
+template<typename IS, std::size_t F = binary|ehost>
 struct binary_iarchive
 	:detail::binary_istream<IS, F>
-		,detail::iarchive_info<F>
+    ,detail::iarchive_info<F>
 {
-	YAS_NONCOPYABLE(binary_iarchive)
+    YAS_NONCOPYABLE(binary_iarchive)
+    YAS_MOVABLE(binary_iarchive)
 
 	using stream_type = IS;
-	using this_type = binary_iarchive<IS, F>;
+    using this_type = binary_iarchive<IS, F>;
 
 	binary_iarchive(IS &is)
 		:detail::binary_istream<IS, F>(is)
@@ -83,7 +84,7 @@ struct binary_iarchive
 			typename std::remove_const<T>::type
 		>::type;
 		return serializer<
-			type_properties<real_type>::value
+			 type_properties<real_type>::value
 			,serialization_method<real_type, this_type>::value
 			,F
 			,real_type
@@ -94,11 +95,11 @@ struct binary_iarchive
 
 	template<typename Head, typename... Tail>
 	this_type& serialize(Head &&head, Tail&&... tail) {
-		return operator&(std::forward<Head>(head)).serialize(std::forward<Tail>(tail)...);
+		return operator& (std::forward<Head>(head)).serialize(std::forward<Tail>(tail)...);
 	}
 
 	template<typename... Args>
-	this_type& operator()(Args&&... args) {
+	this_type& operator()(Args &&... args) {
 		return serialize(std::forward<Args>(args)...);
 	}
 };

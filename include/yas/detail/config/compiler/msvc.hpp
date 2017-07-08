@@ -44,7 +44,7 @@
 #	define noexcept
 #endif // _MSC_VER < 1900 // msvc2015
 
-#if YAS_LITTLE_ENDIAN()
+#if YAS_LITTLE_ENDIAN
 #	define YAS_LOCAL_TO_NETWORK16(src) _byteswap_ushort((src))
 #	define YAS_LOCAL_TO_NETWORK32(src) _byteswap_ulong((src))
 #	define YAS_LOCAL_TO_NETWORK64(src) _byteswap_uint64((src))

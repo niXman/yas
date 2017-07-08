@@ -50,23 +50,24 @@
 #include <yas/types/utility/usertype_serializers.hpp>
 #include <yas/types/utility/autoarray_serializers.hpp>
 #include <yas/types/utility/buffer_serializers.hpp>
-#include <yas/types/utility/object.hpp>
 #include <yas/types/utility/value_serializers.hpp>
 #include <yas/types/utility/object_serializers.hpp>
 
 #include <yas/buffers.hpp>
+#include <yas/object.hpp>
 #include <yas/version.hpp>
 
 namespace yas {
 
 /***************************************************************************/
 
-template<typename OS, std::size_t F = binary|endian_as_host>
+template<typename OS, std::size_t F = binary|ehost>
 struct binary_oarchive
     :detail::binary_ostream<OS, F>
     ,detail::oarchive_info<F>
 {
     YAS_NONCOPYABLE(binary_oarchive)
+    YAS_MOVABLE(binary_oarchive)
 
     using stream_type = OS;
     using this_type = binary_oarchive<OS, F>;
@@ -91,7 +92,7 @@ struct binary_oarchive
 
     template<typename Head, typename... Tail>
     this_type& serialize(const Head &head, const Tail&... tail) {
-        return operator&(head).serialize(tail...);
+        return operator& (head).serialize(tail...);
     }
 
     template<typename... Args>

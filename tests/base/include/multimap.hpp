@@ -39,22 +39,22 @@
 /***************************************************************************/
 
 template<typename archive_traits>
-bool multimap_test(std::ostream &log, const char* archive_type) {
-	std::multimap<int, int> pod_map, pod_map2;
-	pod_map.insert(std::make_pair(1, 2));
-	pod_map.insert(std::make_pair(3, 3));
-	pod_map.insert(std::make_pair(3, 4));
+bool multimap_test(std::ostream &log, const char *archive_type, const char *test_name) {
+	std::multimap<int, int> imap, imap2;
+	imap.insert(std::make_pair(1, 2));
+	imap.insert(std::make_pair(3, 3));
+	imap.insert(std::make_pair(3, 4));
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & YAS_OBJECT("pod_map", pod_map);
+	oa & YAS_OBJECT_NVP("obj", ("map", imap));
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & YAS_OBJECT("pod_map2", pod_map2);
+	ia & YAS_OBJECT_NVP("obj", ("map", imap2));
 
-	if ( pod_map != pod_map2 ) {
-		YAS_TEST_REPORT(log, "MULTIMAP deserialization error!");
+	if ( imap != imap2 ) {
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
@@ -65,14 +65,14 @@ bool multimap_test(std::ostream &log, const char* archive_type) {
 
 	typename archive_traits::oarchive oa2;
 	archive_traits::ocreate(oa2, archive_type);
-	oa2 & YAS_OBJECT("map", map);
+	oa2 & YAS_OBJECT_NVP("obj", ("map", map));
 
 	typename archive_traits::iarchive ia2;
 	archive_traits::icreate(ia2, oa2, archive_type);
-	ia2 & YAS_OBJECT("map2", map2);
+	ia2 & YAS_OBJECT_NVP("obj", ("map", map2));
 
 	if ( map != map2 ) {
-		YAS_TEST_REPORT(log, "MULTIMAP deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
@@ -83,14 +83,14 @@ bool multimap_test(std::ostream &log, const char* archive_type) {
 
 	typename archive_traits::oarchive oa3;
 	archive_traits::ocreate(oa3, archive_type);
-	oa3 & YAS_OBJECT("map3", map3);
+	oa3 & YAS_OBJECT_NVP("obj", ("map", map3));
 
 	typename archive_traits::iarchive ia3;
 	archive_traits::icreate(ia3, oa3, archive_type);
-	ia3 & YAS_OBJECT("map4", map4);
+	ia3 & YAS_OBJECT_NVP("obj", ("map", map4));
 
 	if ( map3 != map4 ) {
-		YAS_TEST_REPORT(log, "MULTIMAP deserialization error!");
+		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
@@ -100,4 +100,3 @@ bool multimap_test(std::ostream &log, const char* archive_type) {
 /***************************************************************************/
 
 #endif // __yas__tests__base__include__multimap_hpp
-

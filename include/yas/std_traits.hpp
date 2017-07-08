@@ -38,6 +38,7 @@
 
 #include <yas/detail/config/config.hpp>
 
+#include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 
@@ -49,17 +50,17 @@ namespace detail {
 struct std_traits {
 	template<typename T>
 	static void atou(T &v, const char *str, std::size_t)
-	{ v = std::strtoull(str, 0, 10); }
+	{ v = YAS_SCAST(T, std::strtoull(str, 0, 10)); }
 	template<typename T>
 	static void atoi(T &v, const char *str, std::size_t)
-	{ v = std::strtoll(str, 0, 10); }
+	{ v = YAS_SCAST(T, std::strtoll(str, 0, 10)); }
 
 	template<typename T>
 	static void utoa(char *buf, const std::size_t bufsize, std::size_t &len, T v)
-	{ len = std::snprintf(buf, bufsize, "%llu", v); }
+	{ len = YAS_SCAST(std::size_t, std::snprintf(buf, bufsize, "%llu", v)); }
 	template<typename T>
 	static void itoa(char *buf, const std::size_t bufsize, std::size_t &len, T v)
-	{ len = std::snprintf(buf, bufsize, "%lld", v); }
+	{ len = YAS_SCAST(std::size_t, std::snprintf(buf, bufsize, "%lld", v)); }
 
 	template<typename T>
 	static void atof(T &v, const char *str, std::size_t)
@@ -70,10 +71,10 @@ struct std_traits {
 
 	template<typename T>
 	static void ftoa(char *buf, const std::size_t bufsize, std::size_t &len, T v)
-	{ len = std::snprintf(buf, bufsize, "%f", v); }
+	{ len = YAS_SCAST(std::size_t, std::snprintf(buf, bufsize, "%f", v)); }
 	template<typename T>
 	static void dtoa(char *buf, const std::size_t bufsize, std::size_t &len, T v)
-	{ len = std::snprintf(buf, bufsize, "%f", v); }
+	{ len = YAS_SCAST(std::size_t, std::snprintf(buf, bufsize, "%f", v)); }
 }; // struct std_traits
 
 /***************************************************************************/

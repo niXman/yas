@@ -40,7 +40,7 @@
 
 /***************************************************************************/
 
-#if YAS_LITTLE_ENDIAN()
+#if YAS_LITTLE_ENDIAN
 #	define YAS_LOCAL_TO_NETWORK16(src) __builtin_bswap16((src))
 #	define YAS_LOCAL_TO_NETWORK32(src) __builtin_bswap32((src))
 #	define YAS_LOCAL_TO_NETWORK64(src) __builtin_bswap64((src))
