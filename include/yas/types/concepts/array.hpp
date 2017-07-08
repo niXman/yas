@@ -62,13 +62,8 @@ Archive& save(Archive &ar, const C &c) {
         if ( can_be_processed_as_byte_array<F, typename C::value_type>::value ) {
             ar.write(c.data(), sizeof(typename C::value_type) * size);
         } else {
-//            for ( const auto &it: c ) {
-//                ar & it;
-//            }
-            auto it = c.data();
-            auto end = it+size;
-            for ( ; it != end; ++it ) {
-                ar & (*it);
+            for ( const auto &it: c ) {
+                ar & it;
             }
         }
     }
@@ -103,13 +98,8 @@ Archive& load(Archive &ar, C &c) {
         if ( can_be_processed_as_byte_array<F, typename C::value_type>::value ) {
             ar.read(c.data(), sizeof(typename C::value_type)*size);
         } else {
-//            for ( auto &it: c ) {
-//                ar & it;
-//            }
-            auto it = c.data();
-            auto end = it+size;
-            for ( ; it != end; ++it ) {
-                ar & (*it);
+            for ( auto &it: c ) {
+                ar & it;
             }
         }
     }
