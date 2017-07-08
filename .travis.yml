@@ -11,9 +11,9 @@ compiler:
 #  - clang
   - gcc
 
-env:
-  - CONFIG=Release
-  #- CONFIG=Debug
+#env:
+#  - CONFIG=Release
+#  - CONFIG=Debug
 
 notifications:
  email:
@@ -48,9 +48,9 @@ before_script:
   - cd $TRAVIS_BUILD_DIR/tests/base
   - mkdir build
   - cd build
-  - cmake -DCMAKE_BUILD_TYPE=$CONFIG ..
+  - cmake -DCMAKE_BUILD_TYPE=Release ..
 
 script:
   - cd $TRAVIS_BUILD_DIR/tests/base/build
-  - cmake --build . --config $CONFIG
+  - cmake --build . --config Release
   - ./yas-base-test binary
