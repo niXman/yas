@@ -242,7 +242,7 @@ struct binary_istream {
                 v = endian_converter<__YAS_BSWAP_NEEDED(F)>::bswap(YAS_SCAST(T, ns));
                 v = (neg ? -v : v);
             } else {
-                YAS_THROW_ON_READ_ERROR(ns, !=, is.read(&v, std::min<std::uint8_t>(sizeof(v), ns)));
+                YAS_THROW_ON_READ_ERROR(ns, !=, is.read(&v, std::min<std::size_t>(sizeof(v), ns)));
                 v = endian_converter<__YAS_BSWAP_NEEDED(F)>::bswap(v);
                 v = (neg ? -v : v);
             }
@@ -264,7 +264,7 @@ struct binary_istream {
             if ( onebyte ) {
                 v = endian_converter<__YAS_BSWAP_NEEDED(F)>::bswap(YAS_SCAST(T, ns));
             } else {
-                YAS_THROW_ON_READ_ERROR(ns, !=, is.read(&v, std::min<std::uint8_t>(sizeof(v), ns)));
+                YAS_THROW_ON_READ_ERROR(ns, !=, is.read(&v, std::min<std::size_t>(sizeof(v), ns)));
                 v = endian_converter<__YAS_BSWAP_NEEDED(F)>::bswap(v);
             }
         } else {
