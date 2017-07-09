@@ -42,7 +42,7 @@ template<typename archive_traits>
 bool array_test(std::ostream &log, const char *archive_type, const char *test_name) {
 	std::array<int, 10> arr1 = {
 		{0,1,2,3,4,5,6,7,8,9}
-	}, arr2{};
+	}, arr2{{}};
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
@@ -77,7 +77,7 @@ bool array_test(std::ostream &log, const char *archive_type, const char *test_na
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
 	boost::array<int, 10> arr5 = {
 		{0,1,2,3,4,5,6,7,8,9}
-	}, arr6{};
+	}, arr6{{}};
 
 	typename archive_traits::oarchive oa3;
 	archive_traits::ocreate(oa3, archive_type);

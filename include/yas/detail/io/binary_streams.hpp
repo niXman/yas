@@ -223,7 +223,7 @@ struct binary_istream {
             const bool neg = YAS_SCAST(bool, (ns >> 7) & 1);
             ns &= ~(1 << 7);
 
-            YAS_THROW_ON_READ_ERROR(ns, !=, is.read(&v, ns));
+            YAS_THROW_ON_READ_ERROR(ns, !=, is.read(&v, std::min<std::uint8_t>(sizeof(v), ns)));
             v = endian_converter<__YAS_BSWAP_NEEDED(F)>::bswap(v);
             v = (neg ? -v : v);
         } else {
@@ -239,7 +239,7 @@ struct binary_istream {
             std::uint8_t ns{};
 
             YAS_THROW_ON_READ_ERROR(sizeof(ns), !=, is.read(&ns, sizeof(ns)));
-            YAS_THROW_ON_READ_ERROR(ns, !=, is.read(&v, ns));
+            YAS_THROW_ON_READ_ERROR(ns, !=, is.read(&v, std::min<std::uint8_t>(sizeof(v), ns)));
             v = endian_converter<__YAS_BSWAP_NEEDED(F)>::bswap(v);
         } else {
             YAS_THROW_ON_READ_ERROR(sizeof(v), !=, is.read(&v, sizeof(v)));

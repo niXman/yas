@@ -277,12 +277,12 @@ public:
 
     static constexpr bool is_big_endian() {
         return YAS_SCAST(bool,
-            (F & options::ehost) ? YAS_BIG_ENDIAN : (F & options::ebig)
+            (F & options::ehost) ? YAS_SCAST(bool, YAS_BIG_ENDIAN) : YAS_SCAST(bool, F & options::ebig)
         );
     }
     static constexpr bool is_little_endian() {
         return YAS_SCAST(bool,
-            (F & options::ehost) ? YAS_LITTLE_ENDIAN : (F & options::elittle)
+            (F & options::ehost) ? YAS_SCAST(bool, YAS_LITTLE_ENDIAN) : YAS_SCAST(bool, F & options::elittle)
         );
     }
     static constexpr options host_endian() {

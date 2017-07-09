@@ -523,7 +523,7 @@ int main(int, char **argv) {
     << "> passed tests: " << passed << std::endl
     << "> failed tests: " << failed << std::endl
     << "> host endian : " << (YAS_LITTLE_ENDIAN ? "little" : "big") << std::endl
-    << "> host bits   : " << sizeof(void *)*CHAR_BIT << std::endl
+    << "> host bits   : " << sizeof(void *)*8 << std::endl
     << "> YAS version : " << YAS_VERSION_STRING << std::endl
     << "/***************************************************/"
     << std::endl;

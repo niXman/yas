@@ -61,7 +61,9 @@
 
 template<typename archive_traits>
 bool optional_test(std::ostream &log, const char *archive_type, const char *test_name) {
+	(void)log;
 	(void)archive_type;
+    (void)test_name;
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
 	{
 		int i0 = 33;
