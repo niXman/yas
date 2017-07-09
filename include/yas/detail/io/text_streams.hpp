@@ -104,7 +104,7 @@ struct text_istream {
 		n = YAS_SCAST(std::uint8_t, n-'0');
 
 		buf[n] = 0;
-		YAS_THROW_ON_READ_ERROR(n, !=, is.read(buf, n));
+        YAS_THROW_ON_READ_ERROR(n, !=, is.read(buf, std::min<std::uint8_t>(sizeof(buf), n)));
 
 		v = Trait::template atoi<T>(buf, n);
 	}
@@ -119,7 +119,7 @@ struct text_istream {
 		n = YAS_SCAST(std::uint8_t, n-'0');
 
 		buf[n] = 0;
-		YAS_THROW_ON_READ_ERROR(n, !=, is.read(buf, n));
+        YAS_THROW_ON_READ_ERROR(n, !=, is.read(buf, std::min<std::uint8_t>(sizeof(buf), n)));
 
 		v = Trait::template atou<T>(buf, n);
 	}
@@ -134,7 +134,7 @@ struct text_istream {
 		n = YAS_SCAST(std::uint8_t, n-'0');
 
 		buf[n] = 0;
-		YAS_THROW_ON_READ_ERROR(n, !=, is.read(buf, n));
+        YAS_THROW_ON_READ_ERROR(n, !=, is.read(buf, std::min<std::uint8_t>(sizeof(buf), n)));
 
 		v = Trait::template atof<T>(buf, n);
 	}
@@ -149,7 +149,7 @@ struct text_istream {
 		n = YAS_SCAST(std::uint8_t, n-'0');
 
 		buf[n] = 0;
-		YAS_THROW_ON_READ_ERROR(n, !=, is.read(buf, n));
+        YAS_THROW_ON_READ_ERROR(n, !=, is.read(buf, std::min<std::uint8_t>(sizeof(buf), n)));
 
 		v = Trait::template atod<T>(buf, n);
 	}
