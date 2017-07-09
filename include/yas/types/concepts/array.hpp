@@ -60,7 +60,7 @@ Archive& save(Archive &ar, const C &c) {
         auto size = c.size();
         ar.write_seq_size(size);
         if ( can_be_processed_as_byte_array<F, typename C::value_type>::value ) {
-            ar.write(c.data(), sizeof(typename C::value_type) * size);
+            ar.write(c.data(), sizeof(typename C::value_type)*size);
         } else {
             for ( const auto &it: c ) {
                 ar & it;

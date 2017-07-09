@@ -7,11 +7,11 @@ Yet Another Serialization
 -![Time](https://github.com/thekvs/cpp-serializers/raw/master/images/time.png)
 
 ===
-* YAS is created as a replacement of boost.serialization because of its insufficient speed of serialization.
-* YAS is header only library. You do not need to link it with your code.
-* YAS does not depend on third-party libraries or boost.
-* YAS require C++11 support.
-* YAS binary archives is endian independent.
+* YAS is created as a replacement of boost.serialization because of its insufficient speed of serialization
+* YAS is header only library
+* YAS does not depend on third-party libraries or boost
+* YAS require C++11 support
+* YAS binary archives is endian independent
 
 ===
 Supported the following types of archives:
@@ -26,6 +26,12 @@ Supported the following compilers:
  - Clang: 3.4, ... - 32/64 bit
  - Intel: (untested)
  - MSVC : 2015, ... - 32/64 bit
+
+===
+TODO:
+* JSON
+* limits
+* message versioning
 
 ===
 Serialization for the following types is supported:
