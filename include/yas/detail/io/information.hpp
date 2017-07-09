@@ -255,7 +255,7 @@ public:
             );
             static constexpr bool compacted = YAS_SCAST(bool, (F & yas::compacted));
 
-            static constexpr archive_header header = {{
+            static const archive_header header = {{
                  YAS_SCAST(std::uint8_t, version() & 15)
                 ,YAS_SCAST(std::uint8_t, artype)
                 ,YAS_SCAST(std::uint8_t, endian)
