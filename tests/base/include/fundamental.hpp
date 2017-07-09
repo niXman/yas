@@ -74,7 +74,7 @@ bool fundamental_test(std::ostream &log, const char *archive_type, const char *t
             +sizeof(d)
             +sizeof(i64max)
             +sizeof(u64max)
-        ,binary_compacted_expected_size = 45
+        ,binary_compacted_expected_size = 39
         ,text_expected_size = 78
         ,json_expected_size = 155
     };
@@ -101,7 +101,8 @@ bool fundamental_test(std::ostream &log, const char *archive_type, const char *t
         case yas::binary: {
             std::size_t exp_size = archive_traits::oarchive_type::header_size() + binary_expected_size;
             std::size_t comp_exp_size = archive_traits::oarchive_type::header_size() + binary_compacted_expected_size;
-            if ( oa.size() != (archive_traits::oarchive_type::compacted() ? comp_exp_size : exp_size) ) {
+            const std::size_t current_size = oa.size();
+            if ( current_size != (archive_traits::oarchive_type::compacted() ? comp_exp_size : exp_size) ) {
                 YAS_TEST_REPORT(log, archive_type, test_name);
                 return false;
             }

@@ -103,14 +103,13 @@ bool boost_fusion_vector_test(std::ostream &log, const char *archive_type, const
         sizeof(std::uint8_t)+ // fusion::vector size marker
         sizeof(std::uint64_t)+ // first type
         sizeof(std::uint64_t)+ // string size marker
-        std::strlen(str) // string length
+        std::strlen(str) // string
     ;
     static const std::size_t binary_compacted_expected_size =
         archive_traits::oarchive_type::header_size()+ // archive header
         sizeof(std::uint8_t)+ // fusion::vector size marker
         1/*len of next field*/+1+/*value*/
-        1/*len of next field*/+1+/*value*/
-        std::strlen(str) // string length
+        1/*string length*/+std::strlen(str) // string
     ;
 	static const std::size_t text_expected_size =
 		archive_traits::oarchive_type::header_size()

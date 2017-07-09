@@ -103,13 +103,13 @@ bool boost_tuple_test(std::ostream &log, const char *archive_type, const char *t
         sizeof(std::uint8_t)+ // fusion::vector size marker
         sizeof(std::uint64_t)+ // first type
         sizeof(std::uint64_t)+ // string size marker
-        std::strlen(str) // string length
+        3 // string length
     ;
     static const std::size_t binary_compacted_expected_size =
         archive_traits::oarchive_type::header_size()+ // archive header
         1+/*fusion::vector size marker*/
-        1+/*len of the next field*/ +1+ /*first type*/
-        2+/*string size marker*/ +std::strlen(str) // string length
+        1+/*len of the next field*/+1+/*first type*/
+        1+/*string size marker*/+3/*string*/
     ;
 	static const std::size_t text_expected_size =
 		archive_traits::oarchive_type::header_size()
@@ -120,13 +120,13 @@ bool boost_tuple_test(std::ostream &log, const char *archive_type, const char *t
 
 	if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
         if ( archive_traits::oarchive_type::compacted() ) {
-            const size_t current_size = oa4.size();
+            const std::size_t current_size = oa4.size();
             if (current_size != binary_compacted_expected_size) {
 				YAS_TEST_REPORT(log, archive_type, test_name);
                 return false;
             }
         } else {
-            const size_t current_size = oa4.size();
+            const std::size_t current_size = oa4.size();
             if (current_size != binary_expected_size) {
 				YAS_TEST_REPORT(log, archive_type, test_name);
                 return false;
@@ -134,7 +134,7 @@ bool boost_tuple_test(std::ostream &log, const char *archive_type, const char *t
         }
 	}
 	if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
-		const size_t current_size = oa4.size();
+		const std::size_t current_size = oa4.size();
 		if ( current_size != text_expected_size ) {
 			YAS_TEST_REPORT(log, archive_type, test_name);
 			return false;
