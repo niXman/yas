@@ -136,7 +136,7 @@ struct binary_ostream {
 
     // for unsigned
     template<typename T>
-    void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
+    void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t, std::size_t)) {
         if ( F & yas::compacted ) {
             if ( v <= (1<<5) ) {
                 std::uint8_t ns = YAS_SCAST(std::uint8_t, v);
