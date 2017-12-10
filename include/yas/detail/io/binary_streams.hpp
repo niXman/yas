@@ -241,7 +241,7 @@ struct binary_istream {
             ns &= ~((1u << 7) | (1u << 6));
             if ( !onebyte ) {
                 typename std::make_unsigned<T>::type av = 0;
-                YAS_THROW_READ_ERROR(ns != is.read(&av, std::min<std::uint8_t>(sizeof(av), ns)));
+                YAS_THROW_READ_ERROR(ns != is.read(&av, std::min<std::size_t>(sizeof(av), ns)));
                 v = YAS_SCAST(T, (neg ? -av : av));
             } else {
                 v = YAS_SCAST(T, (neg ? -ns : ns));
@@ -260,7 +260,7 @@ struct binary_istream {
             const bool onebyte = YAS_SCAST(bool, (ns >> 7) & 1u);
             ns &= ~(1u << 7);
             if ( !onebyte ) {
-                YAS_THROW_READ_ERROR(ns != is.read(&v, std::min<std::uint8_t>(sizeof(v), ns)));
+                YAS_THROW_READ_ERROR(ns != is.read(&v, std::min<std::size_t>(sizeof(v), ns)));
             } else {
                 v = YAS_SCAST(T, ns);
             }
