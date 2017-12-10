@@ -55,6 +55,7 @@ Yet Another Serialization
  - [boost::chrono::duration](http://www.boost.org/doc/libs/1_64_0/doc/html/chrono/reference.html#chrono.reference.cpp0x.duration_hpp.duration)
  - [boost::chrono::time_point](http://www.boost.org/doc/libs/1_64_0/doc/html/chrono/reference.html#chrono.reference.cpp0x.time_point_hpp.time_point)
  - [boost::optional](http://www.boost.org/doc/libs/1_64_0/libs/optional/doc/html/index.html)
+ - [boost::variant](http://www.boost.org/doc/libs/1_64_0/doc/html/variant.html)
  - [boost::container::deque](http://www.boost.org/doc/libs/1_64_0/doc/html/boost/container/deque.html)
  - [boost::container::string](http://www.boost.org/doc/libs/1_64_0/doc/html/boost/container/basic_string.html)
  - [boost::container::wstring](http://www.boost.org/doc/libs/1_64_0/doc/html/boost/container/basic_string.html)
