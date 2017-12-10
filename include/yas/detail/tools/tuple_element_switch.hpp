@@ -48,7 +48,7 @@ namespace detail {
     case idx: { ar & std::get<idx>(t); return; };
 
 template<typename Archive>
-void tuple_switch(Archive &ar, std::size_t, std::tuple<> &) {}
+void tuple_switch(Archive &, std::size_t, std::tuple<> &) {}
 
 #define __YAS_GENERATE_TUPLE_SWITCH(n) \
     template<typename Archive, YAS_PP_ENUM_PARAMS(n, typename T)> \
