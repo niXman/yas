@@ -38,6 +38,7 @@
 
 #include <yas/detail/config/config.hpp>
 #include <yas/detail/tools/cast.hpp>
+#include <yas/detail/tools/rapidjson_dtoa.hpp>
 
 #include <cstdint>
 #include <cstring>
@@ -106,37 +107,13 @@ T default_traits::atou(const char *str_, std::size_t size) {
 
 template<typename T>
 T default_traits::atoi(const char *str, std::size_t size) {
-	std::int64_t v = 0, sign = 0;
 	if ( *str == '-' ) {
-		sign = 1;
 		++str;
-		--size;
+
+        return -default_traits::atou<T>(str, size-1);
 	}
 
-	switch ( size ) {
-		case 19: v = YAS_SCAST(T, v+(str[size-19]-'0')*1000000000000000000ll); // fallthrough
-		case 18: v = YAS_SCAST(T, v+(str[size-18]-'0')*100000000000000000ll); // fallthrough
-		case 17: v = YAS_SCAST(T, v+(str[size-17]-'0')*10000000000000000ll); // fallthrough
-		case 16: v = YAS_SCAST(T, v+(str[size-16]-'0')*1000000000000000ll); // fallthrough
-		case 15: v = YAS_SCAST(T, v+(str[size-15]-'0')*100000000000000ll); // fallthrough
-		case 14: v = YAS_SCAST(T, v+(str[size-14]-'0')*10000000000000ll); // fallthrough
-		case 13: v = YAS_SCAST(T, v+(str[size-13]-'0')*1000000000000ll); // fallthrough
-		case 12: v = YAS_SCAST(T, v+(str[size-12]-'0')*100000000000ll); // fallthrough
-		case 11: v = YAS_SCAST(T, v+(str[size-11]-'0')*10000000000ll); // fallthrough
-		case 10: v = YAS_SCAST(T, v+(str[size-10]-'0')*1000000000ll); // fallthrough
-		case  9: v = YAS_SCAST(T, v+(str[size- 9]-'0')*100000000ll); // fallthrough
-		case  8: v = YAS_SCAST(T, v+(str[size- 8]-'0')*10000000ll); // fallthrough
-		case  7: v = YAS_SCAST(T, v+(str[size- 7]-'0')*1000000ll); // fallthrough
-		case  6: v = YAS_SCAST(T, v+(str[size- 6]-'0')*100000ll); // fallthrough
-		case  5: v = YAS_SCAST(T, v+(str[size- 5]-'0')*10000ll); // fallthrough
-		case  4: v = YAS_SCAST(T, v+(str[size- 4]-'0')*1000ll); // fallthrough
-		case  3: v = YAS_SCAST(T, v+(str[size- 3]-'0')*100ll); // fallthrough
-		case  2: v = YAS_SCAST(T, v+(str[size- 2]-'0')*10ll); // fallthrough
-		case  1: v = YAS_SCAST(T, v+(str[size- 1]-'0')*1ll); // fallthrough
-        default: break;
-	}
-
-	return YAS_SCAST(T, sign ? -v : v);
+    return default_traits::atou<T>(str, size);
 }
 
 /***************************************************************************/
@@ -183,53 +160,24 @@ std::size_t default_traits::utoa(char *buf, const std::size_t, T v) {
 
 template<typename T>
 std::size_t default_traits::itoa(char *buf, const std::size_t, T v) {
-	if ( v < 0 ) { *buf++ = '-'; }
-	std::int64_t l = YAS_SCAST(std::int64_t, std::abs(v)), n = l;
+	if ( v < 0 ) {
+        *buf++ = '-';
+        return 1 + default_traits::utoa(buf, 0/*unused*/, YAS_SCAST(std::int64_t, std::abs(v)));
+    }
 
-	std::size_t len = 1;
-	if ( l >= 10000000000000000ll ) { len += 16; l /= 10000000000000000ll; }
-	if ( l >= 100000000ll ) { len += 8; l /= 100000000ll; }
-	if ( l >= 10000ll ) { len += 4; l /= 10000ll; }
-	if ( l >= 100ll ) { len += 2; l /= 100ll; }
-	if ( l >= 10ll ) { len += 1; }
-
-	*(buf+len) = 0;
-	char *p = buf+len-1;
-	switch ( len ) {
-		case 19: *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 18: *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 17: *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 16: *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 15: *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 14: *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 13: *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 12: *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 11: *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 10: *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 9 : *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 8 : *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 7 : *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 6 : *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 5 : *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 4 : *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 3 : *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 2 : *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 1 : *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-        default: break;
-	}
-
-	return len;
+    return default_traits::utoa(buf, 0/*unused*/, YAS_SCAST(std::int64_t, v));
 }
 
 /***************************************************************************/
 
-namespace {
-
-template<typename I>
-double pow10(I i) {
-    const std::size_t n = YAS_SCAST(std::size_t, i);
-    static const double e[] = { // 1e-0...1e308: 309 * 8 bytes = 2472 bytes
-         1e+0  ,1e+1  ,  1e+2,  1e+3,  1e+4,  1e+5,  1e+6,  1e+7,  1e+8,  1e+9
+template<typename T>
+T default_traits::atof(const char *str, std::size_t size) {
+	return default_traits::atod<T>(str, size);
+}
+template<typename T>
+T default_traits::atod(const char *str, std::size_t size) {
+    static const double es[] = { // 1e-0...1e308: 309 * 8 bytes = 2472 bytes
+        1e+0  ,1e+1  ,  1e+2,  1e+3,  1e+4,  1e+5,  1e+6,  1e+7,  1e+8,  1e+9
         ,1e+10 ,1e+11 , 1e+12, 1e+13, 1e+14, 1e+15, 1e+16, 1e+17, 1e+18, 1e+19
         ,1e+20 ,1e+21 , 1e+22, 1e+23, 1e+24, 1e+25, 1e+26, 1e+27, 1e+28, 1e+29
         ,1e+30 ,1e+31 , 1e+32, 1e+33, 1e+34, 1e+35, 1e+36, 1e+37, 1e+38, 1e+39
@@ -262,35 +210,24 @@ double pow10(I i) {
         ,1e+300,1e+301,1e+302,1e+303,1e+304,1e+305,1e+306,1e+307,1e+308
     };
 
-    return e[n];
-}
-
-} // anon ns
-
-template<typename T>
-T default_traits::atof(const char *str, std::size_t size) {
-	return default_traits::atod<T>(str, size);
-}
-template<typename T>
-T default_traits::atod(const char *str, std::size_t size) {
 	((void)size);
 	T v = 0.0;
 	bool neg = false;
-	if (*str == '-') {
+	if ( *str == '-' ) {
 		neg = true;
 		++str;
 	}
 	for ( ; *str >= '0' && *str <= '9'; ++str) {
 		v = YAS_SCAST(T, (v*10.0) + (*str - '0'));
 	}
-	if (*str == '.') {
+	if ( *str == '.' ) {
 		double f = 0.0;
 		int n = 0;
 		++str;
 		for ( ; *str >= '0' && *str <= '9'; ++str, ++n) {
 			f = (f*10.0) + (*str - '0');
 		}
-		v += YAS_SCAST(T, f/pow10(n));
+		v += YAS_SCAST(T, f/es[n]);
 	}
 
 	v = neg ? -v : v;
@@ -305,109 +242,11 @@ std::size_t default_traits::ftoa(char *buf, const std::size_t bufsize, T v) {
 	return default_traits::dtoa(buf, bufsize, v);
 }
 
-inline void strreverse(char* begin, char* end) {
-	while (end > begin) {
-		char aux = *end;
-		*end-- = *begin;
-		*begin++ = aux;
-	}
-}
-
 template<typename T>
 std::size_t default_traits::dtoa(char *buf, const std::size_t size, T v) {
-	const std::size_t prec = 8;
-	// from: https://code.google.com/p/stringencoders/wiki/NumToA
-	static const double powers_of_10[] = {
-		1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000
-	};
-	/* Hacky test for NaN
-	  * under -fast-math this won't work, but then you also won't
-	  * have correct nan values anyways.  The alternative is
-	  * to link with libmath (bad) or hack IEEE double bits (bad)
-	  */
-	if (! (v == v)) {
-		buf[0] = 'n'; buf[1] = 'a'; buf[2] = 'n'; buf[3] = '\0';
+    (void)size;
 
-		return 3;
-	}
-
-	/* we'll work in positive values and deal with the
-		 negative sign issue later */
-	int neg = 0;
-	if (v < 0) {
-		neg = 1;
-		v = -v;
-	}
-
-	/* for very large numbers switch back to native sprintf for exponentials.
-		 anyone want to write code to replace this? */
-	/*
-		normal printf behavior is to print EVERY whole number digit
-		which can be 100s of characters overflowing your buffers == bad
-	 */
-	if ( v > YAS_SCAST(double, 0x7FFFFFFF) ) {
-		return YAS_SCAST(std::size_t, std::snprintf(buf, size, "%e", v));
-	}
-
-	double diff = 0.0;
-	char* wstr = buf;
-
-	int whole = YAS_SCAST(int, v);
-	double tmp = (v - whole) * powers_of_10[prec];
-	std::uint32_t frac = YAS_SCAST(std::uint32_t, tmp);
-	diff = tmp - frac;
-
-	if (diff > 0.5) {
-		++frac;
-		/* handle rollover, e.g.  case 0.99 with prec 1 is 1.0  */
-		if (frac >= powers_of_10[prec]) {
-			frac = 0;
-			++whole;
-		}
-	} else if (diff == 0.5 && ((frac == 0) || (frac & 1))) {
-		/* if halfway, round up if odd, OR
-			  if last digit is 0.  That last part is strange */
-		++frac;
-	}
-
-	if (prec == 0) {
-		diff = v - whole;
-		if (diff > 0.5) {
-			/* greater than 0.5, round up, e.g. 1.6 -> 2 */
-			++whole;
-		} else if (diff == 0.5 && (whole & 1)) {
-			/* exactly 0.5 and ODD, then round up */
-			/* 1.5 -> 2, but 2.5 -> 2 */
-			++whole;
-		}
-	} else {
-		std::size_t count = prec;
-		// now do fractional part, as an unsigned number
-		do {
-			--count;
-			*wstr++ = YAS_SCAST(char, (48 + (frac % 10)));
-		} while (frac /= 10);
-		// add extra 0s
-		while (count-- > 0) *wstr++ = '0';
-		// add decimal
-		*wstr++ = '.';
-	}
-
-	// do whole part
-	// Take care of sign
-	// Conversion. Number is reversed.
-	do
-		*wstr++ = YAS_SCAST(char, (48 + (whole % 10)));
-	while (whole /= 10);
-
-	if (neg)
-		*wstr++ = '-';
-
-	*wstr='\0';
-
-	strreverse(buf, wstr-1);
-
-	return YAS_SCAST(std::size_t, wstr-buf);
+    return rapidjson_dtoa(v, buf) - buf;
 }
 
 /***************************************************************************/

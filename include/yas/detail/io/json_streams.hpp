@@ -42,6 +42,7 @@
 #include <yas/detail/io/serialization_exception.hpp>
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/tools/cast.hpp>
+#include <yas/detail/tools/json_tools.hpp>
 
 #include <stack>
 #include <cassert>
@@ -49,55 +50,6 @@
 
 namespace yas {
 namespace detail {
-
-/***************************************************************************/
-
-#ifndef __YAS_JSON_STACK_SIZE
-#  define __YAS_JSON_STACK_SIZE 16
-#endif // __YAS_JSON_STACK_SIZE
-
-/***************************************************************************/
-
-enum class e_state {
-     in_object
-    ,in_array
-};
-
-template<std::size_t N>
-struct fixed_stack {
-    fixed_stack()
-            :arr{}
-            ,p{arr.begin()}
-    {}
-
-    bool empty() const {
-        return p == arr.begin();
-    }
-
-    void push(e_state v) {
-        assert(p != arr.end());
-        *p++ = std::move(v);
-    }
-
-    void pop() {
-        assert(p > arr.begin());
-        --p;
-    }
-
-    e_state& top() {
-        assert(p > arr.begin());
-        return *(p-1);
-    }
-    const e_state& top() const {
-        assert(p > arr.begin());
-        return *(p-1);
-    }
-
-private:
-    using iterator = typename std::array<e_state, N>::iterator;
-    std::array<e_state, N> arr;
-    iterator p;
-};
 
 /***************************************************************************/
 
@@ -115,15 +67,16 @@ struct json_istream {
 		return size;
 	}
 
-	// for arrays
-	void read(void *ptr, std::size_t size) {
-		YAS_THROW_ON_READ_ERROR(size, !=, is.read(ptr, size));
-	}
+    char peekch() const { return is.peekch(); }
+    char getch() { return is.getch(); }
+    void ungetch(char ch) { is.ungetch(ch); }
 
-    template<typename T>
-    void ungetch(T v, YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char)) {
-        is.ungetch(YAS_SCAST(char, v));
-    }
+	// for arrays
+	std::size_t read(void *ptr, std::size_t size) {
+		YAS_THROW_READ_ERROR(size != is.read(ptr, size));
+
+        return size;
+	}
 
     // for char and signed char
     template<typename T>
@@ -148,20 +101,20 @@ struct json_istream {
         static const char ltrue[] = "true";
         static const char lfalse[] = "false";
 
-        char buf[std::max(sizeof(ltrue), sizeof(lfalse))];
-		YAS_THROW_ON_READ_ERROR(1, !=, is.read(buf, 1));
+        char buf[sizeof(lfalse)];
+		YAS_THROW_READ_ERROR(1 != is.read(buf, 1));
 
         v = (buf[0] == 't');
-        const std::size_t chars = (v ? sizeof(ltrue)-1-1 : sizeof(lfalse)-1-1);
 
-        YAS_THROW_ON_READ_ERROR(chars, !=, is.read(buf, chars));
+        const std::size_t to_read = (v ? sizeof(ltrue)-1-1 : sizeof(lfalse)-1-1);
+        YAS_THROW_READ_ERROR(to_read != is.read(buf, to_read));
 	}
 
 	// for signed 16/32/64 bits
 	template<typename T>
 	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t)) {
 		char buf[sizeof(T)*4];
-		const std::size_t n = read_num(buf, sizeof(buf));
+		const std::size_t n = json_read_num(is, buf, sizeof(buf));
 		v = Trait::template atoi<T>(buf, n);
 	}
 
@@ -169,7 +122,7 @@ struct json_istream {
 	template<typename T>
 	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
         char buf[sizeof(T)*4];
-        const std::size_t n = read_num(buf, sizeof(buf));
+        const std::size_t n = json_read_num(is, buf, sizeof(buf));
 
         v = Trait::template atou<T>(buf, n);
 	}
@@ -178,7 +131,7 @@ struct json_istream {
 	template<typename T>
 	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, float)) {
 		char buf[std::numeric_limits<T>::max_exponent10+20];
-		const std::size_t n = read_double(buf, sizeof(buf));
+		const std::size_t n = json_read_double(is, buf, sizeof(buf));
 
 		v = Trait::template atof<T>(buf, n);
 	}
@@ -187,116 +140,13 @@ struct json_istream {
 	template<typename T>
 	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, double)) {
         char buf[std::numeric_limits<T>::max_exponent10+20];
-        const std::size_t n = read_double(buf, sizeof(buf));
+        const std::size_t n = json_read_double(is, buf, sizeof(buf));
 
 		v = Trait::template atod<T>(buf, n);
 	}
 
-    /////////////////////////////////////////////////////////////////////////
-
-    template<std::size_t N>
-    bool read_and_check(const char (&ch)[N]) {
-        char tmp[N];
-        read(tmp, N-1);
-
-        return 0 == std::memcmp(ch, tmp, N-1);
-    }
-
-    void start_object_node(const char *name, std::size_t len) {
-        if ( stack.empty() ) {
-            YAS_THROW_IF_BAD_JSON_CHARS((*this), "{");
-        } else {
-            YAS_THROW_IF_BAD_JSON_CHARS((*this), "\"");
-            YAS_THROW_IF_BAD_JSON_KEY(is, name, len);
-            YAS_THROW_IF_BAD_JSON_CHARS((*this), "\":{");
-        }
-
-        stack.push(e_state::in_object);
-    }
-    void start_array_node() {
-        YAS_THROW_IF_BAD_JSON_CHARS((*this), "[");
-        stack.push(e_state::in_array);
-    }
-    void finish_node() {
-        const auto top = stack.top();
-        if ( top == e_state::in_array ) {
-            YAS_THROW_IF_BAD_JSON_CHARS((*this), "]");
-        } else {
-            YAS_THROW_IF_BAD_JSON_CHARS((*this), "}");
-        }
-
-        stack.pop();
-    }
-
-    /////////////////////////////////////////////////////////////////////////
-
-    std::size_t read_num(char *ptr, std::size_t size) {
-        char *p = ptr;
-
-        do {
-            YAS_THROW_ON_READ_ERROR(sizeof(*ptr), !=, is.read(ptr, sizeof(*ptr)));
-            switch ( *ptr ) {
-                case '-':
-                case '0':
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                case '9': break;
-                default: {
-                    is.ungetch(*ptr);
-                    return ptr-p;
-                }
-            }
-            ++ptr;
-        } while ( --size );
-
-        is.ungetch(*ptr);
-
-        return ptr-p;
-    }
-
-    std::size_t read_double(char *ptr, std::size_t size) {
-        char *p = ptr;
-
-        do {
-            YAS_THROW_ON_READ_ERROR(sizeof(*ptr), !=, is.read(ptr, sizeof(*ptr)));
-            switch ( *ptr ) {
-                case '0':
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                case '9':
-                case '-':
-                case '.':
-                case 'e':
-                case 'E': break;
-                default: {
-                    is.ungetch(*ptr);
-                    return ptr-p;
-                }
-            }
-            ++ptr;
-        } while ( --size );
-
-        is.ungetch(*ptr);
-
-        return ptr-p;
-    }
-
 private:
 	IS &is;
-
-    fixed_stack<__YAS_JSON_STACK_SIZE> stack;
 };
 
 /***************************************************************************/
@@ -315,7 +165,7 @@ struct json_ostream {
 	// for arrays
 	template<typename T>
 	void write(const T *ptr, std::size_t size) {
-		YAS_THROW_ON_WRITE_ERROR(size, !=, os.write(ptr, size));
+		YAS_THROW_WRITE_ERROR(size != os.write(ptr, size));
 	}
 
     // for char and signed char
@@ -335,10 +185,10 @@ struct json_ostream {
 	void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, bool)) {
         if ( v ) {
             static const char ltrue[] = "true";
-            YAS_THROW_ON_WRITE_ERROR(sizeof(ltrue)-1, !=, os.write(ltrue, sizeof(ltrue)-1));
+            YAS_THROW_WRITE_ERROR(sizeof(ltrue)-1 != os.write(ltrue, sizeof(ltrue)-1));
         } else {
             static const char lfalse[] = "false";
-            YAS_THROW_ON_WRITE_ERROR(sizeof(lfalse)-1, !=, os.write(lfalse, sizeof(lfalse)-1));
+            YAS_THROW_WRITE_ERROR(sizeof(lfalse)-1 != os.write(lfalse, sizeof(lfalse)-1));
         }
 	}
 
@@ -348,7 +198,7 @@ struct json_ostream {
 		char buf[sizeof(v)*4];
 		std::size_t len = Trait::itoa(buf, sizeof(buf), v);
 
-		YAS_THROW_ON_WRITE_ERROR(len, !=, os.write(buf, len));
+		YAS_THROW_WRITE_ERROR(len != os.write(buf, len));
 	}
 
 	// for unsigned 16/32/64 bits
@@ -357,7 +207,7 @@ struct json_ostream {
 		char buf[sizeof(v)*4];
 		std::size_t len = Trait::utoa(buf, sizeof(buf), v);
 
-		YAS_THROW_ON_WRITE_ERROR(len, !=, os.write(buf, len));
+		YAS_THROW_WRITE_ERROR(len != os.write(buf, len));
 	}
 
 	// for floats
@@ -366,7 +216,7 @@ struct json_ostream {
 		char buf[std::numeric_limits<T>::max_exponent10 + 20];
 		std::size_t len = Trait::ftoa(buf, sizeof(buf), v);
 
-		YAS_THROW_ON_WRITE_ERROR(len, !=, os.write(buf, len));
+		YAS_THROW_WRITE_ERROR(len != os.write(buf, len));
 	}
 
 	// for doubles
@@ -375,54 +225,11 @@ struct json_ostream {
 		char buf[std::numeric_limits<T>::max_exponent10 + 20];
 		std::size_t len = Trait::dtoa(buf, sizeof(buf), v);
 
-		YAS_THROW_ON_WRITE_ERROR(len, !=, os.write(buf, len));
+		YAS_THROW_WRITE_ERROR(len != os.write(buf, len));
 	}
-
-    /////////////////////////////////////////////////////////////////////////
-
-    void write_key(const char *str, std::size_t len) {
-        write("\"", 1);
-        write(str, len);
-        write("\":", 2);
-    }
-
-    void start_object_node(const char *name, std::size_t len) {
-        if ( stack.empty() ) {
-            write_start_object();
-        } else {
-            if ( stack.top() == e_state::in_object ) {
-                write_key(name, len);
-            }
-            write_start_object();
-        }
-
-        stack.push(e_state::in_object);
-    }
-    void start_array_node() {
-        write_start_array();
-        stack.push(e_state::in_array);
-    }
-    void finish_node() {
-        const auto top = stack.top();
-        if ( top == e_state::in_array ) {
-            write_end_array();
-        } else {
-            write_end_object();
-        }
-
-        stack.pop();
-    }
-
-    void write_start_object() { write("{", 1); }
-    void write_end_object() { write("}", 1); }
-
-    void write_start_array() { write("[", 1); }
-    void write_end_array() { write("]", 1); }
 
 private:
 	OS &os;
-
-    fixed_stack<__YAS_JSON_STACK_SIZE> stack;
 };
 
 /***************************************************************************/

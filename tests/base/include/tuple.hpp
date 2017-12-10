@@ -44,11 +44,13 @@ bool tuple_test(std::ostream &log, const char *archive_type, const char *test_na
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & YAS_OBJECT_NVP("obj", ("v", v1));
+	auto o0 = YAS_OBJECT_NVP("obj", ("v", v1));
+	oa & o0;
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & YAS_OBJECT_NVP("obj", ("v", v2));
+    auto i0 = YAS_OBJECT_NVP("obj", ("v", v2));
+	ia & i0;
 	if ( v1 != v2 ) {
 		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
@@ -92,7 +94,7 @@ bool tuple_test(std::ostream &log, const char *archive_type, const char *test_na
 	}
 
 	static const char str[] = "str";
-	std::tuple<std::uint64_t, std::string> v5(33, str), v6;
+	std::tuple<std::uint64_t, std::string> v5(33, str), v6, v7;
 
 	typename archive_traits::oarchive oa4;
 	archive_traits::ocreate(oa4, archive_type);
@@ -113,8 +115,8 @@ bool tuple_test(std::ostream &log, const char *archive_type, const char *test_na
 
 	typename archive_traits::iarchive ia5;
 	archive_traits::icreate(ia5, oa5, archive_type);
-	ia5 & YAS_OBJECT_NVP("obj", ("v", v6));
-	if ( v5 != v6 ) {
+	ia5 & YAS_OBJECT_NVP("obj", ("v", v7));
+	if ( v5 != v7 ) {
 		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}

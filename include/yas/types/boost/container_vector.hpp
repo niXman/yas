@@ -39,6 +39,7 @@
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/serializer.hpp>
+#include <yas/types/concepts/array.hpp>
 
 #include <boost/container/vector.hpp>
 
@@ -56,32 +57,12 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& save(Archive &ar, const boost::container::vector<T> &vector) {
-		const auto size = vector.size();
-		ar.write_seq_size(size);
-		if ( can_be_processed_as_byte_array<F, T>::value ) {
-			ar.write(vector.data(), sizeof(T)*size);
-		} else {
-			for ( const auto &it: vector ) {
-				ar & it;
-			}
-		}
-
-		return ar;
+		return concepts::array::save<F>(ar, vector);
 	}
 
 	template<typename Archive>
 	static Archive& load(Archive &ar, boost::container::vector<T> &vector) {
-		const auto size = ar.read_seq_size();
-		vector.resize(size);
-		if ( can_be_processed_as_byte_array<F, T>::value ) {
-			ar.read(vector.data(), sizeof(T)*size);
-		} else {
-			for ( auto &it: vector ) {
-				ar & it;
-			}
-		}
-
-		return ar;
+		return concepts::array::load<F>(ar, vector);
 	}
 };
 

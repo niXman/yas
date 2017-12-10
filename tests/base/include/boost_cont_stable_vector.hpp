@@ -40,7 +40,7 @@
 
 template<typename archive_traits>
 bool boost_cont_stable_vector_test(std::ostream &log, const char *archive_type, const char *test_name) {
-	boost::container::stable_vector<int> v, vv;
+	boost::container::stable_vector<std::uint32_t> v, vv;
 	v.push_back(0);
 	v.push_back(1);
 	v.push_back(2);
@@ -54,11 +54,13 @@ bool boost_cont_stable_vector_test(std::ostream &log, const char *archive_type, 
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
-	oa & YAS_OBJECT_NVP("obj", ("v", v));
+    auto o0 = YAS_OBJECT_NVP("obj", ("v", v));
+	oa & o0;
 
 	typename archive_traits::iarchive ia;
 	archive_traits::icreate(ia, oa, archive_type);
-	ia & YAS_OBJECT_NVP("obj", ("v", vv));
+	auto i0 = YAS_OBJECT_NVP("obj", ("v", vv));
+	ia & i0;
 
 	if ( v != vv ) {
 		YAS_TEST_REPORT(log, archive_type, test_name);

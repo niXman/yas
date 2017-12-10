@@ -77,7 +77,7 @@ bool boost_cont_deque_test(std::ostream &log, const char* archive_type, const ch
 
 	typename archive_traits::iarchive ia2;
 	archive_traits::icreate(ia2, oa2, archive_type);
-	ia2 & YAS_OBJECT_NVP("obj", ("deq4", deq4));
+	ia2 & YAS_OBJECT_NVP("obj", ("deq", deq4));
 
 	if ( deq3 != deq4 ) {
 		YAS_TEST_REPORT(log, archive_type, test_name);

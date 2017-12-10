@@ -39,6 +39,7 @@
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/serializer.hpp>
+#include <yas/types/concepts/keyval.hpp>
 
 #include <boost/unordered_map.hpp>
 
@@ -56,25 +57,12 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& save(Archive& ar, const boost::unordered_map<K, V>& map) {
-		ar.write_seq_size(map.size());
-		for ( const auto &it: map ) {
-			ar & it.first
-				& it.second;
-		}
-		return ar;
+        return concepts::keyval::save<F>(ar, map);
 	}
 
 	template<typename Archive>
 	static Archive& load(Archive& ar, boost::unordered_map<K, V>& map) {
-		auto size = ar.read_seq_size();
-		for ( ; size; --size ) {
-			K key{};
-			V val{};
-			ar & key
-				& val;
-			map.insert(std::make_pair(std::move(key), std::move(val)));
-		}
-		return ar;
+        return concepts::keyval::load<F>(ar, map);
 	}
 };
 

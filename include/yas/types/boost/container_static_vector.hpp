@@ -40,6 +40,7 @@
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/serializer.hpp>
 #include <yas/detail/io/serialization_exception.hpp>
+#include <yas/types/concepts/array.hpp>
 
 #include <boost/container/static_vector.hpp>
 
@@ -57,31 +58,83 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& save(Archive &ar, const boost::container::static_vector<T, N> &vector) {
-		ar.write_seq_size(N);
-		ar.write_seq_size(vector.size());
-		if ( can_be_processed_as_byte_array<F, T>::value ) {
-			ar.write(vector.data(), sizeof(T)*vector.size());
-		} else {
-			for ( const auto &it: vector ) {
-				ar & it;
-			}
-		}
+		__YAS_CONSTEXPR_IF ( F & yas::json ) {
+            ar.write("[", 1);
+            ar & YAS_OBJECT_NVP(
+                 nullptr
+                ,("capacity", N)
+                ,("size", vector.size())
+            );
+            ar.write(",{\"val\":", 8);
+            concepts::array::save<F>(ar, vector);
+            ar.write("}]", 2);
+        } else {
+            ar.write_seq_size(N);
+            ar.write_seq_size(vector.size());
+            __YAS_CONSTEXPR_IF ( can_be_processed_as_byte_array<F, T>::value ) {
+                ar.write(vector.data(), sizeof(T) * vector.size());
+            } else {
+                for ( const auto &it: vector ) {
+                    ar & it;
+                }
+            }
+        }
+
 		return ar;
 	}
 
 	template<typename Archive>
 	static Archive& load(Archive &ar, boost::container::static_vector<T, N> &vector) {
-		const auto capa = ar.read_seq_size();
-		const auto size = ar.read_seq_size();
-		if ( capa != N || size > N ) YAS_THROW_BAD_ARRAY_SIZE();
-		vector.resize(size);
-		if ( can_be_processed_as_byte_array<F, T>::value ) {
-			ar.read(vector.data(), sizeof(T)*size);
-		} else {
-			for ( auto &it: vector ) {
-				ar & it;
-			}
-		}
+        __YAS_CONSTEXPR_IF ( F & yas::json ) {
+            __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+                json_skipws(ar);
+            }
+            YAS_THROW_IF_BAD_JSON_CHARS(ar, "[");
+            std::size_t capacity=0, size=0;
+            ar & YAS_OBJECT(nullptr, capacity, size);
+            if ( capacity != N || size > N ) {
+                YAS_THROW_BAD_ARRAY_SIZE();
+            }
+            __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+                json_skipws(ar);
+            }
+            YAS_THROW_IF_BAD_JSON_CHARS(ar, ",");
+            __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+                json_skipws(ar);
+            }
+            YAS_THROW_IF_BAD_JSON_CHARS(ar, "{");
+            __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+                json_skipws(ar);
+            }
+            YAS_THROW_IF_BAD_JSON_CHARS(ar, "\"val\":");
+            __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+                json_skipws(ar);
+            }
+            concepts::array::load<F>(ar, vector);
+            __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+                json_skipws(ar);
+            }
+            YAS_THROW_IF_BAD_JSON_CHARS(ar, "}");
+            __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+                json_skipws(ar);
+            }
+            YAS_THROW_IF_BAD_JSON_CHARS(ar, "]");
+        } else {
+            const std::size_t capacity = ar.read_seq_size();
+            const std::size_t size = ar.read_seq_size();
+            if ( capacity != N || size > N ) {
+                YAS_THROW_BAD_ARRAY_SIZE();
+            }
+            vector.resize(size);
+            __YAS_CONSTEXPR_IF ( can_be_processed_as_byte_array<F, T>::value ) {
+                ar.read(vector.data(), sizeof(T) * size);
+            } else {
+                for ( auto &it: vector ) {
+                    ar & it;
+                }
+            }
+        }
+
 		return ar;
 	}
 };

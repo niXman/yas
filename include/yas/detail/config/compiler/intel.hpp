@@ -36,8 +36,6 @@
 #ifndef __yas__detail__config__compiler__intel_hpp
 #define __yas__detail__config__compiler__intel_hpp
 
-#include <yas/detail/config/endian.hpp>
-
 /**************************************************************************/
 /**************************************************************************/
 

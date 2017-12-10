@@ -92,7 +92,7 @@ bool boost_tuple_test(std::ostream &log, const char *archive_type, const char *t
 	}
 
 	static const char str[] = "str";
-	boost::tuple<std::uint64_t, std::string> t5(33, str), t6;
+	boost::tuple<std::uint64_t, std::string> t5(33, str), t6, t7;
 
 	typename archive_traits::oarchive oa4;
 	archive_traits::ocreate(oa4, archive_type);
@@ -108,7 +108,7 @@ bool boost_tuple_test(std::ostream &log, const char *archive_type, const char *t
     static const std::size_t binary_compacted_expected_size =
         archive_traits::oarchive_type::header_size()+ // archive header
         1+/*fusion::vector size marker*/
-        1+/*len of the next field*/+1+/*first type*/
+        1+/*len of the next field*/+
         1+/*string size marker*/+3/*string*/
     ;
 	static const std::size_t text_expected_size =
@@ -178,7 +178,7 @@ bool boost_tuple_test(std::ostream &log, const char *archive_type, const char *t
 
 	typename archive_traits::iarchive ia5;
 	archive_traits::icreate(ia5, oa5, archive_type);
-	ia5 & YAS_OBJECT_NVP("obj", ("tuple", t6));
+	ia5 & YAS_OBJECT_NVP("obj", ("tuple", t7));
 	if ( t5 != t6 ) {
 		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;

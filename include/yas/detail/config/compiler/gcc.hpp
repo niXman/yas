@@ -36,8 +36,6 @@
 #ifndef __yas__detail__config__compiler__gcc_hpp
 #define __yas__detail__config__compiler__gcc_hpp
 
-#include <yas/detail/config/endian.hpp>
-
 /***************************************************************************/
 
 #if YAS_LITTLE_ENDIAN

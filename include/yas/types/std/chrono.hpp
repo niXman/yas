@@ -56,6 +56,7 @@ struct serializer<
 	template<typename Archive>
 	static Archive& save(Archive& ar, const std::chrono::duration<R, P> &d) {
 		ar.write(d.count());
+
 		return ar;
 	}
 
@@ -63,7 +64,9 @@ struct serializer<
 	static Archive& load(Archive& ar, std::chrono::duration<R, P> &d) {
 		R count{};
 		ar.read(count);
-		d = std::chrono::duration<R, P>(count);
+
+        d = std::chrono::duration<R, P>(count);
+
 		return ar;
 	}
 };

@@ -38,6 +38,7 @@
 
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/serializer.hpp>
+#include <yas/types/concepts/keyval.hpp>
 
 #include <unordered_map>
 
@@ -54,26 +55,13 @@ struct serializer<
 	std::unordered_multimap<K, V>
 > {
 	template<typename Archive>
-	static Archive& save(Archive& ar, const std::unordered_multimap<K, V>& map) {
-		ar.write_seq_size(map.size());
-		for ( const auto &it: map ) {
-			ar & it.first
-				& it.second;
-		}
-		return ar;
+	static Archive& save(Archive& ar, const std::unordered_multimap<K, V> &map) {
+		return concepts::keyval::save<F>(ar, map);
 	}
 
 	template<typename Archive>
-	static Archive& load(Archive& ar, std::unordered_multimap<K, V>& map) {
-		auto size = ar.read_seq_size();
-		for ( ; size; --size ) {
-			K key{};
-			V val{};
-			ar & key
-				& val;
-			map.insert(std::make_pair(std::move(key), std::move(val)));
-		}
-		return ar;
+	static Archive& load(Archive& ar, std::unordered_multimap<K, V> &map) {
+        return concepts::keyval::load<F>(ar, map);
 	}
 };
 

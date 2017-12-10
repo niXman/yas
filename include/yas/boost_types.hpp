@@ -42,6 +42,7 @@
 #include <yas/types/boost/chrono.hpp>
 #include <yas/types/boost/optional.hpp>
 #include <yas/types/boost/tuple.hpp>
+#include <yas/types/boost/variant.hpp>
 #include <yas/types/boost/unordered_set.hpp>
 #include <yas/types/boost/unordered_map.hpp>
 #include <yas/types/boost/unordered_multimap.hpp>

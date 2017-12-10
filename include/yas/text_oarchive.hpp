@@ -38,7 +38,7 @@
 
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/serializer.hpp>
-#include <yas/detail/io/information.hpp>
+#include <yas/detail/io/header.hpp>
 #include <yas/detail/io/text_streams.hpp>
 #include <yas/detail/tools/noncopyable.hpp>
 #include <yas/detail/tools/limit.hpp>
@@ -46,13 +46,13 @@
 
 #include <yas/tools/base_object.hpp>
 
-#include <yas/types/utility/fundamental_serializers.hpp>
-#include <yas/types/utility/enum_serializer.hpp>
-#include <yas/types/utility/usertype_serializers.hpp>
-#include <yas/types/utility/autoarray_serializers.hpp>
-#include <yas/types/utility/buffer_serializers.hpp>
-#include <yas/types/utility/value_serializers.hpp>
-#include <yas/types/utility/object_serializers.hpp>
+#include <yas/types/utility/fundamental.hpp>
+#include <yas/types/utility/enum.hpp>
+#include <yas/types/utility/usertype.hpp>
+#include <yas/types/utility/autoarray.hpp>
+#include <yas/types/utility/buffer.hpp>
+#include <yas/types/utility/value.hpp>
+#include <yas/types/utility/object.hpp>
 
 #include <yas/buffers.hpp>
 #include <yas/object.hpp>
@@ -69,7 +69,7 @@ template<
 >
 struct text_oarchive
 	:detail::text_ostream<OS, F, Trait>
-	,detail::oarchive_info<F>
+	,detail::oarchive_header<F>
 {
 	YAS_NONCOPYABLE(text_oarchive)
 	YAS_MOVABLE(text_oarchive)
@@ -79,7 +79,7 @@ struct text_oarchive
 
 	text_oarchive(OS &os)
 		:detail::text_ostream<OS, F, Trait>(os)
-		,detail::oarchive_info<F>(os)
+		,detail::oarchive_header<F>(os)
 	{}
 
 	template<typename T>

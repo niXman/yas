@@ -63,7 +63,9 @@ struct serializer<
                 result[idx >> 3] = YAS_SCAST(std::uint8_t, result[idx >> 3] | (bits[idx] << (idx & 7)));
             }
 
+            ar.write("[", 1);
             ar & result;
+            ar.write("]", 1);
         } else {
             ar.write_seq_size(N);
             std::vector<std::uint8_t> result((N + 7) >> 3);
@@ -80,8 +82,7 @@ struct serializer<
 	template<typename Archive>
 	static Archive& load(Archive& ar, std::bitset<N>& bits) {
         if ( F & yas::json ) {
-            ar.start_array_node();
-            ar.ungetch('[');
+            YAS_THROW_IF_BAD_JSON_CHARS(ar, "[");
 
             std::vector<std::uint8_t> buf;
             ar & buf;
@@ -93,8 +94,7 @@ struct serializer<
                 bits[idx] = ((buf[idx >> 3] >> (idx & 7)) & 1);
             }
 
-            ar.ungetch(']');
-            ar.finish_node();
+            YAS_THROW_IF_BAD_JSON_CHARS(ar, "]");
         }  else {
             const auto size = ar.read_seq_size();
             if ( size != N )

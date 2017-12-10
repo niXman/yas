@@ -40,9 +40,11 @@
 #include <yas/binary_iarchive.hpp>
 #include <yas/text_oarchive.hpp>
 #include <yas/text_iarchive.hpp>
-#include <yas/tools/hexdumper.hpp>
+#include <yas/json_oarchive.hpp>
+#include <yas/json_iarchive.hpp>
 #include <yas/std_types.hpp>
 #include <yas/serialize.hpp>
+#include <yas/tools/hexdumper.hpp>
 
 #ifdef YAS_SERIALIZE_BOOST_TYPES
 #include <yas/boost_types.hpp>
@@ -57,6 +59,9 @@
 
 #define YAS_TEST_REPORT(log, artype, testname) \
     log << __FILE__ << "(" << __LINE__ << "): " << "archive: \"" << artype << "\", test: \"" << testname << "\" failed!" << std::endl;
+
+#define YAS_TEST_REPORT_IF(expr, log, artype, testname, ...) \
+    if ( (expr) ) { YAS_TEST_REPORT(log, artype, testname); __VA_ARGS__; }
 
 /***************************************************************************/
 
@@ -98,6 +103,7 @@
 #include "include/boost_cont_flat_multiset.hpp"
 #include "include/boost_cont_deque.hpp"
 #include "include/boost_tuple.hpp"
+#include "include/boost_variant.hpp"
 #endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 
 #include "include/list.hpp"
@@ -125,6 +131,7 @@
 #include "include/split_memfn.hpp"
 #include "include/serialization.hpp"
 #include "include/yas_object.hpp"
+#include "include/json_conformance.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -270,21 +277,32 @@ struct archive_traits {
 
 /***************************************************************************/
 
-#define YAS_RUN_TEST(log, testname, passcnt, failcnt) { \
-    const char *artype = \
-    (yas::is_binary_archive<OA>::value ? "binary" \
-        : yas::is_text_archive<OA>::value ? "text" \
-            : yas::is_json_archive<OA>::value ? "json" \
-                : "unknown" \
-    ); \
-    std::fprintf(stdout,"%-6s: %-24s -> ",artype, #testname); \
-    std::fflush(stdout); \
-    \
-    const bool passed = testname##_test<archive_traits<OA, IA>>(log, artype, #testname); \
-    if ( passed ) { ++passcnt; } else { ++failcnt; } \
-    \
-    std::fprintf(stdout, "%s\n", (passed ? "passed" : "failed")); \
-    std::fflush(stdout); \
+#define YAS_RUN_TEST_SKIP_TEST(...) \
+    !(OA::type() & (__VA_ARGS__))
+#define YAS_RUN_TEST_RUN_TEST(...) \
+    1
+
+#define YAS_RUN_TEST_CHECK_FOR_SKIP(...) \
+    YAS_PP_IF( \
+        __YAS_TUPLE_IS_EMPTY(__VA_ARGS__) \
+        ,YAS_RUN_TEST_RUN_TEST \
+        ,YAS_RUN_TEST_SKIP_TEST \
+    )(__VA_ARGS__)
+
+#define YAS_RUN_TEST(log, testname, passcnt, failcnt, .../*skip for*/) { \
+    if ( YAS_RUN_TEST_CHECK_FOR_SKIP(__VA_ARGS__) ) { \
+        const char *artype = ( \
+            yas::is_binary_archive<OA>::value ? "binary" \
+                : yas::is_text_archive<OA>::value ? "text" \
+                    : yas::is_json_archive<OA>::value ? "json" \
+                        : "unknown" \
+        ); \
+        std::fprintf(stdout,"%-6s: %-24s -> ", artype, #testname); std::fflush(stdout); \
+        \
+        const bool passed = testname##_test<archive_traits<OA, IA>>(log, artype, #testname); \
+        if ( passed ) { ++passcnt; } else { ++failcnt; } \
+        std::fprintf(stdout, "%s\n", (passed ? "passed" : "failed")); std::fflush(stdout); \
+    } \
 }
 
 template<typename OA, typename IA>
@@ -296,6 +314,7 @@ void tests(std::ostream &log, int &p, int &e) {
     YAS_RUN_TEST(log, fundamental, p, e);
     YAS_RUN_TEST(log, enum, p, e);
     YAS_RUN_TEST(log, auto_array, p, e);
+    YAS_RUN_TEST(log, std_streams, p, e);
     YAS_RUN_TEST(log, one_function, p, e);
     YAS_RUN_TEST(log, split_functions, p, e);
     YAS_RUN_TEST(log, one_method, p, e);
@@ -316,9 +335,8 @@ void tests(std::ostream &log, int &p, int &e) {
     YAS_RUN_TEST(log, vector, p, e);
     YAS_RUN_TEST(log, list, p, e);
     YAS_RUN_TEST(log, forward_list, p, e);
-    YAS_RUN_TEST(log, map, p, e);
     YAS_RUN_TEST(log, deque, p, e);
-    YAS_RUN_TEST(log, std_streams, p, e);
+    YAS_RUN_TEST(log, map, p, e);
     YAS_RUN_TEST(log, set, p, e);
     YAS_RUN_TEST(log, multimap, p, e);
     YAS_RUN_TEST(log, multiset, p, e);
@@ -351,7 +369,9 @@ void tests(std::ostream &log, int &p, int &e) {
     YAS_RUN_TEST(log, boost_cont_flat_multiset, p, e);
     YAS_RUN_TEST(log, boost_cont_deque, p, e);
     YAS_RUN_TEST(log, boost_tuple, p, e);
+    YAS_RUN_TEST(log, boost_variant, p, e);
 #endif // YAS_SERIALIZE_BOOST_TYPES
+    YAS_RUN_TEST(log, json_conformance, p, e, yas::binary|yas::text|yas::compacted);
 }
 
 /***************************************************************************/
@@ -404,7 +424,7 @@ struct options {
         }
 
         if ( binary ) {
-            if (!endian_big && !endian_little) {
+            if ( !endian_big && !endian_little ) {
                 endian_big = YAS_BIG_ENDIAN;
                 endian_little = YAS_LITTLE_ENDIAN;
             }
@@ -417,13 +437,13 @@ struct options {
 
         if ( !binary && !json ) {
             if ( compacted ) {
-                msg = "\"compacted\" can be specified only for \"binary\" and \"json\" archives. terminate.";
+                msg = R"("compacted" can be specified only for "binary" and "json" archives. terminate.)";
 
                 return;
             }
 
             if ( endian_big || endian_little ) {
-                msg = "\"ebig\" or \"elittle\" can be specified only for \"binary\" archives. terminate.";
+                msg = R"("ebig" or "elittle" can be specified only for "binary" archives. terminate.)";
 
                 return;
             }
@@ -461,7 +481,7 @@ int main(int, char **argv) {
         assert(logfile.good());
     }
 
-    std::ostream &log = YAS_SCAST(std::ostream &, (
+    auto &log = YAS_SCAST(std::ostream &, (
         opts.logn == options::log_stdout
             ? std::cout
             : opts.logn == options::log_stderr
@@ -509,6 +529,22 @@ int main(int, char **argv) {
                  yas::text_oarchive<yas::mem_ostream, text_opts>
                 ,yas::text_iarchive<yas::mem_istream, text_opts>
             >(log, passed, failed);
+        }
+
+        if ( opts.json ) {
+            if ( opts.compacted ) {
+                constexpr std::size_t json_opts = yas::json|yas::ehost|yas::compacted;
+                tests<
+                     yas::json_oarchive<yas::mem_ostream, json_opts>
+                    ,yas::json_iarchive<yas::mem_istream, json_opts>
+                >(log, passed, failed);
+            } else {
+                constexpr std::size_t json_opts = yas::json|yas::ehost;
+                tests<
+                     yas::json_oarchive<yas::mem_ostream, json_opts>
+                    ,yas::json_iarchive<yas::mem_istream, json_opts>
+                >(log, passed, failed);
+            }
         }
     } catch (const std::exception &ex) {
         std::cout << "[std::exception]: " << ex.what() << std::endl;

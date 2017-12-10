@@ -73,7 +73,7 @@ struct file_ostream {
         const char *fmode = file_mode_str(m);
 		file = std::fopen(fname, fmode);
 		if ( !file ) {
-            YAS_THROW_ERROR_OPENING_FILE();
+            YAS_THROW_ERROR_OPEN_FILE();
         }
 
         if ( m & file_nobuf ) {
@@ -116,14 +116,14 @@ private:
 /***************************************************************************/
 
 struct file_istream {
-	YAS_NONCOPYABLE(file_istream)
+    YAS_NONCOPYABLE(file_istream)
     YAS_MOVABLE(file_istream)
 
 	file_istream(const char *fname, std::size_t m = 0)
 		:file(std::fopen(fname, "rb"))
 	{
 		if ( !file ) {
-            YAS_THROW_ERROR_OPENING_FILE();
+            YAS_THROW_ERROR_OPEN_FILE();
         }
 
         if ( m & file_nobuf ) {
@@ -138,7 +138,15 @@ struct file_istream {
 		return std::fread(ptr, 1, size, file);
 	}
 
-	bool ungetch(char ch) { return std::ungetc(ch, file) == ch; }
+	char peekch() const {
+        // TODO: optimize
+        char ch = std::getc(file);
+        std::ungetc(ch, file);
+
+        return ch;
+    }
+    char getch() { return YAS_SCAST(char, std::getc(file)); }
+	void ungetch(char ch) { std::ungetc(ch, file); }
 
 private:
 	std::FILE *file;

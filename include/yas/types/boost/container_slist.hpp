@@ -39,6 +39,7 @@
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/serializer.hpp>
+#include <yas/types/concepts/forward_list.hpp>
 
 #include <boost/container/slist.hpp>
 
@@ -56,21 +57,12 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& save(Archive &ar, const boost::container::slist<T> &list) {
-		ar.write_seq_size(std::distance(list.begin(), list.end()));
-		for ( const auto &it: list ) {
-			ar & it;
-		}
-		return ar;
+		return concepts::forward_list::save<F>(ar, list, list.size());
 	}
 
 	template<typename Archive>
 	static Archive& load(Archive &ar, boost::container::slist<T> &list) {
-		const auto size = ar.read_seq_size();
-		list.resize(size);
-		for ( auto &it: list ) {
-			ar & it;
-		}
-		return ar;
+        return concepts::forward_list::load<F>(ar, list);
 	}
 };
 

@@ -64,6 +64,7 @@ bool optional_test(std::ostream &log, const char *archive_type, const char *test
 	(void)log;
 	(void)archive_type;
     (void)test_name;
+
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
 	{
 		int i0 = 33;
@@ -103,11 +104,11 @@ bool optional_test(std::ostream &log, const char *archive_type, const char *test
 		int i0 = 33;
 		_YAS_STD_OPTIONAL_NS::optional<int> o0(i0), o1;
 		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type, io_type);
+		archive_traits::ocreate(oa, archive_type);
 		oa & YAS_OBJECT_NVP("obj", ("o", o0));
 
 		typename archive_traits::iarchive ia;
-		archive_traits::icreate(ia, oa, archive_type, io_type);
+		archive_traits::icreate(ia, oa, archive_type);
 		ia & YAS_OBJECT_NVP("obj", ("o", o1));
 
 		if ( o0 != o1 ) {
@@ -119,11 +120,11 @@ bool optional_test(std::ostream &log, const char *archive_type, const char *test
 		const std::string s0 = "some string";
 		_YAS_STD_OPTIONAL_NS::optional<std::string> o0(s0), o1;
 		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type, io_type);
+		archive_traits::ocreate(oa, archive_type);
 		oa & YAS_OBJECT_NVP("obj", ("o", o0));
 
 		typename archive_traits::iarchive ia;
-		archive_traits::icreate(ia, oa, archive_type, io_type);
+		archive_traits::icreate(ia, oa, archive_type);
 		ia & YAS_OBJECT_NVP("obj", ("o", o1));
 
 		if ( o0 != o1 ) {

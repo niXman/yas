@@ -131,6 +131,103 @@ bool yas_object_test(std::ostream &log, const char *archive_type, const char *te
 			return false;
 		}
 	}
+	{
+		typename archive_traits::oarchive oa;
+		archive_traits::ocreate(oa, archive_type);
+        auto o0 = YAS_OBJECT(nullptr);
+		oa & o0;
+
+        typename archive_traits::iarchive ia;
+        archive_traits::icreate(ia, oa, archive_type);
+        auto o1 = YAS_OBJECT(nullptr);
+        ia & o1;
+	}
+    {
+        typename archive_traits::oarchive oa;
+        archive_traits::ocreate(oa, archive_type);
+        auto o0 = YAS_OBJECT_NVP(nullptr, ("a", 0), ("b", 1));
+        oa & o0;
+
+        int a=0, b=0;
+
+        bool ok = false;
+        try {
+            typename archive_traits::iarchive ia;
+            archive_traits::icreate(ia, oa, archive_type);
+            auto o1 = YAS_OBJECT(nullptr, a, b);
+            ia & o1;
+        } catch (const yas::serialization_exception &) {
+            ok = true;
+        }
+        if ( ok ) {
+            YAS_TEST_REPORT(log, archive_type, test_name);
+            return false;
+        }
+        if ( a != 0 || b != 1 ) {
+            YAS_TEST_REPORT(log, archive_type, test_name);
+            return false;
+        }
+    }
+    {
+        if ( archive_traits::iarchive_type::flags() & yas::json ) {
+            if ( !(archive_traits::iarchive_type::flags() & yas::compacted) ) {
+                typename archive_traits::oarchive oa;
+                archive_traits::ocreate(oa, archive_type);
+                auto o0 = YAS_OBJECT_NVP(nullptr, ("b", 1), ("c", 2), ("a", 0));
+                oa & o0;
+
+                int a=0, b=0;
+
+                bool ok = false;
+                try {
+                    typename archive_traits::iarchive ia;
+                    archive_traits::icreate(ia, oa, archive_type);
+                    auto o1 = YAS_OBJECT(nullptr, b, a);
+                    ia & o1;
+                } catch (const yas::serialization_exception &) {
+                    ok = true;
+                }
+                if ( ok == true ) {
+                    YAS_TEST_REPORT(log, archive_type, test_name);
+                    return false;
+                }
+                if ( a != 0 || b != 1 ) {
+                    YAS_TEST_REPORT(log, archive_type, test_name);
+                    return false;
+                }
+            }
+        }
+    }
+    {
+        if ( archive_traits::iarchive_type::flags() & yas::json ) {
+            if ( !(archive_traits::iarchive_type::flags() & yas::compacted) ) {
+                typename archive_traits::oarchive oa;
+                archive_traits::ocreate(oa, archive_type);
+                auto o0 = YAS_OBJECT_NVP(nullptr, ("b", 1), ("c", 2), ("a", 0));
+                oa & o0;
+
+                int c=0;
+
+                bool ok = false;
+                try {
+                    typename archive_traits::iarchive ia;
+                    archive_traits::icreate(ia, oa, archive_type);
+                    auto o1 = YAS_OBJECT(nullptr, c);
+                    ia & o1;
+                } catch (const yas::serialization_exception &) {
+                    ok = true;
+                }
+                if ( ok == true ) {
+                    YAS_TEST_REPORT(log, archive_type, test_name);
+                    return false;
+                }
+                if ( c != 2 ) {
+                    YAS_TEST_REPORT(log, archive_type, test_name);
+                    return false;
+                }
+            }
+        }
+    }
 
 	return true;
 }

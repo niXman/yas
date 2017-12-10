@@ -40,6 +40,7 @@
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/serializer.hpp>
 #include <yas/detail/tools/cast.hpp>
+#include <yas/detail/tools/save_load_string.hpp>
 
 #include <boost/container/string.hpp>
 
@@ -57,17 +58,30 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& save(Archive& ar, const boost::container::string& string) {
-		const auto size = string.size();
-		ar.write_seq_size(size);
-		ar.write(string.data(), size);
+		if ( F & yas::json ) {
+			ar.write("\"", 1);
+			save_string(ar, string);
+			ar.write("\"", 1);
+		} else {
+			ar.write_seq_size(string.length());
+			ar.write(string.data(), string.length());
+		}
+
 		return ar;
 	}
 
 	template<typename Archive>
 	static Archive& load(Archive& ar, boost::container::string& string) {
-		const auto size = ar.read_seq_size();
-		string.resize(size);
-		ar.read(YAS_CCAST(char*, string.data()), size);
+		if ( F & yas::json ) {
+			YAS_THROW_IF_BAD_JSON_CHARS(ar, "\"");
+			load_string(string, ar);
+			YAS_THROW_IF_BAD_JSON_CHARS(ar, "\"");
+		} else {
+			const auto size = ar.read_seq_size();
+			string.resize(size);
+			ar.read(YAS_CCAST(char*, string.data()), size);
+		}
+
 		return ar;
 	}
 };

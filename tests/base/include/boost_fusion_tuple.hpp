@@ -92,7 +92,7 @@ bool boost_fusion_tuple_test(std::ostream &log, const char *archive_type, const 
 	}
 
 	static const char str[] = "str";
-	boost::fusion::tuple<std::uint64_t, std::string> v5(33, str), v6;
+	boost::fusion::tuple<std::uint64_t, std::string> v5(33, str), v6, v7;
 
 	typename archive_traits::oarchive oa4;
 	archive_traits::ocreate(oa4, archive_type);
@@ -113,9 +113,9 @@ bool boost_fusion_tuple_test(std::ostream &log, const char *archive_type, const 
 
 	typename archive_traits::iarchive ia5;
 	archive_traits::icreate(ia5, oa5, archive_type);
-	ia5 & YAS_OBJECT_NVP("obj", ("tuple", v6));
+	ia5 & YAS_OBJECT_NVP("obj", ("tuple", v7));
 
-	if ( v5 != v6 ) {
+	if ( v5 != v7 ) {
 		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}

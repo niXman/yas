@@ -92,24 +92,24 @@ bool boost_fusion_vector_test(std::ostream &log, const char *archive_type, const
 	}
 
 	static const char str[] = "str";
-	boost::fusion::vector<boost::uint64_t, std::string> v5(33, str), v6;
+	boost::fusion::vector<boost::uint64_t, std::string> v5(33, str), v6, v7;
 
 	typename archive_traits::oarchive oa4;
 	archive_traits::ocreate(oa4, archive_type);
 	oa4 & YAS_OBJECT_NVP("obj", ("vector", v5));
 
     static const std::size_t binary_expected_size =
-        archive_traits::oarchive_type::header_size()+ // archive header
-        sizeof(std::uint8_t)+ // fusion::vector size marker
-        sizeof(std::uint64_t)+ // first type
-        sizeof(std::uint64_t)+ // string size marker
-        std::strlen(str) // string
+         archive_traits::oarchive_type::header_size() // archive header
+        +sizeof(std::uint8_t) // fusion::vector size marker
+        +sizeof(std::uint64_t) // first type
+        +sizeof(std::uint64_t) // string size marker
+        +std::strlen(str) // string
     ;
     static const std::size_t binary_compacted_expected_size =
-        archive_traits::oarchive_type::header_size()+ // archive header
-        sizeof(std::uint8_t)+ // fusion::vector size marker
-        1/*len of next field*/+1+/*value*/
-        1/*string length*/+std::strlen(str) // string
+         archive_traits::oarchive_type::header_size() // archive header
+        +sizeof(std::uint8_t) // fusion::vector size marker
+        +1/*len of next field*/
+        +1/*string length*/+std::strlen(str) // string
     ;
 	static const std::size_t text_expected_size =
 		archive_traits::oarchive_type::header_size()
@@ -179,8 +179,8 @@ bool boost_fusion_vector_test(std::ostream &log, const char *archive_type, const
 
 	typename archive_traits::iarchive ia5;
 	archive_traits::icreate(ia5, oa5, archive_type);
-	ia5 & YAS_OBJECT_NVP("obj", ("vector", v6));
-	if ( v5 != v6 ) {
+	ia5 & YAS_OBJECT_NVP("obj", ("vector", v7));
+	if ( v5 != v7 ) {
 		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}

@@ -65,6 +65,20 @@ bool vector_test(std::ostream &log, const char *archive_type, const char *test_n
 		return false;
 	}
 
+    std::vector<int> ev, evv;
+    typename archive_traits::oarchive oa2;
+    archive_traits::ocreate(oa2, archive_type);
+    oa2 & YAS_OBJECT_NVP("obj", ("ev", ev));
+
+    typename archive_traits::iarchive ia2;
+    archive_traits::icreate(ia2, oa2, archive_type);
+    ia2 & YAS_OBJECT_NVP("obj", ("ev", evv));
+
+    if ( ev != evv ) {
+        YAS_TEST_REPORT(log, archive_type, test_name);
+        return false;
+    }
+
 	return true;
 }
 

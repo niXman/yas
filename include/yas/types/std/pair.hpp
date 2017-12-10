@@ -54,16 +54,33 @@ struct serializer<
 	std::pair<T1, T2>
 > {
 	template<typename Archive>
-	static Archive& save(Archive& ar, const std::pair<T1, T2>& pair) {
-		ar & pair.first
-			& pair.second;
+	static Archive& save(Archive& ar, const std::pair<T1, T2> &pair) {
+        __YAS_CONSTEXPR_IF ( F & yas::json ) {
+            ar & YAS_OBJECT_NVP(
+                 nullptr
+                ,("first", pair.first)
+                ,("second", pair.second)
+            );
+        } else {
+            ar & pair.first
+               & pair.second;
+        }
+
 		return ar;
 	}
 
 	template<typename Archive>
-	static Archive& load(Archive& ar, std::pair<T1, T2>& pair) {
-		ar & pair.first
-			& pair.second;
+	static Archive& load(Archive& ar, std::pair<T1, T2> &pair) {
+        __YAS_CONSTEXPR_IF ( F & yas::json ) {
+            ar & YAS_OBJECT_NVP(
+                 nullptr
+                ,("first", pair.first)
+                ,("second", pair.second)
+            );
+        } else {
+            ar & pair.first
+               & pair.second;
+        }
 		return ar;
 	}
 };

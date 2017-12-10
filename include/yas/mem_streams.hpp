@@ -85,13 +85,13 @@ struct mem_ostream {
 
         const std::uint8_t *ptr = YAS_RCAST(const std::uint8_t*, tptr);
         switch ( size ) {
-            case 1 : std::memcpy(cur, ptr, 1); break;
-            case 2 : std::memcpy(cur, ptr, 2); break;
-            case 3 : std::memcpy(cur, ptr, 3); break;
-            case 4 : std::memcpy(cur, ptr, 4); break;
-            case 5 : std::memcpy(cur, ptr, 5); break;
-            case 8 : std::memcpy(cur, ptr, 8); break;
-            case 9 : std::memcpy(cur, ptr, 9); break;
+            case 1 : std::memcpy(cur, ptr, 1) ; break;
+            case 2 : std::memcpy(cur, ptr, 2) ; break;
+            case 3 : std::memcpy(cur, ptr, 3) ; break;
+            case 4 : std::memcpy(cur, ptr, 4) ; break;
+            case 5 : std::memcpy(cur, ptr, 5) ; break;
+            case 8 : std::memcpy(cur, ptr, 8) ; break;
+            case 9 : std::memcpy(cur, ptr, 9) ; break;
 #if defined(__GNUC__) && defined(__SIZEOF_INT128__) // hack for detect int128 support
             case 16: std::memcpy(cur, ptr, 16); break;
             case 17: std::memcpy(cur, ptr, 17); break;
@@ -137,13 +137,13 @@ struct mem_istream {
     std::size_t read(T *ptr, const std::size_t size) {
         const std::size_t to_copy = std::min(YAS_SCAST(std::size_t, end-cur), size);
         switch ( to_copy ) {
-            case 1 : std::memcpy(ptr, cur, 1); break;
-            case 2 : std::memcpy(ptr, cur, 2); break;
-            case 3 : std::memcpy(ptr, cur, 3); break;
-            case 4 : std::memcpy(ptr, cur, 4); break;
-            case 5 : std::memcpy(ptr, cur, 5); break;
-            case 8 : std::memcpy(ptr, cur, 8); break;
-            case 9 : std::memcpy(ptr, cur, 9); break;
+            case 1 : std::memcpy(ptr, cur, 1) ; break;
+            case 2 : std::memcpy(ptr, cur, 2) ; break;
+            case 3 : std::memcpy(ptr, cur, 3) ; break;
+            case 4 : std::memcpy(ptr, cur, 4) ; break;
+            case 5 : std::memcpy(ptr, cur, 5) ; break;
+            case 8 : std::memcpy(ptr, cur, 8) ; break;
+            case 9 : std::memcpy(ptr, cur, 9) ; break;
 #if defined(__GNUC__) && defined(__SIZEOF_INT128__) // hack for detect int128 support
             case 16: std::memcpy(ptr, cur, 16); break;
             case 17: std::memcpy(ptr, cur, 17); break;
@@ -155,7 +155,9 @@ struct mem_istream {
         return to_copy;
     }
 
-    bool ungetch(char) { --cur; return true; }
+    char peekch() const { return *cur; }
+    char getch() { return cur < end ? *cur++ : YAS_SCAST(char, EOF); }
+    void ungetch(char) { --cur; }
 
     shared_buffer get_shared_buffer() const { return shared_buffer(cur, YAS_SCAST(std::size_t, end-cur)); }
     intrusive_buffer get_intrusive_buffer() const { return intrusive_buffer(cur, YAS_SCAST(std::size_t, end-cur)); }

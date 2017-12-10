@@ -82,9 +82,9 @@ struct std_istream {
         return YAS_SCAST(std::size_t, is.read(YAS_SCAST(char*, ptr), size).gcount());
     }
 
-    bool ungetch(char ch) {
-        return is.putback(ch).good();
-    }
+    char peekch() const { return YAS_SCAST(char, is.peek()); }
+    char getch() { return YAS_SCAST(char, is.get()); }
+    void ungetch(char ch) { is.putback(ch); }
 
 private:
     std::istream &is;

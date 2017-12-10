@@ -40,6 +40,8 @@
 #include <yas/binary_iarchive.hpp>
 #include <yas/text_oarchive.hpp>
 #include <yas/text_iarchive.hpp>
+#include <yas/json_oarchive.hpp>
+#include <yas/json_iarchive.hpp>
 
 namespace yas {
 
@@ -73,6 +75,19 @@ save(Types &&... args) {
 
 template<std::size_t F, typename ...Types>
 typename std::enable_if<
+     (F & yas::mem) && (F & yas::json)
+    ,yas::shared_buffer
+>::type
+save(Types &&... args) {
+    yas::mem_ostream os;
+    yas::json_oarchive<yas::mem_ostream, (F & (~yas::mem))> oa(os);
+    oa(std::forward<Types>(args)...);
+
+    return os.get_shared_buffer();
+}
+
+template<std::size_t F, typename ...Types>
+typename std::enable_if<
     (F & yas::file) && (F & yas::binary)
 >::type
 save(const char *fname, Types &&... args) {
@@ -91,25 +106,45 @@ save(const char *fname, Types &&... args) {
     oa(std::forward<Types>(args)...);
 }
 
+template<std::size_t F, typename ...Types>
+typename std::enable_if<
+    (F & yas::file) && (F & yas::json)
+>::type
+save(const char *fname, Types &&... args) {
+    yas::file_ostream os(fname);
+    yas::json_oarchive<yas::file_ostream, (F & (~yas::file))> oa(os);
+    oa(std::forward<Types>(args)...);
+}
+
 /***************************************************************************/
 
-template<std::size_t F, typename ...Types>
+template<std::size_t F, typename Buf, typename ...Types>
 typename std::enable_if<
     (F & yas::mem) && (F & yas::binary)
 >::type
-load(const yas::shared_buffer &buf, Types &&... args) {
+load(const Buf &buf, Types &&... args) {
     yas::mem_istream is(buf);
     yas::binary_iarchive<yas::mem_istream, (F & (~yas::mem))> ia(is);
     ia(std::forward<Types>(args)...);
 }
 
-template<std::size_t F, typename ...Types>
+template<std::size_t F, typename Buf, typename ...Types>
 typename std::enable_if<
     (F & yas::mem) && (F & yas::text)
 >::type
-load(const yas::shared_buffer &buf, Types &&... args) {
+load(const Buf &buf, Types &&... args) {
     yas::mem_istream is(buf);
     yas::text_iarchive<yas::mem_istream, (F & (~yas::mem))> ia(is);
+    ia(std::forward<Types>(args)...);
+}
+
+template<std::size_t F, typename Buf, typename ...Types>
+typename std::enable_if<
+    (F & yas::mem) && (F & yas::json)
+>::type
+load(const Buf &buf, Types &&... args) {
+    yas::mem_istream is(buf);
+    yas::json_iarchive<yas::mem_istream, (F & (~yas::mem))> ia(is);
     ia(std::forward<Types>(args)...);
 }
 
@@ -130,6 +165,16 @@ typename std::enable_if<
 load(const char *fname, Types &&... args) {
     yas::file_istream is(fname);
     yas::text_iarchive<yas::file_istream, (F & (~yas::file))> ia(is);
+    ia(std::forward<Types>(args)...);
+}
+
+template<std::size_t F, typename ...Types>
+typename std::enable_if<
+    (F & yas::file) && (F & yas::json)
+>::type
+load(const char *fname, Types &&... args) {
+    yas::file_istream is(fname);
+    yas::json_iarchive<yas::file_istream, (F & (~yas::file))> ia(is);
     ia(std::forward<Types>(args)...);
 }
 

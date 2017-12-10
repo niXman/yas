@@ -32,6 +32,7 @@ include_directories(
 set(SOURCE_FILES
     include/array.hpp
     include/auto_array.hpp
+    include/base64.hpp
     include/base_object.hpp
     include/bitset.hpp
     include/boost_cont_deque.hpp
@@ -57,6 +58,7 @@ set(SOURCE_FILES
     include/boost_fusion_tuple.hpp
     include/boost_fusion_vector.hpp
     include/boost_tuple.hpp
+    include/boost_variant.hpp
     include/buffer.hpp
     include/chrono.hpp
     include/complex.hpp
@@ -65,6 +67,8 @@ set(SOURCE_FILES
     include/enum.hpp
     include/forward_list.hpp
     include/fundamental.hpp
+    include/header.hpp
+    include/json_conformance.hpp
     include/list.hpp
     include/map.hpp
     include/multimap.hpp
@@ -78,6 +82,7 @@ set(SOURCE_FILES
     include/set.hpp
     include/split_func.hpp
     include/split_memfn.hpp
+    include/std_streams.hpp
     include/string.hpp
     include/tuple.hpp
     include/unordered_map.hpp

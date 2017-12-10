@@ -95,7 +95,7 @@ bool boost_fusion_list_test(std::ostream &log, const char *archive_type, const c
 	}
 
 	static const char str[] = "str";
-	boost::fusion::list<boost::uint64_t, std::string> list6(33, str), list7;
+	boost::fusion::list<boost::uint64_t, std::string> list6(33, str), list7, list8;
 
 	typename archive_traits::oarchive oa4;
 	archive_traits::ocreate(oa4, archive_type);
@@ -117,9 +117,9 @@ bool boost_fusion_list_test(std::ostream &log, const char *archive_type, const c
 
 	typename archive_traits::iarchive ia5;
 	archive_traits::icreate(ia5, oa5, archive_type);
-	ia5 & YAS_OBJECT_NVP("obj", ("list", list7));
+	ia5 & YAS_OBJECT_NVP("obj", ("list", list8));
 
-	if ( list6 != list7 ) {
+	if ( list6 != list8 ) {
 		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}

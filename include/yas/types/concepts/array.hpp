@@ -46,24 +46,28 @@ namespace array {
 template<std::size_t F, typename Archive, typename C>
 Archive& save(Archive &ar, const C &c) {
     if ( F & yas::json ) {
-        ar.start_array_node();
+        ar.write("[", 1);
 
-        auto it = c.begin();
-        ar & (*it);
-        for ( ++it ; it != c.end(); ++it ) {
-            ar.write(",", 1);
+        if ( !c.empty() ) {
+            auto it = c.begin();
             ar & (*it);
+            for ( ++it; it != c.end(); ++it ) {
+                ar.write(",", 1);
+                ar & (*it);
+            }
         }
 
-        ar.finish_node();
+        ar.write("]", 1);
     } else {
-        auto size = c.size();
+        const auto size = c.size();
         ar.write_seq_size(size);
-        if ( can_be_processed_as_byte_array<F, typename C::value_type>::value ) {
-            ar.write(c.data(), sizeof(typename C::value_type)*size);
-        } else {
-            for ( const auto &it: c ) {
-                ar & it;
+        if ( size ) {
+            if ( can_be_processed_as_byte_array<F, typename C::value_type>::value ) {
+                ar.write(&c[0], sizeof(typename C::value_type) * size);
+            } else {
+                for ( const auto &it: c ) {
+                    ar & it;
+                }
             }
         }
     }
@@ -76,30 +80,60 @@ Archive& save(Archive &ar, const C &c) {
 template<std::size_t F, typename Archive, typename C>
 Archive& load(Archive &ar, C &c) {
     if ( F & yas::json ) {
-        ar.start_array_node();
+        __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+            json_skipws(ar);
+        }
+
+        YAS_THROW_IF_BAD_JSON_CHARS(ar, "[");
+
+        __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+            json_skipws(ar);
+        }
+
+        const char ch = ar.peekch();
+        if ( ch == ']' ) {
+            ar.getch();
+
+            return ar;
+        }
+
+        __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+            json_skipws(ar);
+        }
 
         while ( true ) {
-            typename C::value_type v{};
+            typename C::value_type v = typename C::value_type();
             ar & v;
             c.push_back(std::move(v));
 
-            char ch;
-            ar.read(&ch, sizeof(ch));
-            if ( ch == ']' ) {
-                ar.ungetch(ch);
+            __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+                json_skipws(ar);
+            }
+
+            const char ch2 = ar.peekch();
+            if ( ch2 == ']' ) {
                 break;
+            } else {
+                ar.getch();
+            }
+
+            __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+                json_skipws(ar);
             }
         }
 
-        ar.finish_node();
+        json_skipws(ar);
+        YAS_THROW_IF_BAD_JSON_CHARS(ar, "]");
     } else {
         const auto size = ar.read_seq_size();
-        c.resize(size);
-        if ( can_be_processed_as_byte_array<F, typename C::value_type>::value ) {
-            ar.read(c.data(), sizeof(typename C::value_type)*size);
-        } else {
-            for ( auto &it: c ) {
-                ar & it;
+        if ( size ) {
+            c.resize(size);
+            if ( can_be_processed_as_byte_array<F, typename C::value_type>::value ) {
+                ar.read(&c[0], sizeof(typename C::value_type) * size);
+            } else {
+                for ( auto &it: c ) {
+                    ar & it;
+                }
             }
         }
     }

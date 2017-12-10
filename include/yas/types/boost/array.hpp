@@ -59,7 +59,7 @@ struct serializer<
     template<typename Archive>
     static Archive& save(Archive& ar, const boost::array<T, N>& array) {
         if ( F & yas::json ) {
-            ar.start_array_node();
+            ar.write("[", 1);
 
             auto it = array.begin();
             ar & (*it);
@@ -68,7 +68,7 @@ struct serializer<
                 ar & (*it);
             }
 
-            ar.finish_node();
+            ar.write("]", 1);
         } else {
             ar.write_seq_size(N);
             if ( can_be_processed_as_byte_array<F, T>::value ) {

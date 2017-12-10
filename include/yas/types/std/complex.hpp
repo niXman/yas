@@ -56,18 +56,35 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& save(Archive& ar, const std::complex<T>& complex) {
-		ar.write(complex.real());
-		ar.write(complex.imag());
+		if ( F & yas::json ) {
+            ar & YAS_OBJECT_NVP(
+                 nullptr
+                ,("real", complex.real())
+                ,("imag", complex.imag())
+            );
+        } else {
+            ar.write(complex.real());
+            ar.write(complex.imag());
+        }
 		return ar;
 	}
 
 	template<typename Archive>
 	static Archive& load(Archive& ar, std::complex<T>& complex) {
 		T real{}, imag{};
-		ar.read(real);
-		ar.read(imag);
-		complex.real(real);
-		complex.imag(imag);
+        if ( F & yas::json ) {
+            ar & YAS_OBJECT_NVP(
+                 nullptr
+                ,("real", real)
+                ,("imag", imag)
+            );
+        } else {
+            ar.read(real);
+            ar.read(imag);
+        }
+        complex.real(real);
+        complex.imag(imag);
+
 		return ar;
 	}
 };

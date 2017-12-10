@@ -38,6 +38,7 @@
 
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/serializer.hpp>
+#include <yas/types/concepts/keyval.hpp>
 
 #include <map>
 
@@ -55,25 +56,12 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& save(Archive& ar, const std::multimap<K, V>& multimap) {
-		ar.write_seq_size(multimap.size());
-		for ( const auto &it: multimap ) {
-			ar & it.first
-				& it.second;
-		}
-		return ar;
+		return concepts::keyval::save<F>(ar, multimap);
 	}
 
 	template<typename Archive>
 	static Archive& load(Archive& ar, std::multimap<K, V>& multimap) {
-		auto size = ar.read_seq_size();
-		for ( ; size; --size ) {
-			K key{};
-			V val{};
-			ar & key
-				& val;
-			multimap.insert(std::make_pair(std::move(key), std::move(val)));
-		}
-		return ar;
+        return concepts::keyval::load<F>(ar, multimap);
 	}
 };
 

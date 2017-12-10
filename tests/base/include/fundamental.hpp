@@ -75,29 +75,29 @@ bool fundamental_test(std::ostream &log, const char *archive_type, const char *t
             +sizeof(i64max)
             +sizeof(u64max)
         ,binary_compacted_expected_size = 39
-        ,text_expected_size = 78
-        ,json_expected_size = 155
+        ,text_expected_size = 79
+        ,json_expected_size = 156
     };
 
-    auto o0 = YAS_OBJECT_NVP(
-         "obj"
-        ,("b", b)
-        ,("c", c)
-        ,("uc", uc)
-        ,("s", s)
-        ,("us", us)
-        ,("i", i)
-        ,("l", l)
-        ,("i64", i64)
-        ,("u64", u64)
-        ,("f", f)
-        ,("d", d)
-        ,("i64max", i64max)
-        ,("u64max", u64max)
+    auto o0 = YAS_OBJECT(
+         nullptr
+        ,b
+        ,c
+        ,uc
+        ,s
+        ,us
+        ,i
+        ,l
+        ,i64
+        ,u64
+        ,f
+        ,d
+        ,i64max
+        ,u64max
     );
     oa & o0;
 
-    switch (archive_traits::oarchive_type::type()) {
+    switch ( archive_traits::oarchive_type::type() ) {
         case yas::binary: {
             std::size_t exp_size = archive_traits::oarchive_type::header_size() + binary_expected_size;
             std::size_t comp_exp_size = archive_traits::oarchive_type::header_size() + binary_compacted_expected_size;
@@ -129,7 +129,7 @@ bool fundamental_test(std::ostream &log, const char *archive_type, const char *t
         archive_traits::icreate(ia, oa, archive_type);
 
         auto i0 = YAS_OBJECT_NVP(
-             "obj"
+             nullptr
             ,("b", b2)
             ,("c", c2)
             ,("uc", uc2)

@@ -36,16 +36,14 @@
 #ifndef __yas__detail__type_traits__typeinfo_hpp
 #define __yas__detail__type_traits__typeinfo_hpp
 
+#include <yas/detail/type_traits/fnv1a.hpp>
+
 #include <cstdint>
 
 namespace yas {
 namespace detail {
 
 /***************************************************************************/
-
-constexpr std::uint32_t fnv1a(const char *s, std::uint32_t h = 0x811c9dc5) {
-    return (*s == 0) ? h : fnv1a(s+1, ((h ^ (*s)) * 0x01000193));
-}
 
 template<typename T>
 struct typeinfo;

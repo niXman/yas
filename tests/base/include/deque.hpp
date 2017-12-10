@@ -40,7 +40,7 @@
 
 template<typename archive_traits>
 bool deque_test(std::ostream &log, const char *archive_type, const char *test_name) {
-	std::deque<int> deq1 = {0,1,2,3,4,5,6,7,8,9}, deq2;
+	std::deque<int> deq1{0,1,2,3,4,5,6,7,8,9}, deq2;
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
@@ -55,7 +55,7 @@ bool deque_test(std::ostream &log, const char *archive_type, const char *test_na
 		return false;
 	}
 
-	std::deque<std::string> deq3 = {"1","2","3"}, deq4;
+	std::deque<std::string> deq3{"1","2","3"}, deq4;
 
 	typename archive_traits::oarchive oa2;
 	archive_traits::ocreate(oa2, archive_type);

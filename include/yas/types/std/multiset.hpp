@@ -38,6 +38,7 @@
 
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/serializer.hpp>
+#include <yas/types/concepts/set.hpp>
 
 #include <set>
 
@@ -55,22 +56,12 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& save(Archive& ar, const std::multiset<K>& set) {
-		ar.write_seq_size(set.size());
-		for ( const auto &it: set ) {
-			ar & it;
-		}
-		return ar;
+		return concepts::set::save<F>(ar, set);
 	}
 
 	template<typename Archive>
 	static Archive& load(Archive& ar, std::multiset<K>& set) {
-		auto size = ar.read_seq_size();
-		for ( ; size; --size ) {
-			K key{};
-			ar & key;
-			set.insert(std::move(key));
-		}
-		return ar;
+        return concepts::set::load<F>(ar, set);
 	}
 };
 

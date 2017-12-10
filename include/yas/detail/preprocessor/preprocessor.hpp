@@ -52,7 +52,6 @@
 #include <yas/detail/preprocessor/expr_iif.hpp>
 #include <yas/detail/preprocessor/if.hpp>
 #include <yas/detail/preprocessor/iif.hpp>
-#include <yas/detail/preprocessor/repeat.hpp>
 #include <yas/detail/preprocessor/dec.hpp>
 #include <yas/detail/preprocessor/inc.hpp>
 #include <yas/detail/preprocessor/not_equal.hpp>

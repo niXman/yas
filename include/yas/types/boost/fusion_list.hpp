@@ -42,6 +42,7 @@
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/serializer.hpp>
 #include <yas/detail/io/serialization_exception.hpp>
+#include <yas/types/concepts/fusion_seq.hpp>
 
 #include <boost/fusion/container/list.hpp>
 #include <boost/fusion/include/list.hpp>
@@ -53,22 +54,6 @@ namespace detail {
 
 /***************************************************************************/
 
-namespace {
-
-template<std::size_t I = 0, typename Archive, typename... Tp>
-typename std::enable_if<I == sizeof...(Tp), Archive&>::type
-apply(Archive &ar, boost::fusion::list<Tp...> &)
-{ return ar; }
-
-template<std::size_t I = 0, typename Archive, typename... Tp>
-typename std::enable_if<I < sizeof...(Tp), Archive&>::type
-apply(Archive &ar, boost::fusion::list<Tp...> &t) {
-	ar & boost::fusion::at_c<I>(t);
-	return apply<I+1>(ar, t);
-}
-
-} // anon ns
-
 template<std::size_t F, typename... Types>
 struct serializer<
 	 type_prop::not_a_fundamental
@@ -78,28 +63,12 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& save(Archive& ar, const boost::fusion::list<Types...>& list) {
-		if ( F & options::binary ) {
-			ar.write(YAS_SCAST(std::uint8_t, sizeof...(Types)));
-		} else {
-			ar.write(sizeof...(Types));
-		}
-
-		return apply(ar, YAS_CCAST(boost::fusion::list<Types...> &, list));
+		return concepts::fusion_seq::save<F>(ar, list);
 	}
 
 	template<typename Archive>
 	static Archive& load(Archive& ar, boost::fusion::list<Types...>& list) {
-		if ( F & options::binary ) {
-			std::uint8_t size = 0;
-			ar.read(size);
-			if ( size != sizeof...(Types) ) YAS_THROW_BAD_SIZE_ON_DESERIALIZE("fusion::list");
-		} else {
-			std::uint32_t size = 0;
-			ar.read(size);
-			if ( size != sizeof...(Types) ) YAS_THROW_BAD_SIZE_ON_DESERIALIZE("fusion::list");
-		}
-
-		return apply(ar, list);
+		return concepts::fusion_seq::load<F>(ar, list);
 	}
 };
 

@@ -40,9 +40,9 @@
 // YAS_VERSION / 100 % 1000 is the minor version
 // YAS_VERSION / 100000 is the major version
 
-#define YAS_VERSION_MAJOR 5
-#define YAS_VERSION_MINOR 1
-#define YAS_VERSION_RELEASE 0
+#define YAS_VERSION_MAJOR 6
+#define YAS_VERSION_MINOR 0
+#define YAS_VERSION_RELEASE 1
 
 #define YAS_VERSION \
      YAS_VERSION_MAJOR*100000 \

@@ -38,6 +38,7 @@
 
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/serializer.hpp>
+#include <yas/types/concepts/set.hpp>
 
 #include <unordered_set>
 
@@ -54,23 +55,13 @@ struct serializer<
 	std::unordered_multiset<K>
 > {
 	template<typename Archive>
-	static Archive& save(Archive& ar, const std::unordered_multiset<K>& set) {
-		ar.write_seq_size(set.size());
-		for ( const auto &it: set ) {
-			ar & it;
-		}
-		return ar;
+	static Archive& save(Archive& ar, const std::unordered_multiset<K> &set) {
+		return concepts::set::save<F>(ar, set);
 	}
 
 	template<typename Archive>
-	static Archive& load(Archive& ar, std::unordered_multiset<K>& set) {
-		auto size = ar.read_seq_size();
-		for ( ; size; --size ) {
-			K key{};
-			ar & key;
-			set.insert(std::move(key));
-		}
-		return ar;
+	static Archive& load(Archive& ar, std::unordered_multiset<K> &set) {
+		return concepts::set::load<F>(ar, set);
 	}
 };
 

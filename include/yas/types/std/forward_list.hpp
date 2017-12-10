@@ -38,6 +38,7 @@
 
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/serializer.hpp>
+#include <yas/types/concepts/forward_list.hpp>
 
 #include <forward_list>
 
@@ -55,21 +56,12 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& save(Archive& ar, const std::forward_list<T>& list) {
-		ar.write_seq_size(std::distance(list.begin(), list.end()));
-		for ( const auto &it: list ) {
-			ar & it;
-		}
-		return ar;
+		return concepts::forward_list::save<F>(ar, list, std::distance(list.begin(), list.end()));
 	}
 
 	template<typename Archive>
 	static Archive& load(Archive& ar, std::forward_list<T>& list) {
-		const auto size = ar.read_seq_size();
-		list.resize(size);
-		for ( auto &it: list ) {
-			ar & it;
-		}
-		return ar;
+        return concepts::forward_list::load<F>(ar, list);
 	}
 };
 

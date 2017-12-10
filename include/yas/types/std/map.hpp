@@ -38,6 +38,7 @@
 
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/serializer.hpp>
+#include <yas/types/concepts/keyval.hpp>
 
 #include <map>
 
@@ -53,53 +54,14 @@ struct serializer<
 	F,
 	std::map<K, V>
 > {
-	template<typename Archive>
-	static Archive& save(Archive& ar, const std::map<K, V>& map) {
-		if ( F & yas::json ) {
-            if ( map.empty() ) {
-                ar.write("[]", 2);
-
-                return ar;
-            }
-
-            ar.start_array_node();
-
-            auto it = map.begin();
-            ar & yas::make_object("oo",
-                yas::make_val("key", it->first),yas::make_val("val", it->second)
-            );
-
-            for ( ++it; it != map.end(); ++it ) {
-                ar.write(",", 1);
-                ar & yas::make_object("oo",
-                    yas::make_val("key", it->first),yas::make_val("val", it->second)
-                );
-            }
-
-            ar.finish_node();
-        } else {
-            ar.write_seq_size(map.size());
-            for ( const auto &it: map ) {
-                ar & it.first
-                & it.second;
-            }
-        }
-
-		return ar;
-	}
+    template<typename Archive>
+    static Archive& save(Archive& ar, const std::map<K, V>& map) {
+        return concepts::keyval::save<F>(ar, map);
+    }
 
 	template<typename Archive>
 	static Archive& load(Archive& ar, std::map<K, V>& map) {
-		auto size = ar.read_seq_size();
-		for ( ; size; --size ) {
-			K key{};
-			V val{};
-			ar & key
-				& val;
-			map.insert(std::make_pair(std::move(key), std::move(val)));
-		}
-
-		return ar;
+        return concepts::keyval::load<F>(ar, map);
 	}
 };
 

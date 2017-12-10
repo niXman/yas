@@ -64,22 +64,19 @@ YAS_DECLARE_EXCEPTION_TYPE(serialization_exception)
 #define YAS_THROW_BAD_SIZE_ON_DESERIALIZE(type) \
 	YAS_THROW_EXCEPTION(::yas::serialization_exception, "bad size on deserialize " type);
 
-#define YAS_THROW_IF_BAD_JSON_CHARS(ar, chars) \
-    if ( !(ar.read_and_check(chars)) ) { \
-        YAS_THROW_EXCEPTION(::yas::serialization_exception, "no expected chars '" chars "'"); \
-    }
-
-#define YAS_THROW_IF_BAD_JSON_KEY(ar, keystr, keylen) { \
-        char keybuf[1024]; \
-        const std::size_t minlen = std::min(sizeof(keybuf), keylen); \
-        ar.read(keybuf, minlen); \
-        if ( std::memcmp(keybuf, keystr, minlen) ) { \
-            YAS_THROW_EXCEPTION(::yas::serialization_exception, "bad or unexpected json key"); \
+#define YAS_THROW_IF_BAD_JSON_CHARS(ar, chars) { \
+        char tmp[sizeof(chars)] = "\0"; \
+        ar.read(tmp, sizeof(tmp)-1); \
+        if ( std::memcmp(tmp, chars, sizeof(chars)-1) != 0 ) { \
+            YAS_THROW_EXCEPTION(::yas::serialization_exception, "no expected chars '" chars "'"); \
         } \
     }
 
-#define YAS_THROW_JSON_NONCOMPACTED_MODE_IS_NOT_IMPLEMENTED() \
-    YAS_THROW_EXCEPTION(::yas::serialization_exception, "currently json archives supports only \"yas::compacted\" mode");
+#define YAS_THROW_UNEXPECTED_JSON_KEY(msg) \
+    YAS_THROW_EXCEPTION(::yas::serialization_exception, msg);
+
+#define YAS_THROW_NO_EXPECTED_JSON_KEY(msg) \
+    YAS_THROW_EXCEPTION(::yas::serialization_exception, msg);
 
 #define YAS_THROW_INVALID_JSON_STRING(msg) \
     YAS_THROW_EXCEPTION(::yas::serialization_exception, msg);

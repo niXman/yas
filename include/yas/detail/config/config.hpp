@@ -50,19 +50,29 @@
 
 /***************************************************************************/
 
+#if __cplusplus >= 201703L
+#define __YAS_CONSTEXPR_IF(...) if constexpr (__VA_ARGS__)
+#else
+#define __YAS_CONSTEXPR_IF(...) if (__VA_ARGS__)
+#endif
+
+/***************************************************************************/
+
+#include <yas/detail/config/endian.hpp>
+
 #if defined(__clang__)
-#  define YAS_COMPILER_CONFIG <yas/detail/config/compiler/clang.hpp>
+#  define __YAS_COMPILER_CONFIG <yas/detail/config/compiler/clang.hpp>
 #elif defined(__GNUC__)
-#  define YAS_COMPILER_CONFIG <yas/detail/config/compiler/gcc.hpp>
+#  define __YAS_COMPILER_CONFIG <yas/detail/config/compiler/gcc.hpp>
 #elif defined(__INTEL_COMPILER) || defined(__ICL) || defined(__ICC) || defined(__ECC)
-#  define YAS_COMPILER_CONFIG <yas/detail/config/compiler/intel.hpp>
+#  define __YAS_COMPILER_CONFIG <yas/detail/config/compiler/intel.hpp>
 #elif defined(_MSC_VER)
-#  define YAS_COMPILER_CONFIG <yas/detail/config/compiler/msvc.hpp>
+#  define __YAS_COMPILER_CONFIG <yas/detail/config/compiler/msvc.hpp>
 #else
 #  error "Unknown compiler"
 #endif
 
-#include YAS_COMPILER_CONFIG
+#include __YAS_COMPILER_CONFIG
 
 /***************************************************************************/
 

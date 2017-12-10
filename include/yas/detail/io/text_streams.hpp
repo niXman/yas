@@ -64,33 +64,33 @@ struct text_istream {
 		return size;
 	}
 
-	// for arrays
-	void read(void *ptr, std::size_t size) {
-		YAS_THROW_ON_READ_ERROR(size, !=, is.read(ptr, size));
-	}
+    char peekch() const { return is.peekch(); }
+    char getch() { return is.getch(); }
+    void ungetch(char ch) { is.ungetch(ch); }
 
-    template<std::size_t N>
-    bool read_and_check(const char (&)[N]) { return true; }
+	// for arrays
+	std::size_t read(void *ptr, std::size_t size) {
+		YAS_THROW_READ_ERROR(size != is.read(ptr, size));
+
+		return size;
+	}
 
     // for chars only
 	template<typename T>
 	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char)) {
 		char buf;
 
-		YAS_THROW_ON_READ_ERROR(sizeof(buf), !=, is.read(&buf, sizeof(buf)));
+		YAS_THROW_READ_ERROR(sizeof(buf) != is.read(&buf, sizeof(buf)));
 
 		v = YAS_SCAST(T, buf);
 	}
-	// stub for json_istream
-	template<typename T>
-	void ungetch(T) {}
 
 	// for bools only
 	template<typename T>
 	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, bool)) {
 		char buf;
 
-		YAS_THROW_ON_READ_ERROR(sizeof(buf), !=, is.read(&buf, sizeof(buf)));
+		YAS_THROW_READ_ERROR(sizeof(buf) != is.read(&buf, sizeof(buf)));
 		v = (buf-'0') != 0;
 	}
 
@@ -100,11 +100,11 @@ struct text_istream {
 		char buf[sizeof(T)*4];
 		std::uint8_t n;
 
-		YAS_THROW_ON_READ_ERROR(sizeof(n), !=, is.read(&n, sizeof(n)));
+		YAS_THROW_READ_ERROR(sizeof(n) != is.read(&n, sizeof(n)));
 		n = YAS_SCAST(std::uint8_t, n-'0');
 
 		buf[n] = 0;
-        YAS_THROW_ON_READ_ERROR(n, !=, is.read(buf, std::min<std::size_t>(sizeof(buf), n)));
+        YAS_THROW_READ_ERROR(n != is.read(buf, std::min<std::uint8_t>(sizeof(buf), n)));
 
 		v = Trait::template atoi<T>(buf, n);
 	}
@@ -115,11 +115,11 @@ struct text_istream {
 		char buf[sizeof(T)*4];
 		std::uint8_t n;
 
-		YAS_THROW_ON_READ_ERROR(sizeof(n), !=, is.read(&n, sizeof(n)));
+		YAS_THROW_READ_ERROR(sizeof(n) != is.read(&n, sizeof(n)));
 		n = YAS_SCAST(std::uint8_t, n-'0');
 
 		buf[n] = 0;
-        YAS_THROW_ON_READ_ERROR(n, !=, is.read(buf, std::min<std::size_t>(sizeof(buf), n)));
+        YAS_THROW_READ_ERROR(n != is.read(buf, std::min<std::uint8_t>(sizeof(buf), n)));
 
 		v = Trait::template atou<T>(buf, n);
 	}
@@ -130,11 +130,11 @@ struct text_istream {
 		char buf[std::numeric_limits<T>::max_exponent10+20];
 		std::uint8_t n;
 
-		YAS_THROW_ON_READ_ERROR(sizeof(n), !=, is.read(&n, sizeof(n)));
+		YAS_THROW_READ_ERROR(sizeof(n) != is.read(&n, sizeof(n)));
 		n = YAS_SCAST(std::uint8_t, n-'0');
 
 		buf[n] = 0;
-        YAS_THROW_ON_READ_ERROR(n, !=, is.read(buf, std::min<std::size_t>(sizeof(buf), n)));
+        YAS_THROW_READ_ERROR(n != is.read(buf, std::min<std::uint8_t>(sizeof(buf), n)));
 
 		v = Trait::template atof<T>(buf, n);
 	}
@@ -145,20 +145,14 @@ struct text_istream {
 		char buf[std::numeric_limits<T>::max_exponent10+20];
 		std::uint8_t n;
 
-		YAS_THROW_ON_READ_ERROR(sizeof(n), !=, is.read(&n, sizeof(n)));
+		YAS_THROW_READ_ERROR(sizeof(n) != is.read(&n, sizeof(n)));
 		n = YAS_SCAST(std::uint8_t, n-'0');
 
 		buf[n] = 0;
-        YAS_THROW_ON_READ_ERROR(n, !=, is.read(buf, std::min<std::size_t>(sizeof(buf), n)));
+        YAS_THROW_READ_ERROR(n != is.read(buf, std::min<std::uint8_t>(sizeof(buf), n)));
 
 		v = Trait::template atod<T>(buf, n);
 	}
-
-	/////////////////////////////////////////////////////////////////////////
-
-	void start_object_node(const char *, std::size_t) {}
-    void start_array_node() {}
-	void finish_node() {}
 
 private:
 	IS &is;
@@ -180,20 +174,20 @@ struct text_ostream {
 	// for arrays
 	template<typename T>
 	void write(const T *ptr, std::size_t size) {
-		YAS_THROW_ON_WRITE_ERROR(size, !=, os.write(ptr, size));
+		YAS_THROW_WRITE_ERROR(size != os.write(ptr, size));
 	}
 
 	// for chars only
 	template<typename T>
 	void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char)) {
-		YAS_THROW_ON_WRITE_ERROR(sizeof(v), !=, os.write(&v, sizeof(v)));
+		YAS_THROW_WRITE_ERROR(sizeof(v) != os.write(&v, sizeof(v)));
 	}
 
 	// for bools only
 	template<typename T>
 	void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, bool)) {
 		const char c = YAS_SCAST(char, '0'+v);
-		YAS_THROW_ON_WRITE_ERROR(sizeof(c), !=, os.write(&c, sizeof(c)));
+		YAS_THROW_WRITE_ERROR(sizeof(c) != os.write(&c, sizeof(c)));
 	}
 
 	// for signed 16/32/64 bits
@@ -204,7 +198,7 @@ struct text_ostream {
 
 		buf[0] = YAS_SCAST(char, '0'+len);
 
-		YAS_THROW_ON_WRITE_ERROR(len+1, !=, os.write(buf, len+1));
+		YAS_THROW_WRITE_ERROR(len+1 != os.write(buf, len+1));
 	}
 
 	// for unsigned 16/32/64 bits
@@ -215,7 +209,7 @@ struct text_ostream {
 
 		buf[0] = YAS_SCAST(char, '0'+len);
 
-		YAS_THROW_ON_WRITE_ERROR(len+1, !=, os.write(buf, len+1));
+		YAS_THROW_WRITE_ERROR(len+1 != os.write(buf, len+1));
 	}
 
 	// for floats
@@ -226,7 +220,7 @@ struct text_ostream {
 
 		buf[0] = YAS_SCAST(char, '0'+len);
 
-		YAS_THROW_ON_WRITE_ERROR(len+1, !=, os.write(buf, len+1));
+		YAS_THROW_WRITE_ERROR(len+1 != os.write(buf, len+1));
 	}
 
 	// for doubles
@@ -237,14 +231,8 @@ struct text_ostream {
 
 		buf[0] = YAS_SCAST(char, '0'+len);
 
-		YAS_THROW_ON_WRITE_ERROR(len+1, !=, os.write(buf, len+1));
+		YAS_THROW_WRITE_ERROR(len+1 != os.write(buf, len+1));
 	}
-
-    // stub for json-streams
-	void start_object_node(const char *, std::size_t) {}
-	void start_array_node() {}
-	void finish_node() {}
-	void write_key(const char *, std::size_t) {}
 
 private:
 	OS &os;

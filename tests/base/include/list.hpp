@@ -51,11 +51,13 @@ bool list_test(std::ostream &log, const char *archive_type, const char *test_nam
 
 	typename archive_traits::oarchive oa1;
 	archive_traits::ocreate(oa1, archive_type);
-	oa1 & YAS_OBJECT_NVP("obj", ("list", ilist1));
+	auto o0 = YAS_OBJECT_NVP("obj", ("list", ilist1));
+	oa1 & o0;
 
 	typename archive_traits::iarchive ia1;
 	archive_traits::icreate(ia1, oa1, archive_type);
-	ia1 & YAS_OBJECT_NVP("obj", ("list", ilist2));
+    auto i0 = YAS_OBJECT_NVP("obj", ("list", ilist2));
+	ia1 & i0;
 
 	if ( ilist1 != ilist2 ) {
 		YAS_TEST_REPORT(log, archive_type, test_name);

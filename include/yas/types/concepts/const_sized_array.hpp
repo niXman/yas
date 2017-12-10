@@ -53,7 +53,7 @@ Archive& save_chars(Archive &ar, const T *beg, const T *, YAS_ENABLE_IF_IS_ANY_O
 };
 template<std::size_t N, std::size_t F, typename Archive, typename T>
 Archive& save_chars(Archive &ar, const T *beg, const T *end, YAS_DISABLE_IF_IS_ANY_OF(T, char, signed char)) {
-    ar.start_array_node();
+    ar.write("[", 1);
 
     ar & (*beg);
     for ( ++beg; beg != end; ++beg ) {
@@ -61,7 +61,7 @@ Archive& save_chars(Archive &ar, const T *beg, const T *end, YAS_DISABLE_IF_IS_A
         ar & (*beg);
     }
 
-    ar.finish_node();
+    ar.write("]", 1);
 
     return ar;
 };
@@ -100,12 +100,38 @@ Archive& load_chars(Archive &ar, T *beg, T *, YAS_ENABLE_IF_IS_ANY_OF(T, char, s
 
 template<std::size_t N, std::size_t F, typename Archive, typename T>
 Archive& load_chars(Archive &ar, T *beg, T *end, YAS_DISABLE_IF_IS_ANY_OF(T, char, signed char)) {
+    __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+        json_skipws(ar);
+    }
+
     YAS_THROW_IF_BAD_JSON_CHARS(ar, "[");
 
+    __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+        json_skipws(ar);
+    }
+
     ar & (*beg);
+
+    __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+        json_skipws(ar);
+    }
+
     for ( ++beg; beg != end; ++beg ) {
+        __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+            json_skipws(ar);
+        }
+
         YAS_THROW_IF_BAD_JSON_CHARS(ar, ",");
+
+        __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+            json_skipws(ar);
+        }
+
         ar & (*beg);
+    }
+
+    __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+        json_skipws(ar);
     }
 
     YAS_THROW_IF_BAD_JSON_CHARS(ar, "]");
@@ -119,7 +145,9 @@ Archive& load(Archive &ar, T *beg, T *end) {
         return load_chars<N, F>(ar, beg, end);
     } else {
         const auto size = ar.read_seq_size();
-        if ( size != N ) YAS_THROW_BAD_ARRAY_SIZE();
+        if ( size != N ) {
+            YAS_THROW_BAD_ARRAY_SIZE();
+        }
         if ( can_be_processed_as_byte_array<F, T>::value ) {
             ar.read(beg, sizeof(T) * N);
         } else {

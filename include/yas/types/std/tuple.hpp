@@ -40,7 +40,7 @@
 #include <yas/detail/type_traits/serializer.hpp>
 #include <yas/detail/io/serialization_exception.hpp>
 #include <yas/detail/tools/cast.hpp>
-#include <yas/detail/preprocessor/preprocessor.hpp>
+#include <yas/detail/tools/tuple_element_name.hpp>
 
 #include <tuple>
 
@@ -58,41 +58,83 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& save(Archive &ar, const std::tuple<Types...> &tuple) {
-		if ( F & options::binary ) {
+        __YAS_CONSTEXPR_IF ( F & options::binary ) {
 			ar.write(YAS_SCAST(std::uint8_t, sizeof...(Types)));
-		} else {
+		} else if ( F & yas::text ) {
 			ar.write(sizeof...(Types));
 		}
 
-		return apply(ar, YAS_CCAST(std::tuple<Types...> &, tuple));
-	}
+        __YAS_CONSTEXPR_IF ( F & yas::json ) { ar.write("[", 1); }
+
+		apply(ar, tuple);
+
+        __YAS_CONSTEXPR_IF ( F & yas::json ) { ar.write("]", 1); }
+
+        return ar;
+    }
 	template<typename Archive>
 	static Archive& load(Archive &ar, std::tuple<Types...> &tuple) {
-		if ( F & options::binary ) {
+		__YAS_CONSTEXPR_IF ( F & options::binary ) {
 			std::uint8_t size = 0;
 			ar.read(size);
-			if ( size != sizeof...(Types) ) YAS_THROW_BAD_SIZE_ON_DESERIALIZE("std::tuple");
-		} else {
+			if ( size != sizeof...(Types) ) { YAS_THROW_BAD_SIZE_ON_DESERIALIZE("std::tuple"); }
+		} else if ( F & yas::text ) {
 			std::uint32_t size = 0;
 			ar.read(size);
-			if ( size != sizeof...(Types) ) YAS_THROW_BAD_SIZE_ON_DESERIALIZE("std::tuple");
+			if ( size != sizeof...(Types) ) { YAS_THROW_BAD_SIZE_ON_DESERIALIZE("std::tuple"); }
 		}
 
-		return apply(ar, tuple);
-	}
+        __YAS_CONSTEXPR_IF ( F & yas::json ) {
+            __YAS_CONSTEXPR_IF ( 0 == sizeof...(Types) ) {
+                YAS_THROW_IF_BAD_JSON_CHARS(ar, "[]");
+
+                return ar;
+            }
+
+			YAS_THROW_IF_BAD_JSON_CHARS(ar, "[");
+        }
+
+		apply(ar, tuple);
+
+        __YAS_CONSTEXPR_IF ( F & yas::json ) { YAS_THROW_IF_BAD_JSON_CHARS(ar, "]"); }
+
+        return ar;
+    }
 
 private:
 	template<std::size_t I = 0, typename Archive, typename... Tp>
 	static typename std::enable_if<I == sizeof...(Tp), Archive&>::type
-	apply(Archive &ar, std::tuple<Tp...> &)
+	apply(Archive &ar, const std::tuple<Tp...> &)
 	{ return ar; }
-
 	template<std::size_t I = 0, typename Archive, typename... Tp>
 	static typename std::enable_if<I < sizeof...(Tp), Archive&>::type
-	apply(Archive &ar, std::tuple<Tp...> &t) {
-		ar & std::get<I>(t);
+	apply(Archive &ar, const std::tuple<Tp...> &t) {
+        using tuple_element_name_t = tuple_element_name<I>;
+        ar & YAS_OBJECT_NVP(nullptr, (tuple_element_name_t::c_str(), std::get<I>(t)));
+
+        __YAS_CONSTEXPR_IF ( (F & yas::json) && I+1 < sizeof...(Tp) ) {
+            ar.write(",", 1);
+        }
+
 		return apply<I+1>(ar, t);
 	}
+
+    template<std::size_t I = 0, typename Archive, typename... Tp>
+    static typename std::enable_if<I == sizeof...(Tp), Archive&>::type
+    apply(Archive &ar, std::tuple<Tp...> &)
+    { return ar; }
+    template<std::size_t I = 0, typename Archive, typename... Tp>
+    static typename std::enable_if<I < sizeof...(Tp), Archive&>::type
+    apply(Archive &ar, std::tuple<Tp...> &t) {
+        using tuple_element_name_t = tuple_element_name<I>;
+        ar & YAS_OBJECT_NVP(nullptr, (tuple_element_name_t::c_str(), std::get<I>(t)));
+
+        __YAS_CONSTEXPR_IF ( (F & yas::json) && I+1 < sizeof...(Tp) ) {
+            YAS_THROW_IF_BAD_JSON_CHARS(ar, ",");
+        }
+
+        return apply<I+1>(ar, t);
+    }
 };
 
 /***************************************************************************/
