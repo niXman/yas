@@ -49,7 +49,7 @@ bool boost_cont_string_test(std::ostream &log, const char *archive_type, const c
 	archive_traits::icreate(ia, oa, archive_type);
 	ia & YAS_OBJECT_NVP("obj", ("s", ss));
 
-	if ( ss != s ) {
+	if ( s != ss ) {
 		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}

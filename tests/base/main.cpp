@@ -371,7 +371,7 @@ void tests(std::ostream &log, int &p, int &e) {
     YAS_RUN_TEST(log, boost_tuple, p, e);
     YAS_RUN_TEST(log, boost_variant, p, e);
 #endif // YAS_SERIALIZE_BOOST_TYPES
-    YAS_RUN_TEST(log, json_conformance, p, e, yas::binary|yas::text|yas::compacted);
+    YAS_RUN_TEST(log, json_conformance, p, e, yas::binary|yas::text);
 }
 
 /***************************************************************************/

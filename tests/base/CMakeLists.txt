@@ -9,7 +9,16 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         -DYAS_SERIALIZE_BOOST_TYPES
     )
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 7.2)
+        message(STATUS "GCC-7.2 or greater: using C++17")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wall -Wextra")
+    elseif (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 6.3)
+        message(STATUS "GCC-6.3 or greater: using C++14")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Wextra")
+    else()
+        message(STATUS "GCC-${CMAKE_CXX_COMPILER_VERSION}: using C++11")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
+    endif()
     add_definitions(
         -DBOOST_ERROR_CODE_HEADER_ONLY
         -DBOOST_CHRONO_HEADER_ONLY
