@@ -155,8 +155,9 @@ struct mem_istream {
         return to_copy;
     }
 
+    bool empty() const { return cur == end; }
     char peekch() const { return *cur; }
-    char getch() { return cur < end ? *cur++ : YAS_SCAST(char, EOF); }
+    char getch() { return *cur++; }
     void ungetch(char) { --cur; }
 
     shared_buffer get_shared_buffer() const { return shared_buffer(cur, YAS_SCAST(std::size_t, end-cur)); }

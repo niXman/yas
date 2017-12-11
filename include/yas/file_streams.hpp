@@ -138,12 +138,13 @@ struct file_istream {
 		return std::fread(ptr, 1, size, file);
 	}
 
+	bool empty() const { return peekch() == EOF; }
 	char peekch() const {
         // TODO: optimize
-        char ch = std::getc(file);
+        int ch = std::getc(file);
         std::ungetc(ch, file);
 
-        return ch;
+        return YAS_SCAST(char, ch);
     }
     char getch() { return YAS_SCAST(char, std::getc(file)); }
 	void ungetch(char ch) { std::ungetc(ch, file); }
