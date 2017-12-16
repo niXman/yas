@@ -2,7 +2,7 @@ language: cpp
 
 os:
   - linux
-#  - osx
+  - osx
 
 dist: trusty
 sudo: required
@@ -20,6 +20,7 @@ before_install:
   - if [[ $TRAVIS_OS_NAME == linux ]]; then sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y; fi
   - if [[ $TRAVIS_OS_NAME == linux ]]; then sudo apt-get update -q; fi
   - if [[ $TRAVIS_OS_NAME == linux ]]; then sudo apt-get upgrade -y; fi
+  - if [[ $TRAVIS_OS_NAME == osx && $CC == gcc ]]; then CC=gcc-4.9 CXX=g++-4.9; fi
   - wget http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.bz2
   - tar jxf boost_1_64_0.tar.bz2
   - sudo cp -r boost_1_64_0/boost /usr/local/include
