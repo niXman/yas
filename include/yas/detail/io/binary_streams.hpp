@@ -41,29 +41,25 @@
 #include <yas/detail/io/endian_conv.hpp>
 #include <yas/detail/type_traits/type_traits.hpp>
 
-#include <limits>
-#include <cstring>
+namespace yas {
+namespace detail {
 
 #define __YAS_CALC_STORAGE_SIZE(v) \
-    ((v < (1ul<<32)) \
+    (v < (1ul<<32)) \
         ? (v < (1ul<<24)) \
             ? (v < (1ul<<16)) \
                 ? (v < (1ul<<8)) \
-                    ? 1 \
-                    : 2 \
-                : 3 \
-            : 4 \
+                    ? 1u \
+                    : 2u \
+                : 3u \
+            : 4u \
         : (v < (1ull<<56)) \
             ? (v < (1ull<<48)) \
                 ? (v < (1ull<<40)) \
-                    ? 5 \
-                    : 6 \
-                : 7 \
-            : 8 \
-    )
-
-namespace yas {
-namespace detail {
+                    ? 5u \
+                    : 6u \
+                : 7u \
+            : 8u
 
 /**************************************************************************/
 
@@ -100,23 +96,8 @@ struct binary_ostream {
                 typename std::make_unsigned<T>::type av = v;
                 if ( av >= (1u<<6) ) {
                     const std::uint8_t ns = __YAS_CALC_STORAGE_SIZE(av);
-                    std::uint8_t buf[1 + sizeof(std::uint64_t)] = {
-                        YAS_SCAST(std::uint8_t, ns | YAS_SCAST(std::uint8_t, 0u<<7))
-                    };
-
-                    switch ( ns ) {
-                        case 1: { buf[1] = YAS_SCAST(std::uint8_t, av); } break;
-                        case 2: { std::memcpy(&buf[1], &av, 2); } break;
-                        case 3: { std::memcpy(&buf[1], &av, 3); } break;
-                        case 4: { std::memcpy(&buf[1], &av, 4); } break;
-                        case 5: { std::memcpy(&buf[1], &av, 5); } break;
-                        case 6: { std::memcpy(&buf[1], &av, 6); } break;
-                        case 7: { std::memcpy(&buf[1], &av, 7); } break;
-                        case 8: { std::memcpy(&buf[1], &av, 8); } break;
-                        default: YAS_THROW_BAD_SIZE_OF_TYPE()
-                    }
-
-                    YAS_THROW_WRITE_ERROR(ns+1u != os.write(&buf[0], ns+1u));
+                    write(YAS_SCAST(std::uint8_t, ns | YAS_SCAST(std::uint8_t, 0u<<7)));
+                    YAS_THROW_WRITE_ERROR(ns != os.write(&av, ns));
                 } else {
                     // one byte
                     av |= YAS_SCAST(std::uint8_t, (1u<<6|0u<<7));
@@ -126,23 +107,8 @@ struct binary_ostream {
                 typename std::make_unsigned<T>::type av = std::abs(v);
                 if ( av >= (1u<<6) ) {
                     const std::uint8_t ns = __YAS_CALC_STORAGE_SIZE(av);
-                    std::uint8_t buf[1 + sizeof(std::uint64_t)] = {
-                        YAS_SCAST(std::uint8_t, ns | YAS_SCAST(std::uint8_t, 1u<<7))
-                    };
-
-                    switch ( ns ) {
-                        case 1: { buf[1] = YAS_SCAST(std::uint8_t, av); } break;
-                        case 2: { std::memcpy(&buf[1], &av, 2); } break;
-                        case 3: { std::memcpy(&buf[1], &av, 3); } break;
-                        case 4: { std::memcpy(&buf[1], &av, 4); } break;
-                        case 5: { std::memcpy(&buf[1], &av, 5); } break;
-                        case 6: { std::memcpy(&buf[1], &av, 6); } break;
-                        case 7: { std::memcpy(&buf[1], &av, 7); } break;
-                        case 8: { std::memcpy(&buf[1], &av, 8); } break;
-                        default: YAS_THROW_BAD_SIZE_OF_TYPE()
-                    }
-
-                    YAS_THROW_WRITE_ERROR(ns+1u != os.write(&buf[0], ns+1u));
+                    write(YAS_SCAST(std::uint8_t, ns | YAS_SCAST(std::uint8_t, 1u<<7)));
+                    YAS_THROW_WRITE_ERROR(ns != os.write(&av, ns));
                 } else {
                     // one byte
                     av |= YAS_SCAST(std::uint8_t, (1u<<6|1u<<7));
@@ -161,21 +127,8 @@ struct binary_ostream {
         if ( F & yas::compacted ) {
             if ( v >= (1u<<7) ) {
                 const std::uint8_t ns = __YAS_CALC_STORAGE_SIZE(v);
-                std::uint8_t buf[1 + sizeof(std::uint64_t)] = {ns};
-
-                switch ( ns ) {
-                    case 1: { buf[1] = YAS_SCAST(std::uint8_t, v); } break;
-                    case 2: { std::memcpy(&buf[1], &v, 2); } break;
-                    case 3: { std::memcpy(&buf[1], &v, 3); } break;
-                    case 4: { std::memcpy(&buf[1], &v, 4); } break;
-                    case 5: { std::memcpy(&buf[1], &v, 5); } break;
-                    case 6: { std::memcpy(&buf[1], &v, 6); } break;
-                    case 7: { std::memcpy(&buf[1], &v, 7); } break;
-                    case 8: { std::memcpy(&buf[1], &v, 8); } break;
-                    default: YAS_THROW_BAD_SIZE_OF_TYPE()
-                }
-
-                YAS_THROW_WRITE_ERROR(ns+1u != os.write(&buf[0], ns+1u));
+                write(ns);
+                YAS_THROW_WRITE_ERROR(ns != os.write(&v, ns));
             } else {
                 // one byte
                 v |= YAS_SCAST(std::uint8_t, 1u<<7);

@@ -90,6 +90,8 @@ struct mem_ostream {
             case 3 : std::memcpy(cur, ptr, 3) ; break;
             case 4 : std::memcpy(cur, ptr, 4) ; break;
             case 5 : std::memcpy(cur, ptr, 5) ; break;
+            case 6 : std::memcpy(cur, ptr, 6) ; break;
+            case 7 : std::memcpy(cur, ptr, 7) ; break;
             case 8 : std::memcpy(cur, ptr, 8) ; break;
             case 9 : std::memcpy(cur, ptr, 9) ; break;
 #if defined(__GNUC__) && defined(__SIZEOF_INT128__) // hack for detect int128 support
@@ -135,13 +137,16 @@ struct mem_istream {
 
     template<typename T>
     std::size_t read(T *ptr, const std::size_t size) {
-        if ( size <= YAS_SCAST(std::size_t, end-cur) ) {
+        const std::size_t avail = end-cur;
+        if ( size <= avail ) {
             switch ( size ) {
                 case 1 : std::memcpy(ptr, cur, 1) ; break;
                 case 2 : std::memcpy(ptr, cur, 2) ; break;
                 case 3 : std::memcpy(ptr, cur, 3) ; break;
                 case 4 : std::memcpy(ptr, cur, 4) ; break;
                 case 5 : std::memcpy(ptr, cur, 5) ; break;
+                case 6 : std::memcpy(ptr, cur, 6) ; break;
+                case 7 : std::memcpy(ptr, cur, 7) ; break;
                 case 8 : std::memcpy(ptr, cur, 8) ; break;
                 case 9 : std::memcpy(ptr, cur, 9) ; break;
 #if defined(__GNUC__) && defined(__SIZEOF_INT128__) // hack for detect int128 support
@@ -155,7 +160,7 @@ struct mem_istream {
             return size;
         }
 
-        return YAS_SCAST(std::size_t, end-cur);
+        return avail;
     }
 
     bool empty() const { return cur == end; }
