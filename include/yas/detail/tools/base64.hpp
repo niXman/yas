@@ -38,7 +38,8 @@
 
 #include <yas/detail/config/endian.hpp>
 #include <yas/detail/tools/cast.hpp>
-#include <yas/detail/io/serialization_exception.hpp>
+#include <yas/detail/io/io_exceptions.hpp>
+#include <yas/detail/io/serialization_exceptions.hpp>
 
 #include <cstdint>
 
@@ -618,7 +619,7 @@ std::size_t modp_b64_decode(char *dest, IO &io, std::size_t len) {
     }
 #else
     for ( std::size_t i = 0; i < chunks; ++i ) {
-        io.read(buf, sizeof(buf));
+         YAS_THROW_READ_ERROR(sizeof(buf) != io.read(buf, sizeof(buf)));
         x = d0[buf[0]] | d1[buf[1]] | d2[buf[2]] | d3[buf[3]];
 
         if (x >= MODP_B64_BADCHAR)
@@ -630,7 +631,7 @@ std::size_t modp_b64_decode(char *dest, IO &io, std::size_t len) {
         *p++ = xp[2];
     }
 
-    io.read(buf, sizeof(buf));
+    YAS_THROW_READ_ERROR(sizeof(buf) != io.read(buf, sizeof(buf)));
     if ( buf[3] == '=' ) {
         --len;
         if ( buf[2] == '=' ) {

@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef __yas__detail__io__serialization_exception_hpp
-#define __yas__detail__io__serialization_exception_hpp
+#ifndef __yas__detail__io__serialization_exceptions_hpp
+#define __yas__detail__io__serialization_exceptions_hpp
 
 #include <yas/detail/io/exception_base.hpp>
 
@@ -88,4 +88,4 @@ YAS_DECLARE_EXCEPTION_TYPE(serialization_exception)
 
 } // ns yas
 
-#endif // __yas__detail__io__serialization_exception_hpp
+#endif // __yas__detail__io__serialization_exceptions_hpp

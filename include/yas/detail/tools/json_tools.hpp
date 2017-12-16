@@ -36,7 +36,7 @@
 #ifndef __yas__detail__tools__json_tools_hpp
 #define __yas__detail__tools__json_tools_hpp
 
-#include <yas/detail/io/serialization_exception.hpp>
+#include <yas/detail/io/serialization_exceptions.hpp>
 
 #include <cstdint>
 
