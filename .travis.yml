@@ -8,12 +8,8 @@ dist: trusty
 sudo: required
 
 compiler:
-#  - clang
   - gcc
-
-#env:
-#  - CONFIG=Release
-#  - CONFIG=Debug
+  - clang
 
 notifications:
  email:
@@ -21,27 +17,17 @@ notifications:
    on_failure: always
 
 before_install:
-  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-  - sudo apt-get update -q
-#  - sudo apt-get upgrade -y
-  - sudo apt-get install g++-6 -y
-#  - sudo rm -f /usr/bin/gcc
-#  - sudo rm -f /usr/bin/g++
-#  - sudo cp -f /usr/bin/gcc-6 /usr/bin/gcc
-#  - sudo cp -f /usr/bin/g++-6 /usr/bin/g++
-#  - sudo rm -f /usr/bin/clang
-#  - sudo rm -f /usr/bin/clang++
-#  - sudo cp -f /usr/bin/clang-3.8 /usr/bin/clang
-#  - sudo cp -f /usr/bin/clang++-3.8 /usr/bin/clang++
+  - if [[ $TRAVIS_OS_NAME == linux ]]; then sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y; fi
+  - if [[ $TRAVIS_OS_NAME == linux ]]; then sudo apt-get update -q; fi
+  - if [[ $TRAVIS_OS_NAME == linux ]]; then sudo apt-get upgrade -y; fi
+  - if [[ $TRAVIS_OS_NAME == osx && $CC == gcc ]]; then export CMAKE_C_COMPILER=gcc-4.9 export CMAKE_CXX_COMPILER=g++-4.9; fi
   - wget http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.bz2
   - tar jxf boost_1_64_0.tar.bz2
   - sudo cp -r boost_1_64_0/boost /usr/local/include
 
 install:
-  - export CC=/usr/bin/gcc-6
-  - export CXX=/usr/bin/g++-6
-  - $CXX --version
-#  - clang++ --version
+  - g++ -v
+  - clang -v
   - cmake --version
 
 before_script:
@@ -53,4 +39,4 @@ before_script:
 script:
   - cd $TRAVIS_BUILD_DIR/tests/base/build
   - cmake --build . --config Release
-  - ./yas-base-test binary
+  - ./yas-base-test binary && ./yas-base-test binary compacted && ./yas-base-test json && ./yas-base-test json compacted && ./yas-base-test text
