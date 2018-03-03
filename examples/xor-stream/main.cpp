@@ -37,7 +37,7 @@
 #include <yas/text_oarchive.hpp>
 #include <yas/text_iarchive.hpp>
 #include <yas/std_types.hpp>
-#include <yas/tools/hexdumper.hpp>
+#include <yas/hexdump.hpp>
 
 #include <iostream>
 
@@ -79,7 +79,7 @@ struct my_istream: yas::mem_istream {
     }
 
 private:
-	const char key;
+    const char key;
 };
 
 /***************************************************************************/
@@ -94,15 +94,15 @@ int main() {
 
     const yas::intrusive_buffer ibuf = os.get_intrusive_buffer();
     std::cout << "hexdump:" << std::endl;
-    yas::hex_dump(std::cout, ibuf.data, ibuf.size);
-    std::cout << std::endl;
+    yas::hexdump(std::cout, ibuf.data, ibuf.size) << std::endl;
 
     my_istream is(ibuf, key);
     yas::text_iarchive<my_istream> ia(is);
     ia & YAS_OBJECT_NVP("object", ("v", dst));
 
-    if ( src != dst )
+    if ( src != dst ) {
         YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
+    }
 }
 
 /***************************************************************************/

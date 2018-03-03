@@ -36,17 +36,16 @@
 #include <yas/mem_streams.hpp>
 #include <yas/binary_iarchive.hpp>
 #include <yas/binary_oarchive.hpp>
-#include <yas/std_types.hpp>
 
 /***************************************************************************/
 
 int main() {
-	char w0=33, r0=0;
-	int w1=44, r1=0;
-	float w2=3.14156, r2=0;
-	double w3=3.14156259, r3=0;
+    char w0=33, r0=0;
+    int w1=44, r1=0;
+    float w2=3.14156, r2=0;
+    double w3=3.14156259, r3=0;
 
-	{
+    {
         yas::mem_ostream os;
         yas::binary_oarchive<yas::mem_ostream> oa(os);
 
@@ -71,13 +70,15 @@ int main() {
         );
         ia.serialize(io);
 
-        if ( r0 != w0 || r1 != w1 || r2 != w2 || r3 != w3)
+        if ( r0 != w0 || r1 != w1 || r2 != w2 || r3 != w3) {
             YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
-	}
-	r0=0;r1=0;r2=0;r3=0;
-	{
-		yas::mem_ostream os;
-		yas::binary_oarchive<yas::mem_ostream> oa(os);
+        }
+    }
+
+    r0=0;r1=0;r2=0;r3=0;
+    {
+        yas::mem_ostream os;
+        yas::binary_oarchive<yas::mem_ostream> oa(os);
 
         auto oo = YAS_OBJECT_NVP(
             "vars"
@@ -85,11 +86,11 @@ int main() {
             ,("v1", w1)
             ,("v2", w2)
             ,("v3", w3)
-        );
+            );
         oa(oo);
 
-		yas::mem_istream is(os.get_intrusive_buffer());
-		yas::binary_iarchive<yas::mem_istream> ia(is);
+        yas::mem_istream is(os.get_intrusive_buffer());
+        yas::binary_iarchive<yas::mem_istream> ia(is);
 
         auto io = YAS_OBJECT_NVP(
             "vars"
@@ -100,9 +101,10 @@ int main() {
         );
         ia(io);
 
-		if ( r0 != w0 || r1 != w1 || r2 != w2 || r3 != w3)
-			YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
-	}
+        if ( r0 != w0 || r1 != w1 || r2 != w2 || r3 != w3) {
+            YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
+        }
+    }
 }
 
 /***************************************************************************/

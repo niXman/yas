@@ -4,11 +4,12 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 QMAKE_CXXFLAGS += \
-	-std=c++11
+    -std=c++11 \
+    -Wall \
+    -Wextra
 
 INCLUDEPATH += \
 	../../include
 
 SOURCES += \
 	main.cpp
-

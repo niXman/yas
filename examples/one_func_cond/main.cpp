@@ -33,9 +33,7 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#include <yas/mem_streams.hpp>
-#include <yas/binary_iarchive.hpp>
-#include <yas/binary_oarchive.hpp>
+#include <yas/serialize.hpp>
 #include <yas/std_types.hpp>
 
 /***************************************************************************/
@@ -43,16 +41,15 @@
 struct type {
     type()
         :i(33)
-        ,d(.33)
-        ,s("33")
-        ,v({33, 33, 33})
+        ,d(.34)
+        ,s("35")
+        ,v({36, 37, 38})
     {}
 
     std::uint32_t i;
     double d;
     std::string s;
     std::vector<int> v;
-
 };
 
 // one free-function serializer/deserializer
@@ -80,23 +77,21 @@ void serialize(Ar &ar, type &t) {
 /***************************************************************************/
 
 int main() {
-    type t1;
-    yas::mem_ostream os;
-    yas::binary_oarchive<yas::mem_ostream> oa(os);
-    oa & t1;
-
-    type t2;
+    type t1, t2;
     t2.i = 0;
     t2.d = 0;
     t2.s.clear();
     t2.v.clear();
 
-    yas::mem_istream is(os.get_intrusive_buffer());
-    yas::binary_iarchive<yas::mem_istream> ia(is);
-    ia & t2;
+    constexpr std::size_t flags = yas::mem|yas::json;
 
-    if ( t1.i != t2.i || t1.d != t2.d || t1.s != t2.s || t1.v != t2.v )
+    auto buf = yas::save<flags>(t1);
+
+    yas::load<flags>(buf, t2);
+
+    if ( t1.i != t2.i || t1.d != t2.d || t1.s != t2.s || t1.v != t2.v ) {
         YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
+    }
 }
 
 /***************************************************************************/

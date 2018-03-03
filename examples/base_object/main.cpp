@@ -33,10 +33,7 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#include <yas/mem_streams.hpp>
-#include <yas/binary_iarchive.hpp>
-#include <yas/binary_oarchive.hpp>
-#include <yas/std_types.hpp>
+#include <yas/serialize.hpp>
 
 /***************************************************************************/
 
@@ -45,12 +42,12 @@ struct base {
 
     base()
         :x()
-	{}
+    {}
 
     template<typename Ar>
     void serialize(Ar &ar) {
-        ar & YAS_OBJECT("base", x);
-	}
+        ar & YAS_OBJECT(nullptr /* reserved */, x);
+    }
 };
 
 struct derived: base {
@@ -58,32 +55,31 @@ struct derived: base {
 
     derived()
         :y()
-	{}
+    {}
 
     template<typename Ar>
     void serialize(Ar &ar) {
         auto &x = yas::base_object<base>(*this);
-        ar & YAS_OBJECT("derived", y, x);
-	}
+        ar & YAS_OBJECT(nullptr /* reserved */, y, x);
+    }
 };
 
 /***************************************************************************/
 
 int main() {
-	derived t1, t2;
+    derived t1, t2;
     t1.x = 33;
     t1.y = 44;
 
-	yas::mem_ostream os;
-	yas::binary_oarchive<yas::mem_ostream> oa(os);
-	oa & t1;
+    constexpr std::size_t flags = yas::mem|yas::json;
 
-	yas::mem_istream is(os.get_intrusive_buffer());
-	yas::binary_iarchive<yas::mem_istream> ia(is);
-	ia & t2;
+    yas::shared_buffer buf = yas::save<flags>(t1);
 
-	if ( t2.x != 33 || t2.y != 44 )
-		YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
+    yas::load<flags>(buf, t2);
+
+    if ( t2.x != 33 || t2.y != 44 ) {
+        YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
+    }
 }
 
 /***************************************************************************/

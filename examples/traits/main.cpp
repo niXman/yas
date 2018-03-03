@@ -33,9 +33,7 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#include <yas/mem_streams.hpp>
-#include <yas/text_iarchive.hpp>
-#include <yas/text_oarchive.hpp>
+#include <yas/serialize.hpp>
 
 /***************************************************************************/
 
@@ -56,24 +54,15 @@ struct my_traits2 {
 
 int main() {
     std::int32_t src = 33, dst = 0;
-    yas::mem_ostream os;
-    yas::text_oarchive<
-         yas::mem_ostream
-        ,yas::text|yas::endian_as_host
-        ,my_traits
-    > oa(os);
-    oa & YAS_OBJECT_NVP("object", ("v", src));
+    constexpr std::size_t flags = yas::mem|yas::json;
 
-    yas::mem_istream is(os.get_intrusive_buffer());
-    yas::text_iarchive<
-         yas::mem_istream
-        ,yas::text|yas::endian_as_host
-        ,my_traits2
-    > ia(is);
-    ia & YAS_OBJECT_NVP("object", ("v", dst));
+    auto buf = yas::save<flags>(YAS_OBJECT_NVP("object", ("v", src)));
 
-    if ( src != dst )
+    yas::load<flags>(buf, YAS_OBJECT_NVP("object", ("v", dst)));
+
+    if ( src != dst ) {
         YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
+    }
 }
 
 /***************************************************************************/

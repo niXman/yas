@@ -75,6 +75,10 @@ struct my_istream {
         return size;
     }
 
+    char peekch() const { return *cur; }
+    char getch() { return *cur++; }
+    void ungetch(char) { --cur; }
+
     const char *cur;
     const char *end;
 };
@@ -93,8 +97,9 @@ int main() {
     yas::text_iarchive<my_istream> ia(is);
     ia & YAS_OBJECT_NVP("object", ("v", v1));
 
-    if ( v0 != v1 )
+    if ( v0 != v1 ) {
         YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
+    }
 }
 
 /***************************************************************************/

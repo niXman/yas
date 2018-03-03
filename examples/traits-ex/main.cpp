@@ -43,7 +43,7 @@
 /***************************************************************************/
 
 struct my_traits {
-	// integer -> c-string
+    // integer -> c-string
     template<typename T>
     static std::size_t itoa(char *buf, const std::size_t bufsize, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t)) {
         return std::snprintf(buf, bufsize, "%d", (v+2));
@@ -101,10 +101,11 @@ struct my_traits {
 template<typename T>
 void test(T val, T expected) {
     T dst = 0;
+
     yas::mem_ostream os;
     yas::text_oarchive<
          yas::mem_ostream
-        ,yas::text|yas::endian_as_host
+        ,yas::text|yas::ehost
         ,my_traits
     > oa(os);
     oa & YAS_OBJECT_NVP("object", ("v", val));
@@ -112,13 +113,14 @@ void test(T val, T expected) {
     yas::mem_istream is(os.get_intrusive_buffer());
     yas::text_iarchive<
          yas::mem_istream
-        ,yas::text|yas::endian_as_host
+        ,yas::text|yas::ehost
         ,my_traits
     > ia(is);
     ia & YAS_OBJECT_NVP("object", ("v", dst));
 
-    if ( dst != expected )
+    if ( dst != expected ) {
         YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
+    }
 }
 
 /***************************************************************************/
