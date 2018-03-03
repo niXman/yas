@@ -3,7 +3,7 @@
 // https://github.com/Tencent/rapidjson/blob/master/include/rapidjson/internal/dtoa.h
 
 
-// Copyright (c) 2010-2017 niXman (i dot nixman dog gmail dot com). All
+// Copyright (c) 2010-2018 niXman (i dot nixman dog gmail dot com). All
 // rights reserved.
 //
 // This file is part of YAS(https://github.com/niXman/yas) project.
