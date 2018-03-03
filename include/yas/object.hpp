@@ -339,26 +339,30 @@ make_object(std::nullptr_t, Pairs &&... pairs) {
 
 /**************************************************************************/
 
+#define __YAS_ARG16(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, ...) _15
+#define __YAS_HAS_COMMA(...) __YAS_ARG16(__VA_ARGS__, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
+#define __YAS__TRIGGER_PARENTHESIS_(...) ,
+#define __YAS_PASTE5(_0, _1, _2, _3, _4) _0 ## _1 ## _2 ## _3 ## _4
+#define __YAS_IS_EMPTY_CASE_0001 ,
+#define __YAS_ISEMPTY(_0, _1, _2, _3) __YAS_HAS_COMMA(__YAS_PASTE5(__YAS_IS_EMPTY_CASE_, _0, _1, _2, _3))
+#define __YAS_TUPLE_IS_EMPTY_IMPL(...) \
+    __YAS_ISEMPTY( \
+        __YAS_HAS_COMMA(__VA_ARGS__), \
+        __YAS_HAS_COMMA(__YAS__TRIGGER_PARENTHESIS_ __VA_ARGS__),                 \
+        __YAS_HAS_COMMA(__VA_ARGS__ (/*empty*/)), \
+        __YAS_HAS_COMMA(__YAS__TRIGGER_PARENTHESIS_ __VA_ARGS__ (/*empty*/)) \
+    )
+
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
 #   include <boost/version.hpp>
 #   if BOOST_VERSION >= 106000
 #       include <boost/vmd/is_empty.hpp>
 #       define __YAS_TUPLE_IS_EMPTY(...) BOOST_VMD_IS_EMPTY(__VA_ARGS__)
+#   else
+#       define __YAS_TUPLE_IS_EMPTY(...) __YAS_TUPLE_IS_EMPTY_IMPL(__VA_ARGS__)
 #   endif // BOOST_VERSION >= 106000
 #else // !defined(YAS_SERIALIZE_BOOST_TYPES)
-#   define __YAS_ARG16(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, ...) _15
-#   define __YAS_HAS_COMMA(...) __YAS_ARG16(__VA_ARGS__, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
-#   define __YAS__TRIGGER_PARENTHESIS_(...) ,
-#   define __YAS_PASTE5(_0, _1, _2, _3, _4) _0 ## _1 ## _2 ## _3 ## _4
-#   define __YAS_IS_EMPTY_CASE_0001 ,
-#   define __YAS_ISEMPTY(_0, _1, _2, _3) __YAS_HAS_COMMA(__YAS_PASTE5(__YAS_IS_EMPTY_CASE_, _0, _1, _2, _3))
-#   define __YAS_TUPLE_IS_EMPTY(...) \
-        __YAS_ISEMPTY( \
-            __YAS_HAS_COMMA(__VA_ARGS__), \
-            __YAS_HAS_COMMA(__YAS__TRIGGER_PARENTHESIS_ __VA_ARGS__),                 \
-            __YAS_HAS_COMMA(__VA_ARGS__ (/*empty*/)), \
-            __YAS_HAS_COMMA(__YAS__TRIGGER_PARENTHESIS_ __VA_ARGS__ (/*empty*/)) \
-        )
+#   define __YAS_TUPLE_IS_EMPTY(...) __YAS_TUPLE_IS_EMPTY_IMPL(__VA_ARGS__)
 #endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 
 /**************************************************************************/

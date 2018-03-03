@@ -44,7 +44,8 @@
 #include <yas/json_iarchive.hpp>
 #include <yas/std_types.hpp>
 #include <yas/serialize.hpp>
-#include <yas/tools/hexdumper.hpp>
+#include <yas/tools.hpp>
+#include <yas/hexdump.hpp>
 
 #ifdef YAS_SERIALIZE_BOOST_TYPES
 #include <yas/boost_types.hpp>
@@ -184,10 +185,11 @@ struct archive_traits {
         static constexpr yas::options host_endian() { return oarchive_type::host_endian(); }
         std::size_t size() const { return stream.get_intrusive_buffer().size; }
         yas::intrusive_buffer get_intrusive_buffer() const { return stream.get_intrusive_buffer(); }
+        yas::shared_buffer get_shared_buffer() const { return stream.get_shared_buffer(); }
 
         void dump(std::ostream &os = std::cout) {
             const yas::intrusive_buffer buf = stream.get_intrusive_buffer();
-            os << yas::hex_dump(buf.data, buf.size) << std::endl;
+            os << yas::hexdump(buf.data, buf.size) << std::endl;
         }
         void print(std::ostream &os = std::cout) {
             const yas::intrusive_buffer buf = stream.get_intrusive_buffer();
@@ -249,7 +251,7 @@ struct archive_traits {
 
         void dump(std::ostream &os = std::cout) {
             const yas::intrusive_buffer buf = stream->get_intrusive_buffer();
-            os << yas::hex_dump(buf.data, buf.size) << std::endl;
+            os << yas::hexdump(buf.data, buf.size) << std::endl;
         }
         void print(std::ostream &os = std::cout) {
             const yas::intrusive_buffer buf = stream->get_intrusive_buffer();

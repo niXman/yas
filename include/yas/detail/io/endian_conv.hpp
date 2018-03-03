@@ -50,7 +50,7 @@ struct storage_type {
 		 is_float  = std::is_same<T, float>::value
 		,is_double = std::is_same<T, double>::value
 	};
-	static_assert(is_float||is_double,"only double or float types is allowed");
+	static_assert(is_float||is_double, "only double or float types is allowed");
 
 	using type = typename std::conditional<
 		 is_float

@@ -36,7 +36,7 @@
 #ifndef __yas__detail__type_traits__typeinfo_hpp
 #define __yas__detail__type_traits__typeinfo_hpp
 
-#include <yas/detail/type_traits/fnv1a.hpp>
+#include <yas/detail/tools/fnv1a.hpp>
 
 #include <cstdint>
 
@@ -51,12 +51,13 @@ struct typeinfo;
 #define __YAS_GENERATE_TYPEINFO(t) \
     template<> \
     struct typeinfo<t> { \
-        using type = t; \
         static constexpr const char name[]  = #t; \
-        static constexpr std::uint32_t size = sizeof(type); \
+        static constexpr std::uint32_t size = sizeof(t); \
         static constexpr std::uint32_t hash = fnv1a(name); \
     };
 
+__YAS_GENERATE_TYPEINFO(bool)
+__YAS_GENERATE_TYPEINFO(char)
 __YAS_GENERATE_TYPEINFO(std::int8_t)
 __YAS_GENERATE_TYPEINFO(std::uint8_t)
 __YAS_GENERATE_TYPEINFO(std::int16_t)

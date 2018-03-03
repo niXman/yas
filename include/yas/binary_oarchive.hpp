@@ -43,8 +43,6 @@
 #include <yas/detail/tools/noncopyable.hpp>
 #include <yas/detail/tools/limit.hpp>
 
-#include <yas/tools/base_object.hpp>
-
 #include <yas/types/utility/fundamental.hpp>
 #include <yas/types/utility/enum.hpp>
 #include <yas/types/utility/usertype.hpp>
@@ -53,6 +51,7 @@
 #include <yas/types/utility/value.hpp>
 #include <yas/types/utility/object.hpp>
 
+#include <yas/base_object.hpp>
 #include <yas/buffers.hpp>
 #include <yas/object.hpp>
 #include <yas/version.hpp>

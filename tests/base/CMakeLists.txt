@@ -3,22 +3,15 @@ project(yas-base-test)
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
+#    include_directories("/home/nixman/boost-1.66.0-gcc-7.2/include")
     add_definitions(
         -DBOOST_ERROR_CODE_HEADER_ONLY
         -DBOOST_CHRONO_HEADER_ONLY
         -DYAS_SERIALIZE_BOOST_TYPES
     )
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-#    if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 7.2)
-#        message(STATUS "GCC-7.2 or greater: using C++17")
-#        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wall -Wextra")
-#    elseif (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 6.3)
-#        message(STATUS "GCC-6.3 or greater: using C++14")
-#        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Wextra")
-#    else()
-#        message(STATUS "GCC-${CMAKE_CXX_COMPILER_VERSION}: using C++11")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
-#    endif()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
+#    include_directories("/home/nixman/boost-1.66.0-gcc-7.2/include")
     add_definitions(
         -DBOOST_ERROR_CODE_HEADER_ONLY
         -DBOOST_CHRONO_HEADER_ONLY

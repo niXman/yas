@@ -83,9 +83,6 @@ YAS_DECLARE_EXCEPTION_TYPE(io_exception);
 #define YAS_THROW_BAD_COMPACTED_MODE() \
 	YAS_THROW_EXCEPTION(::yas::io_exception, "incompatible compacted/non-compacted mode");
 
-#define YAS_THROW_BAD_SIZE_OF_TYPE() \
-	YAS_THROW_EXCEPTION(::yas::io_exception, "unexpected sizeof(T)");
-
 /***************************************************************************/
 
 } // namespace yas

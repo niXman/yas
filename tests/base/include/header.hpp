@@ -46,10 +46,22 @@ bool header_test(std::ostream &log, const char* archive_type, const char *test_n
 
     {
         using oa = yas::binary_oarchive<yas::mem_ostream>;
+        using ia = yas::binary_iarchive<yas::mem_istream>;
         static_assert(oa::type() == yas::binary, "");
         static_assert(YAS_BIG_ENDIAN ? oa::is_big_endian() : oa::is_little_endian(), "");
         static_assert(oa::is_writable(), "");
         static_assert(!oa::is_readable(), "");
+
+        static_assert(yas::detail::header::k_header_size == oa::header_size(), "");
+        static_assert(yas::detail::header::k_header_size == ia::header_size(), "");
+    }
+
+    {
+        static_assert(yas::binary_oarchive<yas::mem_ostream>::flags() & yas::ehost, "");
+        static_assert(yas::text_oarchive<yas::mem_ostream>::flags() & yas::ehost, "");
+
+        static_assert(!(yas::binary_oarchive<yas::mem_ostream, yas::binary|yas::ebig>::flags() & yas::ehost), "");
+        static_assert(!(yas::text_oarchive<yas::mem_ostream, yas::text|yas::elittle>::flags() & yas::ehost), "");
     }
 
     {
@@ -61,11 +73,45 @@ bool header_test(std::ostream &log, const char* archive_type, const char *test_n
     }
 
     {
-        static_assert(yas::binary_oarchive<yas::mem_ostream>::flags() & yas::ehost, "");
-        static_assert(yas::text_oarchive<yas::mem_ostream>::flags() & yas::ehost, "");
+        __YAS_CONSTEXPR_IF( !yas::is_json_archive<typename archive_traits::oarchive_type>::value ) {
+            typename archive_traits::oarchive oa;
+            archive_traits::ocreate(oa, archive_type);
 
-        static_assert(!(yas::binary_oarchive<yas::mem_ostream, yas::binary|yas::ebig>::flags() & yas::ehost), "");
-        static_assert(!(yas::text_oarchive<yas::mem_ostream, yas::text|yas::elittle>::flags() & yas::ehost), "");
+            const auto ibuf = oa.get_intrusive_buffer();
+            YAS_TEST_REPORT_IF(!yas::is_yas_archive(ibuf), log, archive_type, test_name, return false;);
+            const auto sbuf = oa.get_shared_buffer();
+            YAS_TEST_REPORT_IF(!yas::is_yas_archive(sbuf), log, archive_type, test_name, return false;);
+
+            const auto header = yas::read_header(ibuf);
+            __YAS_CONSTEXPR_IF( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
+                YAS_TEST_REPORT_IF(header.bits.version != yas::detail::binary_archive_version, log, archive_type, test_name, return false;);
+                YAS_TEST_REPORT_IF(yas::archive_version(ibuf) != yas::detail::binary_archive_version, log, archive_type, test_name, return false;);
+                YAS_TEST_REPORT_IF(yas::archive_version(sbuf) != yas::detail::binary_archive_version, log, archive_type, test_name, return false;);
+            } else {
+                YAS_TEST_REPORT_IF(header.bits.version != yas::detail::text_archive_version, log, archive_type, test_name, return false;);
+                YAS_TEST_REPORT_IF(yas::archive_version(ibuf) != yas::detail::text_archive_version, log, archive_type, test_name, return false;);
+                YAS_TEST_REPORT_IF(yas::archive_version(sbuf) != yas::detail::text_archive_version, log, archive_type, test_name, return false;);
+            }
+
+            const auto artype = archive_traits::oarchive_type::type();
+            YAS_TEST_REPORT_IF(yas::archive_type(ibuf) != artype, log, archive_type, test_name, return false;);
+            YAS_TEST_REPORT_IF(yas::archive_type(sbuf) != artype, log, archive_type, test_name, return false;);
+
+            __YAS_CONSTEXPR_IF( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
+                const auto arendian = (archive_traits::oarchive_type::flags() & (yas::elittle|yas::ebig));
+                YAS_TEST_REPORT_IF(yas::archive_endian(ibuf) != arendian, log, archive_type, test_name, return false;);
+                YAS_TEST_REPORT_IF(yas::archive_endian(sbuf) != arendian, log, archive_type, test_name, return false;);
+            }
+
+            YAS_TEST_REPORT_IF(yas::archive_is_32bit(ibuf) != (sizeof(void*) == 4), log, archive_type, test_name, return false;);
+            YAS_TEST_REPORT_IF(yas::archive_is_32bit(sbuf) != (sizeof(void*) == 4), log, archive_type, test_name, return false;);
+            YAS_TEST_REPORT_IF(yas::archive_is_64bit(ibuf) != (sizeof(void*) == 8), log, archive_type, test_name, return false;);
+            YAS_TEST_REPORT_IF(yas::archive_is_64bit(sbuf) != (sizeof(void*) == 8), log, archive_type, test_name, return false;);
+
+            const bool arcompacted = (archive_traits::oarchive_type::flags() & yas::compacted);
+            YAS_TEST_REPORT_IF(yas::archive_is_compacted(ibuf) != arcompacted, log, archive_type, test_name, return false;);
+            YAS_TEST_REPORT_IF(yas::archive_is_compacted(sbuf) != arcompacted, log, archive_type, test_name, return false;);
+        }
     }
 
     return true;
