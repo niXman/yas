@@ -18,6 +18,7 @@ notifications:
 
 before_install:
   - if [[ $TRAVIS_OS_NAME == linux ]]; then sudo /etc/init.d/postgresql stop; fi
+  - if [[ $TRAVIS_OS_NAME == linux ]]; then sudo apt-get remove postgresql-9.* -y; fi
   - if [[ $TRAVIS_OS_NAME == linux ]]; then sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y; fi
   - if [[ $TRAVIS_OS_NAME == linux ]]; then sudo apt-get update -q; fi
   - if [[ $TRAVIS_OS_NAME == linux ]]; then sudo apt-get upgrade -y; fi
