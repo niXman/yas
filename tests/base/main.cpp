@@ -474,6 +474,14 @@ int main(int, char **argv) {
         return EXIT_FAILURE;
     }
 
+    std::cout << std::endl
+    << "/***************************************************/" << std::endl
+    << "cmdline: ";
+    for ( char **arg = argv+1; *arg; ++arg ) {
+        std::cout << *arg << ' ';
+    }
+    std::cout << std::endl << std::endl;
+
     std::ofstream logfile;
     if ( opts.logn == options::log_file ) {
         const char *fname = std::strrchr(argv[0], '/');
