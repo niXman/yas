@@ -415,12 +415,12 @@ struct options {
 
         int artype = binary+text+json;
         if ( artype == 0 ) {
-            msg = "one of binary/text/object should be specified. terminate.";
+            msg = "one of binary/text/json should be specified. terminate.";
 
             return;
         }
         if ( artype > 1 ) {
-            msg = "only one of binary/text/object can be specified. terminate.";
+            msg = "only one of binary/text/json can be specified. terminate.";
 
             return;
         }
