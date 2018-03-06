@@ -44,8 +44,8 @@
 #include <yas/json_iarchive.hpp>
 #include <yas/std_types.hpp>
 #include <yas/serialize.hpp>
-#include <yas/tools.hpp>
-#include <yas/hexdump.hpp>
+#include <yas/tools/archinfo.hpp>
+#include <yas/tools/hexdump.hpp>
 
 #ifdef YAS_SERIALIZE_BOOST_TYPES
 #include <yas/boost_types.hpp>

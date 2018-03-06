@@ -40,6 +40,7 @@
 #include <yas/detail/type_traits/serializer.hpp>
 #include <yas/detail/io/header.hpp>
 #include <yas/detail/io/binary_streams.hpp>
+#include <yas/detail/tools/base_object.hpp>
 #include <yas/detail/tools/noncopyable.hpp>
 #include <yas/detail/tools/limit.hpp>
 
@@ -51,7 +52,6 @@
 #include <yas/types/utility/value.hpp>
 #include <yas/types/utility/object.hpp>
 
-#include <yas/base_object.hpp>
 #include <yas/buffers.hpp>
 #include <yas/object.hpp>
 #include <yas/version.hpp>

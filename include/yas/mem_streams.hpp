@@ -137,30 +137,26 @@ struct mem_istream {
 
     template<typename T>
     std::size_t read(T *ptr, const std::size_t size) {
-        const std::size_t avail = end-cur;
-        if ( size <= avail ) {
-            switch ( size ) {
-                case 1 : std::memcpy(ptr, cur, 1) ; break;
-                case 2 : std::memcpy(ptr, cur, 2) ; break;
-                case 3 : std::memcpy(ptr, cur, 3) ; break;
-                case 4 : std::memcpy(ptr, cur, 4) ; break;
-                case 5 : std::memcpy(ptr, cur, 5) ; break;
-                case 6 : std::memcpy(ptr, cur, 6) ; break;
-                case 7 : std::memcpy(ptr, cur, 7) ; break;
-                case 8 : std::memcpy(ptr, cur, 8) ; break;
-                case 9 : std::memcpy(ptr, cur, 9) ; break;
+        const std::size_t to_copy = std::min<std::size_t>(end-cur, size);
+        switch ( to_copy ) {
+            case 1 : std::memcpy(ptr, cur, 1) ; break;
+            case 2 : std::memcpy(ptr, cur, 2) ; break;
+            case 3 : std::memcpy(ptr, cur, 3) ; break;
+            case 4 : std::memcpy(ptr, cur, 4) ; break;
+            case 5 : std::memcpy(ptr, cur, 5) ; break;
+            case 6 : std::memcpy(ptr, cur, 6) ; break;
+            case 7 : std::memcpy(ptr, cur, 7) ; break;
+            case 8 : std::memcpy(ptr, cur, 8) ; break;
+            case 9 : std::memcpy(ptr, cur, 9) ; break;
 #if defined(__GNUC__) && defined(__SIZEOF_INT128__) // hack for detect int128 support
-                case 16: std::memcpy(ptr, cur, 16); break;
-                case 17: std::memcpy(ptr, cur, 17); break;
+            case 16: std::memcpy(ptr, cur, 16); break;
+            case 17: std::memcpy(ptr, cur, 17); break;
 #endif
-                default: std::memcpy(ptr, cur, size);
-            }
-            cur += size;
-
-            return size;
+            default: std::memcpy(ptr, cur, size);
         }
+        cur += to_copy;
 
-        return avail;
+        return to_copy;
     }
 
     bool empty() const { return cur == end; }

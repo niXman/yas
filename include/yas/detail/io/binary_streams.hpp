@@ -93,7 +93,7 @@ struct binary_ostream {
     // for signed
     template<typename T>
     void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t)) {
-        __YAS_CONSTEXPR_IF(F & yas::compacted) {
+        __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
             if ( v >= 0 ) {
                 typename std::make_unsigned<T>::type uv = v;
                 if ( uv >= (1u<<6) ) {
@@ -124,7 +124,7 @@ struct binary_ostream {
     }
     template<typename T>
     void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t)) {
-        __YAS_CONSTEXPR_IF(F & yas::compacted) {
+        __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
             if ( v >= 0 ) {
                 typename std::make_unsigned<T>::type uv = v;
                 if ( uv >= (1u<<6) ) {
@@ -155,7 +155,7 @@ struct binary_ostream {
     }
     template<typename T>
     void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t)) {
-        __YAS_CONSTEXPR_IF(F & yas::compacted) {
+        __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
             if ( v >= 0 ) {
                 typename std::make_unsigned<T>::type uv = v;
                 if ( uv >= (1u<<6) ) {
@@ -188,7 +188,7 @@ struct binary_ostream {
     // for unsigned
     template<typename T>
     void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t)) {
-        __YAS_CONSTEXPR_IF(F & yas::compacted) {
+        __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
             if ( v >= (1u<<7) ) {
                 const std::uint8_t ns = __YAS_CALC_STORAGE_SIZE_16(v);
                 write(ns);
@@ -205,7 +205,7 @@ struct binary_ostream {
     }
     template<typename T>
     void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint32_t)) {
-        __YAS_CONSTEXPR_IF(F & yas::compacted) {
+        __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
             if ( v >= (1u<<7) ) {
                 const std::uint8_t ns = __YAS_CALC_STORAGE_SIZE_32(v);
                 write(ns);
@@ -222,7 +222,7 @@ struct binary_ostream {
     }
     template<typename T>
     void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint64_t)) {
-        __YAS_CONSTEXPR_IF(F & yas::compacted) {
+        __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
             if ( v >= (1u<<7) ) {
                 const std::uint8_t ns = __YAS_CALC_STORAGE_SIZE_64(v);
                 write(ns);
@@ -285,7 +285,7 @@ struct binary_istream {
     // for signed
     template<typename T>
     void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t)) {
-        if ( F & yas::compacted ) {
+        __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
             std::uint8_t ns = YAS_SCAST(std::uint8_t, is.getch());
             const bool neg = YAS_SCAST(bool, (ns >> 7) & 1u);
             const bool onebyte = YAS_SCAST(bool, (ns >> 6) & 1u);
@@ -306,7 +306,7 @@ struct binary_istream {
     // for unsigned
     template<typename T>
     void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
-        if ( F & yas::compacted ) {
+        __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
             std::uint8_t ns = YAS_SCAST(std::uint8_t, is.getch());
             const bool onebyte = YAS_SCAST(bool, (ns >> 7) & 1u);
             ns &= ~(1u << 7);

@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef __yas__tools_hpp
-#define __yas__tools_hpp
+#ifndef __yas__tools__archinfo_hpp
+#define __yas__tools__archinfo_hpp
 
 #include <yas/binary_oarchive.hpp>
 #include <yas/binary_iarchive.hpp>
@@ -242,4 +242,4 @@ inline bool archive_is_compacted(const char *fname) {
 
 } // namespace yas
 
-#endif // __yas__tools_hpp
+#endif // __yas__tools__archinfo_hpp

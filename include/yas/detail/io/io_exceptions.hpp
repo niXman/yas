@@ -59,12 +59,14 @@ YAS_DECLARE_EXCEPTION_TYPE(io_exception);
 	YAS_THROW_EXCEPTION(::yas::io_exception, "you cannot use information functions with \"yas::no_header\" flag");
 
 #define YAS_THROW_READ_ERROR(...) \
-	if ( (__VA_ARGS__) ) { \
+	if ( !(__VA_ARGS__) ) { \
+	} else { \
 		YAS_THROW_EXCEPTION(::yas::io_exception, "can't read requested bytes"); \
 	}
 
 #define YAS_THROW_WRITE_ERROR(...) \
-	if ( (__VA_ARGS__) ) { \
+	if ( !(__VA_ARGS__) ) { \
+	} else { \
 		YAS_THROW_EXCEPTION(::yas::io_exception, "can't write requested bytes"); \
 	}
 
