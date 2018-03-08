@@ -51,6 +51,7 @@ Archive& save_chars(Archive &ar, const T *beg, const T *, __YAS_ENABLE_IF_IS_ANY
 
     return ar;
 };
+
 template<std::size_t N, std::size_t F, typename Archive, typename T>
 Archive& save_chars(Archive &ar, const T *beg, const T *end, __YAS_DISABLE_IF_IS_ANY_OF(T, char, signed char)) {
     ar.write("[", 1);

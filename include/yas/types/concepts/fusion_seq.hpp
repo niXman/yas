@@ -120,7 +120,10 @@ apply(Archive &ar, Cont<Tp...> &t) {
 /***************************************************************************/
 
 template<
-        std::size_t F, typename Archive, template<typename...> class Cont, typename... Types
+     std::size_t F
+    ,typename Archive
+    ,template<typename...> class Cont
+    ,typename... Types
 >
 Archive &save(Archive &ar, const Cont<Types...> &cont) {
     if ( F & options::binary ) {
@@ -139,7 +142,10 @@ Archive &save(Archive &ar, const Cont<Types...> &cont) {
 };
 
 template<
-        std::size_t F, typename Archive, template<typename...> class Cont, typename... Types
+     std::size_t F
+    ,typename Archive
+    ,template<typename...> class Cont
+    ,typename... Types
 >
 Archive &load(Archive &ar, Cont<Types...> &cont) {
     if ( F & options::binary ) {
