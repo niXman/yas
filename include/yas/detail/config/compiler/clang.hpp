@@ -38,21 +38,21 @@
 
 /***************************************************************************/
 
-#if YAS_LITTLE_ENDIAN
-#	define YAS_LOCAL_TO_NETWORK16(src) __builtin_bswap16((src))
-#	define YAS_LOCAL_TO_NETWORK32(src) __builtin_bswap32((src))
-#	define YAS_LOCAL_TO_NETWORK64(src) __builtin_bswap64((src))
-#	define YAS_NETWORK_TO_LOCAL16(src) YAS_LOCAL_TO_NETWORK16((src))
-#	define YAS_NETWORK_TO_LOCAL32(src) YAS_LOCAL_TO_NETWORK32((src))
-#	define YAS_NETWORK_TO_LOCAL64(src) YAS_LOCAL_TO_NETWORK64((src))
-#else // ! ifdef YAS_LITTLE_ENDIAN
-#	define YAS_LOCAL_TO_NETWORK16(src) (src)
-#	define YAS_LOCAL_TO_NETWORK32(src) (src)
-#	define YAS_LOCAL_TO_NETWORK64(src) (src)
-#	define YAS_NETWORK_TO_LOCAL16(src) (src)
-#	define YAS_NETWORK_TO_LOCAL32(src) (src)
-#	define YAS_NETWORK_TO_LOCAL64(src) (src)
-#endif // ifdef YAS_LITTLE_ENDIAN
+#if __YAS_LITTLE_ENDIAN
+#	define __YAS_LOCAL_TO_NETWORK16(src) __builtin_bswap16((src))
+#	define __YAS_LOCAL_TO_NETWORK32(src) __builtin_bswap32((src))
+#	define __YAS_LOCAL_TO_NETWORK64(src) __builtin_bswap64((src))
+#	define __YAS_NETWORK_TO_LOCAL16(src) __YAS_LOCAL_TO_NETWORK16((src))
+#	define __YAS_NETWORK_TO_LOCAL32(src) __YAS_LOCAL_TO_NETWORK32((src))
+#	define __YAS_NETWORK_TO_LOCAL64(src) __YAS_LOCAL_TO_NETWORK64((src))
+#else // ! ifdef __YAS_LITTLE_ENDIAN
+#	define __YAS_LOCAL_TO_NETWORK16(src) (src)
+#	define __YAS_LOCAL_TO_NETWORK32(src) (src)
+#	define __YAS_LOCAL_TO_NETWORK64(src) (src)
+#	define __YAS_NETWORK_TO_LOCAL16(src) (src)
+#	define __YAS_NETWORK_TO_LOCAL32(src) (src)
+#	define __YAS_NETWORK_TO_LOCAL64(src) (src)
+#endif // ifdef __YAS_LITTLE_ENDIAN
 
 /***************************************************************************/
 

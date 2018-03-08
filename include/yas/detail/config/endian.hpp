@@ -41,29 +41,29 @@
 #if defined(__linux__) || defined(__ANDROID__)
 #   include <endian.h>
 #   if (__BYTE_ORDER == __LITTLE_ENDIAN)
-#       define YAS_LITTLE_ENDIAN (1)
-#       define YAS_BIG_ENDIAN (0)
+#       define __YAS_LITTLE_ENDIAN (1)
+#       define __YAS_BIG_ENDIAN (0)
 #   elif (__BYTE_ORDER == __BIG_ENDIAN)
-#       define YAS_LITTLE_ENDIAN (0)
-#       define YAS_BIG_ENDIAN (1)
+#       define __YAS_LITTLE_ENDIAN (0)
+#       define __YAS_BIG_ENDIAN (1)
 #   elif (__BYTE_ORDER == __PDP_ENDIAN)
 #       define YAS_PDP_ENDIAN
 #   else
 #       error Unknown machine endianness detected.
 #   endif
 #elif defined(_BIG_ENDIAN)
-#   define YAS_LITTLE_ENDIAN (0)
-#   define YAS_BIG_ENDIAN (1)
+#   define __YAS_LITTLE_ENDIAN (0)
+#   define __YAS_BIG_ENDIAN (1)
 #elif defined(_LITTLE_ENDIAN)
-#   define YAS_LITTLE_ENDIAN (1)
-#   define YAS_BIG_ENDIAN (0)
+#   define __YAS_LITTLE_ENDIAN (1)
+#   define __YAS_BIG_ENDIAN (0)
 #elif defined(__sparc) || defined(__sparc__) \
     || defined(_POWER) || defined(__powerpc__) \
     || defined(__ppc__) || defined(__hpux) \
     || defined(_MIPSEB) || defined(_POWER) \
     || defined(__s390__)
-#   define YAS_LITTLE_ENDIAN (0)
-#   define YAS_BIG_ENDIAN (1)
+#   define __YAS_LITTLE_ENDIAN (0)
+#   define __YAS_BIG_ENDIAN (1)
 #elif defined(__i386__) || defined(__alpha__) \
     || defined(__ia64) || defined(__ia64__) \
     || defined(_M_IX86) || defined(_M_IA64) \
@@ -73,14 +73,14 @@
     || defined(_M_X64) || defined(__arm64__) \
     || defined(__ARM_ARCH_7__) || defined(__ARM_ARCH_7A__) \
     || defined(__ARM_ARCH_7S__)
-#   define YAS_LITTLE_ENDIAN (1)
-#   define YAS_BIG_ENDIAN (0)
+#   define __YAS_LITTLE_ENDIAN (1)
+#   define __YAS_BIG_ENDIAN (0)
 #else
 #   error The file yas/detail/config/endian.hpp needs to be set up for your CPU type.
 #endif
 
 #define __YAS_BSWAP_NEEDED(F) \
-    (((F & ::yas::ebig) && !YAS_BIG_ENDIAN) || ((F & ::yas::elittle) && !YAS_LITTLE_ENDIAN))
+    (((F & ::yas::ebig) && !__YAS_BIG_ENDIAN) || ((F & ::yas::elittle) && !__YAS_LITTLE_ENDIAN))
 
 /***************************************************************************/
 

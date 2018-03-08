@@ -42,48 +42,48 @@ namespace yas {
 
 /***************************************************************************/
 
-YAS_DECLARE_EXCEPTION_TYPE(io_exception);
+__YAS_DECLARE_EXCEPTION_TYPE(io_exception);
 
 /***************************************************************************/
 
-#define YAS_THROW_BAD_ARCHIVE_INFORMATION() \
-	YAS_THROW_EXCEPTION(::yas::io_exception, "archive is corrupted or try to use \"yas::no_header\" flag");
+#define __YAS_THROW_BAD_ARCHIVE_INFORMATION() \
+	__YAS_THROW_EXCEPTION(::yas::io_exception, "archive is corrupted or try to use \"yas::no_header\" flag");
 
-#define YAS_THROW_BAD_ARCHIVE_VERSION() \
-	YAS_THROW_EXCEPTION(::yas::io_exception, "incompatible archive version");
+#define __YAS_THROW_BAD_ARCHIVE_VERSION() \
+	__YAS_THROW_EXCEPTION(::yas::io_exception, "incompatible archive version");
 
-#define YAS_THROW_BAD_ARCHIVE_TYPE() \
-	YAS_THROW_EXCEPTION(::yas::io_exception, "incompatible archive type");
+#define __YAS_THROW_BAD_ARCHIVE_TYPE() \
+	__YAS_THROW_EXCEPTION(::yas::io_exception, "incompatible archive type");
 
-#define YAS_THROW_ARCHIVE_NO_HEADER() \
-	YAS_THROW_EXCEPTION(::yas::io_exception, "you cannot use information functions with \"yas::no_header\" flag");
+#define __YAS_THROW_ARCHIVE_NO_HEADER() \
+	__YAS_THROW_EXCEPTION(::yas::io_exception, "you cannot use information functions with \"yas::no_header\" flag");
 
-#define YAS_THROW_READ_ERROR(...) \
+#define __YAS_THROW_READ_ERROR(...) \
 	if ( !(__VA_ARGS__) ) { \
 	} else { \
-		YAS_THROW_EXCEPTION(::yas::io_exception, "can't read requested bytes"); \
+		__YAS_THROW_EXCEPTION(::yas::io_exception, "can't read requested bytes"); \
 	}
 
-#define YAS_THROW_WRITE_ERROR(...) \
+#define __YAS_THROW_WRITE_ERROR(...) \
 	if ( !(__VA_ARGS__) ) { \
 	} else { \
-		YAS_THROW_EXCEPTION(::yas::io_exception, "can't write requested bytes"); \
+		__YAS_THROW_EXCEPTION(::yas::io_exception, "can't write requested bytes"); \
 	}
 
-#define YAS_THROW_FILE_ALREADY_EXISTS() \
-	YAS_THROW_EXCEPTION(::yas::io_exception, "file already exists");
+#define __YAS_THROW_FILE_ALREADY_EXISTS() \
+    __YAS_THROW_EXCEPTION(::yas::io_exception, "file already exists");
 
-#define YAS_THROW_FILE_IS_NOT_EXISTS() \
-	YAS_THROW_EXCEPTION(::yas::io_exception, "file is not exists");
+#define __YAS_THROW_FILE_IS_NOT_EXISTS() \
+	__YAS_THROW_EXCEPTION(::yas::io_exception, "file is not exists");
 
-#define YAS_THROW_ERROR_OPEN_FILE() \
-	YAS_THROW_EXCEPTION(::yas::io_exception, "error opening file");
+#define __YAS_THROW_ERROR_OPEN_FILE() \
+	__YAS_THROW_EXCEPTION(::yas::io_exception, "error opening file");
 
-#define YAS_THROW_BAD_FILE_MODE() \
-	YAS_THROW_EXCEPTION(::yas::io_exception, "bad file open mode");
+#define __YAS_THROW_BAD_FILE_MODE() \
+	__YAS_THROW_EXCEPTION(::yas::io_exception, "bad file open mode");
 
-#define YAS_THROW_BAD_COMPACTED_MODE() \
-	YAS_THROW_EXCEPTION(::yas::io_exception, "incompatible compacted/non-compacted mode");
+#define __YAS_THROW_BAD_COMPACTED_MODE() \
+    __YAS_THROW_EXCEPTION(::yas::io_exception, "incompatible compacted/non-compacted mode");
 
 /***************************************************************************/
 

@@ -58,21 +58,21 @@ void to_utf8(D &dst, const S &src) {
 	for ( auto it = src.begin(); it != src.end(); ++it ) {
 		std::wstring::value_type nchar = *it;
 		if (nchar <= 0x7F) {
-			dst += YAS_SCAST(std::string::value_type, nchar);
+			dst += __YAS_SCAST(std::string::value_type, nchar);
 		} else if (nchar <= 0x07FF) {
-			dst += YAS_SCAST(char, 0xC0 | (nchar >> 6));
-			dst += YAS_SCAST(char, 0x80 | (nchar & 0x3F));
+			dst += __YAS_SCAST(char, 0xC0 | (nchar >> 6));
+			dst += __YAS_SCAST(char, 0x80 | (nchar & 0x3F));
 		}
 #if WCHAR_MAX > 0xFFFF
 		else if (nchar <= 0xFFFF) {
-			dst += YAS_SCAST(char, 0xE0 | (nchar >> 12));
-			dst += YAS_SCAST(char, 0x80 | ((nchar >> 6) & 0x3F));
-			dst += YAS_SCAST(char, 0x80 | (nchar & 0x3F));
+			dst += __YAS_SCAST(char, 0xE0 | (nchar >> 12));
+			dst += __YAS_SCAST(char, 0x80 | ((nchar >> 6) & 0x3F));
+			dst += __YAS_SCAST(char, 0x80 | (nchar & 0x3F));
 		} else if (nchar  <= 0x1FFFFF) {
-			dst += YAS_SCAST(char, 0xF0 | (nchar >> 18));
-			dst += YAS_SCAST(char, 0x80 | ((nchar >> 12) & 0x3F));
-			dst += YAS_SCAST(char, 0x80 | ((nchar >> 6) & 0x3F));
-			dst += YAS_SCAST(char, 0x80 | (nchar & 0x3F));
+			dst += __YAS_SCAST(char, 0xF0 | (nchar >> 18));
+			dst += __YAS_SCAST(char, 0x80 | ((nchar >> 12) & 0x3F));
+			dst += __YAS_SCAST(char, 0x80 | ((nchar >> 6) & 0x3F));
+			dst += __YAS_SCAST(char, 0x80 | (nchar & 0x3F));
 		}
 #endif
 	}
@@ -82,26 +82,26 @@ template<typename D, typename S>
 void from_utf8(D &dst, const S &src) {
 	std::wstring::value_type tmp = 0;
 	for ( auto it = src.begin(); it != src.end(); ++it ) {
-		unsigned char nchar = YAS_SCAST(unsigned char, *it);
+		unsigned char nchar = __YAS_SCAST(unsigned char, *it);
 		if (nchar <= 0x7F) {
 			tmp = nchar;
 		} else if ((nchar & 0xE0) == 0xC0) {
 			tmp = (nchar & 0x1F) << 6;
-			nchar = YAS_SCAST(unsigned char, *(++it));
+			nchar = __YAS_SCAST(unsigned char, *(++it));
 			tmp |= nchar & 0x3F;
 		} else if ((nchar & 0xF0) == 0xE0) {
 			tmp = (nchar & 0x0F) << 12;
-			nchar = YAS_SCAST(unsigned char, *(++it));
+			nchar = __YAS_SCAST(unsigned char, *(++it));
 			tmp |= (nchar & 0x3F) << 6;
-			nchar = YAS_SCAST(unsigned char, *(++it));
+			nchar = __YAS_SCAST(unsigned char, *(++it));
 			tmp |= (nchar & 0x3F);
 		} else if ((nchar & 0xF8) == 0xF0) {
 			tmp = (nchar & 0x0F) << 18;
-			nchar = YAS_SCAST(unsigned char, *(++it));
+			nchar = __YAS_SCAST(unsigned char, *(++it));
 			tmp |= (nchar & 0x3F) << 12;
-			nchar = YAS_SCAST(unsigned char, *(++it));
+			nchar = __YAS_SCAST(unsigned char, *(++it));
 			tmp |= (nchar & 0x3F) << 6;
-			nchar = YAS_SCAST(unsigned char, *(++it));
+			nchar = __YAS_SCAST(unsigned char, *(++it));
 			tmp |= (nchar & 0x3F);
 		}
 		dst += tmp;

@@ -36,8 +36,8 @@
 #ifndef __yas__detail__tools__cast_hpp
 #define __yas__detail__tools__cast_hpp
 
-#define YAS_SCAST(t, v) static_cast<t>(v)
-#define YAS_RCAST(t, v) reinterpret_cast<t>(v)
-#define YAS_CCAST(t, v) const_cast<t>(v)
+#define __YAS_SCAST(t, v) static_cast<t>(v)
+#define __YAS_RCAST(t, v) reinterpret_cast<t>(v)
+#define __YAS_CCAST(t, v) const_cast<t>(v)
 
 #endif // __yas__detail__tools__cast_hpp

@@ -88,7 +88,7 @@ Archive& load(Archive &ar, C &c) {
             json_skipws(ar);
         }
 
-        YAS_THROW_IF_BAD_JSON_CHARS(ar, "{");
+        __YAS_THROW_IF_BAD_JSON_CHARS(ar, "{");
 
         __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
             json_skipws(ar);
@@ -132,7 +132,7 @@ Archive& load(Archive &ar, C &c) {
             }
         }
 
-        YAS_THROW_IF_BAD_JSON_CHARS(ar, "}");
+        __YAS_THROW_IF_BAD_JSON_CHARS(ar, "}");
     } else {
         auto size = ar.read_seq_size();
         for ( ; size; --size ) {

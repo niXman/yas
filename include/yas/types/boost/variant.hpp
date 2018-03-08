@@ -63,11 +63,11 @@ struct serializer<
             ar.write("[", 1);
             ar & YAS_OBJECT(nullptr, idx);
             ar.write(",", 1);
-            variant_switch<F>(ar, idx, YAS_CCAST(boost::variant<Types...> &, v));
+            variant_switch<F>(ar, idx, __YAS_CCAST(boost::variant<Types...> &, v));
             ar.write("]", 1);
         } else {
-            ar.write(YAS_SCAST(std::uint8_t, idx));
-            variant_switch<F>(ar, idx, YAS_CCAST(boost::variant<Types...> &, v));
+            ar.write(__YAS_SCAST(std::uint8_t, idx));
+            variant_switch<F>(ar, idx, __YAS_CCAST(boost::variant<Types...> &, v));
         }
 
         return ar;
@@ -79,18 +79,18 @@ struct serializer<
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
             }
-            YAS_THROW_IF_BAD_JSON_CHARS(ar, "[");
+            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "[");
             std::size_t idx = 0;
             ar & YAS_OBJECT(nullptr, idx);
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
             }
-            YAS_THROW_IF_BAD_JSON_CHARS(ar, ",");
+            __YAS_THROW_IF_BAD_JSON_CHARS(ar, ",");
             variant_switch<F>(ar, idx, v);
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
             }
-            YAS_THROW_IF_BAD_JSON_CHARS(ar, "]");
+            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "]");
         } else {
             std::uint8_t idx = 0;
             ar & idx;

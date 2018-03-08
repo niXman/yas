@@ -70,86 +70,86 @@ struct text_istream {
 
 	// for arrays
 	std::size_t read(void *ptr, std::size_t size) {
-		YAS_THROW_READ_ERROR(size != is.read(ptr, size));
+		__YAS_THROW_READ_ERROR(size != is.read(ptr, size));
 
 		return size;
 	}
 
     // for chars only
 	template<typename T>
-	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char)) {
+	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char)) {
 		char buf;
 
-		YAS_THROW_READ_ERROR(sizeof(buf) != is.read(&buf, sizeof(buf)));
+		__YAS_THROW_READ_ERROR(sizeof(buf) != is.read(&buf, sizeof(buf)));
 
-		v = YAS_SCAST(T, buf);
+		v = __YAS_SCAST(T, buf);
 	}
 
 	// for bools only
 	template<typename T>
-	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, bool)) {
+	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, bool)) {
 		char buf;
 
-		YAS_THROW_READ_ERROR(sizeof(buf) != is.read(&buf, sizeof(buf)));
+		__YAS_THROW_READ_ERROR(sizeof(buf) != is.read(&buf, sizeof(buf)));
 		v = (buf-'0') != 0;
 	}
 
 	// for signed 16/32/64 bits
 	template<typename T>
-	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t)) {
+	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t)) {
 		char buf[sizeof(T)*4];
 		std::uint8_t n;
 
-		YAS_THROW_READ_ERROR(sizeof(n) != is.read(&n, sizeof(n)));
-		n = YAS_SCAST(std::uint8_t, n-'0');
+		__YAS_THROW_READ_ERROR(sizeof(n) != is.read(&n, sizeof(n)));
+		n = __YAS_SCAST(std::uint8_t, n-'0');
 
 		buf[n] = 0;
-        YAS_THROW_READ_ERROR(n != is.read(buf, std::min<std::size_t>(sizeof(buf), n)));
+        __YAS_THROW_READ_ERROR(n != is.read(buf, std::min<std::size_t>(sizeof(buf), n)));
 
 		v = Trait::template atoi<T>(buf, n);
 	}
 
 	// for unsigned 16/32/64 bits
 	template<typename T>
-	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
+	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
 		char buf[sizeof(T)*4];
 		std::uint8_t n;
 
-		YAS_THROW_READ_ERROR(sizeof(n) != is.read(&n, sizeof(n)));
-		n = YAS_SCAST(std::uint8_t, n-'0');
+		__YAS_THROW_READ_ERROR(sizeof(n) != is.read(&n, sizeof(n)));
+		n = __YAS_SCAST(std::uint8_t, n-'0');
 
 		buf[n] = 0;
-        YAS_THROW_READ_ERROR(n != is.read(buf, std::min<std::size_t>(sizeof(buf), n)));
+        __YAS_THROW_READ_ERROR(n != is.read(buf, std::min<std::size_t>(sizeof(buf), n)));
 
 		v = Trait::template atou<T>(buf, n);
 	}
 
 	// for floats
 	template<typename T>
-	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, float)) {
+	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, float)) {
 		char buf[std::numeric_limits<T>::max_exponent10+20];
 		std::uint8_t n;
 
-		YAS_THROW_READ_ERROR(sizeof(n) != is.read(&n, sizeof(n)));
-		n = YAS_SCAST(std::uint8_t, n-'0');
+		__YAS_THROW_READ_ERROR(sizeof(n) != is.read(&n, sizeof(n)));
+		n = __YAS_SCAST(std::uint8_t, n-'0');
 
 		buf[n] = 0;
-        YAS_THROW_READ_ERROR(n != is.read(buf, std::min<std::size_t>(sizeof(buf), n)));
+        __YAS_THROW_READ_ERROR(n != is.read(buf, std::min<std::size_t>(sizeof(buf), n)));
 
 		v = Trait::template atof<T>(buf, n);
 	}
 
 	// for doubles
 	template<typename T>
-	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, double)) {
+	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, double)) {
 		char buf[std::numeric_limits<T>::max_exponent10+20];
 		std::uint8_t n;
 
-		YAS_THROW_READ_ERROR(sizeof(n) != is.read(&n, sizeof(n)));
-		n = YAS_SCAST(std::uint8_t, n-'0');
+		__YAS_THROW_READ_ERROR(sizeof(n) != is.read(&n, sizeof(n)));
+		n = __YAS_SCAST(std::uint8_t, n-'0');
 
 		buf[n] = 0;
-        YAS_THROW_READ_ERROR(n != is.read(buf, std::min<std::size_t>(sizeof(buf), n)));
+        __YAS_THROW_READ_ERROR(n != is.read(buf, std::min<std::size_t>(sizeof(buf), n)));
 
 		v = Trait::template atod<T>(buf, n);
 	}
@@ -168,70 +168,70 @@ struct text_ostream {
 
 	template<typename T>
 	void write_seq_size(T v) {
-		write(YAS_SCAST(std::uint64_t, v));
+		write(__YAS_SCAST(std::uint64_t, v));
 	}
 
 	// for arrays
 	template<typename T>
 	void write(const T *ptr, std::size_t size) {
-		YAS_THROW_WRITE_ERROR(size != os.write(ptr, size));
+		__YAS_THROW_WRITE_ERROR(size != os.write(ptr, size));
 	}
 
 	// for chars only
 	template<typename T>
-	void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char)) {
-		YAS_THROW_WRITE_ERROR(sizeof(v) != os.write(&v, sizeof(v)));
+	void write(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char)) {
+		__YAS_THROW_WRITE_ERROR(sizeof(v) != os.write(&v, sizeof(v)));
 	}
 
 	// for bools only
 	template<typename T>
-	void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, bool)) {
-		const char c = YAS_SCAST(char, '0'+v);
-		YAS_THROW_WRITE_ERROR(sizeof(c) != os.write(&c, sizeof(c)));
+	void write(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, bool)) {
+		const char c = __YAS_SCAST(char, '0'+v);
+		__YAS_THROW_WRITE_ERROR(sizeof(c) != os.write(&c, sizeof(c)));
 	}
 
 	// for signed 16/32/64 bits
 	template<typename T>
-	void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t)) {
+	void write(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t)) {
 		char buf[sizeof(v)*4];
 		std::size_t len = Trait::itoa(buf+1, sizeof(buf)-1, v);
 
-		buf[0] = YAS_SCAST(char, '0'+len);
+		buf[0] = __YAS_SCAST(char, '0'+len);
 
-		YAS_THROW_WRITE_ERROR(len+1 != os.write(buf, len+1));
+		__YAS_THROW_WRITE_ERROR(len+1 != os.write(buf, len+1));
 	}
 
 	// for unsigned 16/32/64 bits
 	template<typename T>
-	void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
+	void write(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
 		char buf[sizeof(v)*4];
 		std::size_t len = Trait::utoa(buf+1, sizeof(buf), v);
 
-		buf[0] = YAS_SCAST(char, '0'+len);
+		buf[0] = __YAS_SCAST(char, '0'+len);
 
-		YAS_THROW_WRITE_ERROR(len+1 != os.write(buf, len+1));
+		__YAS_THROW_WRITE_ERROR(len+1 != os.write(buf, len+1));
 	}
 
 	// for floats
 	template<typename T>
-	void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, float)) {
+	void write(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, float)) {
 		char buf[std::numeric_limits<T>::max_exponent10 + 20];
 		std::size_t len = Trait::ftoa(buf+1, sizeof(buf)-1, v);
 
-		buf[0] = YAS_SCAST(char, '0'+len);
+		buf[0] = __YAS_SCAST(char, '0'+len);
 
-		YAS_THROW_WRITE_ERROR(len+1 != os.write(buf, len+1));
+		__YAS_THROW_WRITE_ERROR(len+1 != os.write(buf, len+1));
 	}
 
 	// for doubles
 	template<typename T>
-	void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, double)) {
+	void write(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, double)) {
 		char buf[std::numeric_limits<T>::max_exponent10 + 20];
 		std::size_t len = Trait::dtoa(buf+1, sizeof(buf)-1, v);
 
-		buf[0] = YAS_SCAST(char, '0'+len);
+		buf[0] = __YAS_SCAST(char, '0'+len);
 
-		YAS_THROW_WRITE_ERROR(len+1 != os.write(buf, len+1));
+		__YAS_THROW_WRITE_ERROR(len+1 != os.write(buf, len+1));
 	}
 
 private:

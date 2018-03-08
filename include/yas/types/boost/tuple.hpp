@@ -61,7 +61,7 @@ struct serializer<
 	static Archive& save(Archive &ar, const boost::tuple<Types...> &tuple) {
         constexpr std::size_t tuple_size = boost::tuples::length<boost::tuple<Types...>>::value;
         __YAS_CONSTEXPR_IF ( F & options::binary ) {
-			ar.write(YAS_SCAST(std::uint8_t, tuple_size));
+			ar.write(__YAS_SCAST(std::uint8_t, tuple_size));
 		} else if ( F & yas::text ) {
 			ar.write(tuple_size);
 		}
@@ -80,26 +80,26 @@ struct serializer<
         __YAS_CONSTEXPR_IF ( F & options::binary ) {
 			std::uint8_t size = 0;
 			ar.read(size);
-			if ( size != tuple_size ) { YAS_THROW_BAD_SIZE_ON_DESERIALIZE("boost::tuple"); }
+			if ( size != tuple_size ) { __YAS_THROW_BAD_SIZE_ON_DESERIALIZE("boost::tuple"); }
 		} else if ( F & yas::text ) {
 			std::uint32_t size = 0;
 			ar.read(size);
-			if ( size != tuple_size ) { YAS_THROW_BAD_SIZE_ON_DESERIALIZE("boost::tuple"); }
+			if ( size != tuple_size ) { __YAS_THROW_BAD_SIZE_ON_DESERIALIZE("boost::tuple"); }
 		}
 
         __YAS_CONSTEXPR_IF ( F & yas::json ) {
             if ( 0 == tuple_size ) {
-                YAS_THROW_IF_BAD_JSON_CHARS(ar, "[]");
+                __YAS_THROW_IF_BAD_JSON_CHARS(ar, "[]");
 
                 return ar;
             }
 
-            YAS_THROW_IF_BAD_JSON_CHARS(ar, "[");
+            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "[");
         }
 
         apply<tuple_size>(ar, tuple);
 
-        __YAS_CONSTEXPR_IF ( F & yas::json ) { YAS_THROW_IF_BAD_JSON_CHARS(ar, "]"); }
+        __YAS_CONSTEXPR_IF ( F & yas::json ) { __YAS_THROW_IF_BAD_JSON_CHARS(ar, "]"); }
 
 		return ar;
 	}
@@ -138,7 +138,7 @@ private:
             ,(tuple_element_name_t::c_str(), boost::get<I>(t))
         );
 
-        __YAS_CONSTEXPR_IF ( (F & yas::json) && I+1 < S ) { YAS_THROW_IF_BAD_JSON_CHARS(ar, ","); }
+        __YAS_CONSTEXPR_IF ( (F & yas::json) && I+1 < S ) { __YAS_THROW_IF_BAD_JSON_CHARS(ar, ","); }
 
 		return apply<S, I+1>(ar, t);
 	}

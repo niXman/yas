@@ -70,13 +70,13 @@ struct serializer<
 	static Archive& load(Archive& ar, value<KT, VT> &v) {
 		__YAS_CONSTEXPR_IF ( F & yas::json ) {
 			__YAS_CONSTEXPR_IF ( F & yas::compacted ) {
-                YAS_THROW_IF_BAD_JSON_CHARS(ar, "\"");
+                __YAS_THROW_IF_BAD_JSON_CHARS(ar, "\"");
                 char key[1024];
                 const auto klen = json_read_key(ar, key, sizeof(key));
                 if ( klen != v.klen || 0 != std::memcmp(key, v.key, v.klen) ) {
-                    YAS_THROW_UNEXPECTED_JSON_KEY("unexpected json key");
+                    __YAS_THROW_UNEXPECTED_JSON_KEY("unexpected json key");
                 }
-                YAS_THROW_IF_BAD_JSON_CHARS(ar, "\":");
+                __YAS_THROW_IF_BAD_JSON_CHARS(ar, "\":");
             } else {
                 json_skipws(ar);
             }

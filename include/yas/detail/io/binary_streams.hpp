@@ -75,174 +75,174 @@ struct binary_ostream {
     // TODO:
     template<typename T>
     void write_seq_size(T size) {
-        const std::uint64_t tsize = YAS_SCAST(std::uint64_t, size);
+        const std::uint64_t tsize = __YAS_SCAST(std::uint64_t, size);
         write(tsize);
     }
 
     // for arrays
     template<typename T>
     void write(const T *ptr, std::size_t size) {
-        YAS_THROW_WRITE_ERROR(size != os.write(ptr, size));
+        __YAS_THROW_WRITE_ERROR(size != os.write(ptr, size));
     }
 
     template<typename T>
-    void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char, bool)) {
-        YAS_THROW_WRITE_ERROR(sizeof(v) != os.write(&v, sizeof(v)));
+    void write(T v, __YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char, bool)) {
+        __YAS_THROW_WRITE_ERROR(sizeof(v) != os.write(&v, sizeof(v)));
     }
 
     // for signed
     template<typename T>
-    void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t)) {
+    void write(T v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t)) {
         __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
             if ( v >= 0 ) {
                 typename std::make_unsigned<T>::type uv = v;
                 if ( uv >= (1u<<6) ) {
                     const std::uint8_t ns = __YAS_CALC_STORAGE_SIZE_16(uv);
-                    write(YAS_SCAST(std::uint8_t, ns | YAS_SCAST(std::uint8_t, 0u<<7)));
-                    YAS_THROW_WRITE_ERROR(ns != os.write(&uv, ns));
+                    write(__YAS_SCAST(std::uint8_t, ns | __YAS_SCAST(std::uint8_t, 0u<<7)));
+                    __YAS_THROW_WRITE_ERROR(ns != os.write(&uv, ns));
                 } else {
                     // one byte
-                    uv |= YAS_SCAST(std::uint8_t, (1u<<6|0u<<7));
-                    YAS_THROW_WRITE_ERROR(1 != os.write(&uv, 1));
+                    uv |= __YAS_SCAST(std::uint8_t, (1u<<6|0u<<7));
+                    __YAS_THROW_WRITE_ERROR(1 != os.write(&uv, 1));
                 }
             } else {
                 typename std::make_unsigned<T>::type uv = std::abs(v);
                 if ( uv >= (1u<<6) ) {
                     const std::uint8_t ns = __YAS_CALC_STORAGE_SIZE_16(uv);
-                    write(YAS_SCAST(std::uint8_t, ns | YAS_SCAST(std::uint8_t, 1u<<7)));
-                    YAS_THROW_WRITE_ERROR(ns != os.write(&uv, ns));
+                    write(__YAS_SCAST(std::uint8_t, ns | __YAS_SCAST(std::uint8_t, 1u<<7)));
+                    __YAS_THROW_WRITE_ERROR(ns != os.write(&uv, ns));
                 } else {
                     // one byte
-                    uv |= YAS_SCAST(std::uint8_t, (1u<<6|1u<<7));
-                    YAS_THROW_WRITE_ERROR(1 != os.write(&uv, 1));
+                    uv |= __YAS_SCAST(std::uint8_t, (1u<<6|1u<<7));
+                    __YAS_THROW_WRITE_ERROR(1 != os.write(&uv, 1));
                 }
             }
         } else {
             v = endian_converter<__YAS_BSWAP_NEEDED(F)>::bswap(v);
-            YAS_THROW_WRITE_ERROR(sizeof(v) != os.write(&v, sizeof(v)));
+            __YAS_THROW_WRITE_ERROR(sizeof(v) != os.write(&v, sizeof(v)));
         }
     }
     template<typename T>
-    void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t)) {
+    void write(T v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t)) {
         __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
             if ( v >= 0 ) {
                 typename std::make_unsigned<T>::type uv = v;
                 if ( uv >= (1u<<6) ) {
                     const std::uint8_t ns = __YAS_CALC_STORAGE_SIZE_32(uv);
-                    write(YAS_SCAST(std::uint8_t, ns | YAS_SCAST(std::uint8_t, 0u<<7)));
-                    YAS_THROW_WRITE_ERROR(ns != os.write(&uv, ns));
+                    write(__YAS_SCAST(std::uint8_t, ns | __YAS_SCAST(std::uint8_t, 0u<<7)));
+                    __YAS_THROW_WRITE_ERROR(ns != os.write(&uv, ns));
                 } else {
                     // one byte
-                    uv |= YAS_SCAST(std::uint8_t, (1u<<6|0u<<7));
-                    YAS_THROW_WRITE_ERROR(1 != os.write(&uv, 1));
+                    uv |= __YAS_SCAST(std::uint8_t, (1u<<6|0u<<7));
+                    __YAS_THROW_WRITE_ERROR(1 != os.write(&uv, 1));
                 }
             } else {
                 typename std::make_unsigned<T>::type uv = std::abs(v);
                 if ( uv >= (1u<<6) ) {
                     const std::uint8_t ns = __YAS_CALC_STORAGE_SIZE_32(uv);
-                    write(YAS_SCAST(std::uint8_t, ns | YAS_SCAST(std::uint8_t, 1u<<7)));
-                    YAS_THROW_WRITE_ERROR(ns != os.write(&uv, ns));
+                    write(__YAS_SCAST(std::uint8_t, ns | __YAS_SCAST(std::uint8_t, 1u<<7)));
+                    __YAS_THROW_WRITE_ERROR(ns != os.write(&uv, ns));
                 } else {
                     // one byte
-                    uv |= YAS_SCAST(std::uint8_t, (1u<<6|1u<<7));
-                    YAS_THROW_WRITE_ERROR(1 != os.write(&uv, 1));
+                    uv |= __YAS_SCAST(std::uint8_t, (1u<<6|1u<<7));
+                    __YAS_THROW_WRITE_ERROR(1 != os.write(&uv, 1));
                 }
             }
         } else {
             v = endian_converter<__YAS_BSWAP_NEEDED(F)>::bswap(v);
-            YAS_THROW_WRITE_ERROR(sizeof(v) != os.write(&v, sizeof(v)));
+            __YAS_THROW_WRITE_ERROR(sizeof(v) != os.write(&v, sizeof(v)));
         }
     }
     template<typename T>
-    void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t)) {
+    void write(T v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t)) {
         __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
             if ( v >= 0 ) {
                 typename std::make_unsigned<T>::type uv = v;
                 if ( uv >= (1u<<6) ) {
                     const std::uint8_t ns = __YAS_CALC_STORAGE_SIZE_64(uv);
-                    write(YAS_SCAST(std::uint8_t, ns | YAS_SCAST(std::uint8_t, 0u<<7)));
-                    YAS_THROW_WRITE_ERROR(ns != os.write(&uv, ns));
+                    write(__YAS_SCAST(std::uint8_t, ns | __YAS_SCAST(std::uint8_t, 0u<<7)));
+                    __YAS_THROW_WRITE_ERROR(ns != os.write(&uv, ns));
                 } else {
                     // one byte
-                    uv |= YAS_SCAST(std::uint8_t, (1u<<6|0u<<7));
-                    YAS_THROW_WRITE_ERROR(1 != os.write(&uv, 1));
+                    uv |= __YAS_SCAST(std::uint8_t, (1u<<6|0u<<7));
+                    __YAS_THROW_WRITE_ERROR(1 != os.write(&uv, 1));
                 }
             } else {
                 typename std::make_unsigned<T>::type uv = std::abs(v);
                 if ( uv >= (1u<<6) ) {
                     const std::uint8_t ns = __YAS_CALC_STORAGE_SIZE_64(uv);
-                    write(YAS_SCAST(std::uint8_t, ns | YAS_SCAST(std::uint8_t, 1u<<7)));
-                    YAS_THROW_WRITE_ERROR(ns != os.write(&uv, ns));
+                    write(__YAS_SCAST(std::uint8_t, ns | __YAS_SCAST(std::uint8_t, 1u<<7)));
+                    __YAS_THROW_WRITE_ERROR(ns != os.write(&uv, ns));
                 } else {
                     // one byte
-                    uv |= YAS_SCAST(std::uint8_t, (1u<<6|1u<<7));
-                    YAS_THROW_WRITE_ERROR(1 != os.write(&uv, 1));
+                    uv |= __YAS_SCAST(std::uint8_t, (1u<<6|1u<<7));
+                    __YAS_THROW_WRITE_ERROR(1 != os.write(&uv, 1));
                 }
             }
         } else {
             v = endian_converter<__YAS_BSWAP_NEEDED(F)>::bswap(v);
-            YAS_THROW_WRITE_ERROR(sizeof(v) != os.write(&v, sizeof(v)));
+            __YAS_THROW_WRITE_ERROR(sizeof(v) != os.write(&v, sizeof(v)));
         }
     }
 
     // for unsigned
     template<typename T>
-    void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t)) {
+    void write(T v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t)) {
         __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
             if ( v >= (1u<<7) ) {
                 const std::uint8_t ns = __YAS_CALC_STORAGE_SIZE_16(v);
                 write(ns);
-                YAS_THROW_WRITE_ERROR(ns != os.write(&v, ns));
+                __YAS_THROW_WRITE_ERROR(ns != os.write(&v, ns));
             } else {
                 // one byte
-                v |= YAS_SCAST(std::uint8_t, 1u<<7);
-                YAS_THROW_WRITE_ERROR(1 != os.write(&v, 1));
+                v |= __YAS_SCAST(std::uint8_t, 1u<<7);
+                __YAS_THROW_WRITE_ERROR(1 != os.write(&v, 1));
             }
         } else {
             v = endian_converter<__YAS_BSWAP_NEEDED(F)>::bswap(v);
-            YAS_THROW_WRITE_ERROR(sizeof(v) != os.write(&v, sizeof(v)));
+            __YAS_THROW_WRITE_ERROR(sizeof(v) != os.write(&v, sizeof(v)));
         }
     }
     template<typename T>
-    void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint32_t)) {
+    void write(T v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint32_t)) {
         __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
             if ( v >= (1u<<7) ) {
                 const std::uint8_t ns = __YAS_CALC_STORAGE_SIZE_32(v);
                 write(ns);
-                YAS_THROW_WRITE_ERROR(ns != os.write(&v, ns));
+                __YAS_THROW_WRITE_ERROR(ns != os.write(&v, ns));
             } else {
                 // one byte
-                v |= YAS_SCAST(std::uint8_t, 1u<<7);
-                YAS_THROW_WRITE_ERROR(1 != os.write(&v, 1));
+                v |= __YAS_SCAST(std::uint8_t, 1u<<7);
+                __YAS_THROW_WRITE_ERROR(1 != os.write(&v, 1));
             }
         } else {
             v = endian_converter<__YAS_BSWAP_NEEDED(F)>::bswap(v);
-            YAS_THROW_WRITE_ERROR(sizeof(v) != os.write(&v, sizeof(v)));
+            __YAS_THROW_WRITE_ERROR(sizeof(v) != os.write(&v, sizeof(v)));
         }
     }
     template<typename T>
-    void write(T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint64_t)) {
+    void write(T v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint64_t)) {
         __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
             if ( v >= (1u<<7) ) {
                 const std::uint8_t ns = __YAS_CALC_STORAGE_SIZE_64(v);
                 write(ns);
-                YAS_THROW_WRITE_ERROR(ns != os.write(&v, ns));
+                __YAS_THROW_WRITE_ERROR(ns != os.write(&v, ns));
             } else {
                 // one byte
-                v |= YAS_SCAST(std::uint8_t, 1u<<7);
-                YAS_THROW_WRITE_ERROR(1 != os.write(&v, 1));
+                v |= __YAS_SCAST(std::uint8_t, 1u<<7);
+                __YAS_THROW_WRITE_ERROR(1 != os.write(&v, 1));
             }
         } else {
             v = endian_converter<__YAS_BSWAP_NEEDED(F)>::bswap(v);
-            YAS_THROW_WRITE_ERROR(sizeof(v) != os.write(&v, sizeof(v)));
+            __YAS_THROW_WRITE_ERROR(sizeof(v) != os.write(&v, sizeof(v)));
         }
     }
 
     // for float and double
     template<typename T>
-    void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, float, double)) {
+    void write(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, float, double)) {
         const auto r = endian_converter<__YAS_BSWAP_NEEDED(F)>::to_network(v);
-        YAS_THROW_WRITE_ERROR(sizeof(r) != os.write(&r, sizeof(r)));
+        __YAS_THROW_WRITE_ERROR(sizeof(r) != os.write(&r, sizeof(r)));
     }
 
 private:
@@ -271,61 +271,61 @@ struct binary_istream {
 
     // for arrays
     std::size_t read(void *ptr, std::size_t size) {
-        YAS_THROW_READ_ERROR(size != is.read(ptr, size));
+        __YAS_THROW_READ_ERROR(size != is.read(ptr, size));
 
         return size;
     }
 
     // for chars & bools
     template<typename T>
-    void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char, bool)) {
-        YAS_THROW_READ_ERROR(sizeof(v) != is.read(&v, sizeof(v)));
+    void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char, bool)) {
+        __YAS_THROW_READ_ERROR(sizeof(v) != is.read(&v, sizeof(v)));
     }
 
     // for signed
     template<typename T>
-    void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t)) {
+    void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t)) {
         __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
-            std::uint8_t ns = YAS_SCAST(std::uint8_t, is.getch());
-            const bool neg = YAS_SCAST(bool, (ns >> 7) & 1u);
-            const bool onebyte = YAS_SCAST(bool, (ns >> 6) & 1u);
+            std::uint8_t ns = __YAS_SCAST(std::uint8_t, is.getch());
+            const bool neg = __YAS_SCAST(bool, (ns >> 7) & 1u);
+            const bool onebyte = __YAS_SCAST(bool, (ns >> 6) & 1u);
             ns &= ~((1u << 7) | (1u << 6));
             if ( !onebyte ) {
                 typename std::make_unsigned<T>::type av = 0;
-                YAS_THROW_READ_ERROR(ns != is.read(&av, std::min<std::size_t>(sizeof(av), ns)));
-                v = YAS_SCAST(T, (neg ? -av : av));
+                __YAS_THROW_READ_ERROR(ns != is.read(&av, std::min<std::size_t>(sizeof(av), ns)));
+                v = __YAS_SCAST(T, (neg ? -av : av));
             } else {
-                v = YAS_SCAST(T, (neg ? -ns : ns));
+                v = __YAS_SCAST(T, (neg ? -ns : ns));
             }
         } else {
-            YAS_THROW_READ_ERROR(sizeof(v) != is.read(&v, sizeof(v)));
+            __YAS_THROW_READ_ERROR(sizeof(v) != is.read(&v, sizeof(v)));
             v = endian_converter<__YAS_BSWAP_NEEDED(F)>::bswap(v);
         }
     }
 
     // for unsigned
     template<typename T>
-    void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
+    void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
         __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
-            std::uint8_t ns = YAS_SCAST(std::uint8_t, is.getch());
-            const bool onebyte = YAS_SCAST(bool, (ns >> 7) & 1u);
+            std::uint8_t ns = __YAS_SCAST(std::uint8_t, is.getch());
+            const bool onebyte = __YAS_SCAST(bool, (ns >> 7) & 1u);
             ns &= ~(1u << 7);
             if ( !onebyte ) {
-                YAS_THROW_READ_ERROR(ns != is.read(&v, std::min<std::size_t>(sizeof(v), ns)));
+                __YAS_THROW_READ_ERROR(ns != is.read(&v, std::min<std::size_t>(sizeof(v), ns)));
             } else {
-                v = YAS_SCAST(T, ns);
+                v = __YAS_SCAST(T, ns);
             }
         } else {
-            YAS_THROW_READ_ERROR(sizeof(v) != is.read(&v, sizeof(v)));
+            __YAS_THROW_READ_ERROR(sizeof(v) != is.read(&v, sizeof(v)));
             v = endian_converter<__YAS_BSWAP_NEEDED(F)>::bswap(v);
         }
     }
 
     // for floats and doubles
     template<typename T>
-    void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, float, double)) {
+    void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, float, double)) {
         typename storage_type<T>::type r;
-        YAS_THROW_READ_ERROR(sizeof(r) != is.read(&r, sizeof(r)));
+        __YAS_THROW_READ_ERROR(sizeof(r) != is.read(&r, sizeof(r)));
         v = endian_converter<__YAS_BSWAP_NEEDED(F)>::template from_network<T>(r);
     }
 

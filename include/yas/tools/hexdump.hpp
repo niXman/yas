@@ -141,7 +141,7 @@ inline std::ostream& hexdump(std::ostream &os, const void *buf, std::size_t len)
 		}
 		cnt2 = (cnt2 + 1) % 18;
 		if ( cnt2 <= 16 ) {
-			os << std::hex << std::setw(2) << std::setfill('0') << YAS_SCAST(std::size_t, buffer[n]) << ' ';
+			os << std::hex << std::setw(2) << std::setfill('0') << __YAS_SCAST(std::size_t, buffer[n]) << ' ';
 		} else {
 			os << '|';
 			os << std::setfill(' ');

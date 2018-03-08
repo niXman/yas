@@ -73,13 +73,13 @@ struct serializer<
 	template<typename Archive>
 	static Archive& load(Archive& ar, boost::container::string& string) {
 		if ( F & yas::json ) {
-			YAS_THROW_IF_BAD_JSON_CHARS(ar, "\"");
+			__YAS_THROW_IF_BAD_JSON_CHARS(ar, "\"");
 			load_string(string, ar);
-			YAS_THROW_IF_BAD_JSON_CHARS(ar, "\"");
+			__YAS_THROW_IF_BAD_JSON_CHARS(ar, "\"");
 		} else {
 			const auto size = ar.read_seq_size();
 			string.resize(size);
-			ar.read(YAS_CCAST(char*, string.data()), size);
+			ar.read(__YAS_CCAST(char*, string.data()), size);
 		}
 
 		return ar;

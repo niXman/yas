@@ -49,7 +49,7 @@ template<typename IS>
 inline bool is_yas_archive(IS &is) {
     constexpr auto yas_id_size = sizeof(detail::header::yas_id);
     char buf[yas_id_size];
-    YAS_THROW_READ_ERROR(yas_id_size != is.read(buf, yas_id_size));
+    __YAS_THROW_READ_ERROR(yas_id_size != is.read(buf, yas_id_size));
 
     return std::memcmp(buf, detail::header::yas_id, yas_id_size) == 0;
 }
@@ -133,7 +133,7 @@ inline std::size_t archive_version(const char *fname) {
 /***************************************************************************/
 
 inline options archive_type(const detail::header::archive_header &h) {
-    return YAS_SCAST(options, h.bits.type);
+    return __YAS_SCAST(options, h.bits.type);
 }
 
 inline options archive_type(const yas::intrusive_buffer &buf) {

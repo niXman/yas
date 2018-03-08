@@ -61,18 +61,18 @@ struct mem_ostream {
     {}
     mem_ostream(void *ptr, std::size_t size)
         :buf()
-        ,beg(YAS_SCAST(char*, ptr))
-        ,cur(YAS_SCAST(char*, ptr))
-        ,end(YAS_SCAST(char*, ptr)+size)
+        ,beg(__YAS_SCAST(char*, ptr))
+        ,cur(__YAS_SCAST(char*, ptr))
+        ,end(__YAS_SCAST(char*, ptr)+size)
     {}
 
     template<typename T>
     std::size_t write(const T *tptr, const std::size_t size) {
         if ( cur+size > end ) {
             shared_buffer::shared_array_type prev = buf.data;
-            const std::size_t olds = YAS_SCAST(std::size_t, cur-beg);
-            const std::size_t news = YAS_SCAST(std::size_t,
-                size + (olds * YAS_SCAST(std::size_t, ((1 + std::sqrt(5)) / 1.5)))
+            const std::size_t olds = __YAS_SCAST(std::size_t, cur-beg);
+            const std::size_t news = __YAS_SCAST(std::size_t,
+                size + (olds * __YAS_SCAST(std::size_t, ((1 + std::sqrt(5)) / 1.5)))
             );
 
             buf = shared_buffer(news);
@@ -83,7 +83,7 @@ struct mem_ostream {
             end = beg+news;
         }
 
-        const std::uint8_t *ptr = YAS_RCAST(const std::uint8_t*, tptr);
+        const std::uint8_t *ptr = __YAS_RCAST(const std::uint8_t*, tptr);
         switch ( size ) {
             case 1 : std::memcpy(cur, ptr, 1) ; break;
             case 2 : std::memcpy(cur, ptr, 2) ; break;
@@ -105,8 +105,8 @@ struct mem_ostream {
         return size;
     }
 
-    shared_buffer get_shared_buffer() const { return shared_buffer(buf.data, YAS_SCAST(std::size_t, cur-beg)); }
-    intrusive_buffer get_intrusive_buffer() const { return intrusive_buffer(beg, YAS_SCAST(std::size_t, cur-beg)); }
+    shared_buffer get_shared_buffer() const { return shared_buffer(buf.data, __YAS_SCAST(std::size_t, cur-beg)); }
+    intrusive_buffer get_intrusive_buffer() const { return intrusive_buffer(beg, __YAS_SCAST(std::size_t, cur-beg)); }
 
 private:
     shared_buffer buf;
@@ -120,9 +120,9 @@ struct mem_istream {
     YAS_MOVABLE(mem_istream)
 
     mem_istream(const void *ptr, std::size_t size)
-        :beg(YAS_SCAST(const char*, ptr))
-        ,cur(YAS_SCAST(const char*, ptr))
-        ,end(YAS_SCAST(const char*, ptr)+size)
+        :beg(__YAS_SCAST(const char*, ptr))
+        ,cur(__YAS_SCAST(const char*, ptr))
+        ,end(__YAS_SCAST(const char*, ptr)+size)
     {}
     mem_istream(const intrusive_buffer &buf)
         :beg(buf.data)
@@ -164,8 +164,8 @@ struct mem_istream {
     char getch() { return *cur++; }
     void ungetch(char) { --cur; }
 
-    shared_buffer get_shared_buffer() const { return shared_buffer(cur, YAS_SCAST(std::size_t, end-cur)); }
-    intrusive_buffer get_intrusive_buffer() const { return intrusive_buffer(cur, YAS_SCAST(std::size_t, end-cur)); }
+    shared_buffer get_shared_buffer() const { return shared_buffer(cur, __YAS_SCAST(std::size_t, end-cur)); }
+    intrusive_buffer get_intrusive_buffer() const { return intrusive_buffer(cur, __YAS_SCAST(std::size_t, end-cur)); }
 
 private:
     const char *beg, *cur, *end;

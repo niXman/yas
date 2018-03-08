@@ -50,17 +50,17 @@ namespace detail {
 struct std_traits {
 	template<typename T>
 	static void atou(T &v, const char *str, std::size_t)
-	{ v = YAS_SCAST(T, std::strtoull(str, 0, 10)); }
+	{ v = __YAS_SCAST(T, std::strtoull(str, 0, 10)); }
 	template<typename T>
 	static void atoi(T &v, const char *str, std::size_t)
-	{ v = YAS_SCAST(T, std::strtoll(str, 0, 10)); }
+	{ v = __YAS_SCAST(T, std::strtoll(str, 0, 10)); }
 
 	template<typename T>
 	static void utoa(char *buf, const std::size_t bufsize, std::size_t &len, T v)
-	{ len = YAS_SCAST(std::size_t, std::snprintf(buf, bufsize, "%llu", v)); }
+	{ len = __YAS_SCAST(std::size_t, std::snprintf(buf, bufsize, "%llu", v)); }
 	template<typename T>
 	static void itoa(char *buf, const std::size_t bufsize, std::size_t &len, T v)
-	{ len = YAS_SCAST(std::size_t, std::snprintf(buf, bufsize, "%lld", v)); }
+	{ len = __YAS_SCAST(std::size_t, std::snprintf(buf, bufsize, "%lld", v)); }
 
 	template<typename T>
 	static void atof(T &v, const char *str, std::size_t)
@@ -71,10 +71,10 @@ struct std_traits {
 
 	template<typename T>
 	static void ftoa(char *buf, const std::size_t bufsize, std::size_t &len, T v)
-	{ len = YAS_SCAST(std::size_t, std::snprintf(buf, bufsize, "%f", v)); }
+	{ len = __YAS_SCAST(std::size_t, std::snprintf(buf, bufsize, "%f", v)); }
 	template<typename T>
 	static void dtoa(char *buf, const std::size_t bufsize, std::size_t &len, T v)
-	{ len = YAS_SCAST(std::size_t, std::snprintf(buf, bufsize, "%f", v)); }
+	{ len = __YAS_SCAST(std::size_t, std::snprintf(buf, bufsize, "%f", v)); }
 }; // struct std_traits
 
 /***************************************************************************/

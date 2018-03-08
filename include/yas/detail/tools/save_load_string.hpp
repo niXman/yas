@@ -346,11 +346,11 @@ template<
 >
 static void string_read_string(StringT<CharT, TraitsT, AllocatorT> &d, Archive &ar) {
 #if defined(__clang__) || defined(__GNUC__)
-#   define JSON_LIKELY(x)      __builtin_expect(!!(x), 1)
-#   define JSON_UNLIKELY(x)    __builtin_expect(!!(x), 0)
+#   define __JSON_LIKELY(x)      __builtin_expect(static_cast<bool>(x), 1)
+#   define __JSON_UNLIKELY(x)    __builtin_expect(static_cast<bool>(x), 0)
 #else
-#   define JSON_LIKELY(x)      x
-#   define JSON_UNLIKELY(x)    x
+#   define __JSON_LIKELY(x)      x
+#   define __JSON_UNLIKELY(x)    x
 #endif
 
     auto dit = std::back_inserter(d);
@@ -387,22 +387,22 @@ static void string_read_string(StringT<CharT, TraitsT, AllocatorT> &d, Archive &
                     case 'u': {
                         int codepoint, codepoint1 = string_get_codepoint(ar);
 
-                        if ( JSON_UNLIKELY(codepoint1 == -1) ) {
-                            YAS_THROW_INVALID_JSON_STRING("invalid string: '\\u' must be followed by 4 hex digits");
+                        if ( __JSON_UNLIKELY(codepoint1 == -1) ) {
+                            __YAS_THROW_INVALID_JSON_STRING("invalid string: '\\u' must be followed by 4 hex digits");
                         }
 
                         // check if code point is a high surrogate
                         if ( 0xD800 <= codepoint1 && codepoint1 <= 0xDBFF ) {
                             // expect next \uxxxx entry
-                            if ( JSON_LIKELY(ar.getch() == '\\' && ar.getch() == 'u') ) {
+                            if ( __JSON_LIKELY(ar.getch() == '\\' && ar.getch() == 'u') ) {
                                 const int codepoint2 = string_get_codepoint(ar);
 
-                                if ( JSON_UNLIKELY(codepoint2 == -1) ) {
-                                    YAS_THROW_INVALID_JSON_STRING("invalid string: '\\u' must be followed by 4 hex digits");
+                                if ( __JSON_UNLIKELY(codepoint2 == -1) ) {
+                                    __YAS_THROW_INVALID_JSON_STRING("invalid string: '\\u' must be followed by 4 hex digits");
                                 }
 
                                 // check if codepoint2 is a low surrogate
-                                if ( JSON_LIKELY(0xDC00 <= codepoint2 && codepoint2 <= 0xDFFF) ) {
+                                if ( __JSON_LIKELY(0xDC00 <= codepoint2 && codepoint2 <= 0xDFFF) ) {
                                     codepoint =
                                             // high surrogate occupies the most significant 22 bits
                                             (codepoint1 << 10)
@@ -414,16 +414,16 @@ static void string_read_string(StringT<CharT, TraitsT, AllocatorT> &d, Archive &
                                             - 0x35FDC00;
                                 } else {
                                     //error_message = "invalid string: surrogate " + codepoint_to_string(codepoint1) + " must be followed by U+DC00..U+DFFF instead of " + codepoint_to_string(codepoint2);
-                                    YAS_THROW_INVALID_JSON_STRING("invalid string");
+                                    __YAS_THROW_INVALID_JSON_STRING("invalid string");
                                 }
                             } else {
                                 //error_message = "invalid string: surrogate " + codepoint_to_string(codepoint1) + " must be followed by U+DC00..U+DFFF";
-                                YAS_THROW_INVALID_JSON_STRING("invalid string");
+                                __YAS_THROW_INVALID_JSON_STRING("invalid string");
                             }
                         } else {
-                            if ( JSON_UNLIKELY(0xDC00 <= codepoint1 && codepoint1 <= 0xDFFF) ) {
+                            if ( __JSON_UNLIKELY(0xDC00 <= codepoint1 && codepoint1 <= 0xDFFF) ) {
                                 //error_message = "invalid string: surrogate " + codepoint_to_string(codepoint1) + " must follow U+D800..U+DBFF";
-                                YAS_THROW_INVALID_JSON_STRING("invalid string");
+                                __YAS_THROW_INVALID_JSON_STRING("invalid string");
                             }
 
                             // only work with first code point
@@ -436,29 +436,29 @@ static void string_read_string(StringT<CharT, TraitsT, AllocatorT> &d, Archive &
                         // translate code point to bytes
                         if ( codepoint < 0x80 ) {
                             // 1-byte characters: 0xxxxxxx (ASCII)
-                            *dit++ = YAS_SCAST(char, codepoint);
+                            *dit++ = __YAS_SCAST(char, codepoint);
                         } else if ( codepoint <= 0x7ff ) {
                             // 2-byte characters: 110xxxxx 10xxxxxx
-                            *dit++ = YAS_SCAST(char, 0xC0 | (codepoint >> 6));
-                            *dit++ = YAS_SCAST(char, 0x80 | (codepoint & 0x3F));
+                            *dit++ = __YAS_SCAST(char, 0xC0 | (codepoint >> 6));
+                            *dit++ = __YAS_SCAST(char, 0x80 | (codepoint & 0x3F));
                         } else if ( codepoint <= 0xffff ) {
                             // 3-byte characters: 1110xxxx 10xxxxxx 10xxxxxx
-                            *dit++ = YAS_SCAST(char, 0xE0 | (codepoint >> 12));
-                            *dit++ = YAS_SCAST(char, 0x80 | ((codepoint >> 6) & 0x3F));
-                            *dit++ = YAS_SCAST(char, 0x80 | (codepoint & 0x3F));
+                            *dit++ = __YAS_SCAST(char, 0xE0 | (codepoint >> 12));
+                            *dit++ = __YAS_SCAST(char, 0x80 | ((codepoint >> 6) & 0x3F));
+                            *dit++ = __YAS_SCAST(char, 0x80 | (codepoint & 0x3F));
                         } else {
                             // 4-byte characters: 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
-                            *dit++ = YAS_SCAST(char, 0xF0 | (codepoint >> 18));
-                            *dit++ = YAS_SCAST(char, 0x80 | ((codepoint >> 12) & 0x3F));
-                            *dit++ = YAS_SCAST(char, 0x80 | ((codepoint >> 6) & 0x3F));
-                            *dit++ = YAS_SCAST(char, 0x80 | (codepoint & 0x3F));
+                            *dit++ = __YAS_SCAST(char, 0xF0 | (codepoint >> 18));
+                            *dit++ = __YAS_SCAST(char, 0x80 | ((codepoint >> 12) & 0x3F));
+                            *dit++ = __YAS_SCAST(char, 0x80 | ((codepoint >> 6) & 0x3F));
+                            *dit++ = __YAS_SCAST(char, 0x80 | (codepoint & 0x3F));
                         }
 
                         break;
                     }
                         // other characters after escape
                     default:
-                        YAS_THROW_INVALID_JSON_STRING("invalid string: forbidden character after backslash");
+                        __YAS_THROW_INVALID_JSON_STRING("invalid string: forbidden character after backslash");
                 }
 
                 break;
@@ -498,7 +498,7 @@ static void string_read_string(StringT<CharT, TraitsT, AllocatorT> &d, Archive &
             case 0x1e:
             case 0x1f: {
                 //error_message = "invalid string: control character " + codepoint_to_string(current) + " must be escaped";
-                YAS_THROW_INVALID_JSON_STRING("invalid string");
+                __YAS_THROW_INVALID_JSON_STRING("invalid string");
             }
 
             // U+0020..U+007F (except U+0022 (quote) and U+005C (backspace))
@@ -633,27 +633,27 @@ static void string_read_string(StringT<CharT, TraitsT, AllocatorT> &d, Archive &
             case 0xdf: {
                 *dit++ = ch;
                 ch = ar.getch();
-                if ( JSON_LIKELY(0x80 <= ch && ch <= 0xbf) ) {
+                if ( __JSON_LIKELY(0x80 <= ch && ch <= 0xbf) ) {
                     *dit++ = ch;
                     continue;
                 }
 
-                YAS_THROW_INVALID_JSON_STRING("invalid string: ill-formed UTF-8 byte");
+                __YAS_THROW_INVALID_JSON_STRING("invalid string: ill-formed UTF-8 byte");
             }
 
             // U+0800..U+0FFF: bytes E0 A0..BF 80..BF
             case 0xe0: {
                 *dit++ = ch;
                 ch = ar.getch();
-                if ( JSON_LIKELY(0xa0 <= ch && ch <= 0xbf) ) {
+                if ( __JSON_LIKELY(0xa0 <= ch && ch <= 0xbf) ) {
                     *dit++ = ch;
                     ch = ar.getch();
-                    if ( JSON_LIKELY(0x80 <= ch && ch <= 0xbf) ) {
+                    if ( __JSON_LIKELY(0x80 <= ch && ch <= 0xbf) ) {
                         *dit++ = ch;
                         continue;
                     }
                 }
-                YAS_THROW_INVALID_JSON_STRING("invalid string: ill-formed UTF-8 byte");
+                __YAS_THROW_INVALID_JSON_STRING("invalid string: ill-formed UTF-8 byte");
             }
 
             // U+1000..U+CFFF: bytes E1..EC 80..BF 80..BF
@@ -674,52 +674,52 @@ static void string_read_string(StringT<CharT, TraitsT, AllocatorT> &d, Archive &
             case 0xef: {
                 *dit++ = ch;
                 ch = ar.getch();
-                if ( JSON_LIKELY(0x80 <= ch && ch <= 0xbf) ) {
+                if ( __JSON_LIKELY(0x80 <= ch && ch <= 0xbf) ) {
                     *dit++ = ch;
                     ch = ar.getch();
-                    if ( JSON_LIKELY(0x80 <= ch && ch <= 0xbf) ) {
+                    if ( __JSON_LIKELY(0x80 <= ch && ch <= 0xbf) ) {
                         *dit++ = ch;
                         continue;
                     }
                 }
 
-                YAS_THROW_INVALID_JSON_STRING("invalid string: ill-formed UTF-8 byte");
+                __YAS_THROW_INVALID_JSON_STRING("invalid string: ill-formed UTF-8 byte");
             }
 
             // U+D000..U+D7FF: bytes ED 80..9F 80..BF
             case 0xed: {
                 *dit++ = ch;
                 ch = ar.getch();
-                if ( JSON_LIKELY(0x80 <= ch && ch <= 0x9f) ) {
+                if ( __JSON_LIKELY(0x80 <= ch && ch <= 0x9f) ) {
                     *dit++ = ch;
                     ch = ar.getch();
-                    if ( JSON_LIKELY(0x80 <= ch && ch <= 0xbf) ) {
+                    if ( __JSON_LIKELY(0x80 <= ch && ch <= 0xbf) ) {
                         *dit++ = ch;
                         continue;
                     }
                 }
 
-                YAS_THROW_INVALID_JSON_STRING("invalid string: ill-formed UTF-8 byte");
+                __YAS_THROW_INVALID_JSON_STRING("invalid string: ill-formed UTF-8 byte");
             }
 
             // U+10000..U+3FFFF F0 90..BF 80..BF 80..BF
             case 0xf0: {
                 *dit++ = ch;
                 ch = ar.getch();
-                if ( JSON_LIKELY(0x90 <= ch && ch <= 0xbf) ) {
+                if ( __JSON_LIKELY(0x90 <= ch && ch <= 0xbf) ) {
                     *dit++ = ch;
                     ch = ar.getch();
-                    if ( JSON_LIKELY(0x80 <= ch && ch <= 0xbf) ) {
+                    if ( __JSON_LIKELY(0x80 <= ch && ch <= 0xbf) ) {
                         *dit++ = ch;
                         ch = ar.getch();
-                        if ( JSON_LIKELY(0x80 <= ch && ch <= 0xbf) ) {
+                        if ( __JSON_LIKELY(0x80 <= ch && ch <= 0xbf) ) {
                             *dit++ = ch;
                             continue;
                         }
                     }
                 }
 
-                YAS_THROW_INVALID_JSON_STRING("invalid string: ill-formed UTF-8 byte");
+                __YAS_THROW_INVALID_JSON_STRING("invalid string: ill-formed UTF-8 byte");
             }
 
             // U+40000..U+FFFFF F1..F3 80..BF 80..BF 80..BF
@@ -728,50 +728,50 @@ static void string_read_string(StringT<CharT, TraitsT, AllocatorT> &d, Archive &
             case 0xf3: {
                 *dit++ = ch;
                 ch = ar.getch();
-                if ( JSON_LIKELY(0x80 <= ch && ch <= 0xbf) ) {
+                if ( __JSON_LIKELY(0x80 <= ch && ch <= 0xbf) ) {
                     *dit++ = ch;
                     ch = ar.getch();
-                    if ( JSON_LIKELY(0x80 <= ch && ch <= 0xbf) ) {
+                    if ( __JSON_LIKELY(0x80 <= ch && ch <= 0xbf) ) {
                         *dit++ = ch;
                         ch = ar.getch();
-                        if (JSON_LIKELY(0x80 <= ch && ch <= 0xbf)) {
+                        if (__JSON_LIKELY(0x80 <= ch && ch <= 0xbf)) {
                             *dit++ = ch;
                             continue;
                         }
                     }
                 }
 
-                YAS_THROW_INVALID_JSON_STRING("invalid string: ill-formed UTF-8 byte");
+                __YAS_THROW_INVALID_JSON_STRING("invalid string: ill-formed UTF-8 byte");
             }
 
             // U+100000..U+10FFFF F4 80..8F 80..BF 80..BF
             case 0xf4: {
                 *dit++ = ch;
                 ch = ar.getch();
-                if (JSON_LIKELY(0x80 <= ch && ch <= 0x8f))
+                if (__JSON_LIKELY(0x80 <= ch && ch <= 0x8f))
                 {
                     *dit++ = ch;
                     ch = ar.getch();
-                    if (JSON_LIKELY(0x80 <= ch && ch <= 0xbf))
+                    if (__JSON_LIKELY(0x80 <= ch && ch <= 0xbf))
                     {
                         *dit++ = ch;
                         ch = ar.getch();
-                        if ( JSON_LIKELY(0x80 <= ch && ch <= 0xbf) ) {
+                        if ( __JSON_LIKELY(0x80 <= ch && ch <= 0xbf) ) {
                             *dit++ = ch;
                             continue;
                         }
                     }
                 }
 
-                YAS_THROW_INVALID_JSON_STRING("invalid string: ill-formed UTF-8 byte");
+                __YAS_THROW_INVALID_JSON_STRING("invalid string: ill-formed UTF-8 byte");
             }
 
             // remaining bytes (80..C1 and F5..FF) are ill-formed
-            default: YAS_THROW_INVALID_JSON_STRING("invalid string: ill-formed UTF-8 byte");
+            default: __YAS_THROW_INVALID_JSON_STRING("invalid string: ill-formed UTF-8 byte");
         }
     }
-#undef JSON_LIKELY
-#undef JSON_UNLIKELY
+#undef __JSON_LIKELY
+#undef __JSON_UNLIKELY
 }
 
 /***************************************************************************/

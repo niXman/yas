@@ -48,7 +48,7 @@ bool header_test(std::ostream &log, const char* archive_type, const char *test_n
         using oa = yas::binary_oarchive<yas::mem_ostream>;
         using ia = yas::binary_iarchive<yas::mem_istream>;
         static_assert(oa::type() == yas::binary, "");
-        static_assert(YAS_BIG_ENDIAN ? oa::is_big_endian() : oa::is_little_endian(), "");
+        static_assert(__YAS_BIG_ENDIAN ? oa::is_big_endian() : oa::is_little_endian(), "");
         static_assert(oa::is_writable(), "");
         static_assert(!oa::is_readable(), "");
 

@@ -42,47 +42,47 @@ namespace yas {
 
 /***************************************************************************/
 
-YAS_DECLARE_EXCEPTION_TYPE(serialization_exception)
+__YAS_DECLARE_EXCEPTION_TYPE(serialization_exception)
 
 /***************************************************************************/
 
-#define YAS_THROW_BAD_ARRAY_SIZE() \
-	YAS_THROW_EXCEPTION(::yas::serialization_exception, "bad array size");
+#define __YAS_THROW_BAD_ARRAY_SIZE() \
+	__YAS_THROW_EXCEPTION(::yas::serialization_exception, "bad array size");
 
-#define YAS_THROW_SPACE_IS_EXPECTED() \
-	YAS_THROW_EXCEPTION(::yas::serialization_exception, "space symbol is expected");
+#define __YAS_THROW_SPACE_IS_EXPECTED() \
+	__YAS_THROW_EXCEPTION(::yas::serialization_exception, "space symbol is expected");
 
-#define YAS_THROW_BAD_SIZE_OF_ENUM() \
-	YAS_THROW_EXCEPTION(::yas::serialization_exception, "bad size of enum");
+#define __YAS_THROW_BAD_SIZE_OF_ENUM() \
+	__YAS_THROW_EXCEPTION(::yas::serialization_exception, "bad size of enum");
 
-#define YAS_THROW_BAD_BITSET_SIZE() \
-	YAS_THROW_EXCEPTION(::yas::serialization_exception, "bad bitset size");
+#define __YAS_THROW_BAD_BITSET_SIZE() \
+	__YAS_THROW_EXCEPTION(::yas::serialization_exception, "bad bitset size");
 
-#define YAS_THROW_BAD_BITSET_STORAGE_SIZE() \
-	YAS_THROW_EXCEPTION(::yas::serialization_exception, "bad bitset storage size");
+#define __YAS_THROW_BAD_BITSET_STORAGE_SIZE() \
+	__YAS_THROW_EXCEPTION(::yas::serialization_exception, "bad bitset storage size");
 
-#define YAS_THROW_BAD_SIZE_ON_DESERIALIZE(type) \
-	YAS_THROW_EXCEPTION(::yas::serialization_exception, "bad size on deserialize " type);
+#define __YAS_THROW_BAD_SIZE_ON_DESERIALIZE(type) \
+	__YAS_THROW_EXCEPTION(::yas::serialization_exception, "bad size on deserialize " type);
 
-#define YAS_THROW_IF_BAD_JSON_CHARS(ar, chars) { \
+#define __YAS_THROW_IF_BAD_JSON_CHARS(ar, chars) { \
         char tmp[sizeof(chars)] = "\0"; \
         ar.read(tmp, sizeof(tmp)-1); \
         if ( std::memcmp(tmp, chars, sizeof(chars)-1) != 0 ) { \
-            YAS_THROW_EXCEPTION(::yas::serialization_exception, "no expected chars '" chars "'"); \
+            __YAS_THROW_EXCEPTION(::yas::serialization_exception, "no expected chars '" chars "'"); \
         } \
     }
 
-#define YAS_THROW_UNEXPECTED_JSON_KEY(msg) \
-    YAS_THROW_EXCEPTION(::yas::serialization_exception, msg);
+#define __YAS_THROW_UNEXPECTED_JSON_KEY(msg) \
+    __YAS_THROW_EXCEPTION(::yas::serialization_exception, msg);
 
-#define YAS_THROW_NO_EXPECTED_JSON_KEY(msg) \
-    YAS_THROW_EXCEPTION(::yas::serialization_exception, msg);
+#define __YAS_THROW_NO_EXPECTED_JSON_KEY(msg) \
+    __YAS_THROW_EXCEPTION(::yas::serialization_exception, msg);
 
-#define YAS_THROW_INVALID_JSON_STRING(msg) \
-    YAS_THROW_EXCEPTION(::yas::serialization_exception, msg);
+#define __YAS_THROW_INVALID_JSON_STRING(msg) \
+    __YAS_THROW_EXCEPTION(::yas::serialization_exception, msg);
 
-#define YAS_THROW_BASE64_ERROR(msg) \
-    YAS_THROW_EXCEPTION(::yas::serialization_exception, msg);
+#define __YAS_THROW_BASE64_ERROR(msg) \
+    __YAS_THROW_EXCEPTION(::yas::serialization_exception, msg);
 
 /***************************************************************************/
 

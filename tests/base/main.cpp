@@ -427,8 +427,8 @@ struct options {
 
         if ( binary ) {
             if ( !endian_big && !endian_little ) {
-                endian_big = YAS_BIG_ENDIAN;
-                endian_little = YAS_LITTLE_ENDIAN;
+                endian_big = __YAS_BIG_ENDIAN;
+                endian_little = __YAS_LITTLE_ENDIAN;
             }
             if ( endian_big && endian_little ) {
                 msg = "only one of big/little can be specified. terminate.";
@@ -491,7 +491,7 @@ int main(int, char **argv) {
         assert(logfile.good());
     }
 
-    auto &log = YAS_SCAST(std::ostream &, (
+    auto &log = __YAS_SCAST(std::ostream &, (
         opts.logn == options::log_stdout
             ? std::cout
             : opts.logn == options::log_stderr
@@ -568,7 +568,7 @@ int main(int, char **argv) {
     << "/***************************************************/" << std::endl
     << "> passed tests: " << passed << std::endl
     << "> failed tests: " << failed << std::endl
-    << "> host endian : " << (YAS_LITTLE_ENDIAN ? "little" : "big") << std::endl
+    << "> host endian : " << (__YAS_LITTLE_ENDIAN ? "little" : "big") << std::endl
     << "> host bits   : " << sizeof(void *)*8 << std::endl
     << "> YAS version : " << YAS_VERSION_STRING << std::endl
     << "/***************************************************/"

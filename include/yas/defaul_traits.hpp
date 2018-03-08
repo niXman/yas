@@ -76,33 +76,33 @@ struct default_traits {
 
 template<typename T>
 T default_traits::atou(const char *str_, std::size_t size) {
-	const std::uint8_t *str = YAS_RCAST(const std::uint8_t *, str_);
+	const std::uint8_t *str = __YAS_RCAST(const std::uint8_t *, str_);
 	std::uint64_t v= 0;
 	switch ( size ) {
-		case 20: v = YAS_SCAST(T, v+(str[size-20]-'0')*10000000000000000000ull); // fallthrough
-		case 19: v = YAS_SCAST(T, v+(str[size-19]-'0')*1000000000000000000ull); // fallthrough
-		case 18: v = YAS_SCAST(T, v+(str[size-18]-'0')*100000000000000000ull); // fallthrough
-		case 17: v = YAS_SCAST(T, v+(str[size-17]-'0')*10000000000000000ull); // fallthrough
-		case 16: v = YAS_SCAST(T, v+(str[size-16]-'0')*1000000000000000ull); // fallthrough
-		case 15: v = YAS_SCAST(T, v+(str[size-15]-'0')*100000000000000ull); // fallthrough
-		case 14: v = YAS_SCAST(T, v+(str[size-14]-'0')*10000000000000ull); // fallthrough
-		case 13: v = YAS_SCAST(T, v+(str[size-13]-'0')*1000000000000ull); // fallthrough
-		case 12: v = YAS_SCAST(T, v+(str[size-12]-'0')*100000000000ull); // fallthrough
-		case 11: v = YAS_SCAST(T, v+(str[size-11]-'0')*10000000000ull); // fallthrough
-		case 10: v = YAS_SCAST(T, v+(str[size-10]-'0')*1000000000ull); // fallthrough
-		case  9: v = YAS_SCAST(T, v+(str[size- 9]-'0')*100000000ull); // fallthrough
-		case  8: v = YAS_SCAST(T, v+(str[size- 8]-'0')*10000000ull); // fallthrough
-		case  7: v = YAS_SCAST(T, v+(str[size- 7]-'0')*1000000ull); // fallthrough
-		case  6: v = YAS_SCAST(T, v+(str[size- 6]-'0')*100000ull); // fallthrough
-		case  5: v = YAS_SCAST(T, v+(str[size- 5]-'0')*10000ull); // fallthrough
-		case  4: v = YAS_SCAST(T, v+(str[size- 4]-'0')*1000ull); // fallthrough
-		case  3: v = YAS_SCAST(T, v+(str[size- 3]-'0')*100ull); // fallthrough
-		case  2: v = YAS_SCAST(T, v+(str[size- 2]-'0')*10ull); // fallthrough
-		case  1: v = YAS_SCAST(T, v+(str[size- 1]-'0')*1ull); // fallthrough
+		case 20: v = __YAS_SCAST(T, v+(str[size-20]-'0')*10000000000000000000ull); // fallthrough
+		case 19: v = __YAS_SCAST(T, v+(str[size-19]-'0')*1000000000000000000ull); // fallthrough
+		case 18: v = __YAS_SCAST(T, v+(str[size-18]-'0')*100000000000000000ull); // fallthrough
+		case 17: v = __YAS_SCAST(T, v+(str[size-17]-'0')*10000000000000000ull); // fallthrough
+		case 16: v = __YAS_SCAST(T, v+(str[size-16]-'0')*1000000000000000ull); // fallthrough
+		case 15: v = __YAS_SCAST(T, v+(str[size-15]-'0')*100000000000000ull); // fallthrough
+		case 14: v = __YAS_SCAST(T, v+(str[size-14]-'0')*10000000000000ull); // fallthrough
+		case 13: v = __YAS_SCAST(T, v+(str[size-13]-'0')*1000000000000ull); // fallthrough
+		case 12: v = __YAS_SCAST(T, v+(str[size-12]-'0')*100000000000ull); // fallthrough
+		case 11: v = __YAS_SCAST(T, v+(str[size-11]-'0')*10000000000ull); // fallthrough
+		case 10: v = __YAS_SCAST(T, v+(str[size-10]-'0')*1000000000ull); // fallthrough
+		case  9: v = __YAS_SCAST(T, v+(str[size- 9]-'0')*100000000ull); // fallthrough
+		case  8: v = __YAS_SCAST(T, v+(str[size- 8]-'0')*10000000ull); // fallthrough
+		case  7: v = __YAS_SCAST(T, v+(str[size- 7]-'0')*1000000ull); // fallthrough
+		case  6: v = __YAS_SCAST(T, v+(str[size- 6]-'0')*100000ull); // fallthrough
+		case  5: v = __YAS_SCAST(T, v+(str[size- 5]-'0')*10000ull); // fallthrough
+		case  4: v = __YAS_SCAST(T, v+(str[size- 4]-'0')*1000ull); // fallthrough
+		case  3: v = __YAS_SCAST(T, v+(str[size- 3]-'0')*100ull); // fallthrough
+		case  2: v = __YAS_SCAST(T, v+(str[size- 2]-'0')*10ull); // fallthrough
+		case  1: v = __YAS_SCAST(T, v+(str[size- 1]-'0')*1ull); // fallthrough
         default: break;
 	}
 
-	return YAS_SCAST(T, v);
+	return __YAS_SCAST(T, v);
 }
 
 template<typename T>
@@ -120,7 +120,7 @@ T default_traits::atoi(const char *str, std::size_t size) {
 
 template<typename T>
 std::size_t default_traits::utoa(char *buf, const std::size_t, T v) {
-	std::uint64_t l = YAS_SCAST(std::uint64_t, v), n = l;
+	std::uint64_t l = __YAS_SCAST(std::uint64_t, v), n = l;
 
 	std::size_t len = 1;
 	if ( l >= 100000000000000000ull ) { len += 17; l /= 100000000000000000ull; }
@@ -132,26 +132,26 @@ std::size_t default_traits::utoa(char *buf, const std::size_t, T v) {
 	*(buf+len) = 0;
 	char *p = buf+len-1;
 	switch ( len ) {
-		case 20: *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 19: *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 18: *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 17: *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 16: *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 15: *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 14: *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 13: *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 12: *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 11: *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 10: *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 9 : *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 8 : *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 7 : *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 6 : *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 5 : *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 4 : *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 3 : *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 2 : *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 1 : *p-- = YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
+		case 20: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
+		case 19: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
+		case 18: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
+		case 17: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
+		case 16: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
+		case 15: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
+		case 14: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
+		case 13: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
+		case 12: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
+		case 11: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
+		case 10: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
+		case 9 : *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
+		case 8 : *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
+		case 7 : *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
+		case 6 : *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
+		case 5 : *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
+		case 4 : *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
+		case 3 : *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
+		case 2 : *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
+		case 1 : *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
         default: break;
 	}
 
@@ -162,10 +162,10 @@ template<typename T>
 std::size_t default_traits::itoa(char *buf, const std::size_t, T v) {
 	if ( v < 0 ) {
         *buf++ = '-';
-        return 1 + default_traits::utoa(buf, 0/*unused*/, YAS_SCAST(std::int64_t, std::abs(v)));
+        return 1 + default_traits::utoa(buf, 0/*unused*/, __YAS_SCAST(std::int64_t, std::abs(v)));
     }
 
-    return default_traits::utoa(buf, 0/*unused*/, YAS_SCAST(std::int64_t, v));
+    return default_traits::utoa(buf, 0/*unused*/, __YAS_SCAST(std::int64_t, v));
 }
 
 /***************************************************************************/
@@ -218,7 +218,7 @@ T default_traits::atod(const char *str, std::size_t size) {
 		++str;
 	}
 	for ( ; *str >= '0' && *str <= '9'; ++str) {
-		v = YAS_SCAST(T, (v*10.0) + (*str - '0'));
+		v = __YAS_SCAST(T, (v*10.0) + (*str - '0'));
 	}
 	if ( *str == '.' ) {
 		double f = 0.0;
@@ -227,7 +227,7 @@ T default_traits::atod(const char *str, std::size_t size) {
 		for ( ; *str >= '0' && *str <= '9'; ++str, ++n) {
 			f = (f*10.0) + (*str - '0');
 		}
-		v += YAS_SCAST(T, f/es[n]);
+		v += __YAS_SCAST(T, f/es[n]);
 	}
 
 	v = neg ? -v : v;

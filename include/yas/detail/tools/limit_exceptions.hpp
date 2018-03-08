@@ -42,11 +42,11 @@ namespace yas {
 
 /***************************************************************************/
 
-YAS_DECLARE_EXCEPTION_TYPE(limits_exception);
+__YAS_DECLARE_EXCEPTION_TYPE(limits_exception);
 
 /***************************************************************************/
 
-#define YAS_THROW_LIMIT_EXCEEDED() \
+#define __YAS_THROW_LIMIT_EXCEEDED() \
     throw ::yas::limits_exception("limit exceeded");
 
 /***************************************************************************/

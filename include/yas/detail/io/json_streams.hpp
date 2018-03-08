@@ -73,46 +73,46 @@ struct json_istream {
 
 	// for arrays
 	std::size_t read(void *ptr, std::size_t size) {
-		YAS_THROW_READ_ERROR(size != is.read(ptr, size));
+		__YAS_THROW_READ_ERROR(size != is.read(ptr, size));
 
         return size;
 	}
 
     // for char and signed char
     template<typename T>
-    void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char)) {
+    void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char)) {
         std::int16_t t;
         read(t);
 
-        v = YAS_SCAST(T, t);
+        v = __YAS_SCAST(T, t);
     }
     // for unsigned char
     template<typename T>
-    void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, unsigned char)) {
+    void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, unsigned char)) {
         std::uint16_t t;
         read(t);
 
-        v = YAS_SCAST(T, t);
+        v = __YAS_SCAST(T, t);
     }
 
 	// for bools only
 	template<typename T>
-	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, bool)) {
+	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, bool)) {
         static const char ltrue[] = "true";
         static const char lfalse[] = "false";
 
         char buf[sizeof(lfalse)];
-		YAS_THROW_READ_ERROR(1 != is.read(buf, 1));
+		__YAS_THROW_READ_ERROR(1 != is.read(buf, 1));
 
         v = (buf[0] == 't');
 
         const std::size_t to_read = (v ? sizeof(ltrue)-1-1 : sizeof(lfalse)-1-1);
-        YAS_THROW_READ_ERROR(to_read != is.read(buf, to_read));
+        __YAS_THROW_READ_ERROR(to_read != is.read(buf, to_read));
 	}
 
 	// for signed 16/32/64 bits
 	template<typename T>
-	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t)) {
+	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t)) {
 		char buf[sizeof(T)*4];
 		const std::size_t n = json_read_num(is, buf, sizeof(buf));
 		v = Trait::template atoi<T>(buf, n);
@@ -120,7 +120,7 @@ struct json_istream {
 
 	// for unsigned 16/32/64 bits
 	template<typename T>
-	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
+	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
         char buf[sizeof(T)*4];
         const std::size_t n = json_read_num(is, buf, sizeof(buf));
 
@@ -129,7 +129,7 @@ struct json_istream {
 
 	// for floats
 	template<typename T>
-	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, float)) {
+	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, float)) {
 		char buf[std::numeric_limits<T>::max_exponent10+20];
 		const std::size_t n = json_read_double(is, buf, sizeof(buf));
 
@@ -138,7 +138,7 @@ struct json_istream {
 
 	// for doubles
 	template<typename T>
-	void read(T &v, YAS_ENABLE_IF_IS_ANY_OF(T, double)) {
+	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, double)) {
         char buf[std::numeric_limits<T>::max_exponent10+20];
         const std::size_t n = json_read_double(is, buf, sizeof(buf));
 
@@ -159,73 +159,73 @@ struct json_ostream {
 
 	template<typename T>
 	void write_seq_size(T v) {
-		write(YAS_SCAST(std::uint64_t, v));
+		write(__YAS_SCAST(std::uint64_t, v));
 	}
 
 	// for arrays
 	template<typename T>
 	void write(const T *ptr, std::size_t size) {
-		YAS_THROW_WRITE_ERROR(size != os.write(ptr, size));
+		__YAS_THROW_WRITE_ERROR(size != os.write(ptr, size));
 	}
 
     // for char and signed char
     template<typename T>
-    void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char)) {
-        write(YAS_SCAST(std::int16_t, v));
+    void write(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char)) {
+        write(__YAS_SCAST(std::int16_t, v));
     }
 
     // for unsigned char
     template<typename T>
-    void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, unsigned char)) {
-        write(YAS_SCAST(std::uint16_t, v));
+    void write(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, unsigned char)) {
+        write(__YAS_SCAST(std::uint16_t, v));
     }
 
 	// for bools only
 	template<typename T>
-	void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, bool)) {
+	void write(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, bool)) {
         if ( v ) {
             static const char ltrue[] = "true";
-            YAS_THROW_WRITE_ERROR(sizeof(ltrue)-1 != os.write(ltrue, sizeof(ltrue)-1));
+            __YAS_THROW_WRITE_ERROR(sizeof(ltrue)-1 != os.write(ltrue, sizeof(ltrue)-1));
         } else {
             static const char lfalse[] = "false";
-            YAS_THROW_WRITE_ERROR(sizeof(lfalse)-1 != os.write(lfalse, sizeof(lfalse)-1));
+            __YAS_THROW_WRITE_ERROR(sizeof(lfalse)-1 != os.write(lfalse, sizeof(lfalse)-1));
         }
 	}
 
 	// for signed 16/32/64 bits
 	template<typename T>
-	void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t)) {
+	void write(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t)) {
 		char buf[sizeof(v)*4];
 		std::size_t len = Trait::itoa(buf, sizeof(buf), v);
 
-		YAS_THROW_WRITE_ERROR(len != os.write(buf, len));
+		__YAS_THROW_WRITE_ERROR(len != os.write(buf, len));
 	}
 
 	// for unsigned 16/32/64 bits
 	template<typename T>
-	void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
+	void write(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
 		char buf[sizeof(v)*4];
 		std::size_t len = Trait::utoa(buf, sizeof(buf), v);
 
-		YAS_THROW_WRITE_ERROR(len != os.write(buf, len));
+		__YAS_THROW_WRITE_ERROR(len != os.write(buf, len));
 	}
 
 	// for floats
 	template<typename T>
-	void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, float)) {
+	void write(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, float)) {
 		char buf[std::numeric_limits<T>::max_exponent10 + 20];
 		std::size_t len = Trait::ftoa(buf, sizeof(buf), v);
 
-		YAS_THROW_WRITE_ERROR(len != os.write(buf, len));
+		__YAS_THROW_WRITE_ERROR(len != os.write(buf, len));
 	}
 
 	// for doubles
 	template<typename T>
-	void write(const T &v, YAS_ENABLE_IF_IS_ANY_OF(T, double)) {
+	void write(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, double)) {
 		char buf[std::numeric_limits<T>::max_exponent10 + 20];
 		std::size_t len = Trait::dtoa(buf, sizeof(buf), v);
 
-		YAS_THROW_WRITE_ERROR(len != os.write(buf, len));
+		__YAS_THROW_WRITE_ERROR(len != os.write(buf, len));
 	}
 
 private:
