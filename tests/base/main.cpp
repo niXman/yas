@@ -291,8 +291,8 @@ struct archive_traits {
         ,YAS_RUN_TEST_SKIP_TEST \
     )(__VA_ARGS__)
 
-#define YAS_RUN_TEST(log, testname, passcnt, failcnt) { \
-    if ( 1 ) { \
+#define YAS_RUN_TEST(log, testname, passcnt, failcnt, .../*skip for*/) { \
+    if ( YAS_RUN_TEST_CHECK_FOR_SKIP(__VA_ARGS__) ) { \
         const char *artype = ( \
             yas::is_binary_archive<OA>::value ? "binary" \
                 : yas::is_text_archive<OA>::value ? "text" \
@@ -373,7 +373,7 @@ void tests(std::ostream &log, int &p, int &e) {
     YAS_RUN_TEST(log, boost_tuple, p, e);
     YAS_RUN_TEST(log, boost_variant, p, e);
 #endif // YAS_SERIALIZE_BOOST_TYPES
-//    YAS_RUN_TEST(log, json_conformance, p, e, yas::binary|yas::text);
+    YAS_RUN_TEST(log, json_conformance, p, e, yas::binary|yas::text);
 }
 
 /***************************************************************************/
