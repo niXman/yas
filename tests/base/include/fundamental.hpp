@@ -36,8 +36,6 @@
 #ifndef __yas__tests__base__include__pod_hpp
 #define __yas__tests__base__include__pod_hpp
 
-#include <limits>
-
 /***************************************************************************/
 
 template<typename archive_traits>
