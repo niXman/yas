@@ -3,7 +3,7 @@ project(yas-base-test)
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
-    include_directories("/home/nixman/boost-1.66.0-gcc-7.2/include")
+#    include_directories("/home/nixman/boost-1.66.0-gcc-7.2/include")
     add_definitions(
         -DBOOST_ERROR_CODE_HEADER_ONLY
         -DBOOST_CHRONO_HEADER_ONLY
@@ -18,7 +18,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
         -DYAS_SERIALIZE_BOOST_TYPES
     )
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /d1parsePackExpressions-  /bigobj")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /d1parsePackExpressions- /bigobj")
     include_directories("C:/Libraries/boost_1_66_0")
     add_definitions(
         -DBOOST_ERROR_CODE_HEADER_ONLY

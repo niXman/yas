@@ -53,7 +53,10 @@ template<typename CharT>
 constexpr std::uint32_t fnv1a(const CharT *s) {
     std::uint32_t seed = 0x811c9dc5;
     for ( ; *s; ++s ) {
-        seed = __YAS_SCAST(std::uint32_t, ((seed ^ (*s)) * __YAS_SCAST(std::uint64_t, 0x01000193)));
+        seed = __YAS_SCAST(
+             std::uint32_t
+            ,((seed ^ __YAS_SCAST(std::uint32_t, *s)) * __YAS_SCAST(std::uint64_t, 0x01000193))
+        );
     }
 
     return seed;
@@ -63,7 +66,13 @@ constexpr std::uint32_t fnv1a(const CharT *s) {
 
 template<typename CharT>
 constexpr std::uint32_t fnv1a(const CharT *s, std::uint32_t h = 0x811c9dc5) {
-    return (*s == 0) ? h : fnv1a(s+1, __YAS_SCAST(std::uint32_t, ((h ^ (*s)) * __YAS_SCAST(std::uint64_t, 0x01000193))));
+    return (*s == 0)
+        ? h
+        : fnv1a(
+             s+1
+            ,__YAS_SCAST(std::uint32_t, ((h ^ __YAS_SCAST(std::uint32_t, *s)) * __YAS_SCAST(std::uint64_t, 0x01000193)))
+        )
+    ;
 }
 
 #endif // __cplusplus >= 201402L

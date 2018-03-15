@@ -147,7 +147,7 @@ std::size_t modp_b64_encode(IO &io, const char *str, std::size_t len) {
     };
 
     std::size_t i = 0, p = 0;
-    char buf[4];
+    std::uint8_t buf[4];
     if (len > 2) {
         for ( ; i < len - 2; i += 3) {
             const std::uint8_t t1 = __YAS_SCAST(std::uint8_t, str[i]);

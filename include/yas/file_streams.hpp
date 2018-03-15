@@ -47,7 +47,7 @@ namespace yas {
 
 /***************************************************************************/
 
-enum file_mode {
+enum file_mode: std::uint32_t {
      file_trunc  = 1u<<0
     ,file_append = 1u<<1
     ,file_nobuf  = 1u<<2

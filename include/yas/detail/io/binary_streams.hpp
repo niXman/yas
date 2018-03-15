@@ -73,9 +73,8 @@ struct binary_ostream {
     {}
 
     // TODO:
-    template<typename T>
-    void write_seq_size(T size) {
-        const std::uint64_t tsize = __YAS_SCAST(std::uint64_t, size);
+    void write_seq_size(std::size_t size) {
+        const auto tsize = __YAS_SCAST(std::uint64_t, size);
         write(tsize);
     }
 
@@ -257,12 +256,11 @@ struct binary_istream {
         :is(is)
     {}
 
-    template<typename T = std::uint64_t>
-    T read_seq_size() {
-        T size{};
+    std::size_t read_seq_size() {
+        std::uint64_t size{};
         read(size);
 
-        return size;
+        return __YAS_SCAST(std::size_t, size);
     }
 
     char peekch() const { return is.peekch(); }
