@@ -291,9 +291,9 @@ struct binary_istream {
             if ( !onebyte ) {
                 typename std::make_unsigned<T>::type av = 0;
                 __YAS_THROW_READ_ERROR(ns != is.read(&av, std::min<std::size_t>(sizeof(av), ns)));
-                v = __YAS_SCAST(T, (neg ? -av : av));
+                v = (neg ? -__YAS_SCAST(T, av) : __YAS_SCAST(T, av));
             } else {
-                v = __YAS_SCAST(T, (neg ? -ns : ns));
+                v = (neg ? -__YAS_SCAST(T, ns) : __YAS_SCAST(T, ns));
             }
         } else {
             __YAS_THROW_READ_ERROR(sizeof(v) != is.read(&v, sizeof(v)));
