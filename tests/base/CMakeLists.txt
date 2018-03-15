@@ -26,7 +26,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
         -DYAS_SERIALIZE_BOOST_TYPES
         -D_CRT_SECURE_NO_WARNINGS
     )
-    link_directories("C:\Libraries\boost_1_64_0\lib32-msvc-14.1")
+    link_directories("C:/Libraries/boost_1_64_0/lib32-msvc-14.1")
 endif()
 
 include_directories(
