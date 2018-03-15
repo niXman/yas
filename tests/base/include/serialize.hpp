@@ -36,8 +36,6 @@
 #ifndef __yas__tests__base__include__serialize_hpp
 #define __yas__tests__base__include__serialize_hpp
 
-#include <limits>
-
 template<typename archive_traits>
 bool serialize_test(std::ostream &log, const char *archive_type, const char *test_name) {
     bool b = true, b2{};
