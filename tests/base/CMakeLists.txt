@@ -18,11 +18,12 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
         -DYAS_SERIALIZE_BOOST_TYPES
     )
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /d1parsePackExpressions-  /bigobj")
     include_directories("C:/Libraries/boost_1_63_0")
     add_definitions(
         -DBOOST_ERROR_CODE_HEADER_ONLY
         -DBOOST_CHRONO_HEADER_ONLY
+        -DYAS_SERIALIZE_BOOST_TYPES
         -D_CRT_SECURE_NO_WARNINGS
     )
 endif()
