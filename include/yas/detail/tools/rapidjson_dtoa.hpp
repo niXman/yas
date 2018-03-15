@@ -40,6 +40,10 @@
 #ifndef __yas__detail__tools__rapidjson_dtoa_hpp
 #define __yas__detail__tools__rapidjson_dtoa_hpp
 
+#if defined(_MSC_VER) && defined(_M_AMD64)
+#   include <intrin.h>
+#endif // _MSC_VER
+
 namespace yas {
 namespace detail {
 

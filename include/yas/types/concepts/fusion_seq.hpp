@@ -55,7 +55,7 @@ namespace fusion_seq {
 
 template<
      std::size_t F
-    ,std::size_t I = 0
+    ,std::size_t I
     ,typename Archive
     ,template<typename...> class Cont
     ,typename... Tp
@@ -65,7 +65,7 @@ apply(Archive &ar, const Cont<Tp...> &) { return ar; }
 
 template<
      std::size_t F
-    ,std::size_t I = 0
+    ,std::size_t I
     ,typename Archive
     ,template<typename...> class Cont
     ,typename... Tp
@@ -83,7 +83,7 @@ apply(Archive &ar, const Cont<Tp...> &t) {
 
 template<
      std::size_t F
-    ,std::size_t I = 0
+    ,std::size_t I
     ,typename Archive
     ,template<typename...> class Cont
     ,typename... Tp
@@ -93,7 +93,7 @@ apply(Archive &ar, Cont<Tp...> &) { return ar; }
 
 template<
      std::size_t F
-    ,std::size_t I = 0
+    ,std::size_t I
     ,typename Archive
     ,template<typename...> class Cont
     ,typename... Tp
@@ -110,7 +110,7 @@ apply(Archive &ar, Cont<Tp...> &t) {
         json_skipws(ar);
     }
 
-    if ((F & yas::json) && I + 1 < sizeof...(Tp)) {
+    if ( (F & yas::json) && I + 1 < sizeof...(Tp) ) {
         __YAS_THROW_IF_BAD_JSON_CHARS(ar, ",");
     }
 
@@ -134,7 +134,7 @@ Archive &save(Archive &ar, const Cont<Types...> &cont) {
 
     if ( F & yas::json ) { ar.write("[", 1); }
 
-    apply<F>(ar, cont);
+    apply<F, 0>(ar, cont);
 
     if ( F & yas::json ) { ar.write("]", 1); }
 
@@ -160,7 +160,7 @@ Archive &load(Archive &ar, Cont<Types...> &cont) {
 
     if ( F & yas::json ) { __YAS_THROW_IF_BAD_JSON_CHARS(ar, "["); }
 
-    apply<F>(ar, cont);
+    apply<F, 0>(ar, cont);
 
     if ( F & yas::json ) { __YAS_THROW_IF_BAD_JSON_CHARS(ar, "]"); }
 

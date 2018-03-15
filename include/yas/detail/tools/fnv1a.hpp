@@ -69,7 +69,7 @@ constexpr std::uint32_t fnv1a(const CharT *s, std::uint32_t h = 0x811c9dc5) {
     return (*s == 0) ? h : fnv1a(s+1, ((h ^ (*s)) * 0x01000193));
 }
 
-#endif
+#endif // __cplusplus >= 201402L
 
 #ifdef _MSC_VER
 #   pragma warning(pop)
