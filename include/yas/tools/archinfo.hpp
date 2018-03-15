@@ -180,42 +180,6 @@ inline options archive_endian(const char *fname) {
 
 /***************************************************************************/
 
-inline bool archive_bitness(const detail::header::archive_header &h) {
-    return h.bits.bits;
-}
-
-inline bool archive_bitness(const yas::intrusive_buffer &buf) {
-    const auto header = read_header(buf);
-
-    return archive_bitness(header);
-}
-
-inline bool archive_bitness(const yas::shared_buffer &buf) {
-    const auto header = read_header(buf);
-
-    return archive_bitness(header);
-}
-
-inline bool archive_bitness(const char *fname) {
-    const auto header = read_header(fname);
-
-    return archive_bitness(header);
-}
-
-/***************************************************************************/
-
-inline bool archive_is_32bit(const detail::header::archive_header &h) { return archive_bitness(h) == false; }
-inline bool archive_is_32bit(const yas::intrusive_buffer &buf) { return archive_bitness(buf) == false; }
-inline bool archive_is_32bit(const yas::shared_buffer &buf) { return archive_bitness(buf) == false; }
-inline bool archive_is_32bit(const char *fname) { return archive_bitness(fname) == false; }
-
-inline bool archive_is_64bit(const detail::header::archive_header &h) { return archive_bitness(h) == true; }
-inline bool archive_is_64bit(const yas::intrusive_buffer &buf) { return archive_bitness(buf) == true; }
-inline bool archive_is_64bit(const yas::shared_buffer &buf) { return archive_bitness(buf) == true; }
-inline bool archive_is_64bit(const char *fname) { return archive_bitness(fname) == true; }
-
-/***************************************************************************/
-
 inline bool archive_is_compacted(const detail::header::archive_header &h) {
     return h.bits.compacted;
 }
