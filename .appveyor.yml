@@ -15,6 +15,6 @@ build_script:
   - echo Build for %platform%-%configuration%
   - mkdir build
   - cd build
-  - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_GENERATOR_PLATFORM=%platform% ..
+  - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_GENERATOR_PLATFORM=x32,x64 ..
   - cmake --build . --config %configuration%
   - Release\yas-base-test.exe binary
