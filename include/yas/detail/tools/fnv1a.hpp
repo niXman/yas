@@ -44,8 +44,8 @@ namespace detail {
 /***************************************************************************/
 
 #ifdef _MSC_VER
-#   pragma warning(push)
-#   pragma warning(disable:4307)
+#pragma warning(push)
+#pragma warning(disable:4307)
 #endif
 
 constexpr std::uint32_t fnv1a(std::nullptr_t) { return 0; }
@@ -55,9 +55,9 @@ constexpr std::uint32_t fnv1a(std::nullptr_t) { return 0; }
 template<typename CharT>
 constexpr std::uint32_t fnv1a(const CharT *s) {
     std::uint32_t seed = 0x811c9dc5;
-//    for ( ; *s; ++s ) {
-//        seed = ((seed ^ (*s)) * 0x01000193);
-//    }
+    for ( ; *s; ++s ) {
+        seed = ((seed ^ (*s)) * 0x01000193);
+    }
 
     return seed;
 }
@@ -66,14 +66,13 @@ constexpr std::uint32_t fnv1a(const CharT *s) {
 
 template<typename CharT>
 constexpr std::uint32_t fnv1a(const CharT *s, std::uint32_t h = 0x811c9dc5) {
-//    return (*s == 0) ? h : fnv1a(s+1, ((h ^ (*s)) * 0x01000193));
-    return 0;
+    return (*s == 0) ? h : fnv1a(s+1, ((h ^ (*s)) * 0x01000193));
 }
 
 #endif // __cplusplus >= 201402L
 
 #ifdef _MSC_VER
-#   pragma warning(pop)
+#pragma warning(pop)
 #endif
 
 /***************************************************************************/
