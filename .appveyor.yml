@@ -20,6 +20,6 @@ build_script:
   - mkdir build
   - cd build
   - cmake --version
-  - cmake .. -DCMAKE_BUILD_TYPE=Release
+  - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_GENERATOR_PLATFORM=%platform% ..
   - cmake --build . --config %configuration%
   - Release\yas-base-test.exe binary
