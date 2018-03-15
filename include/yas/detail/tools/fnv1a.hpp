@@ -66,7 +66,8 @@ constexpr std::uint32_t fnv1a(const CharT *s) {
 
 template<typename CharT>
 constexpr std::uint32_t fnv1a(const CharT *s, std::uint32_t h = 0x811c9dc5) {
-    return (*s == 0) ? h : fnv1a(s+1, ((h ^ (*s)) * 0x01000193));
+//    return (*s == 0) ? h : fnv1a(s+1, ((h ^ (*s)) * 0x01000193));
+    return 0;
 }
 
 #endif // __cplusplus >= 201402L
