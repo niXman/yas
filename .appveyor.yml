@@ -10,16 +10,11 @@ configuration:
   - Release
 
 build_script:
-  - dir "C:\Libraries\boost_1_66_0"
-  - CD
-  - cd ..
-  - CD
-  - cd yas/tests/base
-  - CD
-  - echo %configuration%
+#  - dir "C:\Libraries\boost_1_66_0"
+  - cd ../yas/tests/base
+  - echo Build for %platform%-%configuration%
   - mkdir build
   - cd build
-  - cmake --version
   - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_GENERATOR_PLATFORM=%platform% ..
   - cmake --build . --config %configuration%
   - Release\yas-base-test.exe binary
