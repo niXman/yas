@@ -33,6 +33,12 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+#ifdef _MSC_VER
+#   ifndef NOMINMAX
+#       define NOMINMAX
+#   endif
+#endif // _MSC_VER
+
 #include <yas/mem_streams.hpp>
 #include <yas/file_streams.hpp>
 #include <yas/std_streams.hpp>
