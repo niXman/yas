@@ -10,7 +10,7 @@ matrix:
   fast_finish: true
 
 build_script:
-  - dir "C:\Libraries\boost_1_64_0\lib32-msvc-14.1"
+  - dir "C:\Libraries\boost_1_66_0"
   - CD
   - cd ..
   - CD
