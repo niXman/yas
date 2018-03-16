@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/niXman/yas.svg?branch=master)](https://travis-ci.org/niXman/yas)
+[![Build Status](https://travis-ci.org/niXman/yas.svg?branch=master)](https://travis-ci.org/niXman/yas) | [![Build status](https://ci.appveyor.com/api/projects/status/55v27uvryu0qh8mc/branch/master?svg=true)](https://ci.appveyor.com/project/niXman/yas/branch/master)
 
 # YAS
 Yet Another Serialization
@@ -19,9 +19,9 @@ Yet Another Serialization
 ## Supported the following compilers:
  - GCC  : 4.8.5, ... - 32/64 bit
  - MinGW: 4.8.5, ... - 32/64 bit
- - Clang: 3.4, ... - 32/64 bit
+ - Clang: 3.5, ... - 32/64 bit
  - Intel: (untested)
- - MSVC : 2015, ... - 32/64 bit
+ - MSVC : 2017(in c++14 mode), ... - 32/64 bit
 
 ## TODO:
 * JSON
