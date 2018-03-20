@@ -38,26 +38,9 @@
 
 /***************************************************************************/
 
-#if __cplusplus > 201103L
-#ifdef __has_include
-#	if __has_include(<optional>)
-#		include <optional>
-#		define _YAS_HAVE_STD_OPTIONAL 1
-#	elif __has_include(<experimental/optional>)
-#		include <experimental/optional>
-#		define _YAS_HAVE_STD_OPTIONAL 1
-#		define _YAS_HAVE_STD_EXPERIMENTAL_OPTIONAL
-#	else
-#		define _YAS_HAVE_STD_OPTIONAL 0
-#	endif
-#endif
-#endif // __cplusplus > 201103L
-
-#ifdef _YAS_HAVE_STD_EXPERIMENTAL_OPTIONAL
-#	define _YAS_STD_OPTIONAL_NS std::experimental
-#else
-#	define _YAS_STD_OPTIONAL_NS std
-#endif // _YAS_HAVE_STD_EXPERIMENTAL_OPTIONAL
+#if __cplusplus >= 201703L
+#include <optional>
+#endif // __cplusplus >= 201703L
 
 template<typename archive_traits>
 bool optional_test(std::ostream &log, const char *archive_type, const char *test_name) {
@@ -99,10 +82,11 @@ bool optional_test(std::ostream &log, const char *archive_type, const char *test
 		}
 	}
 #endif // defined(YAS_SERIALIZE_BOOST_TYPES)
-#if _YAS_HAVE_STD_OPTIONAL
+
+#if __cplusplus >= 201703L
 	{
 		int i0 = 33;
-		_YAS_STD_OPTIONAL_NS::optional<int> o0(i0), o1;
+		std::optional<int> o0(i0), o1;
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type);
 		oa & YAS_OBJECT_NVP("obj", ("o", o0));
@@ -118,7 +102,7 @@ bool optional_test(std::ostream &log, const char *archive_type, const char *test
 	}
 	{
 		const std::string s0 = "some string";
-		_YAS_STD_OPTIONAL_NS::optional<std::string> o0(s0), o1;
+		std::optional<std::string> o0(s0), o1;
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type);
 		oa & YAS_OBJECT_NVP("obj", ("o", o0));
@@ -132,7 +116,7 @@ bool optional_test(std::ostream &log, const char *archive_type, const char *test
 			return false;
 		}
 	}
-#endif // _YAS_HAVE_STD_OPTIONAL
+#endif // __cplusplus >= 201703L
 
 	return true;
 }

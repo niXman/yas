@@ -36,34 +36,15 @@
 #ifndef __yas__types__std__std_optional_serializers_hpp
 #define __yas__types__std__std_optional_serializers_hpp
 
-#if __cplusplus > 201103L
+#if __cplusplus >= 201703L
 
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/serializer.hpp>
 
-#ifdef __has_include
-#	if __has_include(<optional>)
-#		include <optional>
-#		define _YAS_HAVE_STD_OPTIONAL 1
-#	elif __has_include(<experimental/optional>)
-#		include <experimental/optional>
-#		define _YAS_HAVE_STD_OPTIONAL 1
-#		define _YAS_HAVE_STD_EXPERIMENTAL_OPTIONAL
-#	else
-#		define _YAS_HAVE_STD_OPTIONAL 0
-#	endif
-#endif
+#include <optional>
 
 namespace yas {
 namespace detail {
-
-#if _YAS_HAVE_STD_OPTIONAL
-
-#ifdef _YAS_HAVE_STD_EXPERIMENTAL_OPTIONAL
-#	define _YAS_STD_OPTIONAL_NS std::experimental
-#else
-#	define _YAS_STD_OPTIONAL_NS std
-#endif // _YAS_HAVE_STD_EXPERIMENTAL_OPTIONAL
 
 /***************************************************************************/
 
@@ -72,10 +53,10 @@ struct serializer<
 	type_prop::not_a_fundamental,
 	ser_method::use_internal_serializer,
 	F,
-	_YAS_STD_OPTIONAL_NS::optional<T>
+	std::optional<T>
 > {
 	template<typename Archive>
-	static Archive& save(Archive& ar, const _YAS_STD_OPTIONAL_NS::optional<T> &t) {
+	static Archive& save(Archive& ar, const std::optional<T> &t) {
 		const bool initialized = static_cast<bool>(t);
 		ar.write(initialized);
 		if ( initialized )
@@ -85,7 +66,7 @@ struct serializer<
 	}
 
 	template<typename Archive>
-	static Archive& load(Archive& ar, _YAS_STD_OPTIONAL_NS::optional<T> &t) {
+	static Archive& load(Archive& ar, std::optional<T> &t) {
 		bool initialized = false;
 		ar.read(initialized);
 		if ( initialized ) {
@@ -93,7 +74,7 @@ struct serializer<
 			ar & val;
 			t = std::move(val);
 		} else {
-			t = _YAS_STD_OPTIONAL_NS::optional<T>();
+			t = std::optional<T>();
 		}
 
 		return ar;
@@ -102,15 +83,9 @@ struct serializer<
 
 /***************************************************************************/
 
-#endif // _YAS_HAVE_STD_OPTIONAL
-
-#undef _YAS_HAVE_STD_OPTIONAL
-#undef _YAS_HAVE_STD_EXPERIMENTAL_OPTIONAL
-#undef _YAS_STD_OPTIONAL_NS
-
 } // namespace detail
 } // namespace yas
 
-#endif // __cplusplus > 201103L
+#endif // if __cplusplus >= 201703L
 
 #endif // __yas__types__std__std_optional_serializers_hpp

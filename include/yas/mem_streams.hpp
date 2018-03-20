@@ -137,7 +137,8 @@ struct mem_istream {
 
     template<typename T>
     std::size_t read(T *ptr, const std::size_t size) {
-        const std::size_t to_copy = std::min<std::size_t>(end-cur, size);
+        const std::size_t avail = __YAS_SCAST(std::size_t, end-cur);
+        const std::size_t to_copy = (avail < size ? avail : size);
         switch ( to_copy ) {
             case 1 : std::memcpy(ptr, cur, 1) ; break;
             case 2 : std::memcpy(ptr, cur, 2) ; break;
