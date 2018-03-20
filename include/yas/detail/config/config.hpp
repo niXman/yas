@@ -51,7 +51,7 @@
 /***************************************************************************/
 
 #if __cplusplus >= 201703L
-#define __YAS_CONSTEXPR_IF(...) if constexpr (__VA_ARGS__)
+#define __YAS_CONSTEXPR_IF(...) if constexpr ( static_cast<bool>(__VA_ARGS__) )
 #else
 #define __YAS_CONSTEXPR_IF(...) if (__VA_ARGS__)
 #endif
