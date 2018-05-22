@@ -146,8 +146,8 @@ private:
 
                     const std::uint32_t hash = fnv1a(key);
                     const auto it = m.find(hash);
-                    if ( it.first ) {
-                        tuple_switch(ar, it.second, t);
+                    if ( it.key ) {
+                        tuple_switch(ar, it.val, t);
                         break;
                     } else {
                         json_skipws(ar);

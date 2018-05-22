@@ -65,7 +65,7 @@ __YAS_DECLARE_EXCEPTION_TYPE(serialization_exception)
 	__YAS_THROW_EXCEPTION(::yas::serialization_exception, "bad size on deserialize " type);
 
 #define __YAS_THROW_IF_BAD_JSON_CHARS(ar, chars) { \
-        char tmp[sizeof(chars)] = "\0"; \
+        char tmp[sizeof(chars)]; \
         ar.read(tmp, sizeof(tmp)-1); \
         if ( std::memcmp(tmp, chars, sizeof(chars)-1) != 0 ) { \
             __YAS_THROW_EXCEPTION(::yas::serialization_exception, "no expected chars '" chars "'"); \
