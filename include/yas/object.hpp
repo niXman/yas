@@ -174,7 +174,13 @@ struct predic_less {
 
 /***********************************************************************************/
 
-using optional_t = std::pair<bool, std::uint8_t>;
+template<typename K, typename V>
+struct pair {
+    K key;
+    V val;
+};
+
+using optional_t = pair<bool, std::uint8_t>;
 
 template<typename>
 struct ctmap;
@@ -187,7 +193,7 @@ struct ctmap<std::tuple<KVI...>> {
         std::size_t count = sizeof...(KVI);
 
         while ( count > 0 ) {
-            if ( (beg+count/2)->first < k ) {
+            if ( (beg+count/2)->key < k ) {
                 beg = beg+count/2+1;
                 count -= count/2+1;
             } else {
@@ -195,15 +201,15 @@ struct ctmap<std::tuple<KVI...>> {
             }
         }
 
-        return {(beg != end && beg->first == k), beg->second};
+        return {(beg != end && beg->key == k), beg->val};
     }
 
-    static constexpr std::pair<std::uint32_t, std::uint8_t> kvis[] = {
+    static constexpr pair<std::uint32_t, std::uint8_t> kvis[] = {
         {KVI::first_type::value, KVI::second_type::value}...
     };
 };
 template<typename... KVI>
-constexpr std::pair<std::uint32_t, std::uint8_t> ctmap<std::tuple<KVI...>>::kvis[];
+constexpr pair<std::uint32_t, std::uint8_t> ctmap<std::tuple<KVI...>>::kvis[];
 
 template<typename KVI>
 struct ctmap<std::tuple<KVI>> {
@@ -295,9 +301,6 @@ make_val(ConstCharPtr key, V &&val) {
 
 /***************************************************************************/
 
-template<typename, typename...>
-struct object;
-
 template<typename KVI, typename... Pairs>
 struct object {
     using tuple = std::tuple<Pairs...>;
@@ -372,21 +375,21 @@ make_object(std::nullptr_t, Pairs &&... pairs) {
         ::yas::make_val(YAS_PP_STRINGIZE(elem), elem)
 
 #define __YAS_OBJECT_IMPL(seq) \
-	YAS_PP_SEQ_FOR_EACH_I( \
-		 __YAS_OBJECT_GEN_PAIRS \
-		,~ \
-		,seq \
-	)
+    YAS_PP_SEQ_FOR_EACH_I( \
+         __YAS_OBJECT_GEN_PAIRS \
+        ,~ \
+        ,seq \
+    )
 
 #define __YAS_OBJECT_NONEMPTY_GEN_KVI_CB(unised0, unised1, idx, elem) \
     YAS_PP_COMMA_IF(idx) \
-        std::pair< \
-             std::integral_constant< \
-                  std::uint32_t \
-                 ,::yas::detail::fnv1a(YAS_PP_STRINGIZE(elem)) \
-             > \
-            ,std::integral_constant<std::uint8_t, idx> \
-        >
+    std::pair< \
+        std::integral_constant< \
+             std::uint32_t \
+            ,::yas::detail::fnv1a(YAS_PP_STRINGIZE(elem)) \
+        > \
+        ,std::integral_constant<std::uint8_t, idx> \
+    >
 
 #define __YAS_OBJECT_NONEMPTY_GEN_KVI(seq) \
     typename ::yas::detail::mergesort< \

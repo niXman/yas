@@ -257,6 +257,27 @@ std::size_t json_read_key(Archive &ar, char *ptr, std::size_t size) {
 /***************************************************************************/
 
 template<typename Archive>
+bool is_valid_for_int_and_double(Archive &, char ch) {
+    switch ( ch ) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+        case '-':
+        case '.':
+        case 'e':
+        case 'E': return true;
+        default : return false;
+    }
+}
+
+template<typename Archive>
 std::size_t json_read_num(Archive &ar, char *ptr, std::size_t size) {
     char *p = ptr;
     do {
@@ -273,7 +294,7 @@ std::size_t json_read_num(Archive &ar, char *ptr, std::size_t size) {
             case '7':
             case '8':
             case '9': break;
-            default: {
+            default : {
                 ar.ungetch(*ptr);
                 return ptr-p;
             }
@@ -306,7 +327,7 @@ std::size_t json_read_double(Archive &ar, char *ptr, std::size_t size) {
             case '.':
             case 'e':
             case 'E': break;
-            default: {
+            default : {
                 ar.ungetch(*ptr);
                 return ptr-p;
             }

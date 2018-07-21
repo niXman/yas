@@ -53,104 +53,6 @@ namespace detail {
 
 /***************************************************************************/
 
-template<typename IS, std::size_t F, typename Trait>
-struct json_istream {
-	json_istream(IS &is)
-		:is(is)
-	{}
-
-	template<typename T = std::size_t>
-	T read_seq_size() {
-		T size{};
-		read(size);
-
-		return size;
-	}
-
-    char peekch() const { return is.peekch(); }
-    char getch() { return is.getch(); }
-    void ungetch(char ch) { is.ungetch(ch); }
-
-	// for arrays
-	std::size_t read(void *ptr, std::size_t size) {
-		__YAS_THROW_READ_ERROR(size != is.read(ptr, size));
-
-        return size;
-	}
-
-    // for char and signed char
-    template<typename T>
-    void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char)) {
-        std::int16_t t;
-        read(t);
-
-        v = __YAS_SCAST(T, t);
-    }
-    // for unsigned char
-    template<typename T>
-    void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, unsigned char)) {
-        std::uint16_t t;
-        read(t);
-
-        v = __YAS_SCAST(T, t);
-    }
-
-	// for bools only
-	template<typename T>
-	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, bool)) {
-        static const char ltrue[] = "true";
-        static const char lfalse[] = "false";
-
-        char buf[sizeof(lfalse)];
-		__YAS_THROW_READ_ERROR(1 != is.read(buf, 1));
-
-        v = (buf[0] == 't');
-
-        const std::size_t to_read = (v ? sizeof(ltrue)-1-1 : sizeof(lfalse)-1-1);
-        __YAS_THROW_READ_ERROR(to_read != is.read(buf, to_read));
-	}
-
-	// for signed 16/32/64 bits
-	template<typename T>
-	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t)) {
-		char buf[sizeof(T)*4];
-		const std::size_t n = json_read_num(is, buf, sizeof(buf));
-		v = Trait::template atoi<T>(buf, n);
-	}
-
-	// for unsigned 16/32/64 bits
-	template<typename T>
-	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
-        char buf[sizeof(T)*4];
-        const std::size_t n = json_read_num(is, buf, sizeof(buf));
-
-        v = Trait::template atou<T>(buf, n);
-	}
-
-	// for floats
-	template<typename T>
-	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, float)) {
-		char buf[std::numeric_limits<T>::max_exponent10+20];
-		const std::size_t n = json_read_double(is, buf, sizeof(buf));
-
-		v = Trait::template atof<T>(buf, n);
-	}
-
-	// for doubles
-	template<typename T>
-	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, double)) {
-        char buf[std::numeric_limits<T>::max_exponent10+20];
-        const std::size_t n = json_read_double(is, buf, sizeof(buf));
-
-		v = Trait::template atod<T>(buf, n);
-	}
-
-private:
-	IS &is;
-};
-
-/***************************************************************************/
-
 template<typename OS, std::size_t F, typename Trait>
 struct json_ostream {
 	json_ostream(OS &os)
@@ -213,7 +115,8 @@ struct json_ostream {
 	// for floats
 	template<typename T>
 	void write(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, float)) {
-		char buf[std::numeric_limits<T>::max_exponent10 + 20];
+	    enum { bufsize = std::numeric_limits<T>::max_exponent10 + 20 };
+		char buf[bufsize];
 		std::size_t len = Trait::ftoa(buf, sizeof(buf), v);
 
 		__YAS_THROW_WRITE_ERROR(len != os.write(buf, len));
@@ -222,7 +125,8 @@ struct json_ostream {
 	// for doubles
 	template<typename T>
 	void write(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, double)) {
-		char buf[std::numeric_limits<T>::max_exponent10 + 20];
+        enum { bufsize = std::numeric_limits<T>::max_exponent10 + 20 };
+        char buf[bufsize];
 		std::size_t len = Trait::dtoa(buf, sizeof(buf), v);
 
 		__YAS_THROW_WRITE_ERROR(len != os.write(buf, len));
@@ -230,6 +134,123 @@ struct json_ostream {
 
 private:
 	OS &os;
+};
+
+/***************************************************************************/
+
+template<typename IS, std::size_t F, typename Trait>
+struct json_istream {
+	json_istream(IS &is)
+        :is(is)
+	{}
+
+	template<typename T = std::size_t>
+	T read_seq_size() {
+		T size{};
+		read(size);
+
+		return size;
+	}
+
+	bool empty() const { return is.empty(); }
+	char peekch() const { return is.peekch(); }
+	char getch() { return is.getch(); }
+	void ungetch(char ch) { is.ungetch(ch); }
+
+	// for arrays
+	std::size_t read(void *ptr, std::size_t size) {
+		__YAS_THROW_READ_ERROR(size != is.read(ptr, size));
+
+		return size;
+	}
+
+	// for char and signed char
+	template<typename T>
+	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char)) {
+		std::int16_t t;
+		read(t);
+
+		v = __YAS_SCAST(T, t);
+	}
+	// for unsigned char
+	template<typename T>
+	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, unsigned char)) {
+		std::uint16_t t;
+		read(t);
+
+		v = __YAS_SCAST(T, t);
+	}
+
+	// for bools only
+	template<typename T>
+	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, bool)) {
+		static const char ltrue[] = "true";
+		static const char lfalse[] = "false";
+
+		char buf[sizeof(lfalse)];
+		__YAS_THROW_READ_ERROR(1 != is.read(buf, 1));
+
+		v = (buf[0] == 't');
+
+		const std::size_t to_read = (v ? sizeof(ltrue)-1-1 : sizeof(lfalse)-1-1);
+		__YAS_THROW_READ_ERROR(to_read != is.read(buf, to_read));
+	}
+
+	// for signed 16/32/64 bits
+	template<typename T>
+	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t)) {
+		char buf[sizeof(T)*4];
+		const std::size_t n = json_read_num(is, buf, sizeof(buf));
+		v = Trait::template atoi<T>(buf, n);
+	}
+
+	// for unsigned 16/32/64 bits
+	template<typename T>
+	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
+		char buf[sizeof(T)*4];
+		const std::size_t n = json_read_num(is, buf, sizeof(buf));
+
+		v = Trait::template atou<T>(buf, n);
+	}
+
+	// for floats
+	template<typename T>
+	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, float)) {
+		char buf[std::numeric_limits<T>::max_exponent10+20];
+
+		if ( is.peekch() == '\"' ) {
+			is.getch();
+		}
+
+		const std::size_t n = json_read_double(is, buf, sizeof(buf));
+
+		if ( is.peekch() == '\"' ) {
+			is.getch();
+		}
+
+		v = Trait::template atof<T>(buf, n);
+	}
+
+	// for doubles
+	template<typename T>
+	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, double)) {
+		char buf[std::numeric_limits<T>::max_exponent10+20];
+
+		if ( is.peekch() == '\"' ) {
+			is.getch();
+		}
+
+		const std::size_t n = json_read_double(is, buf, sizeof(buf));
+
+		if ( is.peekch() == '\"' ) {
+			is.getch();
+		}
+
+		v = Trait::template atod<T>(buf, n);
+	}
+
+private:
+	IS &is;
 };
 
 /***************************************************************************/

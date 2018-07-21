@@ -40,9 +40,9 @@
 // YAS_VERSION / 100 % 1000 is the minor version
 // YAS_VERSION % 100 is the bugfix level
 
-#define YAS_VERSION_MAJOR 6
+#define YAS_VERSION_MAJOR 7
 #define YAS_VERSION_MINOR 0
-#define YAS_VERSION_BUGFIX 3
+#define YAS_VERSION_BUGFIX 1
 
 #define YAS_VERSION \
      YAS_VERSION_MAJOR*100000 \
@@ -63,7 +63,7 @@ namespace detail {
 /**************************************************************************/
 
 enum yas_version {
-     binary_archive_version = 6
+     binary_archive_version = 7
     ,text_archive_version = 3
     ,json_archive_version = 1
 };

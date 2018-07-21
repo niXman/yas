@@ -46,7 +46,6 @@
 #include <cmath>
 
 namespace yas {
-namespace detail {
 
 /***************************************************************************/
 
@@ -177,7 +176,7 @@ T default_traits::atof(const char *str, std::size_t size) {
 template<typename T>
 T default_traits::atod(const char *str, std::size_t size) {
     static const double es[] = { // 1e-0...1e308: 309 * 8 bytes = 2472 bytes
-        1e+0  ,1e+1  ,  1e+2,  1e+3,  1e+4,  1e+5,  1e+6,  1e+7,  1e+8,  1e+9
+         1e+0  ,1e+1  ,  1e+2,  1e+3,  1e+4,  1e+5,  1e+6,  1e+7,  1e+8,  1e+9
         ,1e+10 ,1e+11 , 1e+12, 1e+13, 1e+14, 1e+15, 1e+16, 1e+17, 1e+18, 1e+19
         ,1e+20 ,1e+21 , 1e+22, 1e+23, 1e+24, 1e+25, 1e+26, 1e+27, 1e+28, 1e+29
         ,1e+30 ,1e+31 , 1e+32, 1e+33, 1e+34, 1e+35, 1e+36, 1e+37, 1e+38, 1e+39
@@ -246,12 +245,11 @@ template<typename T>
 std::size_t default_traits::dtoa(char *buf, const std::size_t size, T v) {
     (void)size;
 
-    return rapidjson_dtoa(v, buf) - buf;
+    return detail::rapidjson_dtoa(v, buf) - buf;
 }
 
 /***************************************************************************/
 
-} // ns detail
 } // ns yas
 
 #endif // __yas__defaul_traits_hpp

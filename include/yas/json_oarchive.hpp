@@ -61,7 +61,7 @@ namespace yas {
 
 /***************************************************************************/
 
-template<typename OS, std::size_t F = json|ehost, typename Trait = yas::detail::default_traits>
+template<typename OS, std::size_t F = json|ehost, typename Trait = yas::default_traits>
 struct json_oarchive
 	:detail::json_ostream<OS, F, Trait>
 	,detail::oarchive_header<F>

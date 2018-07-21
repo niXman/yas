@@ -61,7 +61,7 @@ namespace yas {
 
 /***************************************************************************/
 
-template<typename IS, std::size_t F = json|ehost, typename Trait = yas::detail::default_traits>
+template<typename IS, std::size_t F = json|ehost, typename Trait = yas::default_traits>
 struct json_iarchive
 	:detail::json_istream<IS, F, Trait>
 	,detail::iarchive_header<F>

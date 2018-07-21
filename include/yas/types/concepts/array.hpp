@@ -102,7 +102,7 @@ Archive& load(Archive &ar, C &c) {
         }
 
         while ( true ) {
-            typename C::value_type v = typename C::value_type();
+            typename C::value_type v{};
             ar & v;
             c.push_back(std::move(v));
 
@@ -114,7 +114,7 @@ Archive& load(Archive &ar, C &c) {
             if ( ch2 == ']' ) {
                 break;
             } else {
-                ar.getch();
+                __YAS_THROW_IF_BAD_JSON_CHARS(ar, ",");
             }
 
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {

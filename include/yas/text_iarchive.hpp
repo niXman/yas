@@ -64,7 +64,7 @@ namespace yas {
 template<
      typename IS
     ,std::size_t F = text|ehost
-    ,typename Trait = yas::detail::default_traits
+    ,typename Trait = yas::default_traits
 >
 struct text_iarchive
 	:detail::text_istream<IS, F, Trait>

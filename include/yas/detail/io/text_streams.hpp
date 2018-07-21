@@ -64,6 +64,7 @@ struct text_istream {
 		return size;
 	}
 
+	bool empty() const { return is.empty(); }
     char peekch() const { return is.peekch(); }
     char getch() { return is.getch(); }
     void ungetch(char ch) { is.ungetch(ch); }

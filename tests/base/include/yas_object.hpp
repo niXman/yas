@@ -64,7 +64,7 @@ bool yas_object_test(std::ostream &log, const char *archive_type, const char *te
 		typename archive_traits::oarchive oa;
 		archive_traits::ocreate(oa, archive_type);
 
-        auto o0 = YAS_OBJECT("object0", i0);
+        auto o0 = YAS_OBJECT_NVP("object0", ("i0", i0));
 		oa & o0;
 
 		typename archive_traits::iarchive ia;

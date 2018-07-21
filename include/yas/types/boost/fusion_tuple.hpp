@@ -44,6 +44,9 @@
 #include <yas/detail/io/serialization_exceptions.hpp>
 
 #include <boost/fusion/tuple.hpp>
+#include <boost/fusion/sequence/intrinsic/at_c.hpp>
+#include <boost/fusion/include/at_c.hpp>
+
 
 namespace yas {
 namespace detail {
