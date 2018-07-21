@@ -102,7 +102,7 @@ Archive& load(Archive &ar, C &c) {
         }
 
         while ( true ) {
-            typename C::value_type v{};
+            typename C::value_type v = typename C::value_type{};
             ar & v;
             c.push_back(std::move(v));
 
