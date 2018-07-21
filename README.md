@@ -56,7 +56,7 @@ int main() {
 ```
 The IO type can be one of `yas::mem` or `yas::file`.
 The IO format can be one of `yas::binary` or `yas::text` or `yas::json`.
-If IO type is `file` then the first arg of functions `yas::save()` and `yas::load()` is `const char *fname`.
+If IO type is `yas::file` then the first arg of `yas::save()` and `yas::load()` functions is `const char *fname`.
 
 ## TODO:
 * JSON
