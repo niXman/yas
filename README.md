@@ -42,7 +42,7 @@ int main() {
         YAS_OBJECT(nullptr, a, b, c)
     );
     
-    // buf = {"a":4,"b":4,"c":3.14}
+    // buf = {"a":3,"b":4,"c":3.14}
     
     yas::load<flags>(buf,
         YAS_OBJECT_NVP(nullptr
