@@ -59,7 +59,7 @@ The IO format can be one of `yas::binary` or `yas::text` or `yas::json`.
 If IO type is `yas::file` then the first arg of `yas::save()` and `yas::load()` functions is `const char *fname`.
 
 ## TODO:
-* JSON
+* YASOBJ (the new archive format)
 * limits
 * message versioning
 
