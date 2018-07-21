@@ -23,6 +23,41 @@ Yet Another Serialization
  - Intel: (untested)
  - MSVC : 2017(in c++14 mode), ... - 32/64 bit
 
+## Samples
+The easiest way to save and load some object is to use the `yas::save()` and `yas::load()` functions like this:
+```cpp
+#include <yas/serialize.hpp>
+#include <yas/std_types.hpp>
+
+int main() {
+    int a = 3, aa{};
+    short b = 4, bb{};
+    float c = 3.14, cc{};
+    
+    constexpr std::size_t flags = 
+         yas::mem // IO type
+        |yas::json; // IO format
+    
+    auto buf = yas::save<flags>(
+        YAS_OBJECT(nullptr, a, b, c)
+    );
+    
+    // buf = {"a":4,"b":4,"c":3.14}
+    
+    yas::load<flags>(buf,
+        YAS_OBJECT_NVP(nullptr
+            ,("a", aa)
+            ,("b", bb)
+            ,("c", cc)
+        )
+    );
+    // a == aa && b == bb && c == cc;
+}
+```
+The IO type can be one of `mem` or `file`.
+The IO format can be one of `binary` or `text` or `json`.
+If IO type is `file` then the first arg of functions `yas::save()` and `yas::load()` is `const char *fname`.
+
 ## TODO:
 * JSON
 * limits
