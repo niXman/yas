@@ -120,7 +120,7 @@ save(const char *fname, Types &&... args) {
 
 template<std::size_t F, typename ...Types>
 typename std::enable_if<
-    (F & yas::binary)
+    (F & yas::file) && (F & yas::binary)
 >::type
 save(yas::file_ostream &os, Types &&... args) {
     yas::binary_oarchive<yas::file_ostream, (F & (~yas::file))> oa(os);
@@ -129,7 +129,7 @@ save(yas::file_ostream &os, Types &&... args) {
 
 template<std::size_t F, typename ...Types>
 typename std::enable_if<
-    (F & yas::text)
+    (F & yas::file) && (F & yas::text)
 >::type
 save(yas::file_ostream &os, Types &&... args) {
     yas::text_oarchive<yas::file_ostream, (F & (~yas::file))> oa(os);
@@ -138,7 +138,7 @@ save(yas::file_ostream &os, Types &&... args) {
 
 template<std::size_t F, typename ...Types>
 typename std::enable_if<
-    (F & yas::json)
+    (F & yas::file) && (F & yas::json)
 >::type
 save(yas::file_ostream &os, Types &&... args) {
     yas::json_oarchive<yas::file_ostream, (F & (~yas::file))> oa(os);
@@ -147,7 +147,7 @@ save(yas::file_ostream &os, Types &&... args) {
 
 template<std::size_t F, typename ...Types>
 typename std::enable_if<
-    (F & yas::binary)
+    (F & yas::file) && (F & yas::binary)
 >::type
 save(yas::std_ostream_adapter &os, Types &&... args) {
     yas::binary_oarchive<yas::std_ostream_adapter, (F & (~yas::file))> oa(os);
@@ -156,7 +156,7 @@ save(yas::std_ostream_adapter &os, Types &&... args) {
 
 template<std::size_t F, typename ...Types>
 typename std::enable_if<
-    (F & yas::text)
+    (F & yas::file) && (F & yas::text)
 >::type
 save(yas::std_ostream_adapter &os, Types &&... args) {
     yas::text_oarchive<yas::std_ostream_adapter, (F & (~yas::file))> oa(os);
@@ -165,7 +165,7 @@ save(yas::std_ostream_adapter &os, Types &&... args) {
 
 template<std::size_t F, typename ...Types>
 typename std::enable_if<
-    (F & yas::json)
+    (F & yas::file) && (F & yas::json)
 >::type
 save(yas::std_ostream_adapter &os, Types &&... args) {
     yas::json_oarchive<yas::std_ostream_adapter, (F & (~yas::file))> oa(os);
@@ -236,7 +236,7 @@ load(const char *fname, Types &&... args) {
 
 template<std::size_t F, typename ...Types>
 typename std::enable_if<
-    (F & yas::binary)
+    (F & yas::file) && (F & yas::binary)
 >::type
 load(yas::file_istream &is, Types &&... args) {
     yas::binary_iarchive<yas::file_istream, (F & (~yas::file))> ia(is);
@@ -245,7 +245,7 @@ load(yas::file_istream &is, Types &&... args) {
 
 template<std::size_t F, typename ...Types>
 typename std::enable_if<
-    (F & yas::text)
+    (F & yas::file) && (F & yas::text)
 >::type
 load(yas::file_istream &is, Types &&... args) {
     yas::text_iarchive<yas::file_istream, (F & (~yas::file))> ia(is);
@@ -254,7 +254,7 @@ load(yas::file_istream &is, Types &&... args) {
 
 template<std::size_t F, typename ...Types>
 typename std::enable_if<
-    (F & yas::json)
+    (F & yas::file) && (F & yas::json)
 >::type
 load(yas::file_istream &is, Types &&... args) {
     yas::json_iarchive<yas::file_istream, (F & (~yas::file))> ia(is);
@@ -263,7 +263,7 @@ load(yas::file_istream &is, Types &&... args) {
 
 template<std::size_t F, typename ...Types>
 typename std::enable_if<
-    (F & yas::binary)
+    (F & yas::file) && (F & yas::binary)
 >::type
 load(yas::std_istream_adapter &is, Types &&... args) {
     yas::binary_iarchive<yas::std_istream_adapter, (F & (~yas::file))> ia(is);
@@ -272,7 +272,7 @@ load(yas::std_istream_adapter &is, Types &&... args) {
 
 template<std::size_t F, typename ...Types>
 typename std::enable_if<
-    (F & yas::text)
+    (F & yas::file) && (F & yas::text)
 >::type
 load(yas::std_istream_adapter &is, Types &&... args) {
     yas::text_iarchive<yas::std_istream_adapter, (F & (~yas::file))> ia(is);
@@ -281,7 +281,7 @@ load(yas::std_istream_adapter &is, Types &&... args) {
 
 template<std::size_t F, typename ...Types>
 typename std::enable_if<
-    (F & yas::json)
+    (F & yas::file) && (F & yas::json)
 >::type
 load(yas::std_istream_adapter &is, Types &&... args) {
     yas::json_iarchive<yas::std_istream_adapter, (F & (~yas::file))> ia(is);
