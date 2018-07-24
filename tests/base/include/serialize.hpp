@@ -36,6 +36,8 @@
 #ifndef __yas__tests__base__include__serialize_hpp
 #define __yas__tests__base__include__serialize_hpp
 
+#include <fstream>
+
 template<typename archive_traits>
 bool serialize_test(std::ostream &log, const char *archive_type, const char *test_name) {
     bool b = true, b2{};
@@ -178,6 +180,76 @@ bool serialize_test(std::ostream &log, const char *archive_type, const char *tes
                 ,("i64max", i64max2)
                 ,("u64max", u64max2)
             )
+        );
+        if ( b!=b2||c!=c2||uc!=uc2||s!=s2||us!=us2||i!=i2||l!=l2||i64!=i642||u64!=u642||f!=f2||d!=d2||i64max!=i64max2||u64max!=u64max2 ) {
+            YAS_TEST_REPORT(log, archive_type, test_name);
+            return false;
+        }
+    }
+    b2=0;c2=0;uc2=0;s2=0;us2=0;i2=0;l2=0;i642=0;u642=0;i64max2=0;u64max2=0;f2=0;d2=0;
+    {
+        const char *fname = "file.txt";
+        std::remove(fname);
+
+        yas::file_ostream os(fname);
+        yas::save<yas::file | yas::text>(os, o0);
+        os.flush();
+
+        yas::file_istream is(fname);
+        yas::load<yas::file|yas::text>(
+             is
+            ,YAS_OBJECT_NVP(
+                "obj"
+                ,("b", b2)
+                ,("c", c2)
+                ,("uc", uc2)
+                ,("s", s2)
+                ,("us", us2)
+                ,("i", i2)
+                ,("l", l2)
+                ,("i64", i642)
+                ,("u64", u642)
+                ,("f", f2)
+                ,("d", d2)
+                ,("i64max", i64max2)
+                ,("u64max", u64max2)
+            )
+        );
+        if ( b!=b2||c!=c2||uc!=uc2||s!=s2||us!=us2||i!=i2||l!=l2||i64!=i642||u64!=u642||f!=f2||d!=d2||i64max!=i64max2||u64max!=u64max2 ) {
+            YAS_TEST_REPORT(log, archive_type, test_name);
+            return false;
+        }
+    }
+    b2=0;c2=0;uc2=0;s2=0;us2=0;i2=0;l2=0;i642=0;u642=0;i64max2=0;u64max2=0;f2=0;d2=0;
+    {
+        const char *fname = "file.txt";
+        std::remove(fname);
+
+        std::ofstream ostream(fname, std::ios::binary);
+        yas::std_ostream_adapter os(ostream);
+        yas::save<yas::file|yas::text>(os, o0);
+        ostream.close();
+
+        std::ifstream istream(fname, std::ios::binary);
+        yas::std_istream_adapter is(istream);
+        yas::load<yas::file|yas::text>(
+                is
+                ,YAS_OBJECT_NVP(
+                        "obj"
+                ,("b", b2)
+                ,("c", c2)
+                ,("uc", uc2)
+                ,("s", s2)
+                ,("us", us2)
+                ,("i", i2)
+                ,("l", l2)
+                ,("i64", i642)
+                ,("u64", u642)
+                ,("f", f2)
+                ,("d", d2)
+                ,("i64max", i64max2)
+                ,("u64max", u64max2)
+                )
         );
         if ( b!=b2||c!=c2||uc!=uc2||s!=s2||us!=us2||i!=i2||l!=l2||i64!=i642||u64!=u642||f!=f2||d!=d2||i64max!=i64max2||u64max!=u64max2 ) {
             YAS_TEST_REPORT(log, archive_type, test_name);

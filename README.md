@@ -58,6 +58,8 @@ The IO type can be one of `yas::mem` or `yas::file`.
 The IO format can be one of `yas::binary` or `yas::text` or `yas::json`.
 If IO type is `yas::file` then the first arg of `yas::save()` and `yas::load()` functions is `const char *fname`.
 
+More examples you can see in [this](https://github.com/niXman/yas/blob/master/tests/base/include/serialize.hpp) file.
+
 ## TODO:
 * YASOBJ (the new archive format)
 * limits
