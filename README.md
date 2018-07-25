@@ -24,7 +24,7 @@ Yet Another Serialization
  - MSVC : 2017(in c++14 mode), ... - 32/64 bit
 
 ## Samples
-The easiest way to save and load some object is to use the `yas::save()` and `yas::load()` functions like this:
+The easiest way to save and load some object or vars is to use the `yas::save()` and `yas::load()` functions like this:
 ```cpp
 #include <yas/serialize.hpp>
 #include <yas/std_types.hpp>
@@ -54,6 +54,8 @@ int main() {
     // a == aa && b == bb && c == cc;
 }
 ```
+(the YAS_OBJECT()/YAS_OBJECT_NVP()/YAS_OBJECT_STRUCT()/YAS_OBJECT_STRUCT_NVP() macro are declared [here](https://github.com/niXman/yas/blob/master/include/yas/object.hpp), example use is [here](https://github.com/niXman/yas/blob/master/tests/base/include/yas_object.hpp))
+
 The IO type can be one of `yas::mem` or `yas::file`.
 The IO format can be one of `yas::binary` or `yas::text` or `yas::json`.
 
