@@ -66,10 +66,10 @@ bool serialize_test(std::ostream &log, const char *archive_type, const char *tes
         yas::load<yas::mem|yas::json>(
              buf
             ,YAS_OBJECT_NVP(
-                 "obj"
-                 ,("i", i2)
-                 ,("d", d2)
-                 ,("s", s2)
+                "obj"
+                ,("i", i2)
+                ,("d", d2)
+                ,("s", s2)
             )
         );
         if ( i != i2 || d != d2 || s != s2 ) {
@@ -151,13 +151,13 @@ bool serialize_test(std::ostream &log, const char *archive_type, const char *tes
         std::ifstream istream(fname, std::ios::binary);
         yas::std_istream_adapter is(istream);
         yas::load<yas::file|yas::json>(
-                 is
-                ,YAS_OBJECT_NVP(
-                    "obj"
-                    ,("i", i2)
-                    ,("d", d2)
-                    ,("s", s2)
-                )
+             is
+            ,YAS_OBJECT_NVP(
+                "obj"
+                ,("i", i2)
+                ,("d", d2)
+                ,("s", s2)
+            )
         );
         if ( i != i2 || d != d2 || s != s2 ) {
             YAS_TEST_REPORT(log, archive_type, test_name);
