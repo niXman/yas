@@ -56,12 +56,14 @@ bool serialize_test(std::ostream &log, const char *archive_type, const char *tes
     );
 
     {
+        // mem
+
         i2 = 0;
         d2 = 0;
         s2.clear();
 
-        const auto buf = yas::save<yas::mem|yas::binary>(o0);
-        yas::load<yas::mem|yas::binary>(
+        const auto buf = yas::save<yas::mem|yas::json>(o0);
+        yas::load<yas::mem|yas::json>(
              buf
             ,YAS_OBJECT_NVP(
                  "obj"
@@ -77,27 +79,8 @@ bool serialize_test(std::ostream &log, const char *archive_type, const char *tes
     }
 
     {
-        i2 = 0;
-        d2 = 0;
-        s2.clear();
+        // file name
 
-        const auto buf = yas::save<yas::mem|yas::text>(o0);
-        yas::load<yas::mem|yas::text>(
-             buf
-            ,YAS_OBJECT_NVP(
-                "obj"
-                ,("i", i2)
-                ,("d", d2)
-                ,("s", s2)
-            )
-        );
-        if ( i != i2 || d != d2 || s != s2 ) {
-            YAS_TEST_REPORT(log, archive_type, test_name);
-            return false;
-        }
-    }
-
-    {
         i2 = 0;
         d2 = 0;
         s2.clear();
@@ -105,8 +88,8 @@ bool serialize_test(std::ostream &log, const char *archive_type, const char *tes
         const char *fname = "file.bin";
         std::remove(fname);
 
-        yas::save<yas::file|yas::binary>(fname, o0);
-        yas::load<yas::file|yas::binary>(
+        yas::save<yas::file|yas::json>(fname, o0);
+        yas::load<yas::file|yas::json>(
              fname
             ,YAS_OBJECT_NVP(
                 "obj"
@@ -122,30 +105,8 @@ bool serialize_test(std::ostream &log, const char *archive_type, const char *tes
     }
 
     {
-        i2 = 0;
-        d2 = 0;
-        s2.clear();
+        // yas::file_ostream/yas::file_istream
 
-        const char *fname = "file.txt";
-        std::remove(fname);
-
-        yas::save<yas::file|yas::text>(fname, o0);
-        yas::load<yas::file|yas::text>(
-             fname
-            ,YAS_OBJECT_NVP(
-                "obj"
-                ,("i", i2)
-                ,("d", d2)
-                ,("s", s2)
-            )
-        );
-        if ( i != i2 || d != d2 || s != s2 ) {
-            YAS_TEST_REPORT(log, archive_type, test_name);
-            return false;
-        }
-    }
-
-    {
         i2 = 0;
         d2 = 0;
         s2.clear();
@@ -154,11 +115,11 @@ bool serialize_test(std::ostream &log, const char *archive_type, const char *tes
         std::remove(fname);
 
         yas::file_ostream os(fname);
-        yas::save<yas::file | yas::text>(os, o0);
+        yas::save<yas::file|yas::json>(os, o0);
         os.flush();
 
         yas::file_istream is(fname);
-        yas::load<yas::file|yas::text>(
+        yas::load<yas::file|yas::json>(
              is
             ,YAS_OBJECT_NVP(
                 "obj"
@@ -174,6 +135,7 @@ bool serialize_test(std::ostream &log, const char *archive_type, const char *tes
     }
 
     {
+        // std::ofstream/std::ifstream
         i2 = 0;
         d2 = 0;
         s2.clear();
@@ -183,12 +145,12 @@ bool serialize_test(std::ostream &log, const char *archive_type, const char *tes
 
         std::ofstream ostream(fname, std::ios::binary);
         yas::std_ostream_adapter os(ostream);
-        yas::save<yas::file|yas::text>(os, o0);
+        yas::save<yas::file|yas::json>(os, o0);
         ostream.close();
 
         std::ifstream istream(fname, std::ios::binary);
         yas::std_istream_adapter is(istream);
-        yas::load<yas::file|yas::text>(
+        yas::load<yas::file|yas::json>(
                  is
                 ,YAS_OBJECT_NVP(
                     "obj"
