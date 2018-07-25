@@ -62,7 +62,7 @@ The `YAS_OBJECT()`/`YAS_OBJECT_NVP()`/`YAS_OBJECT_STRUCT()`/`YAS_OBJECT_STRUCT_N
 More examples you can see [here](https://github.com/niXman/yas/blob/master/tests/base/include/serialize.hpp).
 
 ## TODO:
-* YASOBJ (the new archive format)
+* YASOBJ (the new structured text archive format)
 * limits
 * message versioning
 
