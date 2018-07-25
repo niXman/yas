@@ -44,8 +44,6 @@
 #include <yas/detail/tools/cast.hpp>
 #include <yas/detail/tools/json_tools.hpp>
 
-#include <stack>
-#include <cassert>
 #include <limits>
 
 namespace yas {

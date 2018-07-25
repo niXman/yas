@@ -38,8 +38,7 @@
 
 #if __cplusplus >= 201703L
 
-#include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/serializer.hpp>
+#include <yas/types/concepts/optional.hpp>
 
 #include <optional>
 
@@ -57,27 +56,12 @@ struct serializer<
 > {
 	template<typename Archive>
 	static Archive& save(Archive& ar, const std::optional<T> &t) {
-		const bool initialized = static_cast<bool>(t);
-		ar.write(initialized);
-		if ( initialized )
-			ar & t.value();
-
-		return ar;
+		return concepts::optional::save<F>(ar, t);
 	}
 
 	template<typename Archive>
 	static Archive& load(Archive& ar, std::optional<T> &t) {
-		bool initialized = false;
-		ar.read(initialized);
-		if ( initialized ) {
-			T val{};
-			ar & val;
-			t = std::move(val);
-		} else {
-			t = std::optional<T>();
-		}
-
-		return ar;
+	    return concepts::optional::load<F>(ar, t);
 	}
 };
 

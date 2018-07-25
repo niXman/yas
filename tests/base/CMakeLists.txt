@@ -3,7 +3,7 @@ project(yas-base-test)
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
-    include_directories("/home/nixman/boost-1.66.0-gcc-5.4.1/include")
+#    include_directories("/home/nixman/boost-1.66.0-gcc-5.4.1/include")
     add_definitions(
         -DBOOST_ERROR_CODE_HEADER_ONLY
         -DBOOST_CHRONO_HEADER_ONLY
@@ -11,7 +11,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     )
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
-    include_directories("/home/nixman/boost-1.66.0-gcc-5.4.1/include")
+#    include_directories("/home/nixman/boost-1.66.0-gcc-5.4.1/include")
     add_definitions(
         -DBOOST_ERROR_CODE_HEADER_ONLY
         -DBOOST_CHRONO_HEADER_ONLY
