@@ -5,7 +5,7 @@ Yet Another Serialization
 
 -![Time](https://github.com/thekvs/cpp-serializers/raw/master/images/time.png)
 
-* YAS is created as a replacement of boost.serialization because of its insufficient speed of serialization
+* YAS is created as a replacement of [boost.serialization](https://www.boost.org/doc/libs/1_67_0/libs/serialization/doc/index.html) because of its insufficient speed of serialization
 * YAS is header only library
 * YAS does not depend on third-party libraries or boost
 * YAS require C++11 support
@@ -54,7 +54,7 @@ int main() {
     // a == aa && b == bb && c == cc;
 }
 ```
-(the YAS_OBJECT()/YAS_OBJECT_NVP()/YAS_OBJECT_STRUCT()/YAS_OBJECT_STRUCT_NVP() macro are declared [here](https://github.com/niXman/yas/blob/master/include/yas/object.hpp), example use is [here](https://github.com/niXman/yas/blob/master/tests/base/include/yas_object.hpp))
+(the `YAS_OBJECT()`/`YAS_OBJECT_NVP()`/`YAS_OBJECT_STRUCT()`/`YAS_OBJECT_STRUCT_NVP()` macro are declared [here](https://github.com/niXman/yas/blob/master/include/yas/object.hpp), example use is [here](https://github.com/niXman/yas/blob/master/tests/base/include/yas_object.hpp))
 
 The IO type can be one of `yas::mem` or `yas::file`.
 The IO format can be one of `yas::binary` or `yas::text` or `yas::json`.
