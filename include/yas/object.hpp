@@ -370,14 +370,25 @@ make_object(std::nullptr_t, Pairs &&... pairs) {
 
 /**************************************************************************/
 
-#define __YAS_OBJECT_GEN_PAIRS(unused0, unised1, idx, elem) \
+#define __YAS_OBJECT_GEN_PAIRS_IMPL(forstruct, sname, idx, elem) \
     YAS_PP_COMMA_IF(idx) \
-        ::yas::make_val(YAS_PP_STRINGIZE(elem), elem)
+        ::yas::make_val( \
+             YAS_PP_STRINGIZE(elem) \
+            ,YAS_PP_IF(forstruct, sname., /*empty*/) elem \
+        )
 
-#define __YAS_OBJECT_IMPL(seq) \
+#define __YAS_OBJECT_GEN_PAIRS(unused0, data, idx, elem) \
+    __YAS_OBJECT_GEN_PAIRS_IMPL( \
+         YAS_PP_TUPLE_ELEM(0, data) \
+        ,YAS_PP_TUPLE_ELEM(1, data) \
+        ,idx \
+        ,elem \
+    )
+
+#define __YAS_OBJECT_IMPL(forstruct, sname, seq) \
     YAS_PP_SEQ_FOR_EACH_I( \
          __YAS_OBJECT_GEN_PAIRS \
-        ,~ \
+        ,(forstruct, sname) \
         ,seq \
     )
 
@@ -403,37 +414,61 @@ make_object(std::nullptr_t, Pairs &&... pairs) {
         > \
     >::type
 
-#define __YAS_OBJECT_EMPTY(name, ...) \
-	::yas::make_object<std::tuple<>>(name)
+#define __YAS_OBJECT_EMPTY(forstruct, oname, sname, ...) \
+	::yas::make_object<std::tuple<>>(oname)
 
-#define __YAS_OBJECT_NONEMPTY(name, seq) \
+#define __YAS_OBJECT_NONEMPTY(forstruct, oname, sname, seq) \
 	::yas::make_object< \
         __YAS_OBJECT_NONEMPTY_GEN_KVI(seq) \
     >( \
-		 name \
-		,__YAS_OBJECT_IMPL(seq) \
+		 oname \
+		,__YAS_OBJECT_IMPL(forstruct, sname, seq) \
 	)
 
-#define YAS_OBJECT(name, ...) \
-	YAS_PP_IF( \
+#define __YAS_OBJECT_AUX(forstruct, oname, sname, ...) \
+    YAS_PP_IF( \
 		 __YAS_TUPLE_IS_EMPTY(__VA_ARGS__) \
 		,__YAS_OBJECT_EMPTY \
 		,__YAS_OBJECT_NONEMPTY \
-	)(name, YAS_PP_TUPLE_TO_SEQ((__VA_ARGS__)))
+	)(forstruct, oname, sname, YAS_PP_TUPLE_TO_SEQ((__VA_ARGS__)))
+
+#define YAS_OBJECT(oname, ...) \
+    __YAS_OBJECT_AUX( \
+         0 \
+        ,oname \
+        ,~ \
+        ,__VA_ARGS__ \
+    )
+
+#define YAS_OBJECT_STRUCT(oname, sname, ...) \
+    __YAS_OBJECT_AUX( \
+         1 \
+        ,oname \
+        ,sname \
+        ,__VA_ARGS__ \
+    )
 
 /***************************************************************************/
 
-#define __YAS_OBJECT_NVP_GEN_PAIRS(unused0, unised1, idx, elem) \
+#define __YAS_OBJECT_NVP_GEN_PAIRS_IMPL(forstruct, sname, idx, elem) \
     YAS_PP_COMMA_IF(idx) \
         ::yas::make_val( \
              YAS_PP_TUPLE_ELEM(0, elem) \
-            ,YAS_PP_TUPLE_ELEM(1, elem) \
+            ,YAS_PP_IF(forstruct, sname., /*empty*/) YAS_PP_TUPLE_ELEM(1, elem) \
         )
 
-#define __YAS_OBJECT_NVP_IMPL(seq) \
+#define __YAS_OBJECT_NVP_GEN_PAIRS(unused0, data, idx, elem) \
+    __YAS_OBJECT_NVP_GEN_PAIRS_IMPL( \
+         YAS_PP_TUPLE_ELEM(0, data) \
+        ,YAS_PP_TUPLE_ELEM(1, data) \
+        ,idx \
+        ,elem \
+    )
+
+#define __YAS_OBJECT_NVP_IMPL(forstruct, sname, seq) \
 	YAS_PP_SEQ_FOR_EACH_I( \
 		 __YAS_OBJECT_NVP_GEN_PAIRS \
-        ,~ \
+        ,(forstruct, sname) \
 		,seq \
 	)
 
@@ -459,23 +494,40 @@ make_object(std::nullptr_t, Pairs &&... pairs) {
         > \
     >::type
 
-#define __YAS_OBJECT_NVP_EMPTY(name, ...) \
-	::yas::make_object<std::tuple<>>(name)
+#define __YAS_OBJECT_NVP_EMPTY(forstruct, oname, sname, ...) \
+	::yas::make_object<std::tuple<>>(oname)
 
-#define __YAS_OBJECT_NVP_NONEMPTY(name, seq) \
+#define __YAS_OBJECT_NVP_NONEMPTY(forstruct, oname, sname, seq) \
 	::yas::make_object< \
         __YAS_OBJECT_NVP_NONEMPTY_GEN_KVI(seq) \
     >( \
-		 name \
-		,__YAS_OBJECT_NVP_IMPL(seq) \
+		 oname \
+		,__YAS_OBJECT_NVP_IMPL(forstruct, sname, seq) \
 	)
 
-#define YAS_OBJECT_NVP(name, ...) \
+#define __YAS_OBJECT_NVP_AUX(forstruct, oname, sname, ...) \
 	YAS_PP_IF( \
 		 __YAS_TUPLE_IS_EMPTY(__VA_ARGS__) \
 		,__YAS_OBJECT_NVP_EMPTY \
 		,__YAS_OBJECT_NVP_NONEMPTY \
-	)(name, YAS_PP_TUPLE_TO_SEQ((__VA_ARGS__)))
+	)(forstruct, oname, sname, YAS_PP_TUPLE_TO_SEQ((__VA_ARGS__)))
+
+
+#define YAS_OBJECT_NVP(oname, ...) \
+    __YAS_OBJECT_NVP_AUX( \
+         0 \
+        ,oname \
+        ,~ \
+        ,__VA_ARGS__ \
+    )
+
+#define YAS_OBJECT_STRUCT_NVP(oname, sname, ...) \
+    __YAS_OBJECT_NVP_AUX( \
+         1 \
+        ,oname \
+        ,sname \
+        ,__VA_ARGS__ \
+    )
 
 /***************************************************************************/
 
