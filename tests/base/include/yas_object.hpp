@@ -70,79 +70,79 @@ struct type2 {
 
 template<typename archive_traits>
 bool yas_object_test(std::ostream &log, const char *archive_type, const char *test_name) {
-	{
-		int i0 = 3, i1 = 0;
+    {
+        int i0 = 3, i1 = 0;
 
-		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type);
+        typename archive_traits::oarchive oa;
+        archive_traits::ocreate(oa, archive_type);
 
         auto o0 = YAS_OBJECT_NVP("object0", ("i0", i0));
-		oa & o0;
+        oa & o0;
 
-		typename archive_traits::iarchive ia;
-		archive_traits::icreate(ia, oa, archive_type);
+        typename archive_traits::iarchive ia;
+        archive_traits::icreate(ia, oa, archive_type);
 
         auto o1 = YAS_OBJECT_NVP("object0", ("i0", i1));
-		ia & o1;
+        ia & o1;
 
-		if ( i0 != i1 ) {
-			YAS_TEST_REPORT(log, archive_type, test_name);
-			return false;
-		}
-	}
-	{
-		const int i0 = 4;
-		int i1 = 0;
+        if ( i0 != i1 ) {
+            YAS_TEST_REPORT(log, archive_type, test_name);
+            return false;
+        }
+    }
+    {
+        const int i0 = 4;
+        int i1 = 0;
 
-		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type);
+        typename archive_traits::oarchive oa;
+        archive_traits::ocreate(oa, archive_type);
 
         auto o0 = YAS_OBJECT("object1", i0);
-		oa & o0;
+        oa & o0;
 
-		typename archive_traits::iarchive ia;
-		archive_traits::icreate(ia, oa, archive_type);
+        typename archive_traits::iarchive ia;
+        archive_traits::icreate(ia, oa, archive_type);
 
         auto o1 = YAS_OBJECT_NVP("object1", ("i0", i1));
-		ia & o1;
+        ia & o1;
 
-		if ( i0 != i1 ) {
-			YAS_TEST_REPORT(log, archive_type, test_name);
-			return false;
-		}
-	}
-	{
-		int i0 = 3, i1 = 0;
+        if ( i0 != i1 ) {
+            YAS_TEST_REPORT(log, archive_type, test_name);
+            return false;
+        }
+    }
+    {
+        int i0 = 3, i1 = 0;
 
-		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type);
-		oa & YAS_OBJECT("object2", i0);
+        typename archive_traits::oarchive oa;
+        archive_traits::ocreate(oa, archive_type);
+        oa & YAS_OBJECT("object2", i0);
 
-		typename archive_traits::iarchive ia;
-		archive_traits::icreate(ia, oa, archive_type);
-		ia & YAS_OBJECT_NVP("object2", ("i0", i1));
+        typename archive_traits::iarchive ia;
+        archive_traits::icreate(ia, oa, archive_type);
+        ia & YAS_OBJECT_NVP("object2", ("i0", i1));
 
-		if ( i0 != i1 ) {
-			YAS_TEST_REPORT(log, archive_type, test_name);
-			return false;
-		}
-	}
-	{
+        if ( i0 != i1 ) {
+            YAS_TEST_REPORT(log, archive_type, test_name);
+            return false;
+        }
+    }
+    {
         _yas_object_test::type t0(3), t1(0);
 
-		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type);
-		oa & t0;
+        typename archive_traits::oarchive oa;
+        archive_traits::ocreate(oa, archive_type);
+        oa & t0;
 
-		typename archive_traits::iarchive ia;
-		archive_traits::icreate(ia, oa, archive_type);
-		ia & t1;
+        typename archive_traits::iarchive ia;
+        archive_traits::icreate(ia, oa, archive_type);
+        ia & t1;
 
-		if ( t0.v != t1.v ) {
-			YAS_TEST_REPORT(log, archive_type, test_name);
-			return false;
-		}
-	}
+        if ( t0.v != t1.v ) {
+            YAS_TEST_REPORT(log, archive_type, test_name);
+            return false;
+        }
+    }
     {
         _yas_object_test::type2 t0(3, 4), t1(0, 0);
 
@@ -179,35 +179,35 @@ bool yas_object_test(std::ostream &log, const char *archive_type, const char *te
             return false;
         }
     }
-	{
-		typename archive_traits::oarchive oa;
-		archive_traits::ocreate(oa, archive_type);
+    {
+        typename archive_traits::oarchive oa;
+        archive_traits::ocreate(oa, archive_type);
         auto o0 = YAS_OBJECT(nullptr);
-		oa & o0;
+        oa & o0;
 
         typename archive_traits::iarchive ia;
         archive_traits::icreate(ia, oa, archive_type);
         auto o1 = YAS_OBJECT(nullptr);
         ia & o1;
-	}
+    }
     {
         typename archive_traits::oarchive oa;
         archive_traits::ocreate(oa, archive_type);
         auto o0 = YAS_OBJECT_NVP(nullptr, ("a", 0), ("b", 1));
         oa & o0;
 
-        int a=0, b=0;
+        int a = 0, b = 0;
 
-        bool ok = false;
+        bool ex = false;
         try {
             typename archive_traits::iarchive ia;
             archive_traits::icreate(ia, oa, archive_type);
             auto o1 = YAS_OBJECT(nullptr, a, b);
             ia & o1;
         } catch (const yas::serialization_exception &) {
-            ok = true;
+            ex = true;
         }
-        if ( ok ) {
+        if ( ex ) {
             YAS_TEST_REPORT(log, archive_type, test_name);
             return false;
         }
@@ -218,24 +218,24 @@ bool yas_object_test(std::ostream &log, const char *archive_type, const char *te
     }
     {
         if ( archive_traits::iarchive_type::flags() & yas::json ) {
-            if ( !(archive_traits::iarchive_type::flags() & yas::compacted) ) {
+            if ( !(archive_traits::iarchive_type::flags() & yas::compacted)) {
                 typename archive_traits::oarchive oa;
                 archive_traits::ocreate(oa, archive_type);
                 auto o0 = YAS_OBJECT_NVP(nullptr, ("b", 1), ("c", 2), ("a", 0));
                 oa & o0;
 
-                int a=0, b=0;
+                int a = 0, b = 0;
 
-                bool ok = false;
+                bool ex = false;
                 try {
                     typename archive_traits::iarchive ia;
                     archive_traits::icreate(ia, oa, archive_type);
                     auto o1 = YAS_OBJECT(nullptr, b, a);
                     ia & o1;
                 } catch (const yas::serialization_exception &) {
-                    ok = true;
+                    ex = true;
                 }
-                if ( ok == true ) {
+                if ( ex ) {
                     YAS_TEST_REPORT(log, archive_type, test_name);
                     return false;
                 }
@@ -248,24 +248,24 @@ bool yas_object_test(std::ostream &log, const char *archive_type, const char *te
     }
     {
         if ( archive_traits::iarchive_type::flags() & yas::json ) {
-            if ( !(archive_traits::iarchive_type::flags() & yas::compacted) ) {
+            if ( !(archive_traits::iarchive_type::flags() & yas::compacted)) {
                 typename archive_traits::oarchive oa;
                 archive_traits::ocreate(oa, archive_type);
                 auto o0 = YAS_OBJECT_NVP(nullptr, ("b", 1), ("c", 2), ("a", 0));
                 oa & o0;
 
-                int c=0;
+                int c = 0;
 
-                bool ok = false;
+                bool ex = false;
                 try {
                     typename archive_traits::iarchive ia;
                     archive_traits::icreate(ia, oa, archive_type);
                     auto o1 = YAS_OBJECT(nullptr, c);
                     ia & o1;
                 } catch (const yas::serialization_exception &) {
-                    ok = true;
+                    ex = true;
                 }
-                if ( ok == true ) {
+                if ( ex ) {
                     YAS_TEST_REPORT(log, archive_type, test_name);
                     return false;
                 }
@@ -277,7 +277,7 @@ bool yas_object_test(std::ostream &log, const char *archive_type, const char *te
         }
     }
 
-	return true;
+    return true;
 }
 
 /***************************************************************************/
