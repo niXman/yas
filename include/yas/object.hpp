@@ -231,35 +231,30 @@ struct ctmap<std::tuple<>> {
 
 /***************************************************************************/
 
-template<typename K, typename V>
+template<typename T>
 struct value {
-    template<typename KVT>
-    struct real_kvt {
+    template<typename VT>
+    struct real_value_type {
         using type = typename std::conditional<
-             std::is_array<typename std::remove_reference<KVT>::type>::value
-            ,typename std::remove_cv<KVT>::type
+             std::is_array<typename std::remove_reference<VT>::type>::value
+            ,typename std::remove_cv<VT>::type
             ,typename std::conditional<
-                 std::is_lvalue_reference<KVT>::value
-                ,KVT
-                ,typename std::decay<KVT>::type
+                 std::is_lvalue_reference<VT>::value
+                ,VT
+                ,typename std::decay<VT>::type
             >::type
         >::type;
     };
-    using key_type   = typename real_kvt<K>::type;
-    using value_type = typename real_kvt<V>::type;
+    using key_type   = const char*;
+    using value_type = typename real_value_type<T>::type;
 
     value(const value &) = delete;
     value& operator=(const value &) = delete;
 
-    constexpr value(const char *k, std::size_t klen, V &&v) noexcept
+    constexpr value(const char *k, std::size_t klen, T &&v) noexcept
         :key(k)
         ,klen(klen)
-        ,val(std::forward<V>(v))
-    {}
-    constexpr value(K &&k, V &&v) noexcept
-        :key(std::forward<K>(k))
-        ,klen(0)
-        ,val(std::forward<V>(v))
+        ,val(std::forward<T>(v))
     {}
     constexpr value(value &&r) noexcept
         :key(r.key)
@@ -272,31 +267,19 @@ struct value {
     value_type val;
 };
 
-template<typename K, typename V>
-constexpr typename std::enable_if<
-    !std::is_same<
-         typename std::remove_reference<K>::type
-        ,const char*
-    >::value
-    ,value<K, V>
->::type
-make_val(K &&key, V &&val) {
-    return {std::forward<K>(key), std::forward<V>(val)};
+template<std::size_t N, typename T>
+constexpr value<T>
+make_val(const char (&key)[N], T &&val) {
+    return {key, N-1, std::forward<T>(val)};
 }
 
-template<std::size_t N, typename V>
-constexpr value<const char*, V>
-make_val(const char (&key)[N], V &&val) {
-    return {key, N-1, std::forward<V>(val)};
-}
-
-template<typename ConstCharPtr, typename V>
+template<typename ConstCharPtr, typename T>
 constexpr typename std::enable_if<
      std::is_same<ConstCharPtr, const char*>::value
-    ,value<const char*, V>
+    ,value<T>
 >::type
-make_val(ConstCharPtr key, V &&val) {
-    return {key, std::strlen(key), std::forward<V>(val)};
+make_val(ConstCharPtr key, T &&val) {
+    return {key, std::strlen(key), std::forward<T>(val)};
 }
 
 /***************************************************************************/
