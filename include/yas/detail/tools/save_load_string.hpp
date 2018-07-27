@@ -48,18 +48,13 @@ namespace detail {
 
 /***************************************************************************/
 
-// from: https://github.com/nlohmann/json/blob/develop/src/json.hpp
+// based on the code from: https://github.com/nlohmann/json/blob/develop/src/json.hpp
 
-template<
-     template<typename, typename, typename> class StringT
-    ,typename CharT
-    ,typename TraitsT
-    ,typename AllocatorT
->
-std::size_t string_extra_space(const StringT<CharT, TraitsT, AllocatorT> &s) {
+template<typename CharT>
+std::size_t string_extra_space(const CharT *s) {
     std::size_t res = 0;
-    for ( const auto &c: s ) {
-        switch ( c ) {
+    for ( ; *s; ++s ) {
+        switch ( *s ) {
             case '"':
             case '\\':
             case '\b':
@@ -107,59 +102,54 @@ std::size_t string_extra_space(const StringT<CharT, TraitsT, AllocatorT> &s) {
     return res;
 }
 
-template<
-     template<typename, typename, typename> class StringT
-    ,typename CharT
-    ,typename TraitsT
-    ,typename AllocatorT
->
-void string_escape(StringT<CharT, TraitsT, AllocatorT> &d, const StringT<CharT, TraitsT, AllocatorT> &s) {
+template<typename CharT>
+void string_escape(CharT *d, const CharT *s) {
     std::size_t pos = 0;
 
-    for ( const auto& c: s ) {
-        switch ( c ) {
+    for ( ; *s; ++s ) {
+        switch ( *s ) {
             // quotation mark (0x22)
             case '"': {
                 d[pos + 1] = '"';
                 pos += 2;
                 break;
             }
-                // reverse solidus (0x5c)
+            // reverse solidus (0x5c)
             case '\\': {
                 // nothing to change
                 pos += 2;
                 break;
             }
 
-                // backspace (0x08)
+            // backspace (0x08)
             case '\b': {
                 d[pos + 1] = 'b';
                 pos += 2;
                 break;
             }
 
-                // formfeed (0x0c)
+            // formfeed (0x0c)
             case '\f': {
                 d[pos + 1] = 'f';
                 pos += 2;
                 break;
             }
 
-                // newline (0x0a)
+            // newline (0x0a)
             case '\n': {
                 d[pos + 1] = 'n';
                 pos += 2;
                 break;
             }
 
-                // carriage return (0x0d)
+            // carriage return (0x0d)
             case '\r': {
                 d[pos + 1] = 'r';
                 pos += 2;
                 break;
             }
 
-                // horizontal tab (0x09)
+            // horizontal tab (0x09)
             case '\t': {
                 d[pos + 1] = 't';
                 pos += 2;
@@ -201,7 +191,7 @@ void string_escape(StringT<CharT, TraitsT, AllocatorT> &d, const StringT<CharT, 
                 };
 
                 // print character c as \uxxxx
-                for (const char m : {'u', '0', '0', hexify[c >> 4], hexify[c & 0x0f]}) {
+                for (const char m : {'u', '0', '0', hexify[(*s) >> 4], hexify[(*s) & 0x0f]}) {
                     d[++pos] = m;
                 }
 
@@ -211,7 +201,7 @@ void string_escape(StringT<CharT, TraitsT, AllocatorT> &d, const StringT<CharT, 
 
             default: {
                 // all other characters are added as-is
-                d[pos++] = c;
+                d[pos++] = *s;
                 break;
             }
         }
@@ -778,22 +768,19 @@ static void string_read_string(StringT<CharT, TraitsT, AllocatorT> &d, Archive &
 
 template<
      typename Archive
-    ,template<typename, typename, typename> class StringT
     ,typename CharT
-    ,typename TraitsT
-    ,typename AllocatorT
 >
-Archive& save_string(Archive &ar, const StringT<CharT, TraitsT, AllocatorT> &string) {
+Archive& save_string(Archive &ar, const CharT *str, std::size_t len) {
     //TODO: зачем создавать временную строку для экранирования, если можно экранировать записывая в архив!
-    const std::size_t n = string_extra_space(string);
+    const std::size_t n = string_extra_space(str);
     // must be escaped
     if ( n ) {
-        StringT<CharT, TraitsT, AllocatorT> escaped(string.length() + n, '\\');
-        string_escape(escaped, string);
+        std::vector<CharT> escaped(len + n, '\\');
+        string_escape(escaped.data(), str);
 
-        ar.write(escaped.data(), escaped.length());
+        ar.write(escaped.data(), escaped.size());
     } else {
-        ar.write(string.data(), string.length());
+        ar.write(str, len);
     }
 
     return ar;

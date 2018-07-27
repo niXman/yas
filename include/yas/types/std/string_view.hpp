@@ -33,32 +33,57 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef __yas__std_types_hpp
-#define __yas__std_types_hpp
+#ifndef __yas__types__std__std_string_view_serializers_hpp
+#define __yas__types__std__std_string_view_serializers_hpp
 
-#include <yas/detail/config/config.hpp>
+#include <yas/detail/type_traits/serializer.hpp>
+#include <yas/detail/tools/cast.hpp>
+#include <yas/detail/tools/save_load_string.hpp>
+#include <yas/detail/tools/json_tools.hpp>
 
-#include <yas/types/std/pair.hpp>
-#include <yas/types/std/bitset.hpp>
-#include <yas/types/std/chrono.hpp>
-#include <yas/types/std/optional.hpp>
-#include <yas/types/std/complex.hpp>
-#include <yas/types/std/string.hpp>
-#include <yas/types/std/string_view.hpp>
-#include <yas/types/std/wstring.hpp>
-#include <yas/types/std/vector.hpp>
-#include <yas/types/std/list.hpp>
-#include <yas/types/std/forward_list.hpp>
-#include <yas/types/std/map.hpp>
-#include <yas/types/std/set.hpp>
-#include <yas/types/std/deque.hpp>
-#include <yas/types/std/multimap.hpp>
-#include <yas/types/std/multiset.hpp>
-#include <yas/types/std/array.hpp>
-#include <yas/types/std/tuple.hpp>
-#include <yas/types/std/unordered_set.hpp>
-#include <yas/types/std/unordered_map.hpp>
-#include <yas/types/std/unordered_multiset.hpp>
-#include <yas/types/std/unordered_multimap.hpp>
+#include <string_view>
+#include <cassert>
 
-#endif // __yas__std_types_hpp
+namespace yas {
+namespace detail {
+
+/***************************************************************************/
+
+template<std::size_t F>
+struct serializer<
+     type_prop::not_a_fundamental
+    ,ser_method::use_internal_serializer
+    ,F
+    ,std::string_view
+> {
+    template<typename Archive>
+    static Archive& save(Archive& ar, const std::string_view &str) {
+        if ( F & yas::json ) {
+            if ( str.empty() ) {
+                ar.write("null", 4);
+            } else {
+                ar.write("\"", 1);
+                save_string(ar, str.data(), str.length());
+                ar.write("\"", 1);
+            }
+        } else {
+            ar.write_seq_size(str.length());
+            ar.write(str.data(), str.length());
+        }
+
+        return ar;
+    }
+
+    template<typename Archive>
+    static Archive& load(Archive& ar, std::string_view &) {
+        assert(0 == "can't deserialize into std::string_view");
+        return ar;
+    }
+};
+
+/***************************************************************************/
+
+} // namespace detail
+} // namespace yas
+
+#endif // __yas__types__std__std_string_view_serializers_hpp

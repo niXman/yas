@@ -63,7 +63,7 @@ struct serializer<
                 ar.write("null", 4);
             } else {
                 ar.write("\"", 1);
-                save_string(ar, str);
+                save_string(ar, str.data(), str.size());
                 ar.write("\"", 1);
             }
         } else {

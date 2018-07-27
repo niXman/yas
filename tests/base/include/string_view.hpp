@@ -33,32 +33,37 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef __yas__std_types_hpp
-#define __yas__std_types_hpp
+#ifndef __yas__tests__base__include__string_view_hpp
+#define __yas__tests__base__include__string_view_hpp
 
-#include <yas/detail/config/config.hpp>
+/***************************************************************************/
 
-#include <yas/types/std/pair.hpp>
-#include <yas/types/std/bitset.hpp>
-#include <yas/types/std/chrono.hpp>
-#include <yas/types/std/optional.hpp>
-#include <yas/types/std/complex.hpp>
-#include <yas/types/std/string.hpp>
-#include <yas/types/std/string_view.hpp>
-#include <yas/types/std/wstring.hpp>
-#include <yas/types/std/vector.hpp>
-#include <yas/types/std/list.hpp>
-#include <yas/types/std/forward_list.hpp>
-#include <yas/types/std/map.hpp>
-#include <yas/types/std/set.hpp>
-#include <yas/types/std/deque.hpp>
-#include <yas/types/std/multimap.hpp>
-#include <yas/types/std/multiset.hpp>
-#include <yas/types/std/array.hpp>
-#include <yas/types/std/tuple.hpp>
-#include <yas/types/std/unordered_set.hpp>
-#include <yas/types/std/unordered_map.hpp>
-#include <yas/types/std/unordered_multiset.hpp>
-#include <yas/types/std/unordered_multimap.hpp>
+template<typename archive_traits>
+bool string_view_test(std::ostream &log, const char *archive_type, const char *test_name) {
+#if __cplusplus >= 201703L
+    typename archive_traits::oarchive oa;
+    archive_traits::ocreate(oa, archive_type);
+    std::string_view s("发送日期 string");
+    oa & YAS_OBJECT_NVP("obj", ("s", s));
 
-#endif // __yas__std_types_hpp
+    typename archive_traits::iarchive ia;
+    archive_traits::icreate(ia, oa, archive_type);
+    std::string ss;
+    ia & YAS_OBJECT_NVP("obj", ("s", ss));
+
+    if ( ss != s ) {
+        YAS_TEST_REPORT(log, archive_type, test_name);
+        return false;
+    }
+#else
+    (void)log;
+    (void)archive_type;
+    (void)test_name;
+#endif // __cplusplus >= 201703L
+
+	return true;
+}
+
+/***************************************************************************/
+
+#endif // __yas__tests__base__include__string_view_hpp

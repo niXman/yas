@@ -60,7 +60,7 @@ struct serializer<
 	static Archive& save(Archive& ar, const boost::container::string& string) {
 		if ( F & yas::json ) {
 			ar.write("\"", 1);
-			save_string(ar, string);
+			save_string(ar, string.data(), string.length());
 			ar.write("\"", 1);
 		} else {
 			ar.write_seq_size(string.length());

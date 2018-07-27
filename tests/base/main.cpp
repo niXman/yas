@@ -117,6 +117,7 @@
 #include "include/serialize.hpp"
 #include "include/set.hpp"
 #include "include/string.hpp"
+#include "include/string_view.hpp"
 #include "include/tuple.hpp"
 #include "include/unordered_map.hpp"
 #include "include/unordered_multimap.hpp"
@@ -330,6 +331,7 @@ void tests(std::ostream &log, int &p, int &e) {
     YAS_RUN_TEST(log, chrono, p, e)
     YAS_RUN_TEST(log, complex, p, e);
     YAS_RUN_TEST(log, string, p, e);
+    YAS_RUN_TEST(log, string_view, p, e);
     YAS_RUN_TEST(log, wstring, p, e);
     YAS_RUN_TEST(log, pair, p, e);
     YAS_RUN_TEST(log, tuple, p, e);
