@@ -70,6 +70,52 @@ struct type2 {
     {}
 };
 
+struct type3 {
+    int v0;
+    int v1;
+
+    type3(int v0, int v1)
+        :v0(v0)
+        ,v1(v1)
+    {}
+
+    YAS_DEFINE_STRUCT_SERIALIZE("type3", v0, v1);
+};
+
+struct type4 {
+    int v0;
+    int v1;
+
+    type4(int v0, int v1)
+        :v0(v0)
+        ,v1(v1)
+    {}
+
+    YAS_DEFINE_STRUCT_SERIALIZE_NVP("type3", ("vv0", v0), ("vv1", v1));
+};
+
+struct type5 {
+    int v0;
+    int v1;
+
+    type5(int v0, int v1)
+        :v0(v0)
+        ,v1(v1)
+    {}
+};
+YAS_DEFINE_INTRUSIVE_SERIALIZE("type5", type5, v0, v1);
+
+struct type6 {
+    int v0;
+    int v1;
+
+    type6(int v0, int v1)
+        :v0(v0)
+        ,v1(v1)
+    {}
+};
+YAS_DEFINE_INTRUSIVE_SERIALIZE_NVP("type6", type6, ("vv0", v0), ("vv1", v1));
+
 } // ns _yas_object_test
 
 /***************************************************************************/
@@ -179,6 +225,70 @@ bool yas_object_test(std::ostream &log, const char *archive_type, const char *te
         archive_traits::icreate(ia, oa, archive_type);
         auto o1 = YAS_OBJECT_STRUCT_NVP("type2", t1, ("v0", v0), ("v1", v1));
         ia & o1;
+
+        if ( t0.v0 != t1.v0 || t0.v1 != t1.v1 ) {
+            YAS_TEST_REPORT(log, archive_type, test_name);
+            return false;
+        }
+    }
+    {
+        _yas_object_test::type3 t0(3, 4), t1(0, 0);
+
+        typename archive_traits::oarchive oa;
+        archive_traits::ocreate(oa, archive_type);
+        oa & t0;
+
+        typename archive_traits::iarchive ia;
+        archive_traits::icreate(ia, oa, archive_type);
+        ia & t1;
+
+        if ( t0.v0 != t1.v0 || t0.v1 != t1.v1 ) {
+            YAS_TEST_REPORT(log, archive_type, test_name);
+            return false;
+        }
+    }
+    {
+        _yas_object_test::type4 t0(3, 4), t1(0, 0);
+
+        typename archive_traits::oarchive oa;
+        archive_traits::ocreate(oa, archive_type);
+        oa & t0;
+
+        typename archive_traits::iarchive ia;
+        archive_traits::icreate(ia, oa, archive_type);
+        ia & t1;
+
+        if ( t0.v0 != t1.v0 || t0.v1 != t1.v1 ) {
+            YAS_TEST_REPORT(log, archive_type, test_name);
+            return false;
+        }
+    }
+    {
+        _yas_object_test::type5 t0(3, 4), t1(0, 0);
+
+        typename archive_traits::oarchive oa;
+        archive_traits::ocreate(oa, archive_type);
+        oa & t0;
+
+        typename archive_traits::iarchive ia;
+        archive_traits::icreate(ia, oa, archive_type);
+        ia & t1;
+
+        if ( t0.v0 != t1.v0 || t0.v1 != t1.v1 ) {
+            YAS_TEST_REPORT(log, archive_type, test_name);
+            return false;
+        }
+    }
+    {
+        _yas_object_test::type6 t0(3, 4), t1(0, 0);
+
+        typename archive_traits::oarchive oa;
+        archive_traits::ocreate(oa, archive_type);
+        oa & t0;
+
+        typename archive_traits::iarchive ia;
+        archive_traits::icreate(ia, oa, archive_type);
+        ia & t1;
 
         if ( t0.v0 != t1.v0 || t0.v1 != t1.v1 ) {
             YAS_TEST_REPORT(log, archive_type, test_name);

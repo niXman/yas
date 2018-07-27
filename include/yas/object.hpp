@@ -535,6 +535,64 @@ make_object(std::nullptr_t, Pairs &&... pairs) {
 
 /***************************************************************************/
 
+#define __YAS_DEFINE_STRUCT_SERIALIZE_AUX(nvp, oname, ...) \
+    template<typename Archive> \
+    void serialize(Archive &ar) const { \
+        auto o = YAS_PP_IF(nvp, YAS_OBJECT_NVP, YAS_OBJECT) \
+        ( \
+             oname \
+            ,__VA_ARGS__ \
+        ); \
+        ar & o; \
+    } \
+    template<typename Archive> \
+    void serialize(Archive &ar) { \
+        auto o = YAS_PP_IF(nvp, YAS_OBJECT_NVP, YAS_OBJECT) \
+        ( \
+             oname \
+            ,__VA_ARGS__ \
+        ); \
+        ar & o; \
+    }
+
+#define YAS_DEFINE_STRUCT_SERIALIZE(oname, ...) \
+    __YAS_DEFINE_STRUCT_SERIALIZE_AUX(0, oname, __VA_ARGS__)
+
+#define YAS_DEFINE_STRUCT_SERIALIZE_NVP(oname, ...) \
+    __YAS_DEFINE_STRUCT_SERIALIZE_AUX(1, oname, __VA_ARGS__)
+
+/***************************************************************************/
+
+#define __YAS_DEFINE_INTRUSIVE_SERIALIZE_AUX(nvp, oname, tname, ...) \
+    template<typename Archive> \
+    void serialize(Archive &ar, const tname &t) { \
+        auto o = YAS_PP_IF(nvp, YAS_OBJECT_STRUCT_NVP, YAS_OBJECT_STRUCT) \
+        ( \
+             oname \
+            ,t \
+            ,__VA_ARGS__ \
+        ); \
+        ar & o; \
+    } \
+    template<typename Archive> \
+    void serialize(Archive &ar, tname &t) { \
+        auto o = YAS_PP_IF(nvp, YAS_OBJECT_STRUCT_NVP, YAS_OBJECT_STRUCT) \
+        ( \
+             oname \
+            ,t \
+            ,__VA_ARGS__ \
+        ); \
+        ar & o; \
+    }
+
+#define YAS_DEFINE_INTRUSIVE_SERIALIZE(oname, tname, ...) \
+    __YAS_DEFINE_INTRUSIVE_SERIALIZE_AUX(0, oname, tname, __VA_ARGS__)
+
+#define YAS_DEFINE_INTRUSIVE_SERIALIZE_NVP(oname, tname, ...) \
+    __YAS_DEFINE_INTRUSIVE_SERIALIZE_AUX(1, oname, tname, __VA_ARGS__)
+
+/***************************************************************************/
+
 } // ns yas
 
 #endif // __yas__object_hpp
