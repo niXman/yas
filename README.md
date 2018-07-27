@@ -64,7 +64,7 @@ More examples you can see [here](https://github.com/niXman/yas/blob/master/tests
 ## TODO:
 * YASOBJ (the new structured text archive format)
 * limits
-* message versioning
+* objects versioning
 
 ## Serialization for the following types is supported:
  - [std::array](http://en.cppreference.com/w/cpp/container/array)
