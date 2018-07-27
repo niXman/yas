@@ -36,10 +36,10 @@
 #ifndef __yas__types__std__std_string_view_serializers_hpp
 #define __yas__types__std__std_string_view_serializers_hpp
 
+#if __cplusplus >= 201703L
+
 #include <yas/detail/type_traits/serializer.hpp>
-#include <yas/detail/tools/cast.hpp>
 #include <yas/detail/tools/save_load_string.hpp>
-#include <yas/detail/tools/json_tools.hpp>
 
 #include <string_view>
 #include <cassert>
@@ -85,5 +85,7 @@ struct serializer<
 
 } // namespace detail
 } // namespace yas
+
+#endif // __cplusplus >= 201703L
 
 #endif // __yas__types__std__std_string_view_serializers_hpp

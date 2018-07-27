@@ -39,7 +39,7 @@
 /***************************************************************************/
 
 #if __cplusplus >= 201703L
-#include <optional>
+#   include <optional>
 #endif // __cplusplus >= 201703L
 
 template<typename archive_traits>
