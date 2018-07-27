@@ -39,13 +39,13 @@ int main() {
         |yas::json; // IO format
     
     auto buf = yas::save<flags>(
-        YAS_OBJECT(nullptr, a, b, c)
+        YAS_OBJECT("myobject", a, b, c)
     );
     
     // buf = {"a":3,"b":4,"c":3.14}
     
     yas::load<flags>(buf,
-        YAS_OBJECT_NVP(nullptr
+        YAS_OBJECT_NVP("myobject"
             ,("a", aa)
             ,("b", bb)
             ,("c", cc)
