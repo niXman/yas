@@ -33,48 +33,17 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef __yas__detail__type_traits__typeinfo_hpp
-#define __yas__detail__type_traits__typeinfo_hpp
-
-#include <yas/detail/tools/fnv1a.hpp>
-
-#include <cstdint>
-
-namespace yas {
-namespace typeinfo {
+#ifndef __yas__base_test__test_hpp
+#define __yas__base_test__test_hpp
 
 /***************************************************************************/
 
-template<typename T>
-struct typeinfo;
+#define YAS_TEST_REPORT(log, artype, testname) \
+    log << __FILE__ << "(" << __LINE__ << "): " << "archive: \"" << artype << "\", test: \"" << testname << "\" failed!" << std::endl;
 
-#define __YAS_DEFINE_TYPEINFO(t) \
-    template<> \
-    struct typeinfo<t> { \
-        static constexpr const char name[]  = #t; \
-        static constexpr std::size_t namelength = sizeof(name)-1; \
-        static constexpr std::size_t size = sizeof(t); \
-        static constexpr std::uint32_t hash = fnv1a(name); \
-    };
-
-__YAS_DEFINE_TYPEINFO(bool)
-__YAS_DEFINE_TYPEINFO(char)
-__YAS_DEFINE_TYPEINFO(std::int8_t)
-__YAS_DEFINE_TYPEINFO(std::uint8_t)
-__YAS_DEFINE_TYPEINFO(std::int16_t)
-__YAS_DEFINE_TYPEINFO(std::uint16_t)
-__YAS_DEFINE_TYPEINFO(std::int32_t)
-__YAS_DEFINE_TYPEINFO(std::uint32_t)
-__YAS_DEFINE_TYPEINFO(std::int64_t)
-__YAS_DEFINE_TYPEINFO(std::uint64_t)
-__YAS_DEFINE_TYPEINFO(float)
-__YAS_DEFINE_TYPEINFO(double)
-
-#undef __YAS_DEFINE_TYPEINFO
+#define YAS_TEST_REPORT_IF(expr, log, artype, testname, ...) \
+    if ( (expr) ) { YAS_TEST_REPORT(log, artype, testname); __VA_ARGS__; }
 
 /***************************************************************************/
 
-} // ns typeinfo
-} // ns yas
-
-#endif // __yas__detail__type_traits__typeinfo_hpp
+#endif // __yas__base_test__test_hpp

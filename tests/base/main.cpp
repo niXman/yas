@@ -64,14 +64,7 @@
 
 /***************************************************************************/
 
-#define YAS_TEST_REPORT(log, artype, testname) \
-    log << __FILE__ << "(" << __LINE__ << "): " << "archive: \"" << artype << "\", test: \"" << testname << "\" failed!" << std::endl;
-
-#define YAS_TEST_REPORT_IF(expr, log, artype, testname, ...) \
-    if ( (expr) ) { YAS_TEST_REPORT(log, artype, testname); __VA_ARGS__; }
-
-/***************************************************************************/
-
+#include "test.hpp"
 #include "include/array.hpp"
 #include "include/auto_array.hpp"
 #include "include/base64.hpp"

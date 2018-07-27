@@ -262,6 +262,13 @@ struct value {
         ,val(std::forward<value_type>(r.val))
     {}
 
+    static constexpr bool is_fundamental() {
+        return std::is_fundamental<value_type>::value;
+    }
+    static constexpr std::size_t sizeof_() {
+        return sizeof(value_type);
+    }
+
     key_type key;
     const std::size_t klen;
     value_type val;
@@ -302,11 +309,25 @@ struct object {
         ,pairs(std::move(r.pairs))
     {}
 
+    static constexpr bool is_fundamental() {
+        return _summ_impl(Pairs::is_fundamental()...) == sizeof...(Pairs);
+    }
+    static constexpr std::size_t sizeof_() {
+        return _summ_impl(Pairs::sizeof_()...);
+    }
+
     const char *key;
     const std::size_t klen;
     tuple pairs;
 
     static constexpr detail::ctmap<KVI> map{};
+
+private:
+    static constexpr std::size_t _summ_impl() { return 0; }
+    template<typename Head, typename ...Tails>
+    static constexpr std::size_t _summ_impl(Head head, Tails ...tails) {
+        return head + _summ_impl(tails...);
+    }
 };
 template<typename KVI, typename... Pairs>
 constexpr detail::ctmap<KVI> object<KVI, Pairs...>::map;

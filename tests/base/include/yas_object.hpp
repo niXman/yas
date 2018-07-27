@@ -36,6 +36,12 @@
 #ifndef __yas__tests__base__include__yas_object_hpp
 #define __yas__tests__base__include__yas_object_hpp
 
+#include <cstdint>
+#include <ostream>
+
+#include <yas/object.hpp>
+#include "../test.hpp"
+
 /***************************************************************************/
 
 namespace _yas_object_test {
