@@ -380,7 +380,7 @@ void tests(std::ostream &log, int &p, int &e) {
 /***************************************************************************/
 
 struct options {
-    options(char **argv)
+    explicit options(char **argv)
         :msg{}
         ,binary{false}
         ,text{false}
