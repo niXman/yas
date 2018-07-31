@@ -58,6 +58,12 @@
 
 /***************************************************************************/
 
+#ifndef __YAS_OBJECT_MAX_MEMBERS
+#   define __YAS_OBJECT_MAX_MEMBERS 50
+#endif // __YAS_OBJECT_MAX_MEMBERS
+
+/***************************************************************************/
+
 #include <yas/detail/config/endian.hpp>
 
 #if defined(__clang__)
