@@ -36,6 +36,7 @@
 #ifndef __yas__detail__tools__tuple_element_switch_hpp
 #define __yas__detail__tools__tuple_element_switch_hpp
 
+#include <yas/detail/config/config.hpp>
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/preprocessor/preprocessor.hpp>
 
@@ -73,7 +74,7 @@ void tuple_switch(Archive &, std::size_t, std::tuple<> &) {}
     )(n)
 
 YAS_PP_REPEAT( \
-     __YAS_OBJECT_MAX_MEMBERS \
+     YAS_OBJECT_MAX_MEMBERS \
     ,__YAS_GENERATE_TUPLE_SWITCH \
     ,~ \
 )

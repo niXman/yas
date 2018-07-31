@@ -58,9 +58,9 @@
 
 /***************************************************************************/
 
-#ifndef __YAS_OBJECT_MAX_MEMBERS
-#   define __YAS_OBJECT_MAX_MEMBERS 20
-#endif // __YAS_OBJECT_MAX_MEMBERS
+#ifndef YAS_OBJECT_MAX_MEMBERS
+#   define YAS_OBJECT_MAX_MEMBERS 20
+#endif // YAS_OBJECT_MAX_MEMBERS
 
 /***************************************************************************/
 

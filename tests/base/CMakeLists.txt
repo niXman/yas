@@ -3,19 +3,19 @@ project(yas-base-test)
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
-#    include_directories("/home/nixman/boost-1.66.0-gcc-5.4.1/include")
     add_definitions(
         -DBOOST_ERROR_CODE_HEADER_ONLY
         -DBOOST_CHRONO_HEADER_ONLY
         -DYAS_SERIALIZE_BOOST_TYPES
+        -DYAS_OBJECT_MAX_MEMBERS=50
     )
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
-#    include_directories("/home/nixman/boost-1.66.0-gcc-5.4.1/include")
     add_definitions(
         -DBOOST_ERROR_CODE_HEADER_ONLY
         -DBOOST_CHRONO_HEADER_ONLY
         -DYAS_SERIALIZE_BOOST_TYPES
+        -DYAS_OBJECT_MAX_MEMBERS=50
     )
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /d1parsePackExpressions- /bigobj")
@@ -24,6 +24,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
         -DBOOST_ERROR_CODE_HEADER_ONLY
         -DBOOST_CHRONO_HEADER_ONLY
         -DYAS_SERIALIZE_BOOST_TYPES
+        -DYAS_OBJECT_MAX_MEMBERS=50
         -D_CRT_SECURE_NO_WARNINGS
     )
     if(CMAKE_SIZEOF_VOID_P EQUAL 8)
