@@ -59,7 +59,7 @@
 /***************************************************************************/
 
 #ifndef __YAS_OBJECT_MAX_MEMBERS
-#   define __YAS_OBJECT_MAX_MEMBERS 50
+#   define __YAS_OBJECT_MAX_MEMBERS 20
 #endif // __YAS_OBJECT_MAX_MEMBERS
 
 /***************************************************************************/
