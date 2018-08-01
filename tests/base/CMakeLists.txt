@@ -67,7 +67,6 @@ set(SOURCE_FILES
     include/boost_fusion_tuple.hpp
     include/boost_fusion_vector.hpp
     include/boost_tuple.hpp
-    include/boost_variant.hpp
     include/buffer.hpp
     include/chrono.hpp
     include/complex.hpp
@@ -85,6 +84,7 @@ set(SOURCE_FILES
     include/one_func.hpp
     include/one_memfn.hpp
     include/optional.hpp
+    include/variant.hpp
     include/pair.hpp
     include/serialize.hpp
     include/serialization.hpp

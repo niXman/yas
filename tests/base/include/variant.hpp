@@ -40,6 +40,7 @@
 
 template<typename archive_traits>
 bool boost_variant_test(std::ostream &log, const char *archive_type, const char *test_name) {
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
     {
         boost::variant<int, double> v0(3.14), v1;
 
@@ -85,6 +86,55 @@ bool boost_variant_test(std::ostream &log, const char *archive_type, const char 
             return false;
         }
     }
+#endif // #if defined(YAS_SERIALIZE_BOOST_TYPES)
+
+#if __cplusplus >= 201703L
+//    {
+//        std::variant<int, double> v0(3.14), v1;
+//
+//        typename archive_traits::oarchive oa;
+//        archive_traits::ocreate(oa, archive_type);
+//        oa & YAS_OBJECT_NVP("obj", ("variant", v0));
+//
+//        typename archive_traits::iarchive ia;
+//        archive_traits::icreate(ia, oa, archive_type);
+//        ia & YAS_OBJECT_NVP("obj", ("variant", v1));
+//        if ( !(v0 == v1) ) {
+//            YAS_TEST_REPORT(log, archive_type, test_name);
+//            return false;
+//        }
+//    }
+//    {
+//        std::variant<int, double> v0(4), v1;
+//
+//        typename archive_traits::oarchive oa;
+//        archive_traits::ocreate(oa, archive_type);
+//        oa & YAS_OBJECT_NVP("obj", ("variant", v0));
+//
+//        typename archive_traits::iarchive ia;
+//        archive_traits::icreate(ia, oa, archive_type);
+//        ia & YAS_OBJECT_NVP("obj", ("variant", v1));
+//        if ( !(v0 == v1) ) {
+//            YAS_TEST_REPORT(log, archive_type, test_name);
+//            return false;
+//        }
+//    }
+//    {
+//        std::variant<int, double, std::string> v0("3.14"), v1;
+//
+//        typename archive_traits::oarchive oa;
+//        archive_traits::ocreate(oa, archive_type);
+//        oa & YAS_OBJECT_NVP("obj", ("variant", v0));
+//
+//        typename archive_traits::iarchive ia;
+//        archive_traits::icreate(ia, oa, archive_type);
+//        ia & YAS_OBJECT_NVP("obj", ("variant", v1));
+//        if ( !(v0 == v1) ) {
+//            YAS_TEST_REPORT(log, archive_type, test_name);
+//            return false;
+//        }
+//    }
+#endif // __cplusplus >= 201703L
 
     return true;
 }

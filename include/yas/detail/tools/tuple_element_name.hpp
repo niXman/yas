@@ -45,9 +45,18 @@ namespace detail {
 
 template<char... Chars>
 struct char_seq_to_c_str {
-    static constexpr std::size_t pref_size = sizeof("item_")-1;
+    static constexpr char pref[] = "item_";
+    static constexpr std::size_t pref_size = sizeof(pref)-1;
+    static constexpr char str[pref_size + sizeof...(Chars) + 1] = {
+             pref[0]
+            ,pref[1]
+            ,pref[2]
+            ,pref[3]
+            ,pref[4]
+            ,Chars...
+            ,'\0'
+    };
     typedef const char (&arr_type)[pref_size + sizeof...(Chars) + 1];
-    static constexpr char str[pref_size + sizeof...(Chars) + 1] = {'i', 't', 'e', 'm', '_', Chars..., '\0'};
 };
 template<char... Chars>
 constexpr char char_seq_to_c_str<Chars...>::str[];

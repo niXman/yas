@@ -33,31 +33,31 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef __yas__types__boost__variant_serializers_hpp
-#define __yas__types__boost__variant_serializers_hpp
+#ifndef __yas__types__std__variant_serializers_hpp
+#define __yas__types__std__variant_serializers_hpp
 
-#if defined(YAS_SERIALIZE_BOOST_TYPES)
+#if __cplusplus >= 201703L
+
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/serializer.hpp>
 #include <yas/detail/preprocessor/preprocessor.hpp>
 
-#include <boost/mpl/at.hpp>
-#include <boost/variant.hpp>
+#include <variant>
 
 namespace yas {
 namespace detail {
 
 /***************************************************************************/
 
-#define __YAS_GENERATE_BOOST_VARIANT_SWITCH_CB(unused, i, n) \
+#define __YAS_GENERATE_STD_VARIANT_SWITCH_CB(unused, i, n) \
     case i: { \
-        using elem_t = typename boost::mpl::at_c< \
-             typename boost::variant<YAS_PP_ENUM_PARAMS(n, T)>::types \
-            ,i \
+        using elem_t = typename std::variant_alternative< \
+             i \
+            ,typename std::variant<YAS_PP_ENUM_PARAMS(n, T)>::types \
         >::type; \
         \
         __YAS_CONSTEXPR_IF ( yas::is_writable_archive<Archive>::value ) { \
-            elem_t &elem = boost::get<elem_t>(v); \
+            elem_t &elem = std::get<elem_t>(v); \
             __YAS_CONSTEXPR_IF ( F & yas::json ) { \
                 ar & YAS_OBJECT(nullptr, elem); \
             } else { \
@@ -71,21 +71,21 @@ namespace detail {
                 ar & elem; \
             } \
             \
-            v = boost::move(elem); \
+            v = std::move(elem); \
         } \
         \
         return; \
     };
 
-#define __YAS_GENERATE_BOOST_VARIANT_SWITCH_FOR_ZERO(n)
+#define __YAS_GENERATE_STD_VARIANT_SWITCH_FOR_ZERO(n)
 
-#define __YAS_GENERATE_BOOST_VARIANT_SWITCH_FOR_NONZERO(n) \
+#define __YAS_GENERATE_STD_VARIANT_SWITCH_FOR_NONZERO(n) \
     template<std::size_t F, typename Archive, YAS_PP_ENUM_PARAMS(n, typename T)> \
-    void boost_variant_switch(Archive &ar, std::size_t idx, boost::variant<YAS_PP_ENUM_PARAMS(n, T)> &v) { \
+    void std_variant_switch(Archive &ar, std::size_t idx, std::variant<YAS_PP_ENUM_PARAMS(n, T)> &v) { \
         switch ( idx ) { \
             YAS_PP_REPEAT( \
                  n \
-                ,__YAS_GENERATE_BOOST_VARIANT_SWITCH_CB \
+                ,__YAS_GENERATE_STD_VARIANT_SWITCH_CB \
                 ,n \
             ) \
             default: return; \
@@ -93,53 +93,53 @@ namespace detail {
     }
 
 
-#define __YAS_GENERATE_BOOST_VARIANT_SWITCH(unused, n, unused2) \
+#define __YAS_GENERATE_STD_VARIANT_SWITCH(unused, n, unused2) \
     YAS_PP_IF( \
          YAS_PP_EQUAL(n, 0) \
-        ,__YAS_GENERATE_BOOST_VARIANT_SWITCH_FOR_ZERO \
-        ,__YAS_GENERATE_BOOST_VARIANT_SWITCH_FOR_NONZERO \
+        ,__YAS_GENERATE_STD_VARIANT_SWITCH_FOR_ZERO \
+        ,__YAS_GENERATE_STD_VARIANT_SWITCH_FOR_NONZERO \
     )(n)
 
 YAS_PP_REPEAT( \
      YAS_VARIANT_MAX_VARIANTS \
-    ,__YAS_GENERATE_BOOST_VARIANT_SWITCH \
+    ,__YAS_GENERATE_STD_VARIANT_SWITCH \
     ,~ \
 )
 
-#undef __YAS_GENERATE_BOOST_VARIANT_SWITCH_CB
-#undef __YAS_GENERATE_BOOST_VARIANT_SWITCH_FOR_ZERO
-#undef __YAS_GENERATE_BOOST_VARIANT_SWITCH_FOR_NONZERO
-#undef __YAS_GENERATE_BOOST_VARIANT_SWITCH
+#undef __YAS_GENERATE_STD_VARIANT_SWITCH_CB
+#undef __YAS_GENERATE_STD_VARIANT_SWITCH_FOR_ZERO
+#undef __YAS_GENERATE_STD_VARIANT_SWITCH_FOR_NONZERO
+#undef __YAS_GENERATE_STD_VARIANT_SWITCH
 
 
 /***************************************************************************/
 
 template<std::size_t F, typename... Types>
 struct serializer<
-    type_prop::not_a_fundamental,
-    ser_method::use_internal_serializer,
-    F,
-    boost::variant<Types...>
+     type_prop::not_a_fundamental
+    ,ser_method::use_internal_serializer
+    ,F
+    ,std::variant<Types...>
 > {
     template<typename Archive>
-    static Archive& save(Archive& ar, const boost::variant<Types...> &v) {
-        const std::size_t idx = v.which();
+    static Archive& save(Archive& ar, const std::variant<Types...> &v) {
+        const std::size_t idx = v.index();
         __YAS_CONSTEXPR_IF ( F & yas::json ) {
             ar.write("[", 1);
             ar & YAS_OBJECT(nullptr, idx);
             ar.write(",", 1);
-            boost_variant_switch<F>(ar, idx, __YAS_CCAST(boost::variant<Types...> &, v));
+            std_variant_switch<F>(ar, idx, __YAS_CCAST(std::variant<Types...> &, v));
             ar.write("]", 1);
         } else {
             ar.write(__YAS_SCAST(std::uint8_t, idx));
-            boost_variant_switch<F>(ar, idx, __YAS_CCAST(boost::variant<Types...> &, v));
+            std_variant_switch<F>(ar, idx, __YAS_CCAST(std::variant<Types...> &, v));
         }
 
         return ar;
     }
 
     template<typename Archive>
-    static Archive& load(Archive& ar, boost::variant<Types...> &v) {
+    static Archive& load(Archive& ar, std::variant<Types...> &v) {
         __YAS_CONSTEXPR_IF ( F & yas::json ) {
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
@@ -151,7 +151,7 @@ struct serializer<
                 json_skipws(ar);
             }
             __YAS_THROW_IF_BAD_JSON_CHARS(ar, ",");
-            boost_variant_switch<F>(ar, idx, v);
+            std_variant_switch<F>(ar, idx, v);
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
             }
@@ -159,7 +159,7 @@ struct serializer<
         } else {
             std::uint8_t idx = 0;
             ar & idx;
-            boost_variant_switch<F>(ar, idx, v);
+            std_variant_switch<F>(ar, idx, v);
         }
 
         return ar;
@@ -171,6 +171,6 @@ struct serializer<
 } // namespace detail
 } // namespace yas
 
-#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
+#endif // __cplusplus >= 201703L
 
-#endif // __yas__types__boost__variant_serializers_hpp
+#endif // __yas__types__std__variant_serializers_hpp

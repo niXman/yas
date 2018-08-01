@@ -103,7 +103,6 @@
 #include "include/boost_cont_flat_multiset.hpp"
 #include "include/boost_cont_deque.hpp"
 #include "include/boost_tuple.hpp"
-#include "include/boost_variant.hpp"
 #endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 
 #include "include/list.hpp"
@@ -111,6 +110,7 @@
 #include "include/multimap.hpp"
 #include "include/multiset.hpp"
 #include "include/optional.hpp"
+#include "include/variant.hpp"
 #include "include/pair.hpp"
 #include "include/deque.hpp"
 #include "include/std_streams.hpp"
