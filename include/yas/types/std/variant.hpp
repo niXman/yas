@@ -53,7 +53,7 @@ namespace detail {
     case i: { \
         using elem_t = typename std::variant_alternative< \
              i \
-            ,typename std::variant<YAS_PP_ENUM_PARAMS(n, T)>::types \
+            ,std::variant<YAS_PP_ENUM_PARAMS(n, T)> \
         >::type; \
         \
         __YAS_CONSTEXPR_IF ( yas::is_writable_archive<Archive>::value ) { \

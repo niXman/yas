@@ -33,20 +33,16 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef __yas__tests__base__include__std_variant_hpp
-#define __yas__tests__base__include__std_variant_hpp
+#ifndef __yas__tests__base__include__boost_variant_hpp
+#define __yas__tests__base__include__boost_variant_hpp
 
 /***************************************************************************/
 
 template<typename archive_traits>
-bool variant_test(std::ostream &log, const char *archive_type, const char *test_name) {
-    (void)log;
-    (void)archive_type;
-    (void)test_name;
-
-#if __cplusplus >= 201703L
+bool boost_variant_test(std::ostream &log, const char *archive_type, const char *test_name) {
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
     {
-        std::variant<int, double> v0(3.14), v1;
+        boost::variant<int, double> v0(3.14), v1;
 
         typename archive_traits::oarchive oa;
         archive_traits::ocreate(oa, archive_type);
@@ -61,7 +57,7 @@ bool variant_test(std::ostream &log, const char *archive_type, const char *test_
         }
     }
     {
-        std::variant<int, double> v0(4), v1;
+        boost::variant<int, double> v0(4), v1;
 
         typename archive_traits::oarchive oa;
         archive_traits::ocreate(oa, archive_type);
@@ -76,7 +72,7 @@ bool variant_test(std::ostream &log, const char *archive_type, const char *test_
         }
     }
     {
-        std::variant<int, double, std::string> v0("3.14"), v1;
+        boost::variant<int, double, std::string> v0("3.14"), v1;
 
         typename archive_traits::oarchive oa;
         archive_traits::ocreate(oa, archive_type);
@@ -90,11 +86,11 @@ bool variant_test(std::ostream &log, const char *archive_type, const char *test_
             return false;
         }
     }
-#endif // __cplusplus >= 201703L
+#endif // #if defined(YAS_SERIALIZE_BOOST_TYPES)
 
     return true;
 }
 
 /***************************************************************************/
 
-#endif // __yas__tests__base__include__std_variant_hpp
+#endif // __yas__tests__base__include__boost_variant_hpp

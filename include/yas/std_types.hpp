@@ -56,7 +56,7 @@
 #include <yas/types/std/multiset.hpp>
 #include <yas/types/std/array.hpp>
 #include <yas/types/std/tuple.hpp>
-//#include <yas/types/std/variant.hpp>
+#include <yas/types/std/variant.hpp>
 #include <yas/types/std/unordered_set.hpp>
 #include <yas/types/std/unordered_map.hpp>
 #include <yas/types/std/unordered_multiset.hpp>

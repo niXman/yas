@@ -103,6 +103,7 @@
 #include "include/boost_cont_flat_multiset.hpp"
 #include "include/boost_cont_deque.hpp"
 #include "include/boost_tuple.hpp"
+#include "include/boost_variant.hpp"
 #endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 
 #include "include/list.hpp"
@@ -348,6 +349,7 @@ void tests(std::ostream &log, int &p, int &e) {
     YAS_RUN_TEST(log, unordered_multimap, p, e);
     YAS_RUN_TEST(log, unordered_multiset, p, e);
     YAS_RUN_TEST(log, optional, p, e);
+    YAS_RUN_TEST(log, variant, p, e);
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
     YAS_RUN_TEST(log, boost_fusion_pair, p, e);
     YAS_RUN_TEST(log, boost_fusion_tuple, p, e);
