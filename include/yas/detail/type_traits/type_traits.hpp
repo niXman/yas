@@ -37,7 +37,7 @@
 #define __yas__detail__type_traits__type_traits_hpp
 
 #include <yas/detail/config/endian.hpp>
-#include <yas/detail/type_traits/has_method_serialize.hpp>
+#include <yas/detail/type_traits/has_memfn_serialize.hpp>
 #include <yas/detail/type_traits/has_function_serialize.hpp>
 #include <yas/version.hpp>
 
@@ -111,9 +111,9 @@ enum class type_prop {
 	,not_a_fundamental
 };
 
-enum class ser_method {
-	 has_one_method
-	,has_split_methods
+enum class ser_case {
+	 has_one_memfn
+	,has_split_memfns
 	,has_one_function
 	,has_split_functions
 	,use_internal_serializer
@@ -144,16 +144,16 @@ private:
 	};
 
 public:
-	static constexpr ser_method value =
-		has_const_method_serializer<is_fundamental || is_array, is_enum, T, void(Ar)>::value
-		? ser_method::has_split_methods
-		: has_method_serializer<is_fundamental || is_array, is_enum, T, void(Ar)>::value
-			? ser_method::has_one_method
+	static constexpr ser_case value =
+		has_const_memfn_serializer<is_fundamental || is_array, is_enum, T, void(Ar)>::value
+		? ser_case::has_split_memfns
+		: has_memfn_serializer<is_fundamental || is_array, is_enum, T, void(Ar)>::value
+			? ser_case::has_one_memfn
 			: has_function_const_serialize<is_fundamental || is_array, is_enum, Ar, T>::value
-				? ser_method::has_split_functions
+				? ser_case::has_split_functions
 				: has_function_serialize<is_fundamental || is_array, is_enum, Ar, T>::value
-					? ser_method::has_one_function
-					: ser_method::use_internal_serializer
+					? ser_case::has_one_function
+					: ser_case::use_internal_serializer
 	;
 };
 

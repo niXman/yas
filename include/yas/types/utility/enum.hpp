@@ -49,7 +49,7 @@ namespace detail {
 template<std::size_t F, typename T>
 struct serializer<
 	 type_prop::is_enum,
-	 ser_method::use_internal_serializer,
+	 ser_case::use_internal_serializer,
 	 F,
 	 T
 > {

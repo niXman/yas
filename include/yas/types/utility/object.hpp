@@ -52,7 +52,7 @@ namespace detail {
 template<std::size_t F, typename KVI, typename... Pairs>
 struct serializer<
     type_prop::not_a_fundamental,
-    ser_method::use_internal_serializer,
+    ser_case::use_internal_serializer,
     F,
     object<KVI, Pairs...>
 > {

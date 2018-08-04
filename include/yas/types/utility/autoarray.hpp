@@ -50,7 +50,7 @@ namespace detail {
 template<std::size_t F, typename T, size_t N>
 struct serializer<
     type_prop::is_array_of_fundamentals,
-    ser_method::use_internal_serializer,
+    ser_case::use_internal_serializer,
     F,
     T[N]
 > {
@@ -70,7 +70,7 @@ struct serializer<
 template<std::size_t F, typename T, size_t N>
 struct serializer<
 	 type_prop::is_array,
-	 ser_method::use_internal_serializer,
+	 ser_case::use_internal_serializer,
 	 F,
 	 T[N]
 > {

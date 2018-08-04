@@ -88,6 +88,7 @@ More examples you can see [here](https://github.com/niXman/yas/blob/master/tests
  - [std::unordered_multimap](https://en.cppreference.com/w/cpp/container/unordered_multimap)
  - [std::unordered_multiset](https://en.cppreference.com/w/cpp/container/unordered_multiset)
  - [std::unordered_set](https://en.cppreference.com/w/cpp/container/unordered_set)
+ - [std::variant](https://en.cppreference.com/w/cpp/utility/variant)
  - [std::vector](https://en.cppreference.com/w/cpp/container/vector)
  - [std::wstring](https://en.cppreference.com/w/cpp/string/basic_string)
  - [boost::array](https://www.boost.org/doc/libs/1_64_0/doc/html/array.html)

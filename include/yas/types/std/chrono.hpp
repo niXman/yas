@@ -50,7 +50,7 @@ namespace detail {
 template<std::size_t F, typename R, typename P>
 struct serializer<
 	type_prop::not_a_fundamental,
-	ser_method::use_internal_serializer,
+	ser_case::use_internal_serializer,
 	F,
 	std::chrono::duration<R, P>
 > {
@@ -77,7 +77,7 @@ struct serializer<
 template<std::size_t F, typename C, typename D>
 struct serializer<
 	type_prop::not_a_fundamental,
-	ser_method::use_internal_serializer,
+	ser_case::use_internal_serializer,
 	F,
 	std::chrono::time_point<C, D>
 > {

@@ -51,7 +51,7 @@ namespace detail {
 template<std::size_t F, typename T1, typename T2>
 struct serializer<
 	type_prop::not_a_fundamental,
-	ser_method::use_internal_serializer,
+	ser_case::use_internal_serializer,
 	F,
 	boost::fusion::pair<T1, T2>
 > {

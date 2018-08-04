@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef __yas__detail__type_traits__has_method_serialize_hpp
-#define __yas__detail__type_traits__has_method_serialize_hpp
+#ifndef __yas__detail__type_traits__has_memfn_serialize_hpp
+#define __yas__detail__type_traits__has_memfn_serialize_hpp
 
 #include <yas/detail/tools/cast.hpp>
 #include <yas/detail/type_traits/type_traits.hpp>
@@ -68,7 +68,7 @@ struct clone_constness<const T1, T2> {
 /***************************************************************************/
 
 template<typename T>
-struct has_method {
+struct has_memfn {
 private:
 	class yes { char m; };
 	class no { yes m[2]; };
@@ -93,10 +93,10 @@ public:
 /***************************************************************************/
 
 template<bool is_pod, bool is_enum, typename Object, typename Sig>
-struct has_method_serializer: std::false_type {};
+struct has_memfn_serializer: std::false_type {};
 
 template<typename Object, typename Sig>
-struct has_method_serializer<false, false, Object, Sig> {
+struct has_memfn_serializer<false, false, Object, Sig> {
 private:
 	class yes {};
 	class no { yes m[2]; };
@@ -137,13 +137,13 @@ private:
 	};
 
 public:
-	static const bool value = impl<detail::has_method<Object>::value, Sig>::value;
+	static const bool value = impl<detail::has_memfn<Object>::value, Sig>::value;
 };
 
 /***************************************************************************/
 
 template<typename T>
-struct has_const_method {
+struct has_const_memfn {
 private:
 	class yes { char m; };
 	class no { yes m[2]; };
@@ -168,10 +168,10 @@ public:
 /***************************************************************************/
 
 template<bool is_pod, bool is_enum, typename Object, typename Sig>
-struct has_const_method_serializer: std::false_type {};
+struct has_const_memfn_serializer: std::false_type {};
 
 template<typename Object, typename Sig>
-struct has_const_method_serializer<false, false, Object, Sig> {
+struct has_const_memfn_serializer<false, false, Object, Sig> {
 private:
 	class yes {};
 	class no { yes m[2]; };
@@ -212,7 +212,7 @@ private:
 	};
 
 public:
-	static const bool value = impl<detail::has_const_method<Object>::value, Sig>::value;
+	static const bool value = impl<detail::has_const_memfn<Object>::value, Sig>::value;
 };
 
 /***************************************************************************/
@@ -220,4 +220,4 @@ public:
 } // namespace detail
 } // namespace yas
 
-#endif // __yas__detail__type_traits__has_method_serialize_hpp
+#endif // __yas__detail__type_traits__has_memfn_serialize_hpp
