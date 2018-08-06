@@ -169,16 +169,16 @@ struct archive_traits {
 
         template<typename Head, typename... Tail>
         oarchive_type& serialize(const Head &head, const Tail&... tail) {
-            oa->operator&(head).serialize(tail...);
-
-            return *oa;
+            return oa->operator&(head).serialize(tail...);
         }
 
         template<typename... Ts>
         oarchive_type& operator()(const Ts&... ts) {
-            oa->serialize(ts...);
-
-            return *oa;
+            return oa->serialize(ts...);
+        }
+        template<typename... Ts>
+        oarchive_type& save(const Ts&... ts) {
+            return oa->save(ts...);
         }
 
         static constexpr bool is_little_endian() { return oarchive_type::is_little_endian(); }
@@ -233,15 +233,16 @@ struct archive_traits {
 
         template<typename Head, typename... Tail>
         iarchive_type& serialize(Head &&head, Tail &&... tail) {
-            ia->operator&(head).serialize(tail...);
-
-            return *ia;
+            return ia->operator&(std::forward<Head>(head)).serialize(std::forward<Tail>(tail)...);
         }
 
         template<typename... Ts>
         iarchive_type& operator()(Ts &&... ts) {
-            return ia->serialize(ts...);
-            return *ia;
+            return ia->operator()(std::forward<Ts>(ts)...);
+        }
+        template<typename... Ts>
+        iarchive_type& load(Ts &&... ts) {
+            return ia->load(std::forward<Ts>(ts)...);
         }
 
         bool is_little_endian() { return ia->is_little_endian(); }

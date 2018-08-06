@@ -99,6 +99,12 @@ struct json_oarchive
 	this_type& operator()(const Args&... args) {
 		return serialize(args...);
 	}
+
+	template<typename... Args>
+	this_type& save(const Args&... args) {
+		return serialize(args...);
+	}
+
 };
 
 /***************************************************************************/

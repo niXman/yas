@@ -68,6 +68,21 @@ bool serialization_test(std::ostream &log, const char *archive_type, const char 
 		return false;
 	}
 
+
+	r0=0,r1=0,r2=0,r3=0;
+	typename archive_traits::oarchive oa3;
+	archive_traits::ocreate(oa3, archive_type);
+	oa3.save(YAS_OBJECT_NVP("obj", ("v0", w0), ("v1", w1), ("v2", w2), ("v3", w3)));
+
+	typename archive_traits::iarchive ia3;
+	archive_traits::icreate(ia3, oa3, archive_type);
+	ia3.load(YAS_OBJECT_NVP("obj", ("v0", r0), ("v1", r1), ("v2", r2), ("v3", r3)));
+
+	if ( r0!=w0 || r1!=w1 || r2!=w2 || r3!=w3) {
+		YAS_TEST_REPORT(log, archive_type, test_name);
+		return false;
+	}
+
 	return true;
 }
 

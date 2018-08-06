@@ -101,6 +101,11 @@ struct binary_iarchive
 	this_type& operator()(Args &&... args) {
 		return serialize(std::forward<Args>(args)...);
 	}
+
+	template<typename... Args>
+	this_type& load(Args &&... args) {
+		return serialize(std::forward<Args>(args)...);
+	}
 };
 
 /***************************************************************************/
