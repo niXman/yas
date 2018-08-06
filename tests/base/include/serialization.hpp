@@ -85,15 +85,21 @@ bool serialization_test(std::ostream &log, const char *archive_type, const char 
 
 	// null streams compilation test
     {
-        yas::null_ostream binary_os;
-        yas::binary_oarchive<yas::null_ostream> binary_oa(binary_os);
-        yas::null_istream binary_is(binary_os.get_intrusive_buffer());
-        yas::binary_iarchive<yas::null_istream> binary_ia(binary_is);
+        try {
+            yas::null_ostream binary_os;
+            yas::binary_oarchive<yas::null_ostream> binary_oa(binary_os);
+            yas::null_istream binary_is(binary_os.get_intrusive_buffer());
+            yas::binary_iarchive<yas::null_istream> binary_ia(binary_is);
+        } catch (const yas::io_exception &) {
+        }
 
-        yas::null_ostream text_os;
-        yas::text_oarchive<yas::null_ostream> text_oa(text_os);
-        yas::null_istream text_is(text_os.get_intrusive_buffer());
-        yas::text_iarchive<yas::null_istream> text_ia(text_is);
+        try {
+            yas::null_ostream text_os;
+            yas::text_oarchive<yas::null_ostream> text_oa(text_os);
+            yas::null_istream text_is(text_os.get_intrusive_buffer());
+            yas::text_iarchive<yas::null_istream> text_ia(text_is);
+        } catch (const yas::io_exception &) {
+        }
 
         yas::null_ostream json_os;
         yas::json_oarchive<yas::null_ostream> json_oa(json_os);
