@@ -42,6 +42,7 @@
 #include <yas/mem_streams.hpp>
 #include <yas/file_streams.hpp>
 #include <yas/std_streams.hpp>
+#include <yas/null_streams.hpp>
 #include <yas/binary_oarchive.hpp>
 #include <yas/binary_iarchive.hpp>
 #include <yas/text_oarchive.hpp>
