@@ -44,6 +44,7 @@
 #include <yas/json_iarchive.hpp>
 #include <yas/mem_streams.hpp>
 #include <yas/file_streams.hpp>
+#include <yas/std_streams.hpp>
 
 namespace yas {
 
