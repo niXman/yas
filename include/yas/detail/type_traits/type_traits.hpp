@@ -298,11 +298,13 @@ template<
      std::size_t F
     ,typename T
     ,bool Tok = std::is_integral<T>::value || std::is_enum<T>::value
+    ,bool Float = is_any_of<T, float, double>::value
 >
 struct can_be_processed_as_byte_array: std::integral_constant<bool,
     (is_any_of<T, char, signed char, unsigned char>::value) || // text/json
     ((F & yas::binary) && Tok && sizeof(T) == 1) ||
-    ((F & yas::binary) && Tok && (!(F & yas::compacted) && (!__YAS_BSWAP_NEEDED(F))))
+    ((F & yas::binary) && Tok && (!(F & yas::compacted) && (!__YAS_BSWAP_NEEDED(F)))) ||
+    ((F & yas::binary) && Float && (!(F & yas::compacted) && (!__YAS_BSWAP_NEEDED(F))))
 >
 {};
 
