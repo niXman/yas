@@ -56,42 +56,42 @@ enum file_mode: std::uint32_t {
 /***************************************************************************/
 
 struct file_ostream {
-	YAS_NONCOPYABLE(file_ostream)
+    YAS_NONCOPYABLE(file_ostream)
     YAS_MOVABLE(file_ostream)
 
-	file_ostream(const char *fname, std::size_t m = 0)
-		:file(nullptr)
-	{
-		const bool exists = file_exists(fname);
-		if ( exists && !m ) {
+    file_ostream(const char *fname, std::size_t m = 0)
+        :file(nullptr)
+    {
+        const bool exists = file_exists(fname);
+        if ( exists && !m ) {
             __YAS_THROW_FILE_ALREADY_EXISTS();
         }
-		if ( !exists && (m & file_append) ) {
-			__YAS_THROW_FILE_IS_NOT_EXISTS();
+        if ( !exists && (m & file_append) ) {
+            __YAS_THROW_FILE_IS_NOT_EXISTS();
         }
 
         const char *fmode = file_mode_str(m);
-		file = std::fopen(fname, fmode);
-		if ( !file ) {
+        file = std::fopen(fname, fmode);
+        if ( !file ) {
             __YAS_THROW_ERROR_OPEN_FILE();
         }
 
         if ( m & file_nobuf ) {
             std::setvbuf(file, nullptr, _IONBF, 0);
         }
-	}
-	virtual ~file_ostream() {
-		std::fclose(file);
-	}
+    }
+    virtual ~file_ostream() {
+        std::fclose(file);
+    }
 
-	std::size_t write(const void *ptr, std::size_t size) {
-		return std::fwrite(ptr, 1, size, file);
-	}
+    std::size_t write(const void *ptr, std::size_t size) {
+        return std::fwrite(ptr, 1, size, file);
+    }
 
-	void flush() { std::fflush(file); }
+    void flush() { std::fflush(file); }
 
 private:
-	static const char* file_mode_str(std::size_t m) {
+    static const char* file_mode_str(std::size_t m) {
         m &= ~file_nobuf;
         if ( !m || (m & file_trunc) ) {
             return "wb";
@@ -101,16 +101,16 @@ private:
 
         __YAS_THROW_BAD_FILE_MODE();
     }
-	static bool file_exists(const char *fname) {
-		FILE* file = std::fopen(fname, "r");
-		if ( file ) {
-			std::fclose(file);
-			return true;
-		}
-		return false;
-	}
+    static bool file_exists(const char *fname) {
+        std::FILE* file = std::fopen(fname, "r");
+        if ( file ) {
+            std::fclose(file);
+            return true;
+        }
+        return false;
+    }
 
-	std::FILE *file;
+    std::FILE *file;
 }; // struct file_ostream
 
 /***************************************************************************/
@@ -119,27 +119,27 @@ struct file_istream {
     YAS_NONCOPYABLE(file_istream)
     YAS_MOVABLE(file_istream)
 
-	file_istream(const char *fname, std::size_t m = 0)
-		:file(std::fopen(fname, "rb"))
-	{
-		if ( !file ) {
+    file_istream(const char *fname, std::size_t m = 0)
+        :file(std::fopen(fname, "rb"))
+    {
+        if ( !file ) {
             __YAS_THROW_ERROR_OPEN_FILE();
         }
 
         if ( m & file_nobuf ) {
             std::setvbuf(file, nullptr, _IONBF, 0);
         }
-	}
-	virtual ~file_istream() {
-		std::fclose(file);
-	}
+    }
+    virtual ~file_istream() {
+        std::fclose(file);
+    }
 
-	std::size_t read(void *ptr, std::size_t size) {
-		return std::fread(ptr, 1, size, file);
-	}
+    std::size_t read(void *ptr, std::size_t size) {
+        return std::fread(ptr, 1, size, file);
+    }
 
-	bool empty() const { return peekch() == EOF; }
-	char peekch() const {
+    bool empty() const { return peekch() == EOF; }
+    char peekch() const {
         // TODO: optimize
         int ch = std::getc(file);
         std::ungetc(ch, file);
@@ -147,10 +147,10 @@ struct file_istream {
         return __YAS_SCAST(char, ch);
     }
     char getch() { return __YAS_SCAST(char, std::getc(file)); }
-	void ungetch(char ch) { std::ungetc(ch, file); }
+    void ungetch(char ch) { std::ungetc(ch, file); }
 
 private:
-	std::FILE *file;
+    std::FILE *file;
 }; // struct file_istream
 
 /***************************************************************************/
