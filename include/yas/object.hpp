@@ -349,12 +349,12 @@ make_object(std::nullptr_t, Pairs &&... pairs) {
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
 #   include <boost/version.hpp>
 #   if BOOST_VERSION >= 106000
-#       include <boost/vmd/is_empty.hpp>
 #       define __YAS_CAN_USE_BOOST_VMD
 #   endif // BOOST_VERSION >= 106000
 #endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 
 #ifdef __YAS_CAN_USE_BOOST_VMD
+#   include <boost/vmd/is_empty.hpp>
 #   define __YAS_PP_TUPLE_IS_EMPTY(...) BOOST_VMD_IS_EMPTY(__VA_ARGS__)
 #else
 #   define __YAS_PP_ARG50( \
