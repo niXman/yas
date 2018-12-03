@@ -66,6 +66,11 @@ More examples you can see [here](https://github.com/niXman/yas/blob/master/tests
 * limits
 * objects versioning
 
+## Support the project
+You can support the YAS project by donating:
+* BTC: 12rjx6prAxwJ1Aep6HuM54At9wDvSCDbSJ
+* ETH: 0x62719DDEc96C513699a276107622C73F6cAcec47
+
 ## Serialization for the following types is supported:
  - [std::array](https://en.cppreference.com/w/cpp/container/array)
  - [std::bitset](https://en.cppreference.com/w/cpp/utility/bitset)
