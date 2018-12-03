@@ -346,31 +346,46 @@ make_object(std::nullptr_t, Pairs &&... pairs) {
 
 /**************************************************************************/
 
-#define __YAS_ARG16(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, ...) _15
-#define __YAS_HAS_COMMA(...) __YAS_ARG16(__VA_ARGS__, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
-#define __YAS__TRIGGER_PARENTHESIS_(...) ,
-#define __YAS_PASTE5(_0, _1, _2, _3, _4) _0 ## _1 ## _2 ## _3 ## _4
-#define __YAS_IS_EMPTY_CASE_0001 ,
-#define __YAS_ISEMPTY(_0, _1, _2, _3) __YAS_HAS_COMMA(__YAS_PASTE5(__YAS_IS_EMPTY_CASE_, _0, _1, _2, _3))
-#define __YAS_TUPLE_IS_EMPTY_IMPL(...) \
-    __YAS_ISEMPTY( \
-        __YAS_HAS_COMMA(__VA_ARGS__), \
-        __YAS_HAS_COMMA(__YAS__TRIGGER_PARENTHESIS_ __VA_ARGS__),                 \
-        __YAS_HAS_COMMA(__VA_ARGS__ (/*empty*/)), \
-        __YAS_HAS_COMMA(__YAS__TRIGGER_PARENTHESIS_ __VA_ARGS__ (/*empty*/)) \
-    )
-
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
 #   include <boost/version.hpp>
 #   if BOOST_VERSION >= 106000
 #       include <boost/vmd/is_empty.hpp>
-#       define __YAS_TUPLE_IS_EMPTY(...) BOOST_VMD_IS_EMPTY(__VA_ARGS__)
-#   else
-#       define __YAS_TUPLE_IS_EMPTY(...) __YAS_TUPLE_IS_EMPTY_IMPL(__VA_ARGS__)
+#       define __YAS_CAN_USE_BOOST_VMD
 #   endif // BOOST_VERSION >= 106000
-#else // !defined(YAS_SERIALIZE_BOOST_TYPES)
-#   define __YAS_TUPLE_IS_EMPTY(...) __YAS_TUPLE_IS_EMPTY_IMPL(__VA_ARGS__)
 #endif // defined(YAS_SERIALIZE_BOOST_TYPES)
+
+#ifdef __YAS_CAN_USE_BOOST_VMD
+#   define __YAS_PP_TUPLE_IS_EMPTY(...) BOOST_VMD_IS_EMPTY(__VA_ARGS__)
+#else
+#   define __YAS_PP_ARG50( \
+          _0 , _1 , _2 , _3 , _4 , _5 , _6 , _7 , _8 , _9 \
+        , _10, _11, _12, _13, _14, _15, _16, _17, _18, _19 \
+        , _20, _21, _22, _23, _24, _25, _26, _27, _28, _29 \
+        , _30, _31, _32, _33, _34, _35, _36, _37, _38, _39 \
+        , _40, _41, _42, _43, _44, _45, _46, _47, _48, _49 \
+        , ...) _49
+#   define __YAS_PP_HAS_COMMA(...) \
+        __YAS_PP_ARG50( \
+            __VA_ARGS__, \
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, \
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, \
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, \
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, \
+            1, 1, 1, 1, 1, 1, 1, 1, 0 \
+        )
+#   define __YAS_PP_TRIGGER_PARENTHESIS_(...) ,
+#   define __YAS_PP_PASTE5(_0, _1, _2, _3, _4) _0 ## _1 ## _2 ## _3 ## _4
+#   define __YAS_PP_IS_EMPTY_CASE_0001 ,
+#   define __YAS_PP_IS_EMPTY(_0, _1, _2, _3) __YAS_PP_HAS_COMMA(__YAS_PP_PASTE5(__YAS_PP_IS_EMPTY_CASE_, _0, _1, _2, _3))
+#   define __YAS_PP_TUPLE_IS_EMPTY_IMPL(...) \
+        __YAS_PP_IS_EMPTY( \
+            __YAS_PP_HAS_COMMA(__VA_ARGS__), \
+            __YAS_PP_HAS_COMMA(__YAS_PP_TRIGGER_PARENTHESIS_ __VA_ARGS__),                 \
+            __YAS_PP_HAS_COMMA(__VA_ARGS__ (/*empty*/)), \
+            __YAS_PP_HAS_COMMA(__YAS_PP_TRIGGER_PARENTHESIS_ __VA_ARGS__ (/*empty*/)) \
+        )
+#   define __YAS_PP_TUPLE_IS_EMPTY(...) __YAS_PP_TUPLE_IS_EMPTY_IMPL(__VA_ARGS__)
+#endif // __YAS_CAN_USE_BOOST_VMD
 
 /**************************************************************************/
 
@@ -419,22 +434,22 @@ make_object(std::nullptr_t, Pairs &&... pairs) {
     >::type
 
 #define __YAS_OBJECT_EMPTY(forstruct, oname, sname, ...) \
-	::yas::make_object<std::tuple<>>(oname)
+    ::yas::make_object<std::tuple<>>(oname)
 
 #define __YAS_OBJECT_NONEMPTY(forstruct, oname, sname, seq) \
-	::yas::make_object< \
+    ::yas::make_object< \
         __YAS_OBJECT_NONEMPTY_GEN_KVI(seq) \
     >( \
-		 oname \
-		,__YAS_OBJECT_IMPL(forstruct, sname, seq) \
-	)
+         oname \
+        ,__YAS_OBJECT_IMPL(forstruct, sname, seq) \
+    )
 
 #define __YAS_OBJECT_AUX(forstruct, oname, sname, ...) \
     YAS_PP_IF( \
-		 __YAS_TUPLE_IS_EMPTY(__VA_ARGS__) \
-		,__YAS_OBJECT_EMPTY \
-		,__YAS_OBJECT_NONEMPTY \
-	)(forstruct, oname, sname, YAS_PP_TUPLE_TO_SEQ((__VA_ARGS__)))
+         __YAS_PP_TUPLE_IS_EMPTY(__VA_ARGS__) \
+        ,__YAS_OBJECT_EMPTY \
+        ,__YAS_OBJECT_NONEMPTY \
+    )(forstruct, oname, sname, YAS_PP_TUPLE_TO_SEQ((__VA_ARGS__)))
 
 #define YAS_OBJECT(oname, ...) \
     __YAS_OBJECT_AUX( \
@@ -456,10 +471,10 @@ make_object(std::nullptr_t, Pairs &&... pairs) {
 
 #define __YAS_OBJECT_NVP_GEN_PAIRS_IMPL(forstruct, sname, idx, elem) \
     YAS_PP_COMMA_IF(idx) \
-        ::yas::make_val( \
-             YAS_PP_TUPLE_ELEM(0, elem) \
-            ,YAS_PP_IF(forstruct, sname., /*empty*/) YAS_PP_TUPLE_ELEM(1, elem) \
-        )
+    ::yas::make_val( \
+         YAS_PP_TUPLE_ELEM(0, elem) \
+        ,YAS_PP_IF(forstruct, sname., /*empty*/) YAS_PP_TUPLE_ELEM(1, elem) \
+    )
 
 #define __YAS_OBJECT_NVP_GEN_PAIRS(unused0, data, idx, elem) \
     __YAS_OBJECT_NVP_GEN_PAIRS_IMPL( \
@@ -470,21 +485,21 @@ make_object(std::nullptr_t, Pairs &&... pairs) {
     )
 
 #define __YAS_OBJECT_NVP_IMPL(forstruct, sname, seq) \
-	YAS_PP_SEQ_FOR_EACH_I( \
-		 __YAS_OBJECT_NVP_GEN_PAIRS \
+    YAS_PP_SEQ_FOR_EACH_I( \
+         __YAS_OBJECT_NVP_GEN_PAIRS \
         ,(forstruct, sname) \
-		,seq \
-	)
+        ,seq \
+    )
 
 #define __YAS_OBJECT_NVP_NONEMPTY_GEN_KVI_CB(unised0, unised1, idx, elem) \
     YAS_PP_COMMA_IF(idx) \
-        std::pair< \
-             std::integral_constant< \
-                  std::uint32_t \
-                 ,::yas::detail::fnv1a(YAS_PP_TUPLE_ELEM(0, elem)) \
-             > \
-            ,std::integral_constant<std::uint8_t, idx> \
-        >
+    std::pair< \
+         std::integral_constant< \
+              std::uint32_t \
+             ,::yas::detail::fnv1a(YAS_PP_TUPLE_ELEM(0, elem)) \
+         > \
+        ,std::integral_constant<std::uint8_t, idx> \
+    >
 
 #define __YAS_OBJECT_NVP_NONEMPTY_GEN_KVI(seq) \
     typename ::yas::detail::mergesort< \
@@ -499,22 +514,22 @@ make_object(std::nullptr_t, Pairs &&... pairs) {
     >::type
 
 #define __YAS_OBJECT_NVP_EMPTY(forstruct, oname, sname, ...) \
-	::yas::make_object<std::tuple<>>(oname)
+    ::yas::make_object<std::tuple<>>(oname)
 
 #define __YAS_OBJECT_NVP_NONEMPTY(forstruct, oname, sname, seq) \
-	::yas::make_object< \
+    ::yas::make_object< \
         __YAS_OBJECT_NVP_NONEMPTY_GEN_KVI(seq) \
     >( \
-		 oname \
-		,__YAS_OBJECT_NVP_IMPL(forstruct, sname, seq) \
-	)
+         oname \
+        ,__YAS_OBJECT_NVP_IMPL(forstruct, sname, seq) \
+    )
 
 #define __YAS_OBJECT_NVP_AUX(forstruct, oname, sname, ...) \
-	YAS_PP_IF( \
-		 __YAS_TUPLE_IS_EMPTY(__VA_ARGS__) \
-		,__YAS_OBJECT_NVP_EMPTY \
-		,__YAS_OBJECT_NVP_NONEMPTY \
-	)(forstruct, oname, sname, YAS_PP_TUPLE_TO_SEQ((__VA_ARGS__)))
+    YAS_PP_IF( \
+         __YAS_PP_TUPLE_IS_EMPTY(__VA_ARGS__) \
+        ,__YAS_OBJECT_NVP_EMPTY \
+        ,__YAS_OBJECT_NVP_NONEMPTY \
+    )(forstruct, oname, sname, YAS_PP_TUPLE_TO_SEQ((__VA_ARGS__)))
 
 
 #define YAS_OBJECT_NVP(oname, ...) \

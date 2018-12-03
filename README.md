@@ -62,7 +62,7 @@ The `YAS_OBJECT()`/`YAS_OBJECT_NVP()`/`YAS_OBJECT_STRUCT()`/`YAS_OBJECT_STRUCT_N
 More examples you can see [here](https://github.com/niXman/yas/blob/master/tests/base/include/serialize.hpp).
 
 ## TODO:
-* serialization/deserialization of the protobuf/messagepack messages
+* protobuf/messagepack support
 * limits
 * objects versioning
 

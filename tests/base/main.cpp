@@ -289,7 +289,7 @@ struct archive_traits {
 
 #define YAS_RUN_TEST_CHECK_FOR_SKIP(...) \
     YAS_PP_IF( \
-        __YAS_TUPLE_IS_EMPTY(__VA_ARGS__) \
+        __YAS_PP_TUPLE_IS_EMPTY(__VA_ARGS__) \
         ,YAS_RUN_TEST_RUN_TEST \
         ,YAS_RUN_TEST_SKIP_TEST \
     )(__VA_ARGS__)
