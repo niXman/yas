@@ -64,23 +64,24 @@ struct max_limit {
     max_limit(const max_limit &) = delete;
     max_limit& operator=(const max_limit &) = delete;
 
-    constexpr max_limit(T &&v, std::uint64_t max)
+    constexpr max_limit(T &&v, std::uint64_t lmax)
         :val(std::forward<type>(v))
-        ,max(max)
+        ,lmax(lmax)
     {}
     constexpr max_limit(max_limit &&r)
         :val(std::forward<type>(r.val))
-        ,max(r.max)
+        ,lmax(r.lmax)
     {}
 
     template<typename L, typename V>
     bool check(const L l, const V &) const {
-        return __YAS_SCAST(std::uint64_t, l) <= max;
+        return __YAS_SCAST(std::uint64_t, l) <= lmax;
     }
 
     type val;
-    const std::uint64_t max;
+    const std::uint64_t lmax;
 };
+
 template<typename T>
 struct minmax_limit {
     using type = typename limit_base<T>::type;
@@ -88,37 +89,37 @@ struct minmax_limit {
     minmax_limit(const minmax_limit &) = delete;
     minmax_limit& operator=(const minmax_limit &) = delete;
 
-    constexpr minmax_limit(T &&v, std::uint64_t min, std::uint64_t max)
+    constexpr minmax_limit(T &&v, std::uint64_t lmin, std::uint64_t lmax)
         :val(std::forward<type>(v))
-        ,min(min)
-        ,max(max)
+        ,lmin(lmin)
+        ,lmax(lmax)
     {}
     constexpr minmax_limit(minmax_limit &&r)
         :val(std::forward<type>(r.val))
-        ,min(r.min)
-        ,max(r.max)
+        ,lmin(r.lmin)
+        ,lmax(r.lmax)
     {}
 
     template<typename L, typename V>
     bool check(const L l, const V &) const {
-        return (min <= __YAS_SCAST(std::uint64_t, l) && __YAS_SCAST(std::uint64_t, l) <= max);
+        return (lmin <= __YAS_SCAST(std::uint64_t, l) && __YAS_SCAST(std::uint64_t, l) <= lmax);
     }
 
     type val;
-    const std::uint64_t min;
-    const std::uint64_t max;
+    const std::uint64_t lmin;
+    const std::uint64_t lmax;
 };
 
 /***************************************************************************/
 
 template<typename T>
-constexpr max_limit<T> limit(T &&v, std::uint64_t max) {
-    return {std::forward<T>(v), max};
+constexpr max_limit<T> limit(T &&v, std::uint64_t lmax) {
+    return {std::forward<T>(v), lmax};
 }
 
 template<typename T>
-constexpr minmax_limit<T> limit(T &&v, std::uint64_t min, std::uint64_t max) {
-    return {std::forward<T>(v), min, max};
+constexpr minmax_limit<T> limit(T &&v, std::uint64_t lmin, std::uint64_t lmax) {
+    return {std::forward<T>(v), lmin, lmax};
 }
 
 /***************************************************************************/

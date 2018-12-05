@@ -93,7 +93,7 @@ void read_header(IO &io, archive_header &h) {
     if ( 0 != std::memcmp(buf, yas_id, sizeof(yas_id)) )
         __YAS_THROW_BAD_ARCHIVE_INFORMATION();
 
-    constexpr std::uint8_t d = std::numeric_limits<std::uint8_t>::max();
+    constexpr std::uint8_t d = (std::numeric_limits<std::uint8_t>::max)();
     constexpr std::uint8_t hexmap[256] = {
         d , d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d
         ,d , d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d
