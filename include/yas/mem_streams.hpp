@@ -67,39 +67,12 @@ struct mem_ostream {
     {}
 
     template<typename T>
-    std::size_t write(const T *tptr, const std::size_t size) {
+    std::size_t write(const T *ptr, std::size_t size) {
         if ( cur+size > end ) {
-            shared_buffer::shared_array_type prev = buf.data;
-            const std::size_t olds = __YAS_SCAST(std::size_t, cur-beg);
-            const std::size_t news = __YAS_SCAST(std::size_t,
-                size + (olds * __YAS_SCAST(std::size_t, ((1 + std::sqrt(5)) / 1.5)))
-            );
-
-            buf = shared_buffer(news);
-            std::memcpy(buf.data.get(), prev.get(), olds);
-
-            beg = buf.data.get();
-            cur = beg+olds;
-            end = beg+news;
+            realloc(size);
         }
 
-        const std::uint8_t *ptr = __YAS_RCAST(const std::uint8_t*, tptr);
-        switch ( size ) {
-            case 1 : std::memcpy(cur, ptr, 1) ; break;
-            case 2 : std::memcpy(cur, ptr, 2) ; break;
-            case 3 : std::memcpy(cur, ptr, 3) ; break;
-            case 4 : std::memcpy(cur, ptr, 4) ; break;
-            case 5 : std::memcpy(cur, ptr, 5) ; break;
-            case 6 : std::memcpy(cur, ptr, 6) ; break;
-            case 7 : std::memcpy(cur, ptr, 7) ; break;
-            case 8 : std::memcpy(cur, ptr, 8) ; break;
-            case 9 : std::memcpy(cur, ptr, 9) ; break;
-#if defined(__GNUC__) && defined(__SIZEOF_INT128__) // hack for detect int128 support
-            case 16: std::memcpy(cur, ptr, 16); break;
-            case 17: std::memcpy(cur, ptr, 17); break;
-#endif
-            default: std::memcpy(cur, ptr, size);
-        }
+        std::memcpy(cur, ptr, size);
         cur += size;
 
         return size;
@@ -109,6 +82,21 @@ struct mem_ostream {
     intrusive_buffer get_intrusive_buffer() const { return intrusive_buffer(beg, __YAS_SCAST(std::size_t, cur-beg)); }
 
 private:
+    void realloc(std::size_t size) {
+        const std::size_t olds = __YAS_SCAST(std::size_t, cur-beg);
+        const std::size_t news = __YAS_SCAST(std::size_t,
+            size + (olds * __YAS_SCAST(std::size_t, ((1 + std::sqrt(5)) / 1.5)))
+        );
+
+        shared_buffer::shared_array_type prev = buf.data;
+        buf = shared_buffer(news);
+        std::memcpy(buf.data.get(), prev.get(), olds);
+
+        beg = buf.data.get();
+        cur = beg+olds;
+        end = beg+news;
+    }
+
     shared_buffer buf;
     char *beg, *cur, *end;
 }; // struct mem_ostream
@@ -138,26 +126,14 @@ struct mem_istream {
     template<typename T>
     std::size_t read(T *ptr, const std::size_t size) {
         const std::size_t avail = __YAS_SCAST(std::size_t, end-cur);
-        const std::size_t to_copy = (avail < size ? avail : size);
-        switch ( to_copy ) {
-            case 1 : std::memcpy(ptr, cur, 1) ; break;
-            case 2 : std::memcpy(ptr, cur, 2) ; break;
-            case 3 : std::memcpy(ptr, cur, 3) ; break;
-            case 4 : std::memcpy(ptr, cur, 4) ; break;
-            case 5 : std::memcpy(ptr, cur, 5) ; break;
-            case 6 : std::memcpy(ptr, cur, 6) ; break;
-            case 7 : std::memcpy(ptr, cur, 7) ; break;
-            case 8 : std::memcpy(ptr, cur, 8) ; break;
-            case 9 : std::memcpy(ptr, cur, 9) ; break;
-#if defined(__GNUC__) && defined(__SIZEOF_INT128__) // hack for detect int128 support
-            case 16: std::memcpy(ptr, cur, 16); break;
-            case 17: std::memcpy(ptr, cur, 17); break;
-#endif
-            default: std::memcpy(ptr, cur, size);
-        }
-        cur += to_copy;
+        if ( size <= avail ) {
+            std::memcpy(ptr, cur, size);
+            cur += size;
 
-        return to_copy;
+            return size;
+        }
+
+        return avail;
     }
 
     bool empty() const { return cur == end; }
