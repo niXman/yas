@@ -134,5 +134,6 @@ You can support the YAS project by donating:
 * [K3](https://github.com/DaMSL/K3): K3 is a programming language for building large-scale data systems
 * [vistle](https://github.com/vistle/vistle): Software Environment for High-Performance Simulation and Parallel Visualization
 * [cppan](https://github.com/tarasko/cppan): Class members annotations for C++
+* [Beam](https://github.com/BeamWM/beam): BEAM is a next generation scalable, confidential cryptocurrency based on an elegant and innovative Mimblewimble protocol
 * [iris-crypt](https://github.com/aspectron/iris-crypt): Store Node.js modules encrypted in a package file
 * [GeekSys company](http://www.geeksysgroup.com/en/): GeekSys is using YAS to serialize features from images
