@@ -130,7 +130,7 @@ You can support the YAS project by donating:
  - [yas::intrusive_buffer](https://github.com/niXman/yas/blob/master/include/yas/buffers.hpp#L48) (only save)
  - [yas::shared_buffer](https://github.com/niXman/yas/blob/master/include/yas/buffers.hpp#L67)
 
-## Projects using this library
+## Projects using YAS
 * [K3](https://github.com/DaMSL/K3): K3 is a programming language for building large-scale data systems
 * [vistle](https://github.com/vistle/vistle): Software Environment for High-Performance Simulation and Parallel Visualization
 * [LGraph](https://github.com/masc-ucsc/lgraph): Live Graph infrastructure for Synthesis and Simulation
