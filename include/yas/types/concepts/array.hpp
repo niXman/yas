@@ -43,9 +43,21 @@ namespace array {
 
 /***************************************************************************/
 
+template<typename Archive, typename C>
+void save_array(Archive &ar, const C &c, std::true_type) {
+    ar.write(&c[0], sizeof(typename C::value_type) * c.size());
+}
+
+template<typename Archive, typename C>
+void save_array(Archive &ar, const C &c, std::false_type) {
+    for ( const auto &it: c ) {
+        ar & it;
+    }
+}
+
 template<std::size_t F, typename Archive, typename C>
 Archive& save(Archive &ar, const C &c) {
-    if ( F & yas::json ) {
+    __YAS_CONSTEXPR_IF ( F & yas::json ) {
         ar.write("[", 1);
 
         if ( !c.empty() ) {
@@ -62,13 +74,13 @@ Archive& save(Archive &ar, const C &c) {
         const auto size = c.size();
         ar.write_seq_size(size);
         if ( size ) {
-            if ( can_be_processed_as_byte_array<F, typename C::value_type>::value ) {
-                ar.write(&c[0], sizeof(typename C::value_type) * size);
-            } else {
-                for ( const auto &it: c ) {
-                    ar & it;
-                }
-            }
+            using cond = std::integral_constant<
+                bool
+                ,can_be_processed_as_byte_array<F, typename C::value_type>::value &&
+                 !std::is_same<C, std::vector<bool>>::value
+            >;
+
+            save_array(ar, c, cond{});
         }
     }
 
@@ -77,9 +89,23 @@ Archive& save(Archive &ar, const C &c) {
 
 /***************************************************************************/
 
+template<typename Archive, typename C>
+void load_array(Archive &ar, C &c, std::true_type) {
+    ar.read(&c[0], sizeof(typename C::value_type) * c.size());
+}
+
+template<typename Archive, typename C>
+void load_array(Archive &ar, C &c, std::false_type) {
+    for ( auto it = c.begin(); it != c.end(); ++it ) {
+        typename C::value_type v{};
+        ar & v;
+        *it = std::move(v);
+    }
+}
+
 template<std::size_t F, typename Archive, typename C>
 Archive& load(Archive &ar, C &c) {
-    if ( F & yas::json ) {
+    __YAS_CONSTEXPR_IF ( F & yas::json ) {
         __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
             json_skipws(ar);
         }
@@ -128,13 +154,13 @@ Archive& load(Archive &ar, C &c) {
         const auto size = ar.read_seq_size();
         if ( size ) {
             c.resize(size);
-            if ( can_be_processed_as_byte_array<F, typename C::value_type>::value ) {
-                ar.read(&c[0], sizeof(typename C::value_type) * size);
-            } else {
-                for ( auto &it: c ) {
-                    ar & it;
-                }
-            }
+            using cond = std::integral_constant<
+                 bool
+                ,can_be_processed_as_byte_array<F, typename C::value_type>::value &&
+                 !std::is_same<C, std::vector<bool>>::value
+            >;
+
+            load_array(ar, c, cond{});
         }
     }
 
