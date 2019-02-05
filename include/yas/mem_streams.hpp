@@ -125,15 +125,13 @@ struct mem_istream {
 
     template<typename T>
     std::size_t read(T *ptr, const std::size_t size) {
-        const std::size_t avail = __YAS_SCAST(std::size_t, end-cur);
-        if ( size <= avail ) {
-            std::memcpy(ptr, cur, size);
-            cur += size;
+        *ptr = {};
+        return read_(ptr, size);
+    }
 
-            return size;
-        }
-
-        return avail;
+    // specialzed read version for void without initialization
+    std::size_t read(void *ptr, const std::size_t size) {
+        return read_(ptr, size);
     }
 
     bool empty() const { return cur == end; }
@@ -146,6 +144,20 @@ struct mem_istream {
 
 private:
     const char *beg, *cur, *end;
+
+    template<typename T>
+    std::size_t read_(T *ptr, const std::size_t size) {
+        const std::size_t avail = __YAS_SCAST(std::size_t, end-cur);
+        if ( size <= avail ) {
+            std::memcpy(ptr, cur, size);
+            cur += size;
+
+            return size;
+        }
+
+        return avail;
+    }
+
 }; // struct mem_istream
 
 /***************************************************************************/

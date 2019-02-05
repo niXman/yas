@@ -48,8 +48,10 @@ bool fundamental_test(std::ostream &log, const char *archive_type, const char *t
     std::uint8_t uc = '2', uc2{};
     std::int16_t s = 3, s2{};
     std::uint16_t us = 4, us2{};
-    std::int32_t i = 5, i2{};
-    std::uint32_t l = 6, l2{};
+    std::int32_t i = 5, i2 = -233492771;
+    std::uint32_t l = 6, l2 = 233492771;
+    std::int32_t ii = 385, ii2 = -233492771;
+    std::uint32_t ll = 385, ll2 = 233492771;
     std::int64_t i64 = 7, i642{};
     std::uint64_t u64 = 8, u642{};
 
@@ -68,15 +70,17 @@ bool fundamental_test(std::ostream &log, const char *archive_type, const char *t
             +sizeof(us)
             +sizeof(i)
             +sizeof(l)
+            +sizeof(ii)
+            +sizeof(ll)
             +sizeof(i64)
             +sizeof(u64)
             +sizeof(f)
             +sizeof(d)
             +sizeof(i64max)
             +sizeof(u64max)
-        ,binary_compacted_expected_size = 39
-        ,text_expected_size = 79
-        ,json_expected_size = 156
+        ,binary_compacted_expected_size = 45
+        ,text_expected_size = 87
+        ,json_expected_size = 174
     };
 
     auto o0 = YAS_OBJECT(
@@ -88,6 +92,8 @@ bool fundamental_test(std::ostream &log, const char *archive_type, const char *t
         ,us
         ,i
         ,l
+        ,ii
+        ,ll
         ,i64
         ,u64
         ,f
@@ -137,6 +143,8 @@ bool fundamental_test(std::ostream &log, const char *archive_type, const char *t
             ,("us", us2)
             ,("i", i2)
             ,("l", l2)
+            ,("ii", ii2)
+            ,("ll", ll2)
             ,("i64", i642)
             ,("u64", u642)
             ,("f", f2)
@@ -147,8 +155,8 @@ bool fundamental_test(std::ostream &log, const char *archive_type, const char *t
         ia & i0;
 
         if ( b != b2 || c != c2 || uc != uc2 || s != s2 || us != us2 || i != i2
-             || l != l2 || i64 != i642 || u64 != u642 || f != f2 || d != d2
-             || i64max != i64max2 || u64max != u64max2 )
+             || l != l2 || ii != ii2 || ll != ll2 || i64 != i642 || u64 != u642
+             || f != f2 || d != d2 || i64max != i64max2 || u64max != u64max2 )
         {
             YAS_TEST_REPORT(log, archive_type, test_name);
             return false;
