@@ -42,7 +42,6 @@
 #include <yas/text_iarchive.hpp>
 #include <yas/text_oarchive.hpp>
 #include <yas/mem_streams.hpp>
-#include <yas/tools/hexdumper.hpp>
 
 #include <boost/program_options.hpp>
 
