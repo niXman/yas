@@ -69,6 +69,7 @@ set(SOURCE_FILES
     include/boost_tuple.hpp
     include/buffer.hpp
     include/chrono.hpp
+    include/compacted_storage_size.hpp
     include/complex.hpp
     include/deque.hpp
     include/endian.hpp

@@ -58,6 +58,12 @@ __YAS_DECLARE_EXCEPTION_TYPE(io_exception);
 #define __YAS_THROW_ARCHIVE_NO_HEADER() \
 	__YAS_THROW_EXCEPTION(::yas::io_exception, "you cannot use information functions with \"yas::no_header\" flag");
 
+#define __YAS_THROW_READ_STORAGE_SIZE_ERROR(...) \
+	if ( !(__VA_ARGS__) ) { \
+	} else { \
+		__YAS_THROW_EXCEPTION(::yas::io_exception, "stored value is too big to read"); \
+	}
+
 #define __YAS_THROW_READ_ERROR(...) \
 	if ( !(__VA_ARGS__) ) { \
 	} else { \

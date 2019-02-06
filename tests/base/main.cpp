@@ -78,6 +78,7 @@
 #include "include/enum.hpp"
 #include "include/forward_list.hpp"
 #include "include/fundamental.hpp"
+#include "include/compacted_storage_size.hpp"
 #include "include/header.hpp"
 
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
@@ -317,6 +318,7 @@ void tests(std::ostream &log, int &p, int &e) {
     YAS_RUN_TEST(log, version, p, e);
     YAS_RUN_TEST(log, base64, p, e);
     YAS_RUN_TEST(log, fundamental, p, e);
+    YAS_RUN_TEST(log, compacted_storage_size, p, e);
     YAS_RUN_TEST(log, enum, p, e);
     YAS_RUN_TEST(log, auto_array, p, e);
     YAS_RUN_TEST(log, std_streams, p, e);

@@ -297,7 +297,8 @@ struct binary_istream {
             ns &= ~((1u << 7) | (1u << 6));
             if ( !onebyte ) {
                 typename std::make_unsigned<T>::type av = 0;
-                __YAS_THROW_READ_ERROR(ns != is.read(&av, (sizeof(av) < ns ? sizeof(av) : ns)));
+                __YAS_THROW_READ_STORAGE_SIZE_ERROR(sizeof(av) < ns);
+                __YAS_THROW_READ_ERROR(ns != is.read(&av, ns));
                 v = (neg ? -__YAS_SCAST(T, av) : __YAS_SCAST(T, av));
             } else {
                 v = (neg ? -__YAS_SCAST(T, ns) : __YAS_SCAST(T, ns));
@@ -311,12 +312,13 @@ struct binary_istream {
     // for unsigned
     template<typename T>
     void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
-        __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
+       __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
             std::uint8_t ns = __YAS_SCAST(std::uint8_t, is.getch());
             const bool onebyte = __YAS_SCAST(bool, (ns >> 7) & 1u);
             ns &= ~(1u << 7);
             if ( !onebyte ) {
-                __YAS_THROW_READ_ERROR(ns != is.read(&v, (sizeof(v) < ns ? sizeof(v) : ns)));
+                __YAS_THROW_READ_STORAGE_SIZE_ERROR(sizeof(v) < ns);
+                __YAS_THROW_READ_ERROR(ns != is.read(&v, ns));
             } else {
                 v = __YAS_SCAST(T, ns);
             }
