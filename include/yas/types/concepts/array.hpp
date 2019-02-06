@@ -75,9 +75,9 @@ Archive& save(Archive &ar, const C &c) {
         ar.write_seq_size(size);
         if ( size ) {
             using cond = std::integral_constant<
-                bool
+                 bool
                 ,can_be_processed_as_byte_array<F, typename C::value_type>::value &&
-                 !std::is_same<C, std::vector<bool>>::value
+                 std::is_same<typename C::value_type&, typename C::reference>::value
             >;
 
             save_array(ar, c, cond{});
@@ -157,7 +157,7 @@ Archive& load(Archive &ar, C &c) {
             using cond = std::integral_constant<
                  bool
                 ,can_be_processed_as_byte_array<F, typename C::value_type>::value &&
-                 !std::is_same<C, std::vector<bool>>::value
+                 std::is_same<typename C::value_type&, typename C::reference>::value
             >;
 
             load_array(ar, c, cond{});

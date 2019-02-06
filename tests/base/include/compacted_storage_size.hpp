@@ -42,7 +42,11 @@ bool compacted_storage_size_test(std::ostream &log, const char *archive_type, co
     typename archive_traits::oarchive oa;
     archive_traits::ocreate(oa, archive_type);
 
-    if ( archive_traits::oarchive_type::flags() & yas::compacted ) {
+    constexpr auto ok = (archive_traits::oarchive_type::flags() & yas::binary)
+        && (archive_traits::oarchive_type::flags() & yas::compacted)
+    ;
+
+    if ( ok ) {
         std::uint32_t in1 = std::numeric_limits<std::uint32_t>::max();
         std::uint16_t in2 = 1;
         std::uint16_t out1{};
