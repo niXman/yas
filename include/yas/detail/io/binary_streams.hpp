@@ -71,7 +71,7 @@ struct binary_ostream {
 
     // for signed
     template<typename T>
-    void write(T v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t)) {
+    void write(T v, __YAS_ENABLE_IF_IS_SIGNED_INTEGER(T)) {
         __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
             if ( v >= 0 ) {
                 typename std::make_unsigned<T>::type uv = v;
@@ -104,7 +104,7 @@ struct binary_ostream {
 
     // for unsigned
     template<typename T>
-    void write(T v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
+    void write(T v, __YAS_ENABLE_IF_IS_UNSIGNED_INTEGER(T)) {
         __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
             if ( v >= (1u<<7) ) {
                 const std::uint8_t ns = storage_size(v);
@@ -133,19 +133,7 @@ private:
 
 private:
     template<typename T>
-    static constexpr std::uint8_t storage_size(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t)) {
-        return __YAS_SCAST(std::uint8_t, (v < (1u<<8 )) ? 1u : 2u);
-    }
-    template<typename T>
-    static constexpr std::uint8_t storage_size(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint32_t)) {
-        return __YAS_SCAST(std::uint8_t,
-            (v < (1u<<16) )
-                ? ((v < (1u<<8 )) ? 1u : 2u)
-                : ((v < (1u<<24)) ? 3u : 4u)
-        );
-    }
-    template<typename T>
-    static constexpr std::uint8_t storage_size(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint64_t)) {
+    static constexpr std::uint8_t storage_size(const T &v, __YAS_ENABLE_IF_IS_UNSIGNED_INTEGER(T)) {
         return __YAS_SCAST(std::uint8_t,
             (v < (1ull<<32))
                 ? (v < (1u<<16) )
@@ -193,7 +181,7 @@ struct binary_istream {
 
     // for signed
     template<typename T>
-    void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t)) {
+    void read(T &v, __YAS_ENABLE_IF_IS_SIGNED_INTEGER(T)) {
         __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
             std::uint8_t ns = __YAS_SCAST(std::uint8_t, is.getch());
             const bool neg = __YAS_SCAST(bool, (ns >> 7) & 1u);
@@ -215,7 +203,7 @@ struct binary_istream {
 
     // for unsigned
     template<typename T>
-    void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
+    void read(T &v, __YAS_ENABLE_IF_IS_UNSIGNED_INTEGER(T)) {
        __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
             std::uint8_t ns = __YAS_SCAST(std::uint8_t, is.getch());
             const bool onebyte = __YAS_SCAST(bool, (ns >> 7) & 1u);

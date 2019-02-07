@@ -103,6 +103,89 @@ struct disable_if_is_any_of
 
 /***************************************************************************/
 
+template<typename T>
+struct is_signed_integer: std::integral_constant<
+    bool
+    , std::is_signed<T>::value
+    && std::is_integral<T>::value
+    && std::is_same<T, char>::value == false
+    && std::is_same<T, signed char>::value == false
+
+>
+{};
+
+template<typename T>
+struct is_unsigned_integer: std::integral_constant<
+    bool
+    , std::is_unsigned<T>::value
+    && std::is_integral<T>::value
+    && std::is_same<T, unsigned char>::value == false
+    && std::is_same<T, bool>::value == false
+>
+{};
+
+template<typename T>
+struct enable_if_is_signed_integer
+    :std::enable_if<is_signed_integer<T>::value>
+{};
+
+template<typename T>
+struct enable_if_is_unsigned_integer
+    :std::enable_if<is_unsigned_integer<T>::value>
+{};
+
+#define __YAS_ENABLE_IF_IS_SIGNED_INTEGER(T) \
+    typename ::yas::detail::enable_if_is_signed_integer<T>::type* = 0
+
+#define __YAS_ENABLE_IF_IS_UNSIGNED_INTEGER(T) \
+    typename ::yas::detail::enable_if_is_unsigned_integer<T>::type* = 0
+
+/***************************************************************************/
+
+template<typename T>
+struct is_16bit: std::integral_constant<
+    bool, sizeof(T) == 2
+>
+{};
+
+template<typename T>
+struct is_32bit: std::integral_constant<
+    bool, sizeof(T) == 4
+>
+{};
+
+template<typename T>
+struct is_64bit: std::integral_constant<
+    bool, sizeof(T) == 8
+>
+{};
+
+template<typename T>
+struct enable_if_is_16bit
+    :std::enable_if<is_16bit<T>::value>
+{};
+
+template<typename T>
+struct enable_if_is_32bit
+    :std::enable_if<is_32bit<T>::value>
+{};
+
+template<typename T>
+struct enable_if_is_64bit
+    :std::enable_if<is_64bit<T>::value>
+{};
+
+#define __YAS_ENABLE_IF_IS_16BIT(T) \
+    typename ::yas::detail::enable_if_is_16bit<T>::type* = 0
+
+#define __YAS_ENABLE_IF_IS_32BIT(T) \
+    typename ::yas::detail::enable_if_is_32bit<T>::type* = 0
+
+#define __YAS_ENABLE_IF_IS_64BIT(T) \
+    typename ::yas::detail::enable_if_is_64bit<T>::type* = 0
+
+/***************************************************************************/
+
 enum class type_prop {
      is_enum
     ,is_fundamental
