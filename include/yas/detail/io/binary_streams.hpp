@@ -133,7 +133,19 @@ private:
 
 private:
     template<typename T>
-    static constexpr std::uint8_t storage_size(const T &v, __YAS_ENABLE_IF_IS_UNSIGNED_INTEGER(T)) {
+    static constexpr std::uint8_t storage_size(const T &v, __YAS_ENABLE_IF_IS_16BIT(T)) {
+        return __YAS_SCAST(std::uint8_t, (v < (1u<<8 )) ? 1u : 2u);
+    }
+    template<typename T>
+    static constexpr std::uint8_t storage_size(const T &v, __YAS_ENABLE_IF_IS_32BIT(T)) {
+        return __YAS_SCAST(std::uint8_t,
+            (v < (1u<<16) )
+                ? ((v < (1u<<8 )) ? 1u : 2u)
+                : ((v < (1u<<24)) ? 3u : 4u)
+        );
+    }
+    template<typename T>
+    static constexpr std::uint8_t storage_size(const T &v, __YAS_ENABLE_IF_IS_64BIT(T)) {
         return __YAS_SCAST(std::uint8_t,
             (v < (1ull<<32))
                 ? (v < (1u<<16) )
