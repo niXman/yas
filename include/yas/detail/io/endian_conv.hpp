@@ -95,13 +95,13 @@ struct endian_converter<false> {
 template<>
 struct endian_converter<true> {
 	template<typename T>
-	static T bswap(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::uint16_t))
+	static T bswap(const T &v, __YAS_ENABLE_IF_IS_16BIT(T))
 	{ return __YAS_NETWORK_TO_LOCAL16(v); }
 	template<typename T>
-	static T bswap(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t, std::uint32_t))
+	static T bswap(const T &v, __YAS_ENABLE_IF_IS_32BIT(T))
 	{ return __YAS_NETWORK_TO_LOCAL32(v); }
 	template<typename T>
-	static T bswap(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t, std::uint64_t))
+	static T bswap(const T &v, __YAS_ENABLE_IF_IS_64BIT(T))
 	{ return __YAS_NETWORK_TO_LOCAL64(v); }
 
 	template<typename T>
