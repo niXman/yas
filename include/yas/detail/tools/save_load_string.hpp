@@ -64,7 +64,8 @@ std::size_t string_extra_space(const CharT *s) {
             case '\t': {
                 // from c (1 byte) to \x (2 bytes)
                 res += 1;
-            } // fallthrough
+                break;
+            }
 
             case 0x00:
             case 0x01:
