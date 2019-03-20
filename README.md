@@ -5,7 +5,7 @@ Yet Another Serialization
 
 -![Time](https://github.com/thekvs/cpp-serializers/raw/master/images/time.png)
 
-* YAS is created as a replacement of [boost.serialization](https://www.boost.org/doc/libs/1_67_0/libs/serialization/doc/index.html) because of its insufficient speed of serialization
+* YAS is created as a replacement of [boost.serialization](https://www.boost.org/doc/libs/1_67_0/libs/serialization/doc/index.html) because of its insufficient speed of serialization ([benchmark 1](https://github.com/thekvs/cpp-serializers), [benchmark 2](https://github.com/fraillt/cpp_serializers_benchmark))
 * YAS is header only library
 * YAS does not depend on third-party libraries or boost
 * YAS require C++11 support
