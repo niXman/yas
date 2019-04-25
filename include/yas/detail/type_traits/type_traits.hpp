@@ -49,6 +49,14 @@ namespace detail {
 
 /***************************************************************************/
 
+#if __cplusplus >= 201703L
+
+template<typename T, typename ...Types>
+struct is_any_of: std::disjunction<std::is_same<T, Types>...>
+{};
+
+#else
+
 template<
      typename T
     ,typename A1
@@ -72,6 +80,8 @@ struct is_any_of: std::integral_constant<
     || std::is_same<T, A8>::value
 >
 {};
+
+#endif
 
 /***************************************************************************/
 
