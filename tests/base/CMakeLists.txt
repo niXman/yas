@@ -25,7 +25,6 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
         -DBOOST_CHRONO_HEADER_ONLY
         -DYAS_SERIALIZE_BOOST_TYPES
         -DYAS_OBJECT_MAX_MEMBERS=50
-        -D_CRT_SECURE_NO_WARNINGS
     )
     if(CMAKE_SIZEOF_VOID_P EQUAL 8)
         link_directories("C:/Libraries/boost_1_66_0/lib64-msvc-14.1")
