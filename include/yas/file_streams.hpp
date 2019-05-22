@@ -57,7 +57,7 @@ enum file_mode: std::uint32_t {
 
 #ifdef _MSC_VER
 # define __YAS_FOPEN(h, p, m) \
-  (void)(::fopen_s(&h, p, m))
+  ::fopen_s(&h, p, m)
 #else
 # define __YAS_FOPEN(h, p, m) \
   h = std::fopen(p, m)

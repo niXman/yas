@@ -83,7 +83,7 @@ __YAS_DECLARE_EXCEPTION_TYPE(io_exception);
 	__YAS_THROW_EXCEPTION(::yas::io_exception, "file is not exists");
 
 #define __YAS_THROW_ERROR_OPEN_FILE() \
-	__YAS_THROW_EXCEPTION(::yas::io_exception, "error opening file");
+	__YAS_THROW_EXCEPTION(::yas::io_exception, "open file error");
 
 #define __YAS_THROW_BAD_FILE_MODE() \
 	__YAS_THROW_EXCEPTION(::yas::io_exception, "bad file open mode");
