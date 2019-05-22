@@ -55,6 +55,14 @@ enum file_mode: std::uint32_t {
 
 /***************************************************************************/
 
+#ifdef _MSC_VER
+# define __YAS_FOPEN(h, p, m)
+  static_cast<void>(std::fopen_s(&h, p, m))
+#else
+# define __YAS_FOPEN(h, p, m) \
+  h = std::fopen(p, m)
+#endif // _MSC_VER
+
 struct file_ostream {
     YAS_NONCOPYABLE(file_ostream)
     YAS_MOVABLE(file_ostream)
@@ -71,7 +79,7 @@ struct file_ostream {
         }
 
         const char *fmode = file_mode_str(m);
-        file = std::fopen(fname, fmode);
+        __YAS_FOPEN(file, fname, fmode);
         if ( !file ) {
             __YAS_THROW_ERROR_OPEN_FILE();
         }
@@ -102,9 +110,11 @@ private:
         __YAS_THROW_BAD_FILE_MODE();
     }
     static bool file_exists(const char *fname) {
-        std::FILE* file = std::fopen(fname, "r");
+        std::FILE* file = nullptr;
+        __YAS_FOPEN(file, fname, "r");
         if ( file ) {
             std::fclose(file);
+
             return true;
         }
         return false;
@@ -120,8 +130,9 @@ struct file_istream {
     YAS_MOVABLE(file_istream)
 
     file_istream(const char *fname, std::size_t m = 0)
-        :file(std::fopen(fname, "rb"))
+        :file(nullptr)
     {
+        __YAS_FOPEN(file, fname, "rb");
         if ( !file ) {
             __YAS_THROW_ERROR_OPEN_FILE();
         }
@@ -154,6 +165,8 @@ private:
 }; // struct file_istream
 
 /***************************************************************************/
+
+#undef __YAS_FOPEN
 
 } // ns yas
 
