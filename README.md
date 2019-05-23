@@ -22,6 +22,7 @@ Yet Another Serialization
  - Clang: 3.5, ... - 32/64 bit
  - Intel: (untested)
  - MSVC : 2017(in c++14 mode), ... - 32/64 bit
+ - Emscripten: 1.38 (clang version 6.0.1)
 
 ## Samples
 The easiest way to save and load some object or vars is to use the `yas::save()` and `yas::load()` functions like this:
