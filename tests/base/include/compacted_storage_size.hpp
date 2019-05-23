@@ -71,7 +71,7 @@ bool compacted_storage_size_test(std::ostream &log, const char *archive_type, co
             bool catchedException = false;
             try {
                 ia & i0;
-            } catch (const ::yas::io_exception& e) {
+            } catch (const ::yas::io_exception&) {
                 catchedException = true;
             }
 

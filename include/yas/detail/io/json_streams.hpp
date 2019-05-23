@@ -103,7 +103,7 @@ struct json_ostream {
 
 	// for unsigned 16/32/64 bits
 	template<typename T>
-	void write(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t, std::size_t)) {
+	void write(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
 		char buf[sizeof(v)*4];
 		std::size_t len = Trait::utoa(buf, sizeof(buf), v);
 
@@ -142,12 +142,11 @@ struct json_istream {
         :is(is)
 	{}
 
-	template<typename T = std::size_t>
-	T read_seq_size() {
-		T size{};
+    std::size_t read_seq_size() {
+		std::uint64_t size{};
 		read(size);
 
-		return size;
+		return __YAS_SCAST(std::size_t, size);
 	}
 
 	bool empty() const { return is.empty(); }
@@ -204,7 +203,7 @@ struct json_istream {
 
 	// for unsigned 16/32/64 bits
 	template<typename T>
-	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t, std::size_t)) {
+	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
 		char buf[sizeof(T)*4];
 		const std::size_t n = json_read_num(is, buf, sizeof(buf));
 
