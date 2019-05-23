@@ -38,7 +38,7 @@
 
 /***************************************************************************/
 
-#if defined(__linux__) || defined(__ANDROID__)
+#if defined(__linux__) || defined(__ANDROID__) || defined(__EMSCRIPTEN__)
 #   include <endian.h>
 #   if (__BYTE_ORDER == __LITTLE_ENDIAN)
 #       define __YAS_LITTLE_ENDIAN (1)

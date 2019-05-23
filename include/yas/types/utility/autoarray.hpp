@@ -42,6 +42,8 @@
 #include <yas/detail/tools/cast.hpp>
 #include <yas/types/concepts/const_sized_array.hpp>
 
+#include <iterator>
+
 namespace yas {
 namespace detail {
 
