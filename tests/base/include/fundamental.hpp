@@ -52,6 +52,7 @@ bool fundamental_test(std::ostream &log, const char *archive_type, const char *t
     std::uint32_t l = 6, l2{};
     std::int64_t i64 = 7, i642{};
     std::uint64_t u64 = 8, u642{};
+    std::uint64_t u64x = 25951127024343977ull, u64x2{};
 
     std::int64_t i64max = std::numeric_limits<std::int64_t>::max(), i64max2{};
     std::uint64_t u64max = std::numeric_limits<std::uint64_t>::max(), u64max2{};
@@ -72,11 +73,12 @@ bool fundamental_test(std::ostream &log, const char *archive_type, const char *t
             +sizeof(u64)
             +sizeof(f)
             +sizeof(d)
+            +sizeof(u64x)
             +sizeof(i64max)
             +sizeof(u64max)
-        ,binary_compacted_expected_size = 39
-        ,text_expected_size = 79
-        ,json_expected_size = 156
+        ,binary_compacted_expected_size = 47
+        ,text_expected_size = 97
+        ,json_expected_size = 181
     };
 
     auto o0 = YAS_OBJECT(
@@ -92,6 +94,7 @@ bool fundamental_test(std::ostream &log, const char *archive_type, const char *t
         ,u64
         ,f
         ,d
+        ,u64x
         ,i64max
         ,u64max
     );
@@ -141,6 +144,7 @@ bool fundamental_test(std::ostream &log, const char *archive_type, const char *t
             ,("u64", u642)
             ,("f", f2)
             ,("d", d2)
+            ,("u64x", u64x2)
             ,("i64max", i64max2)
             ,("u64max", u64max2)
         );
@@ -148,7 +152,7 @@ bool fundamental_test(std::ostream &log, const char *archive_type, const char *t
 
         if ( b != b2 || c != c2 || uc != uc2 || s != s2 || us != us2 || i != i2
              || l != l2 || i64 != i642 || u64 != u642 || f != f2 || d != d2
-             || i64max != i64max2 || u64max != u64max2 )
+             || u64x != u64x2 || i64max != i64max2 || u64max != u64max2 )
         {
             YAS_TEST_REPORT(log, archive_type, test_name);
             return false;

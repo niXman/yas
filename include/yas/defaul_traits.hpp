@@ -122,7 +122,7 @@ std::size_t default_traits::utoa(char *buf, const std::size_t, T v) {
 	std::uint64_t l = __YAS_SCAST(std::uint64_t, v), n = l;
 
 	std::size_t len = 1;
-	if ( l >= 100000000000000000ull ) { len += 17; l /= 100000000000000000ull; }
+	if ( l >= 10000000000000000ull ) { len += 16; l /= 10000000000000000ull; }
 	if ( l >= 100000000ull ) { len += 8; l /= 100000000ull; }
 	if ( l >= 10000ull ) { len += 4; l /= 10000ull; }
 	if ( l >= 100ull ) { len += 2; l /= 100ull; }
