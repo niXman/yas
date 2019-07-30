@@ -47,20 +47,26 @@ namespace detail {
 
 /***************************************************************************/
 
-template<std::size_t F, typename K, typename V>
+template<
+     std::size_t F
+    ,typename K
+    ,typename V
+    ,typename Cmp
+    ,typename Alloc
+>
 struct serializer<
 	type_prop::not_a_fundamental,
 	ser_case::use_internal_serializer,
 	F,
-	std::multimap<K, V>
+	std::multimap<K, V, Cmp, Alloc>
 > {
 	template<typename Archive>
-	static Archive& save(Archive& ar, const std::multimap<K, V>& multimap) {
+	static Archive& save(Archive& ar, const std::multimap<K, V, Cmp, Alloc>& multimap) {
 		return concepts::keyval::save<F>(ar, multimap);
 	}
 
 	template<typename Archive>
-	static Archive& load(Archive& ar, std::multimap<K, V>& multimap) {
+	static Archive& load(Archive& ar, std::multimap<K, V, Cmp, Alloc>& multimap) {
         return concepts::keyval::load<F>(ar, multimap);
 	}
 };

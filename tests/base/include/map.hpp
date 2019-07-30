@@ -95,6 +95,26 @@ bool map_test(std::ostream &log, const char *archive_type, const char *test_name
 		return false;
 	}
 
+#if __cplusplus >= 201402L
+    std::map<std::string, std::string, std::less<>> map5, map6;
+    map5.emplace("1", "1");
+    map5.emplace("2", "2");
+    map5.emplace("3", "3");
+
+    typename archive_traits::oarchive oa4;
+    archive_traits::ocreate(oa4, archive_type);
+    oa4 & YAS_OBJECT_NVP("obj", ("map", map5));
+
+    typename archive_traits::iarchive ia4;
+    archive_traits::icreate(ia4, oa4, archive_type);
+    ia4 & YAS_OBJECT_NVP("obj", ("map", map6));
+
+    if ( map5 != map6 ) {
+        YAS_TEST_REPORT(log, archive_type, test_name);
+        return false;
+    }
+#endif // __cplusplus >= 201402L
+
 	return true;
 }
 

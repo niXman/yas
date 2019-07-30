@@ -69,6 +69,7 @@ bool multiset_test(std::ostream &log, const char *archive_type, const char *test
 	set3.insert("1");
 	set3.insert("2");
 	set3.insert("3");
+	set3.insert("3");
 
 	typename archive_traits::oarchive oa2;
 	archive_traits::ocreate(oa2, archive_type);
@@ -78,12 +79,33 @@ bool multiset_test(std::ostream &log, const char *archive_type, const char *test
 	archive_traits::icreate(ia2, oa2, archive_type);
 	ia2 & YAS_OBJECT_NVP("obj", ("set", set4));
 
-	if ( set3.size() != 3 || set4.size() != 3 || set3 != set4 ) {
+	if ( set3.size() != 4 || set4.size() != 4 || set3 != set4 ) {
 		YAS_TEST_REPORT(log, archive_type, test_name);
 		return false;
 	}
 
-	return true;
+#if __cplusplus >= 201402L
+    std::set<std::string, std::less<>> set5, set6;
+    set5.emplace("1");
+    set5.emplace("2");
+    set5.emplace("3");
+    set5.emplace("3");
+
+    typename archive_traits::oarchive oa3;
+    archive_traits::ocreate(oa3, archive_type);
+    oa3 & YAS_OBJECT_NVP("obj", ("set", set5));
+
+    typename archive_traits::iarchive ia3;
+    archive_traits::icreate(ia3, oa3, archive_type);
+    ia3 & YAS_OBJECT_NVP("obj", ("set", set6));
+
+    if ( set5.size() != 3 || set6.size() != 3 || set5 != set6 ) {
+        YAS_TEST_REPORT(log, archive_type, test_name);
+        return false;
+    }
+#endif // __cplusplus >= 201402L
+
+    return true;
 }
 
 /***************************************************************************/

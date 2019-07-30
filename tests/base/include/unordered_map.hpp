@@ -114,6 +114,7 @@ bool unordered_map_test(std::ostream &log, const char *archive_type, const char 
 		return false;
 	}
 #endif // defined(YAS_SERIALIZE_BOOST_TYPES)
+
 	return true;
 }
 

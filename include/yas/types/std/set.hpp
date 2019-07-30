@@ -47,20 +47,25 @@ namespace detail {
 
 /***************************************************************************/
 
-template<std::size_t F, typename K>
+template<
+     std::size_t F
+    ,typename K
+    ,typename Cmp
+    ,typename Alloc
+>
 struct serializer<
 	type_prop::not_a_fundamental,
 	ser_case::use_internal_serializer,
 	F,
-	std::set<K>
+	std::set<K, Cmp, Alloc>
 > {
 	template<typename Archive>
-	static Archive& save(Archive& ar, const std::set<K>& set) {
+	static Archive& save(Archive& ar, const std::set<K, Cmp, Alloc>& set) {
 		return concepts::set::save<F>(ar, set);
 	}
 
 	template<typename Archive>
-	static Archive& load(Archive& ar, std::set<K>& set) {
+	static Archive& load(Archive& ar, std::set<K, Cmp, Alloc>& set) {
         return concepts::set::load<F>(ar, set);
 	}
 };

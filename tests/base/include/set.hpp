@@ -44,13 +44,6 @@ bool set_test(std::ostream &log, const char *archive_type, const char *test_name
 	set1.insert(0);
 	set1.insert(1);
 	set1.insert(2);
-	set1.insert(3);
-	set1.insert(4);
-	set1.insert(5);
-	set1.insert(6);
-	set1.insert(7);
-	set1.insert(8);
-	set1.insert(9);
 
 	typename archive_traits::oarchive oa;
 	archive_traits::ocreate(oa, archive_type);
@@ -83,7 +76,27 @@ bool set_test(std::ostream &log, const char *archive_type, const char *test_name
 		return false;
 	}
 
-	return true;
+#if __cplusplus >= 201402L
+    std::set<std::string, std::less<>> set5, set6;
+    set5.emplace("1");
+    set5.emplace("2");
+    set5.emplace("3");
+
+    typename archive_traits::oarchive oa3;
+    archive_traits::ocreate(oa3, archive_type);
+    oa3 & YAS_OBJECT_NVP("obj", ("set", set5));
+
+    typename archive_traits::iarchive ia3;
+    archive_traits::icreate(ia3, oa3, archive_type);
+    ia3 & YAS_OBJECT_NVP("obj", ("set", set6));
+
+    if ( set5 != set6 ) {
+        YAS_TEST_REPORT(log, archive_type, test_name);
+        return false;
+    }
+#endif // __cplusplus >= 201402L
+
+    return true;
 }
 
 /***************************************************************************/
