@@ -10,7 +10,7 @@ configuration:
   - Release
 
 build_script:
-  - dir "C:\Libraries\boost*"
+  - dir "C:\Libraries"
   - cd ../yas/tests/base
   - echo Build for %platform%-%configuration%
   - mkdir build
