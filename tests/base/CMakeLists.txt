@@ -3,12 +3,6 @@ project(yas-base-test)
 
 set (CMAKE_CXX_STANDARD 11)
 
-if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-    set(COMPILER_BITS 64)
-else()
-    set(COMPILER_BITS 32)
-endif()
-
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
     add_definitions(
@@ -26,7 +20,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
         -DYAS_OBJECT_MAX_MEMBERS=50
     )
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /bigobj")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /bigobj /d1parsePackExpressions-")
     include_directories("C:/Libraries/boost_1_66_0")
     add_definitions(
         -DBOOST_ERROR_CODE_HEADER_ONLY
@@ -34,7 +28,6 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
         -DYAS_SERIALIZE_BOOST_TYPES
         -DYAS_OBJECT_MAX_MEMBERS=50
     )
-    link_directories("C:/Libraries/boost_1_66_0/lib${COMPILER_BITS}-msvc-14.1")
 endif()
 
 include_directories(
