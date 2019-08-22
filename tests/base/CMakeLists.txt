@@ -29,9 +29,9 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
         -DYAS_OBJECT_MAX_MEMBERS=50
     )
     if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-        link_directories("C:/Libraries/boost_1_66_0/lib64-msvc-14.1")
+        link_directories("C:/Libraries/boost_1_66_0/lib64-msvc-16")
     elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
-        link_directories("C:/Libraries/boost_1_66_0/lib32-msvc-14.1")
+        link_directories("C:/Libraries/boost_1_66_0/lib32-msvc-16")
     endif()
 endif()
 
