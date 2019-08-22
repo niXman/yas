@@ -10,7 +10,7 @@ configuration:
   - Release
 
 build_script:
-  - dir "C:/"
+  - dir "C:/Packages"
   - cd ../yas/tests/base
   - echo Build for %platform%-%configuration%
   - mkdir build
