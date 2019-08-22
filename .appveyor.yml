@@ -1,6 +1,6 @@
 image:
-  - Visual Studio 2017
   - Visual Studio 2019
+  - Visual Studio 2017
 
 platform:
   - x64
@@ -10,7 +10,7 @@ configuration:
   - Release
 
 build_script:
-#  - dir "C:/Libraries/boost_1_66_0"
+  - dir "C:/Libraries/boost_1_66_0"
   - cd ../yas/tests/base
   - echo Build for %platform%-%configuration%
   - mkdir build
