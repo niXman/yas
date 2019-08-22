@@ -26,7 +26,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
         set(COMPILER_BITS 32)
     endif()
 
-    message("TOOLSET=", ${MSVC_TOOLSET_VERSION})
+    message("TOOLSET=" ${MSVC_TOOLSET_VERSION})
     if (${MSVC_TOOLSET_VERSION} EQUAL 142)
         message("MSVC-2019")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /bigobj")
