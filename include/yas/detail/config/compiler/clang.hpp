@@ -54,6 +54,10 @@
 #	define __YAS_NETWORK_TO_LOCAL64(src) (src)
 #endif // ifdef __YAS_LITTLE_ENDIAN
 
+#ifndef __YAS_FALLTHROUGH
+#   define __YAS_FALLTHROUGH [[clang::fallthrough]]
+#endif // __YAS_FALLTHROUGH
+
 /***************************************************************************/
 
 #endif // __yas__detail__config__compiler__clang_hpp

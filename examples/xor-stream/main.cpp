@@ -37,9 +37,12 @@
 #include <yas/text_oarchive.hpp>
 #include <yas/text_iarchive.hpp>
 #include <yas/std_types.hpp>
-#include <yas/hexdump.hpp>
+#include <yas/tools/hexdump.hpp>
 
 #include <iostream>
+
+#undef NDEBUG
+#include <cassert>
 
 /***************************************************************************/
 
@@ -100,9 +103,7 @@ int main() {
     yas::text_iarchive<my_istream> ia(is);
     ia & YAS_OBJECT_NVP("object", ("v", dst));
 
-    if ( src != dst ) {
-        YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
-    }
+    assert(src == dst);
 }
 
 /***************************************************************************/

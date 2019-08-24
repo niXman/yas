@@ -78,26 +78,26 @@ T default_traits::atou(const char *str_, std::size_t size) {
 	const std::uint8_t *str = __YAS_RCAST(const std::uint8_t *, str_);
 	std::uint64_t v= 0;
 	switch ( size ) {
-		case 20: v = __YAS_SCAST(T, v+(str[size-20]-'0')*10000000000000000000ull); // fallthrough
-		case 19: v = __YAS_SCAST(T, v+(str[size-19]-'0')*1000000000000000000ull); // fallthrough
-		case 18: v = __YAS_SCAST(T, v+(str[size-18]-'0')*100000000000000000ull); // fallthrough
-		case 17: v = __YAS_SCAST(T, v+(str[size-17]-'0')*10000000000000000ull); // fallthrough
-		case 16: v = __YAS_SCAST(T, v+(str[size-16]-'0')*1000000000000000ull); // fallthrough
-		case 15: v = __YAS_SCAST(T, v+(str[size-15]-'0')*100000000000000ull); // fallthrough
-		case 14: v = __YAS_SCAST(T, v+(str[size-14]-'0')*10000000000000ull); // fallthrough
-		case 13: v = __YAS_SCAST(T, v+(str[size-13]-'0')*1000000000000ull); // fallthrough
-		case 12: v = __YAS_SCAST(T, v+(str[size-12]-'0')*100000000000ull); // fallthrough
-		case 11: v = __YAS_SCAST(T, v+(str[size-11]-'0')*10000000000ull); // fallthrough
-		case 10: v = __YAS_SCAST(T, v+(str[size-10]-'0')*1000000000ull); // fallthrough
-		case  9: v = __YAS_SCAST(T, v+(str[size- 9]-'0')*100000000ull); // fallthrough
-		case  8: v = __YAS_SCAST(T, v+(str[size- 8]-'0')*10000000ull); // fallthrough
-		case  7: v = __YAS_SCAST(T, v+(str[size- 7]-'0')*1000000ull); // fallthrough
-		case  6: v = __YAS_SCAST(T, v+(str[size- 6]-'0')*100000ull); // fallthrough
-		case  5: v = __YAS_SCAST(T, v+(str[size- 5]-'0')*10000ull); // fallthrough
-		case  4: v = __YAS_SCAST(T, v+(str[size- 4]-'0')*1000ull); // fallthrough
-		case  3: v = __YAS_SCAST(T, v+(str[size- 3]-'0')*100ull); // fallthrough
-		case  2: v = __YAS_SCAST(T, v+(str[size- 2]-'0')*10ull); // fallthrough
-		case  1: v = __YAS_SCAST(T, v+(str[size- 1]-'0')*1ull); // fallthrough
+        case 20: v = __YAS_SCAST(T, v+(str[size-20]-'0')*10000000000000000000ull); __YAS_FALLTHROUGH;
+        case 19: v = __YAS_SCAST(T, v+(str[size-19]-'0')*1000000000000000000ull); __YAS_FALLTHROUGH;
+        case 18: v = __YAS_SCAST(T, v+(str[size-18]-'0')*100000000000000000ull); __YAS_FALLTHROUGH;
+        case 17: v = __YAS_SCAST(T, v+(str[size-17]-'0')*10000000000000000ull); __YAS_FALLTHROUGH;
+        case 16: v = __YAS_SCAST(T, v+(str[size-16]-'0')*1000000000000000ull); __YAS_FALLTHROUGH;
+        case 15: v = __YAS_SCAST(T, v+(str[size-15]-'0')*100000000000000ull); __YAS_FALLTHROUGH;
+        case 14: v = __YAS_SCAST(T, v+(str[size-14]-'0')*10000000000000ull); __YAS_FALLTHROUGH;
+        case 13: v = __YAS_SCAST(T, v+(str[size-13]-'0')*1000000000000ull); __YAS_FALLTHROUGH;
+        case 12: v = __YAS_SCAST(T, v+(str[size-12]-'0')*100000000000ull); __YAS_FALLTHROUGH;
+        case 11: v = __YAS_SCAST(T, v+(str[size-11]-'0')*10000000000ull); __YAS_FALLTHROUGH;
+        case 10: v = __YAS_SCAST(T, v+(str[size-10]-'0')*1000000000ull); __YAS_FALLTHROUGH;
+        case  9: v = __YAS_SCAST(T, v+(str[size- 9]-'0')*100000000ull); __YAS_FALLTHROUGH;
+        case  8: v = __YAS_SCAST(T, v+(str[size- 8]-'0')*10000000ull); __YAS_FALLTHROUGH;
+        case  7: v = __YAS_SCAST(T, v+(str[size- 7]-'0')*1000000ull); __YAS_FALLTHROUGH;
+        case  6: v = __YAS_SCAST(T, v+(str[size- 6]-'0')*100000ull); __YAS_FALLTHROUGH;
+        case  5: v = __YAS_SCAST(T, v+(str[size- 5]-'0')*10000ull); __YAS_FALLTHROUGH;
+        case  4: v = __YAS_SCAST(T, v+(str[size- 4]-'0')*1000ull); __YAS_FALLTHROUGH;
+        case  3: v = __YAS_SCAST(T, v+(str[size- 3]-'0')*100ull); __YAS_FALLTHROUGH;
+        case  2: v = __YAS_SCAST(T, v+(str[size- 2]-'0')*10ull); __YAS_FALLTHROUGH;
+        case  1: v = __YAS_SCAST(T, v+(str[size- 1]-'0')*1ull);
         default: break;
 	}
 
@@ -131,26 +131,26 @@ std::size_t default_traits::utoa(char *buf, const std::size_t, T v) {
 	*(buf+len) = 0;
 	char *p = buf+len-1;
 	switch ( len ) {
-		case 20: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 19: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 18: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 17: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 16: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 15: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 14: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 13: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 12: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 11: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 10: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 9 : *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 8 : *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 7 : *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 6 : *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 5 : *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 4 : *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 3 : *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 2 : *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
-		case 1 : *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; // fallthrough
+        case 20: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; __YAS_FALLTHROUGH;
+        case 19: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; __YAS_FALLTHROUGH;
+        case 18: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; __YAS_FALLTHROUGH;
+        case 17: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; __YAS_FALLTHROUGH;
+        case 16: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; __YAS_FALLTHROUGH;
+        case 15: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; __YAS_FALLTHROUGH;
+        case 14: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; __YAS_FALLTHROUGH;
+        case 13: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; __YAS_FALLTHROUGH;
+        case 12: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; __YAS_FALLTHROUGH;
+        case 11: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; __YAS_FALLTHROUGH;
+        case 10: *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; __YAS_FALLTHROUGH;
+        case 9 : *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; __YAS_FALLTHROUGH;
+        case 8 : *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; __YAS_FALLTHROUGH;
+        case 7 : *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; __YAS_FALLTHROUGH;
+        case 6 : *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; __YAS_FALLTHROUGH;
+        case 5 : *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; __YAS_FALLTHROUGH;
+        case 4 : *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; __YAS_FALLTHROUGH;
+        case 3 : *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; __YAS_FALLTHROUGH;
+        case 2 : *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10; __YAS_FALLTHROUGH;
+        case 1 : *p-- = __YAS_SCAST(char, '0'+(n % 10)); n /= 10;
         default: break;
 	}
 

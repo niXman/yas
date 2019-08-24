@@ -54,6 +54,14 @@
 #	define __YAS_NETWORK_TO_LOCAL64(src) (src)
 #endif // ifdef __YAS_LITTLE_ENDIAN
 
+#ifndef __YAS_FALLTHROUGH
+#   if __GNUC__ >= 7
+#      define __YAS_FALLTHROUGH __attribute__ ((fallthrough))
+#   else
+#      define __YAS_FALLTHROUGH
+#   endif /* __GNUC__ >= 7 */
+#endif // __YAS_FALLTHROUGH
+
 /***************************************************************************/
 
 #endif // __yas__detail__config__compiler__gcc_hpp

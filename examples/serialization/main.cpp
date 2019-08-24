@@ -37,6 +37,9 @@
 #include <yas/binary_iarchive.hpp>
 #include <yas/binary_oarchive.hpp>
 
+#undef NDEBUG
+#include <cassert>
+
 /***************************************************************************/
 
 int main() {
@@ -70,9 +73,8 @@ int main() {
         );
         ia.serialize(io);
 
-        if ( r0 != w0 || r1 != w1 || r2 != w2 || r3 != w3) {
-            YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
-        }
+        // TODO: stackoverflow.com/questions/17333
+        assert(r0 == w0 && r1 == w1 && r2 == w2 && r3 == w3);
     }
 
     r0=0;r1=0;r2=0;r3=0;
@@ -101,9 +103,8 @@ int main() {
         );
         ia(io);
 
-        if ( r0 != w0 || r1 != w1 || r2 != w2 || r3 != w3) {
-            YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
-        }
+        // TODO: stackoverflow.com/questions/17333
+        assert(r0 == w0 && r1 == w1 && r2 == w2 && r3 == w3);
     }
 }
 

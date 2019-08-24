@@ -39,21 +39,22 @@
 /***************************************************************************/
 
 #if defined(_MSC_VER)
-#  if _MSC_VER < 1900
-#   error "Visual Studio 2015 or greater is required"
-#  endif
+#   if _MSC_VER < 1900
+#       error "Visual Studio 2015 or greater is required"
+#   endif
 #else
-# if __cplusplus < 201103L
-#  error "C++11 or greater is required"
-# endif
+#   if __cplusplus < 201103L
+#       error "C++11 or greater is required"
+#   endif
 #endif
 
 /***************************************************************************/
 
 #if __cplusplus >= 201703L
-#define __YAS_CONSTEXPR_IF(...) if constexpr ( static_cast<bool>(__VA_ARGS__) )
+#   define __YAS_CONSTEXPR_IF(...) if constexpr ( static_cast<bool>(__VA_ARGS__) )
+#   define __YAS_FALLTHROUGH [[fallthrough]]
 #else
-#define __YAS_CONSTEXPR_IF(...) if (__VA_ARGS__)
+#   define __YAS_CONSTEXPR_IF(...) if (__VA_ARGS__)
 #endif
 
 /***************************************************************************/
@@ -71,15 +72,15 @@
 #include <yas/detail/config/endian.hpp>
 
 #if defined(__clang__)
-#  define __YAS_COMPILER_CONFIG <yas/detail/config/compiler/clang.hpp>
+#   define __YAS_COMPILER_CONFIG <yas/detail/config/compiler/clang.hpp>
 #elif defined(__GNUC__)
-#  define __YAS_COMPILER_CONFIG <yas/detail/config/compiler/gcc.hpp>
+#   define __YAS_COMPILER_CONFIG <yas/detail/config/compiler/gcc.hpp>
 #elif defined(__INTEL_COMPILER) || defined(__ICL) || defined(__ICC) || defined(__ECC)
-#  define __YAS_COMPILER_CONFIG <yas/detail/config/compiler/intel.hpp>
+#   define __YAS_COMPILER_CONFIG <yas/detail/config/compiler/intel.hpp>
 #elif defined(_MSC_VER)
-#  define __YAS_COMPILER_CONFIG <yas/detail/config/compiler/msvc.hpp>
+#   define __YAS_COMPILER_CONFIG <yas/detail/config/compiler/msvc.hpp>
 #else
-#  error "Unknown compiler"
+#   error "Unknown compiler"
 #endif
 
 #include __YAS_COMPILER_CONFIG

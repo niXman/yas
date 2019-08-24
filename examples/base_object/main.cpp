@@ -35,6 +35,9 @@
 
 #include <yas/serialize.hpp>
 
+#undef NDEBUG
+#include <cassert>
+
 /***************************************************************************/
 
 struct base {
@@ -77,9 +80,7 @@ int main() {
 
     yas::load<flags>(buf, t2);
 
-    if ( t2.x != 33 || t2.y != 44 ) {
-        YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
-    }
+    assert(t2.x == 33 && t2.y == 44);
 }
 
 /***************************************************************************/

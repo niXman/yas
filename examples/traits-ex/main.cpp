@@ -38,60 +38,64 @@
 #include <yas/text_oarchive.hpp>
 
 #include <iostream>
-#include <inttypes.h>
+
+#undef NDEBUG
+#include <cassert>
+
+#include <inttypes.h> // for PRId64/PRIu64
 
 /***************************************************************************/
 
 struct my_traits {
     // integer -> c-string
     template<typename T>
-    static std::size_t itoa(char *buf, const std::size_t bufsize, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t)) {
+    static std::size_t itoa(char *buf, const std::size_t bufsize, const T v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t)) {
         return std::snprintf(buf, bufsize, "%d", (v+2));
     }
     template<typename T>
-    static std::size_t itoa(char *buf, const std::size_t bufsize, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t)) {
+    static std::size_t itoa(char *buf, const std::size_t bufsize, const T v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t)) {
         return std::snprintf(buf, bufsize, "%d", (v+6));
     }
     template<typename T>
-    static std::size_t itoa(char *buf, const std::size_t bufsize, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t)) {
+    static std::size_t itoa(char *buf, const std::size_t bufsize, const T v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t)) {
         return std::snprintf(buf, bufsize, "%" PRId64, (v+10));
     }
     template<typename T>
-    static std::size_t utoa(char *buf, const std::size_t bufsize, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t)) {
+    static std::size_t utoa(char *buf, const std::size_t bufsize, const T v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t)) {
         return std::snprintf(buf, bufsize, "%u", (v+4));
     }
     template<typename T>
-    static std::size_t utoa(char *buf, const std::size_t bufsize, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint32_t)) {
+    static std::size_t utoa(char *buf, const std::size_t bufsize, const T v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint32_t)) {
         return std::snprintf(buf, bufsize, "%u", (v+8));
     }
     template<typename T>
-    static std::size_t utoa(char *buf, const std::size_t bufsize, const T v, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint64_t)) {
+    static std::size_t utoa(char *buf, const std::size_t bufsize, const T v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint64_t)) {
         return std::snprintf(buf, bufsize, "%" PRIu64, (v+12));
     }
 
     // c-string -> integer
     template<typename T>
-    static T atoi(const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t)) {
+    static T atoi(const char *str, std::size_t, __YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t)) {
         return std::strtol(str, 0, 10);
     }
     template<typename T>
-    static T atoi(const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t)) {
+    static T atoi(const char *str, std::size_t, __YAS_ENABLE_IF_IS_ANY_OF(T, std::int32_t)) {
         return std::strtol(str, 0, 10);
     }
     template<typename T>
-    static T atoi(const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t)) {
+    static T atoi(const char *str, std::size_t, __YAS_ENABLE_IF_IS_ANY_OF(T, std::int64_t)) {
         return std::strtol(str, 0, 10);
     }
     template<typename T>
-    static T atou(const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t)) {
+    static T atou(const char *str, std::size_t, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t)) {
         return std::strtoul(str, 0, 10);
     }
     template<typename T>
-    static T atou(const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint32_t)) {
+    static T atou(const char *str, std::size_t, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint32_t)) {
         return std::strtoul(str, 0, 10);
     }
     template<typename T>
-    static T atou(const char *str, std::size_t, YAS_ENABLE_IF_IS_ANY_OF(T, std::uint64_t)) {
+    static T atou(const char *str, std::size_t, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint64_t)) {
         return std::strtoul(str, 0, 10);
     }
 }; // struct my_traits
@@ -118,9 +122,7 @@ void test(T val, T expected) {
     > ia(is);
     ia & YAS_OBJECT_NVP("object", ("v", dst));
 
-    if ( dst != expected ) {
-        YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
-    }
+    assert(dst == expected);
 }
 
 /***************************************************************************/

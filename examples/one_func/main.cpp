@@ -36,6 +36,9 @@
 #include <yas/serialize.hpp>
 #include <yas/std_types.hpp>
 
+#undef NDEBUG
+#include <cassert>
+
 /***************************************************************************/
 
 struct type {
@@ -79,9 +82,8 @@ int main() {
 
     yas::load<flags>(buf, t2);
 
-    if ( t1.i != t2.i || t1.d != t2.d || t1.s != t2.s || t1.v != t2.v ) {
-        YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
-    }
+    // TODO: stackoverflow.com/questions/17333
+    assert(t1.i == t2.i && t1.d == t2.d && t1.s == t2.s && t1.v == t2.v);
 }
 
 /***************************************************************************/

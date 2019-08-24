@@ -38,6 +38,9 @@
 #include <yas/text_oarchive.hpp>
 #include <yas/text_iarchive.hpp>
 
+#undef NDEBUG
+#include <cassert>
+
 /***************************************************************************/
 
 struct my_ostream {
@@ -75,6 +78,7 @@ struct my_istream {
         return size;
     }
 
+    bool empty() const { return cur == end; }
     char peekch() const { return *cur; }
     char getch() { return *cur++; }
     void ungetch(char) { --cur; }
@@ -97,9 +101,7 @@ int main() {
     yas::text_iarchive<my_istream> ia(is);
     ia & YAS_OBJECT_NVP("object", ("v", v1));
 
-    if ( v0 != v1 ) {
-        YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
-    }
+    assert(v0 == v1);
 }
 
 /***************************************************************************/

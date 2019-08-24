@@ -35,6 +35,9 @@
 
 #include <yas/serialize.hpp>
 
+#undef NDEBUG
+#include <cassert>
+
 /***************************************************************************/
 
 struct my_traits {
@@ -60,9 +63,7 @@ int main() {
 
     yas::load<flags>(buf, YAS_OBJECT_NVP("object", ("v", dst)));
 
-    if ( src != dst ) {
-        YAS_THROW_EXCEPTION(std::runtime_error, "bad value");
-    }
+    assert(src == dst);
 }
 
 /***************************************************************************/
