@@ -47,8 +47,7 @@ namespace detail {
 
 constexpr std::uint32_t fnv1a(std::nullptr_t) { return 0; }
 
-#if __cplusplus >= 201402L
-#if !defined(_MSC_VER)
+#if __cplusplus >= 201402L && !defined(_MSC_VER)
 
 template<typename CharT>
 constexpr std::uint32_t fnv1a(const CharT *s) {
@@ -62,8 +61,8 @@ constexpr std::uint32_t fnv1a(const CharT *s) {
 
     return seed;
 }
-#endif // !defined(_MSC_VER)
-#else
+
+#else // __cplusplus < 201402L
 
 template<typename CharT>
 constexpr std::uint32_t fnv1a(const CharT *s, std::uint32_t h = 0x811c9dc5) {
