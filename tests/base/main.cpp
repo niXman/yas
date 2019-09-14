@@ -80,34 +80,6 @@
 #include "include/fundamental.hpp"
 #include "include/compacted_storage_size.hpp"
 #include "include/header.hpp"
-
-#if defined(YAS_SERIALIZE_BOOST_TYPES)
-#include "include/boost_fusion_list.hpp"
-#include "include/boost_fusion_map.hpp"
-#include "include/boost_fusion_pair.hpp"
-#include "include/boost_fusion_set.hpp"
-#include "include/boost_fusion_tuple.hpp"
-#include "include/boost_fusion_vector.hpp"
-#include "include/boost_cont_string.hpp"
-#include "include/boost_cont_wstring.hpp"
-#include "include/boost_cont_vector.hpp"
-#include "include/boost_cont_static_vector.hpp"
-#include "include/boost_cont_stable_vector.hpp"
-#include "include/boost_cont_list.hpp"
-#include "include/boost_cont_slist.hpp"
-#include "include/boost_cont_map.hpp"
-#include "include/boost_cont_multimap.hpp"
-#include "include/boost_cont_set.hpp"
-#include "include/boost_cont_multiset.hpp"
-#include "include/boost_cont_flat_map.hpp"
-#include "include/boost_cont_flat_multimap.hpp"
-#include "include/boost_cont_flat_set.hpp"
-#include "include/boost_cont_flat_multiset.hpp"
-#include "include/boost_cont_deque.hpp"
-#include "include/boost_tuple.hpp"
-#include "include/boost_variant.hpp"
-#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
-
 #include "include/list.hpp"
 #include "include/map.hpp"
 #include "include/multimap.hpp"
@@ -136,6 +108,35 @@
 #include "include/serialization.hpp"
 #include "include/yas_object.hpp"
 #include "include/json_conformance.hpp"
+
+#if defined(YAS_SERIALIZE_BOOST_TYPES)
+#include "include/boost_fusion_list.hpp"
+#include "include/boost_fusion_map.hpp"
+#include "include/boost_fusion_pair.hpp"
+#include "include/boost_fusion_set.hpp"
+#include "include/boost_fusion_tuple.hpp"
+#include "include/boost_fusion_vector.hpp"
+#include "include/boost_cont_string.hpp"
+#include "include/boost_cont_wstring.hpp"
+#include "include/boost_cont_vector.hpp"
+#include "include/boost_cont_static_vector.hpp"
+#include "include/boost_cont_stable_vector.hpp"
+#include "include/boost_cont_list.hpp"
+#include "include/boost_cont_slist.hpp"
+#include "include/boost_cont_map.hpp"
+#include "include/boost_cont_multimap.hpp"
+#include "include/boost_cont_set.hpp"
+#include "include/boost_cont_multiset.hpp"
+#include "include/boost_cont_flat_map.hpp"
+#include "include/boost_cont_flat_multimap.hpp"
+#include "include/boost_cont_flat_set.hpp"
+#include "include/boost_cont_flat_multiset.hpp"
+#include "include/boost_cont_deque.hpp"
+#include "include/boost_tuple.hpp"
+#include "include/boost_variant.hpp"
+#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
+
+/***************************************************************************/
 
 #include <iostream>
 #include <fstream>

@@ -53,7 +53,7 @@ bool compacted_storage_size_test(std::ostream &log, const char *archive_type, co
         std::uint16_t out2{};
 
         auto o0 = YAS_OBJECT(
-            nullptr
+             nullptr
             ,in1
             ,in2
         );
@@ -64,7 +64,7 @@ bool compacted_storage_size_test(std::ostream &log, const char *archive_type, co
             archive_traits::icreate(ia, oa, archive_type);
 
             auto i0 = YAS_OBJECT_NVP(
-                nullptr
+                 nullptr
                 ,("in1", out1)
                 ,("in2", out2)
             );

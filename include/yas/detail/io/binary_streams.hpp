@@ -65,13 +65,13 @@ struct binary_ostream {
     }
 
     template<typename T>
-    void write(T v, __YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char, bool)) {
+    void write(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char, unsigned char, bool)) {
         __YAS_THROW_WRITE_ERROR(sizeof(v) != os.write(&v, sizeof(v)));
     }
 
     // for signed
     template<typename T>
-    void write(T v, __YAS_ENABLE_IF_IS_SIGNED_INTEGER(T)) {
+    void write(const T &v, __YAS_ENABLE_IF_IS_SIGNED_INTEGER(T)) {
         __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
             if ( v >= 0 ) {
                 typename std::make_unsigned<T>::type uv = v;
@@ -97,14 +97,14 @@ struct binary_ostream {
                 }
             }
         } else {
-            v = endian_converter<__YAS_BSWAP_NEEDED(F)>::bswap(v);
-            __YAS_THROW_WRITE_ERROR(sizeof(v) != os.write(&v, sizeof(v)));
+            T t = endian_converter<__YAS_BSWAP_NEEDED(F)>::bswap(v);
+            __YAS_THROW_WRITE_ERROR(sizeof(t) != os.write(&t, sizeof(t)));
         }
     }
 
     // for unsigned
     template<typename T>
-    void write(T v, __YAS_ENABLE_IF_IS_UNSIGNED_INTEGER(T)) {
+    void write(const T &v, __YAS_ENABLE_IF_IS_UNSIGNED_INTEGER(T)) {
         __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
             if ( v >= (1u<<7) ) {
                 const std::uint8_t ns = storage_size(v);
@@ -112,12 +112,13 @@ struct binary_ostream {
                 __YAS_THROW_WRITE_ERROR(ns != os.write(&v, ns));
             } else {
                 // one byte
-                v |= __YAS_SCAST(std::uint8_t, 1u<<7);
-                __YAS_THROW_WRITE_ERROR(1 != os.write(&v, 1));
+                T t{v};
+                t |= __YAS_SCAST(std::uint8_t, 1u<<7);
+                __YAS_THROW_WRITE_ERROR(1 != os.write(&t, 1));
             }
         } else {
-            v = endian_converter<__YAS_BSWAP_NEEDED(F)>::bswap(v);
-            __YAS_THROW_WRITE_ERROR(sizeof(v) != os.write(&v, sizeof(v)));
+            T t = endian_converter<__YAS_BSWAP_NEEDED(F)>::bswap(v);
+            __YAS_THROW_WRITE_ERROR(sizeof(t) != os.write(&t, sizeof(t)));
         }
     }
 

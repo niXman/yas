@@ -80,8 +80,8 @@ struct binary_oarchive
     this_type& operator& (const T &v) {
         using namespace detail;
         return serializer<
-             type_properties<T>::value
-            ,serialization_method<T, this_type>::value
+             detail::type_properties<T>::value
+            ,detail::serialization_method<T, this_type>::value
             ,F
             ,T
         >::save(*this, v);
@@ -103,7 +103,6 @@ struct binary_oarchive
     this_type& save(const Args&... args) {
         return serialize(args...);
     }
-
 };
 
 /***************************************************************************/

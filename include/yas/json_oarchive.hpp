@@ -63,48 +63,47 @@ namespace yas {
 
 template<typename OS, std::size_t F = json|ehost, typename Trait = yas::default_traits>
 struct json_oarchive
-	:detail::json_ostream<OS, F, Trait>
-	,detail::oarchive_header<F>
+    :detail::json_ostream<OS, F, Trait>
+    ,detail::oarchive_header<F>
 {
-	YAS_NONCOPYABLE(json_oarchive)
-	YAS_MOVABLE(json_oarchive)
+    YAS_NONCOPYABLE(json_oarchive)
+    YAS_MOVABLE(json_oarchive)
 
-	using stream_type = OS;
-	using this_type = json_oarchive<OS, F, Trait>;
+    using stream_type = OS;
+    using this_type = json_oarchive<OS, F, Trait>;
 
-	json_oarchive(OS &os)
-		:detail::json_ostream<OS, F, Trait>(os)
-		,detail::oarchive_header<F>(os)
-	{}
+    json_oarchive(OS &os)
+        :detail::json_ostream<OS, F, Trait>(os)
+        ,detail::oarchive_header<F>(os)
+    {}
 
-	template<typename T>
-	this_type& operator& (const T &v) {
-		using namespace detail;
-		return serializer<
-			 type_properties<T>::value
-			,serialization_method<T, this_type>::value
-			,F
-			,T
-		>::save(*this, v);
-	}
+    template<typename T>
+    this_type& operator& (const T &v) {
+        using namespace detail;
+        return serializer<
+             detail::type_properties<T>::value
+            ,detail::serialization_method<T, this_type>::value
+            ,F
+            ,T
+        >::save(*this, v);
+    }
 
-	this_type& serialize() { return *this; }
+    this_type& serialize() { return *this; }
 
-	template<typename Head, typename... Tail>
-	this_type& serialize(const Head& head, const Tail&... tail) {
-		return operator&(head).serialize(tail...);
-	}
+    template<typename Head, typename... Tail>
+    this_type& serialize(const Head& head, const Tail&... tail) {
+        return operator&(head).serialize(tail...);
+    }
 
-	template<typename... Args>
-	this_type& operator()(const Args&... args) {
-		return serialize(args...);
-	}
+    template<typename... Args>
+    this_type& operator()(const Args&... args) {
+        return serialize(args...);
+    }
 
-	template<typename... Args>
-	this_type& save(const Args&... args) {
-		return serialize(args...);
-	}
-
+    template<typename... Args>
+    this_type& save(const Args&... args) {
+        return serialize(args...);
+    }
 };
 
 /***************************************************************************/

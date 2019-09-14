@@ -53,7 +53,7 @@ struct type {
 
 	template<typename Archive>
 	void serialize(Archive& ar) {
-		ar & YAS_OBJECT_NVP("type", ("x", x), ("y", y));
+		ar & YAS_OBJECT("type", x, y);
 		_flag = true;
 	}
 };

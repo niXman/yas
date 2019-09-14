@@ -66,47 +66,47 @@ struct json_iarchive
 	:detail::json_istream<IS, F, Trait>
 	,detail::iarchive_header<F>
 {
-	YAS_NONCOPYABLE(json_iarchive)
+    YAS_NONCOPYABLE(json_iarchive)
     YAS_MOVABLE(json_iarchive)
 
-	using stream_type = IS;
-	using this_type = json_iarchive<IS, F, Trait>;
+    using stream_type = IS;
+    using this_type = json_iarchive<IS, F, Trait>;
 
-	json_iarchive(IS &is)
-		:detail::json_istream<IS, F, Trait>(is)
-		,detail::iarchive_header<F>(is)
-	{}
+    json_iarchive(IS &is)
+        :detail::json_istream<IS, F, Trait>(is)
+        ,detail::iarchive_header<F>(is)
+    {}
 
-	template<typename T>
-	this_type& operator& (T &&v) {
-		using namespace detail;
-		using real_type = typename std::remove_reference<
-			typename std::remove_const<T>::type
-		>::type;
-		return serializer<
-			 type_properties<real_type>::value
-			,serialization_method<real_type, this_type>::value
-			,F
-			,real_type
-		>::load(*this, v);
-	}
+    template<typename T>
+    this_type& operator& (T &&v) {
+        using namespace detail;
+        using real_type = typename std::remove_reference<
+            typename std::remove_const<T>::type
+        >::type;
+        return serializer<
+             detail::type_properties<real_type>::value
+            ,detail::serialization_method<real_type, this_type>::value
+            ,F
+            ,real_type
+        >::load(*this, v);
+    }
 
-	this_type& serialize() { return *this; }
+    this_type& serialize() { return *this; }
 
-	template<typename Head, typename... Tail>
-	this_type& serialize(Head &&head, Tail &&... tail) {
-		return operator&(std::forward<Head>(head)).serialize(std::forward<Tail>(tail)...);
-	}
+    template<typename Head, typename... Tail>
+    this_type& serialize(Head &&head, Tail &&... tail) {
+        return operator&(std::forward<Head>(head)).serialize(std::forward<Tail>(tail)...);
+    }
 
-	template<typename... Args>
-	this_type& operator()(Args&&... args) {
-		return serialize(std::forward<Args>(args)...);
-	}
+    template<typename... Args>
+    this_type& operator()(Args&&... args) {
+        return serialize(std::forward<Args>(args)...);
+    }
 
-	template<typename... Args>
-	this_type& load(Args&&... args) {
-		return serialize(std::forward<Args>(args)...);
-	}
+    template<typename... Args>
+    this_type& load(Args&&... args) {
+        return serialize(std::forward<Args>(args)...);
+    }
 };
 
 /***************************************************************************/

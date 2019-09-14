@@ -45,13 +45,13 @@ extern void serialize(int&);
 
 /***************************************************************************/
 
-template<bool is_pod, bool is_enum, typename T, typename T2>
+template<bool is_pod, bool is_enum, typename Ar, typename T>
 struct has_function_const_serialize {
 	static const bool value = false;
 };
 
-template<typename T, typename T2>
-struct has_function_const_serialize<false, false, T, T2> {
+template<typename Ar, typename T>
+struct has_function_const_serialize<false, false, Ar, T> {
 	typedef char (&yes) [1];
 	typedef char (&no)  [2];
 
@@ -61,18 +61,18 @@ struct has_function_const_serialize<false, false, T, T2> {
 	template<typename U, typename U2>
 	static no check(...);
 
-	enum { value = sizeof(check<T, T2>(0)) == sizeof(yes) };
+	enum { value = sizeof(check<Ar, T>(0)) == sizeof(yes) };
 };
 
 /***************************************************************************/
 
-template<bool is_pod, bool is_enum, typename T, typename T2>
+template<bool is_pod, bool is_enum, typename Ar, typename T>
 struct has_function_serialize {
 	static const bool value = false;
 };
 
-template<typename T, typename T2>
-struct has_function_serialize<false, false, T, T2> {
+template<typename Ar, typename T>
+struct has_function_serialize<false, false, Ar, T> {
 	typedef char (&yes) [1];
 	typedef char (&no)  [2];
 
@@ -82,7 +82,7 @@ struct has_function_serialize<false, false, T, T2> {
 	template<typename U, typename U2>
 	static no check(...);
 
-	enum { value = sizeof(check<T, T2>(0)) == sizeof(yes) };
+	enum { value = sizeof(check<Ar, T>(0)) == sizeof(yes) };
 };
 
 /***************************************************************************/
