@@ -83,61 +83,61 @@ private:
 	class Helper {};
 
 	template<typename U>
-	static no deduce(U*, Helper<void(base_mixin::*)(), &U::serialize>* = 0);
+	static no deduce(const U&, Helper<void(base_mixin::*)(), &U::serialize>* = 0);
 	static yes deduce(...);
 
 public:
-	enum { value = sizeof(yes) == sizeof(deduce(__YAS_SCAST(base*, nullptr))) };
+	enum { value = sizeof(yes) == sizeof(deduce(std::declval<base>())) };
 };
 
 /***************************************************************************/
 
-template<bool is_pod, bool is_enum, typename Object, typename Sig>
+template<bool is_pod, bool is_enum, typename Ar, typename T>
 struct has_memfn_serializer: std::false_type {};
 
-template<typename Object, typename Sig>
-struct has_memfn_serializer<false, false, Object, Sig> {
+template<typename Ar, typename T>
+struct has_memfn_serializer<false, false, Ar, T> {
 private:
 	class yes {};
 	class no { yes m[2]; };
 
-	struct derived: Object {
-		using Object::serialize;
+	struct derived: T {
+		using T::serialize;
 		no serialize(...) const;
 	};
 
-	typedef typename detail::clone_constness<Object, derived>::type derived_type;
+	using derived_type = typename detail::clone_constness<T, derived>::type;
 
-	template <typename T, typename due_type>
+	template <typename U, typename due_type>
 	struct return_value_check {
 		static yes deduce(due_type);
 		static no deduce(...);
 		static no deduce(no);
-		static no deduce(detail::void_exp_result<Object>);
+		static no deduce(detail::void_exp_result<T>);
 	};
 
-	template <typename T>
-	struct return_value_check<T, void> {
+	template <typename U>
+	struct return_value_check<U, void> {
 		static yes deduce(...);
 		static no deduce(no);
 	};
 
-	template <bool has, typename R>
+	template <bool has, typename>
 	struct impl {
 		enum { value = false };
 	};
 
-	template <typename Arg1, typename R>
-	struct impl<true, R(Arg1)> {
+	template <typename UAr>
+	struct impl<true, UAr> {
 		enum {
-			value = sizeof(return_value_check<Object, R>::deduce((
-				(__YAS_SCAST(derived_type*, nullptr))->serialize(*__YAS_SCAST(Arg1*, nullptr)), detail::void_exp_result<Object>()
+			value = sizeof(return_value_check<T, void>::deduce((
+				std::declval<derived_type>().serialize(std::declval<UAr>()), detail::void_exp_result<T>()
 			))) == sizeof(yes)
 		};
 	};
 
 public:
-	static const bool value = impl<detail::has_memfn<Object>::value, Sig>::value;
+	static const bool value = impl<detail::has_memfn<T>::value, void(Ar)>::value;
 };
 
 /***************************************************************************/
@@ -158,61 +158,61 @@ private:
 	class Helper {};
 
 	template<typename U>
-	static no deduce(U*, Helper<void(base_mixin::*)(), &U::serialize>* = 0);
+	static no deduce(const U&, Helper<void(base_mixin::*)(), &U::serialize>* = 0);
 	static yes deduce(...);
 
 public:
-	enum { value = sizeof(yes) == sizeof(deduce(__YAS_SCAST(base*, nullptr))) };
+	enum { value = sizeof(yes) == sizeof(deduce(std::declval<base>())) };
 };
 
 /***************************************************************************/
 
-template<bool is_pod, bool is_enum, typename Object, typename Sig>
+template<bool is_pod, bool is_enum, typename Ar, typename T>
 struct has_const_memfn_serializer: std::false_type {};
 
-template<typename Object, typename Sig>
-struct has_const_memfn_serializer<false, false, Object, Sig> {
+template<typename Ar, typename T>
+struct has_const_memfn_serializer<false, false, Ar, T> {
 private:
 	class yes {};
 	class no { yes m[2]; };
 
-	struct derived: Object {
-		using Object::serialize;
+	struct derived: T {
+		using T::serialize;
 		no serialize(...) const;
 	};
 
-	typedef typename detail::clone_constness<Object, derived>::type derived_type;
+	using derived_type = typename detail::clone_constness<T, derived>::type;
 
-	template <typename T, typename due_type>
+	template <typename U, typename due_type>
 	struct return_value_check {
 		static yes deduce(due_type);
 		static no deduce(...);
 		static no deduce(no);
-		static no deduce(detail::void_exp_result<Object>);
+		static no deduce(detail::void_exp_result<T>);
 	};
 
-	template <typename T>
-	struct return_value_check<T, void> {
+	template <typename U>
+	struct return_value_check<U, void> {
 		static yes deduce(...);
 		static no deduce(no);
 	};
 
-	template <bool has, typename R>
+	template <bool has, typename>
 	struct impl {
 		enum { value = false };
 	};
 
-	template <typename Arg1, typename R>
-	struct impl<true, R(Arg1)> {
+	template <typename UAr>
+	struct impl<true, UAr> {
 		enum {
-			value = sizeof(return_value_check<Object, R>::deduce((
-				(__YAS_SCAST(const derived_type*, nullptr))->serialize(*__YAS_SCAST(Arg1*, nullptr)), detail::void_exp_result<Object>()
+			value = sizeof(return_value_check<T, void>::deduce((
+			    std::declval<const derived_type>().serialize(std::declval<UAr>()), detail::void_exp_result<T>()
 			))) == sizeof(yes)
 		};
 	};
 
 public:
-	static const bool value = impl<detail::has_const_memfn<Object>::value, Sig>::value;
+	static const bool value = impl<detail::has_const_memfn<T>::value, void(Ar)>::value;
 };
 
 /***************************************************************************/
