@@ -29,15 +29,16 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     endif()
 
     message("TOOLSET=" ${MSVC_TOOLSET_VERSION})
+
+    include_directories("C:/local/boost_1_66_0")
+    link_directories("C:/local/boost_1_66_0/lib${COMPILER_BITS}-msvc-14.1")
+
     if (${MSVC_TOOLSET_VERSION} EQUAL 142)
         message("MSVC-2019")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /bigobj /NODEFAULTLIB")
-        include_directories("C:/local/boost_1_66_0")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /bigobj")
     else()
         message("MSVC-2017")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /bigobj /d1parsePackExpressions- /NODEFAULTLIB")
-        include_directories("C:/local/boost_1_66_0")
-        #link_directories("C:/local/boost_1_66_0/lib${COMPILER_BITS}-msvc-14.1")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /bigobj /d1parsePackExpressions-")
     endif()
     
     add_definitions(
