@@ -94,13 +94,25 @@ void load_array(Archive &ar, C &c, std::true_type) {
     ar.read(&c[0], sizeof(typename C::value_type) * c.size());
 }
 
-template<typename Archive, typename C>
-void load_array(Archive &ar, C &c, std::false_type) {
+template<typename Archive>
+void load_array(Archive &ar, std::vector<bool> &c) {
     for ( auto it = c.begin(); it != c.end(); ++it ) {
-        typename C::value_type v{};
+        typename std::vector<bool>::value_type v{};
         ar & v;
         *it = std::move(v);
     }
+}
+
+template<typename Archive, typename C>
+void load_array(Archive &ar, C &c) {
+    for ( auto it = c.begin(); it != c.end(); ++it ) {
+        ar & (*it);
+    }
+}
+
+template<typename Archive, typename C>
+void load_array(Archive &ar, C &c, std::false_type) {
+    load_array(ar, c);
 }
 
 template<std::size_t F, typename Archive, typename C>

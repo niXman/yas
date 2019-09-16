@@ -140,7 +140,7 @@ Archive& load(Archive &ar, C &c) {
             typename C::mapped_type v = typename C::mapped_type();
             ar & k
                & v;
-            c.insert(std::make_pair(std::move(k), std::move(v)));
+            c.emplace(std::move(k), std::move(v));
         }
     }
 
