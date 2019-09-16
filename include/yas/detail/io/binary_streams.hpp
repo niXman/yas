@@ -97,8 +97,12 @@ struct binary_ostream {
                 }
             }
         } else {
-            T t = endian_converter<__YAS_BSWAP_NEEDED(F)>::bswap(v);
-            __YAS_THROW_WRITE_ERROR(sizeof(t) != os.write(&t, sizeof(t)));
+            __YAS_CONSTEXPR_IF ( __YAS_BSWAP_NEEDED(F) ) {
+                T t = endian_converter<true>::bswap(v);
+                __YAS_THROW_WRITE_ERROR(sizeof(t) != os.write(&t, sizeof(t)));
+            } else {
+                __YAS_THROW_WRITE_ERROR(sizeof(v) != os.write(&v, sizeof(v)));
+            }
         }
     }
 
@@ -117,8 +121,12 @@ struct binary_ostream {
                 __YAS_THROW_WRITE_ERROR(1 != os.write(&t, 1));
             }
         } else {
-            T t = endian_converter<__YAS_BSWAP_NEEDED(F)>::bswap(v);
-            __YAS_THROW_WRITE_ERROR(sizeof(t) != os.write(&t, sizeof(t)));
+            __YAS_CONSTEXPR_IF ( __YAS_BSWAP_NEEDED(F) ) {
+                T t = endian_converter<true>::bswap(v);
+                __YAS_THROW_WRITE_ERROR(sizeof(t) != os.write(&t, sizeof(t)));
+            } else {
+                __YAS_THROW_WRITE_ERROR(sizeof(v) != os.write(&v, sizeof(v)));
+            }
         }
     }
 
@@ -210,14 +218,16 @@ struct binary_istream {
             }
         } else {
             __YAS_THROW_READ_ERROR(sizeof(v) != is.read(&v, sizeof(v)));
-            v = endian_converter<__YAS_BSWAP_NEEDED(F)>::bswap(v);
+            __YAS_CONSTEXPR_IF ( __YAS_BSWAP_NEEDED(F) ) {
+                v = endian_converter<true>::bswap(v);
+            }
         }
     }
 
     // for unsigned
     template<typename T>
     void read(T &v, __YAS_ENABLE_IF_IS_UNSIGNED_INTEGER(T)) {
-       __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
+        __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
             std::uint8_t ns = __YAS_SCAST(std::uint8_t, is.getch());
             const bool onebyte = __YAS_SCAST(bool, (ns >> 7) & 1u);
             ns &= ~(1u << 7);
@@ -229,7 +239,9 @@ struct binary_istream {
             }
         } else {
             __YAS_THROW_READ_ERROR(sizeof(v) != is.read(&v, sizeof(v)));
-            v = endian_converter<__YAS_BSWAP_NEEDED(F)>::bswap(v);
+            __YAS_CONSTEXPR_IF ( __YAS_BSWAP_NEEDED(F) ) {
+                v = endian_converter<true>::bswap(v);
+            }
         }
     }
 
