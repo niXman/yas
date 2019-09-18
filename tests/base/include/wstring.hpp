@@ -40,19 +40,41 @@
 
 template<typename archive_traits>
 bool wstring_test(std::ostream &log, const char *archive_type, const char *test_name) {
-	std::wstring ws(L"wstring wstring"), wss;
 
-	typename archive_traits::oarchive oa;
-	archive_traits::ocreate(oa, archive_type);
-	oa & YAS_OBJECT_NVP("obj", ("ws", ws));
+	std::vector<std::wstring> wcs_collection =  {
+		L"A E I O U c C d D p P Á É Í Ó Ú ç Ç d D p P à è ì ò ù ã õ â ê î ô û", // pt-br
+		L"đái dầm chửa hoang bí mật bầy tôi", // vn
+		L"我能吞下玻璃而不伤身体。", // zh-cn
+		L"私はガラスを食べられます。それは私を傷つけません。", // ja
+		L"मैं काँच खा सकता हूँ, मुझे उस से कोई पीडा नहीं होती.", // hi
+		L"Я могу есть стекло, оно мне не вредит.", // ru
+		L"나는 유리를 먹을 수 있어요. 그래도 아프지 않아요", // ko
+		L"I can eat glass and it doesn't hurt me.", // en
+		L"ฉันกินกระจกได้ แต่มันไม่ทำให้ฉันเจ็บ", // th
+		L"أنا قادر على أكل الزجاج و هذا لا يؤلمني", // ar
+		L"לְהַגִּיד בַּבֹּקֶר חַסְדֶּךָ וֶאֱמוּנָתְךָ בַּלֵּילוֹת", // he
+		L"Μπορώ να φάω σπασμένα γυαλιά χωρίς να πάθω τίποτα.", // el
+		L"Mohu jíst sklo, neublíží mi.", // cs
+		L"Мога да ям стъкло, то не ми вреди.", // bg
+		L"Cam yiyebilirim, bana zararı dokunmaz.", // tr
+		L"Je peux manger du verre, ça ne me fait pas de mal.", // fr
+	};
 
-	typename archive_traits::iarchive ia;
-	archive_traits::icreate(ia, oa, archive_type);
-	ia & YAS_OBJECT_NVP("obj", ("ws", wss));
+	for (auto& ws : wcs_collection) {
+		std::wstring wss;
 
-	if ( ws != wss ) {
-		YAS_TEST_REPORT(log, archive_type, test_name);
-		return false;
+		typename archive_traits::oarchive oa;
+		archive_traits::ocreate(oa, archive_type);
+		oa& YAS_OBJECT_NVP("obj", ("ws", ws));
+
+		typename archive_traits::iarchive ia;
+		archive_traits::icreate(ia, oa, archive_type);
+		ia& YAS_OBJECT_NVP("obj", ("ws", wss));
+
+		if (ws != wss) {
+			YAS_TEST_REPORT(log, archive_type, test_name);
+			return false;
+		}
 	}
 
 	return true;
