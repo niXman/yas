@@ -62,13 +62,13 @@ void to_utf8(D &dst, const S &src) {
 		} else if (nchar <= 0x07FF) {
 			dst += __YAS_SCAST(char, 0xC0 | (nchar >> 6));
 			dst += __YAS_SCAST(char, 0x80 | (nchar & 0x3F));
-		}
-#if WCHAR_MAX > 0xFFFF
-		else if (nchar <= 0xFFFF) {
+		} else if (nchar <= 0xFFFF) {
 			dst += __YAS_SCAST(char, 0xE0 | (nchar >> 12));
 			dst += __YAS_SCAST(char, 0x80 | ((nchar >> 6) & 0x3F));
 			dst += __YAS_SCAST(char, 0x80 | (nchar & 0x3F));
-		} else if (nchar  <= 0x1FFFFF) {
+		}
+#if WCHAR_MAX > 0xFFFF 
+		else if (nchar  <= 0x1FFFFF) {
 			dst += __YAS_SCAST(char, 0xF0 | (nchar >> 18));
 			dst += __YAS_SCAST(char, 0x80 | ((nchar >> 12) & 0x3F));
 			dst += __YAS_SCAST(char, 0x80 | ((nchar >> 6) & 0x3F));
