@@ -139,7 +139,7 @@ struct file_istream {
         return std::fread(ptr, 1, size, file);
     }
 
-    bool empty() const { return peekch() == EOF; }
+    bool empty() const { return peekch() == char(EOF); }
     char peekch() const {
         // TODO: optimize
         int ch = std::getc(file);

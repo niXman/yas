@@ -129,6 +129,7 @@ struct is_unsigned_integer: std::integral_constant<
     bool
     , std::is_unsigned<T>::value
     && std::is_integral<T>::value
+    && std::is_same<T, char>::value == false
     && std::is_same<T, unsigned char>::value == false
     && std::is_same<T, bool>::value == false
 >
