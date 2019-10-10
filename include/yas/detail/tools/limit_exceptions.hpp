@@ -42,7 +42,7 @@ namespace yas {
 
 /***************************************************************************/
 
-__YAS_DECLARE_EXCEPTION_TYPE(limits_exception);
+__YAS_DECLARE_EXCEPTION_TYPE(limits_exception)
 
 /***************************************************************************/
 
