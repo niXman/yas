@@ -65,6 +65,12 @@ struct mem_ostream {
         ,cur(__YAS_SCAST(char*, ptr))
         ,end(__YAS_SCAST(char*, ptr)+size)
     {}
+    mem_ostream(shared_buffer &&b)
+        :buf(std::move(b))
+        ,beg(__YAS_SCAST(char*, buf.data.get()))
+        ,cur(__YAS_SCAST(char*, buf.data.get()))
+        ,end(__YAS_SCAST(char*, buf.data.get())+buf.size)
+    {}
 
     template<typename T>
     std::size_t write(const T *ptr, std::size_t size) {
