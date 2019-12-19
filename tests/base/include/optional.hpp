@@ -123,8 +123,4 @@ bool optional_test(std::ostream &log, const char *archive_type, const char *test
 
 /***************************************************************************/
 
-#undef _YAS_HAVE_STD_OPTIONAL
-#undef _YAS_HAVE_STD_EXPERIMENTAL_OPTIONAL
-#undef _YAS_STD_OPTIONAL_NS
-
 #endif // __yas__tests__base__include__optional_hpp
