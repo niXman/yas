@@ -73,7 +73,7 @@ struct binary_ostream {
     template<typename T>
     void write(const T &v, __YAS_ENABLE_IF_IS_SIGNED_INTEGER(T)) {
         __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
-            if ( v >= 0 ) {
+            if ( __YAS_LIKELY(v >= 0) ) {
                 typename std::make_unsigned<T>::type uv = v;
                 if ( uv >= (1u<<6) ) {
                     const std::uint8_t ns = storage_size(uv);
@@ -212,13 +212,13 @@ struct binary_istream {
             const bool neg = __YAS_SCAST(bool, (ns >> 7) & 1u);
             const bool onebyte = __YAS_SCAST(bool, (ns >> 6) & 1u);
             ns &= ~((1u << 7) | (1u << 6));
-            if ( !onebyte ) {
+            if ( __YAS_LIKELY(!onebyte) ) {
                 typename std::make_unsigned<T>::type av = 0;
                 __YAS_THROW_READ_STORAGE_SIZE_ERROR(sizeof(av) < ns);
                 __YAS_THROW_READ_ERROR(ns != is.read(&av, ns));
-                v = (neg ? -__YAS_SCAST(T, av) : __YAS_SCAST(T, av));
+                v = (__YAS_UNLIKELY(neg) ? -__YAS_SCAST(T, av) : __YAS_SCAST(T, av));
             } else {
-                v = (neg ? -__YAS_SCAST(T, ns) : __YAS_SCAST(T, ns));
+                v = (__YAS_UNLIKELY(neg) ? -__YAS_SCAST(T, ns) : __YAS_SCAST(T, ns));
             }
         } else {
             __YAS_THROW_READ_ERROR(sizeof(v) != is.read(&v, sizeof(v)));
@@ -235,7 +235,7 @@ struct binary_istream {
             std::uint8_t ns = __YAS_SCAST(std::uint8_t, is.getch());
             const bool onebyte = __YAS_SCAST(bool, (ns >> 7) & 1u);
             ns &= ~(1u << 7);
-            if ( !onebyte ) {
+            if ( __YAS_LIKELY(!onebyte) ) {
                 __YAS_THROW_READ_STORAGE_SIZE_ERROR(sizeof(v) < ns);
                 __YAS_THROW_READ_ERROR(ns != is.read(&v, ns));
             } else {

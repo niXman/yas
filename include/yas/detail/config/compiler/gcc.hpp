@@ -62,6 +62,9 @@
 #   endif /* __GNUC__ >= 7 */
 #endif // __YAS_FALLTHROUGH
 
+#define __YAS_LIKELY(...) __builtin_expect(!!(__VA_ARGS__), 1)
+#define __YAS_UNLIKELY(...) __builtin_expect(!!(__VA_ARGS__), 0)
+
 /***************************************************************************/
 
 #endif // __yas__detail__config__compiler__gcc_hpp

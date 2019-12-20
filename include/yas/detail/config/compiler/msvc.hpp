@@ -62,6 +62,9 @@
 #   define __YAS_FALLTHROUGH
 #endif // __YAS_FALLTHROUGH
 
+#define __YAS_LIKELY(...) (__VA_ARGS__)
+#define __YAS_UNLIKELY(...) (__VA_ARGS__)
+
 /***************************************************************************/
 
 #endif // __yas__detail__config__compiler__msvc_hpp

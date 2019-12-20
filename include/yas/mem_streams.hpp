@@ -65,7 +65,7 @@ struct mem_ostream {
         ,cur(__YAS_SCAST(char*, ptr))
         ,end(__YAS_SCAST(char*, ptr)+size)
     {}
-    mem_ostream(shared_buffer &&b)
+    mem_ostream(shared_buffer b)
         :buf(std::move(b))
         ,beg(__YAS_SCAST(char*, buf.data.get()))
         ,cur(__YAS_SCAST(char*, buf.data.get()))
@@ -74,7 +74,7 @@ struct mem_ostream {
 
     template<typename T>
     std::size_t write(const T *ptr, std::size_t size) {
-        if ( cur+size > end ) {
+        if ( __YAS_UNLIKELY(cur+size > end) ) {
             realloc(size);
         }
 
