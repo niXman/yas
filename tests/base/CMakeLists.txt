@@ -83,6 +83,7 @@ set(SOURCE_FILES
     include/boost_fusion_tuple.hpp
     include/boost_fusion_vector.hpp
     include/boost_tuple.hpp
+    include/boost_variant.hpp
     include/buffer.hpp
     include/chrono.hpp
     include/compacted_storage_size.hpp
@@ -101,20 +102,21 @@ set(SOURCE_FILES
     include/one_func.hpp
     include/one_memfn.hpp
     include/optional.hpp
-    include/variant.hpp
     include/pair.hpp
-    include/serialize.hpp
     include/serialization.hpp
+    include/serialize.hpp
     include/set.hpp
     include/split_func.hpp
     include/split_memfn.hpp
     include/std_streams.hpp
     include/string.hpp
+    include/string_view.hpp
     include/tuple.hpp
     include/unordered_map.hpp
     include/unordered_multimap.hpp
     include/unordered_multiset.hpp
     include/unordered_set.hpp
+    include/variant.hpp
     include/vector.hpp
     include/version.hpp
     include/wstring.hpp
