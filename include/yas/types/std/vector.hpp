@@ -47,20 +47,20 @@ namespace detail {
 
 /***************************************************************************/
 
-template<std::size_t F, typename T>
+template<std::size_t F, typename T, typename A>
 struct serializer<
 	type_prop::not_a_fundamental,
 	ser_case::use_internal_serializer,
 	F,
-	std::vector<T>
+	std::vector<T, A>
 > {
 	template<typename Archive>
-	static Archive& save(Archive& ar, const std::vector<T>& vector) {
+	static Archive& save(Archive& ar, const std::vector<T, A>& vector) {
         return concepts::array::save<F>(ar, vector);
 	}
 
 	template<typename Archive>
-	static Archive& load(Archive& ar, std::vector<T>& vector) {
+	static Archive& load(Archive& ar, std::vector<T, A>& vector) {
         return concepts::array::load<F>(ar, vector);
 	}
 };
