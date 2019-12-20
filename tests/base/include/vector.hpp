@@ -40,7 +40,7 @@
 
 template<typename archive_traits>
 bool vector_test(std::ostream &log, const char *archive_type, const char *test_name) {
-	std::vector<double> v, vv;
+	std::vector<int> v, vv;
 	v.push_back(65464);
 	v.push_back(32767);
 	v.push_back(2);
