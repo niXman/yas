@@ -59,41 +59,7 @@ struct storage_type {
 	>::type;
 };
 
-template<bool Bswap>
-struct endian_converter;
-
-template<>
-struct endian_converter<false> {
-	template<typename T>
-	static T bswap(const T &v) { return v; }
-
-	template<typename T>
-	static typename storage_type<T>::type
-	to_network(const T &v) {
-		union {
-			typename storage_type<T>::type u;
-			T v;
-		} u;
-		u.v = v;
-
-		return u.u;
-	}
-
-	template<typename T>
-	static T
-	from_network(const typename storage_type<T>::type &v) {
-		union {
-			typename storage_type<T>::type u;
-			T v;
-		} u;
-		u.u = v;
-
-		return u.v;
-	}
-};
-
-template<>
-struct endian_converter<true> {
+struct endian_converter {
 	template<typename T>
 	static T bswap(const T &v, __YAS_ENABLE_IF_IS_16BIT(T))
 	{ return __YAS_NETWORK_TO_LOCAL16(v); }

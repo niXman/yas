@@ -98,7 +98,7 @@ struct binary_ostream {
             }
         } else {
             __YAS_CONSTEXPR_IF ( __YAS_BSWAP_NEEDED(F) ) {
-                T t = endian_converter<true>::bswap(v);
+                T t = endian_converter::bswap(v);
                 __YAS_THROW_WRITE_ERROR(sizeof(t) != os.write(&t, sizeof(t)));
             } else {
                 __YAS_THROW_WRITE_ERROR(sizeof(v) != os.write(&v, sizeof(v)));
@@ -122,7 +122,7 @@ struct binary_ostream {
             }
         } else {
             __YAS_CONSTEXPR_IF ( __YAS_BSWAP_NEEDED(F) ) {
-                T t = endian_converter<true>::bswap(v);
+                T t = endian_converter::bswap(v);
                 __YAS_THROW_WRITE_ERROR(sizeof(t) != os.write(&t, sizeof(t)));
             } else {
                 __YAS_THROW_WRITE_ERROR(sizeof(v) != os.write(&v, sizeof(v)));
@@ -133,8 +133,12 @@ struct binary_ostream {
     // for float and double
     template<typename T>
     void write(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, float, double)) {
-        const auto r = endian_converter<__YAS_BSWAP_NEEDED(F)>::to_network(v);
-        __YAS_THROW_WRITE_ERROR(sizeof(r) != os.write(&r, sizeof(r)));
+        __YAS_CONSTEXPR_IF( __YAS_BSWAP_NEEDED(F) ) {
+            const auto r = endian_converter::to_network(v);
+            __YAS_THROW_WRITE_ERROR(sizeof(r) != os.write(&r, sizeof(r)));
+        } else {
+            __YAS_THROW_WRITE_ERROR(sizeof(v) != os.write(&v, sizeof(v)));
+        }
     }
 
 private:
@@ -219,7 +223,7 @@ struct binary_istream {
         } else {
             __YAS_THROW_READ_ERROR(sizeof(v) != is.read(&v, sizeof(v)));
             __YAS_CONSTEXPR_IF ( __YAS_BSWAP_NEEDED(F) ) {
-                v = endian_converter<true>::bswap(v);
+                v = endian_converter::bswap(v);
             }
         }
     }
@@ -240,7 +244,7 @@ struct binary_istream {
         } else {
             __YAS_THROW_READ_ERROR(sizeof(v) != is.read(&v, sizeof(v)));
             __YAS_CONSTEXPR_IF ( __YAS_BSWAP_NEEDED(F) ) {
-                v = endian_converter<true>::bswap(v);
+                v = endian_converter::bswap(v);
             }
         }
     }
@@ -248,9 +252,13 @@ struct binary_istream {
     // for floats and doubles
     template<typename T>
     void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, float, double)) {
-        typename storage_type<T>::type r;
-        __YAS_THROW_READ_ERROR(sizeof(r) != is.read(&r, sizeof(r)));
-        v = endian_converter<__YAS_BSWAP_NEEDED(F)>::template from_network<T>(r);
+        __YAS_CONSTEXPR_IF( __YAS_BSWAP_NEEDED(F) ) {
+            typename storage_type<T>::type r;
+            __YAS_THROW_READ_ERROR(sizeof(r) != is.read(&r, sizeof(r)));
+            v = endian_converter::template from_network<T>(r);
+        } else {
+            __YAS_THROW_READ_ERROR(sizeof(v) != is.read(&v, sizeof(v)));
+        }
     }
 
 private:
