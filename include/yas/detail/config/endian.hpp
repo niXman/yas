@@ -51,6 +51,17 @@
 #   else
 #       error Unknown machine endianness detected.
 #   endif
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
+#   include <sys/endian.h>
+#   if (_BYTE_ORDER == _LITTLE_ENDIAN)
+#       define __YAS_LITTLE_ENDIAN (1)
+#       define __YAS_BIG_ENDIAN (0)
+#   elif (_BYTE_ORDER == _BIG_ENDIAN)
+#       define __YAS_LITTLE_ENDIAN (0)
+#       define __YAS_BIG_ENDIAN (1)
+#   else
+#       error Unknown machine endianness detected.
+#   endif
 #elif defined(_BIG_ENDIAN)
 #   define __YAS_LITTLE_ENDIAN (0)
 #   define __YAS_BIG_ENDIAN (1)
