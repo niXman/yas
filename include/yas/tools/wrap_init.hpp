@@ -61,10 +61,10 @@ struct init_wrapper {
     init_wrapper(const init_wrapper &) = delete;
     init_wrapper& operator=(const init_wrapper &) = delete;
     constexpr init_wrapper(T &&v) noexcept
-        :val{std::forward<T>(v)}
+        :val(std::forward<T>(v))
     {}
     constexpr init_wrapper(init_wrapper &&r) noexcept
-        :val{std::forward<value_type>(r.val)}
+        :val(std::forward<value_type>(r.val))
     {}
 
     value_type val;
