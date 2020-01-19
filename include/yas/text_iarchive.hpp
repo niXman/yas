@@ -52,6 +52,8 @@
 #include <yas/types/utility/buffer.hpp>
 #include <yas/types/utility/value.hpp>
 #include <yas/types/utility/object.hpp>
+#include <yas/types/utility/asis.hpp>
+#include <yas/types/utility/init.hpp>
 
 #include <yas/buffers.hpp>
 #include <yas/object.hpp>

@@ -108,6 +108,8 @@
 #include "include/serialization.hpp"
 #include "include/yas_object.hpp"
 #include "include/json_conformance.hpp"
+#include "include/wrap_asis.hpp"
+#include "include/wrap_init.hpp"
 
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
 #include "include/boost_fusion_list.hpp"
@@ -355,6 +357,8 @@ void tests(std::ostream &log, int &p, int &e) {
     YAS_RUN_TEST(log, unordered_multiset, p, e);
     YAS_RUN_TEST(log, optional, p, e);
     YAS_RUN_TEST(log, variant, p, e);
+    YAS_RUN_TEST(log, wrap_asis, p, e);
+    YAS_RUN_TEST(log, wrap_init, p, e);
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
     YAS_RUN_TEST(log, boost_fusion_pair, p, e);
     YAS_RUN_TEST(log, boost_fusion_tuple, p, e);

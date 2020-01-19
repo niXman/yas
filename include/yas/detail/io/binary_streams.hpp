@@ -40,6 +40,7 @@
 #include <yas/detail/io/io_exceptions.hpp>
 #include <yas/detail/io/endian_conv.hpp>
 #include <yas/detail/type_traits/type_traits.hpp>
+#include <yas/tools/wrap_asis.hpp>
 
 namespace yas {
 namespace detail {
@@ -62,6 +63,11 @@ struct binary_ostream {
     template<typename T>
     void write(const T *ptr, std::size_t size) {
         __YAS_THROW_WRITE_ERROR(size != os.write(ptr, size));
+    }
+
+    template<typename T>
+    void write(const asis_wrapper<T> &v) {
+        binary_ostream<OS, (F & ~yas::compacted)>{os}.write(v.val);
     }
 
     template<typename T>
@@ -196,6 +202,11 @@ struct binary_istream {
         __YAS_THROW_READ_ERROR(size != is.read(ptr, size));
 
         return size;
+    }
+
+    template<typename T>
+    void read(asis_wrapper<T> &v) {
+        binary_istream<IS, (F & ~yas::compacted)>{is}.read(v.val);
     }
 
     // for chars & bools

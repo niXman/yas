@@ -33,83 +33,58 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef __yas__json_oarchive_hpp
-#define __yas__json_oarchive_hpp
+#ifndef __yas__types__utility__init_hpp
+#define __yas__types__utility__init_hpp
 
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/serializer.hpp>
-#include <yas/detail/io/header.hpp>
-#include <yas/detail/io/json_streams.hpp>
-#include <yas/detail/tools/base_object.hpp>
-#include <yas/detail/tools/noncopyable.hpp>
-#include <yas/detail/tools/limit.hpp>
-#include <yas/defaul_traits.hpp>
 
-#include <yas/types/utility/fundamental.hpp>
-#include <yas/types/utility/enum.hpp>
-#include <yas/types/utility/usertype.hpp>
-#include <yas/types/utility/autoarray.hpp>
-#include <yas/types/utility/buffer.hpp>
-#include <yas/types/utility/value.hpp>
-#include <yas/types/utility/object.hpp>
-#include <yas/types/utility/asis.hpp>
-#include <yas/types/utility/init.hpp>
-
-#include <yas/buffers.hpp>
-#include <yas/object.hpp>
-#include <yas/version.hpp>
+#include <yas/tools/wrap_init.hpp>
 
 namespace yas {
+namespace detail {
 
 /***************************************************************************/
 
-template<typename OS, std::size_t F = json|ehost, typename Trait = yas::default_traits>
-struct json_oarchive
-    :detail::json_ostream<OS, F, Trait>
-    ,detail::oarchive_header<F>
-{
-    YAS_NONCOPYABLE(json_oarchive)
-    YAS_MOVABLE(json_oarchive)
+template<std::size_t F, typename T>
+struct serializer<
+    type_prop::not_a_fundamental,
+    ser_case::use_internal_serializer,
+    F,
+    init_wrapper<T>
+> {
+    template<typename Archive>
+    static Archive& save(Archive &ar, const init_wrapper<T> &v) {
+        ar.write(v);
 
-    using stream_type = OS;
-    using this_type = json_oarchive<OS, F, Trait>;
-
-    json_oarchive(OS &os)
-        :detail::json_ostream<OS, F, Trait>(os)
-        ,detail::oarchive_header<F>(os)
-    {}
-
-    template<typename T>
-    this_type& operator& (const T &v) {
-        using namespace detail;
-        return serializer<
-             detail::type_properties<T>::value
-            ,detail::serialization_method<T, this_type>::value
-            ,F
-            ,T
-        >::save(*this, v);
+        return ar;
     }
 
-    this_type& serialize() { return *this; }
+    template<
+         typename Archive
+        ,typename DT = typename std::decay<T>::type
+        ,bool ok = std::is_fundamental<DT>::value || std::is_enum<DT>::value
+    >
+    static Archive& load(Archive &ar, init_wrapper<T> &v, typename std::enable_if<ok>::type* = nullptr) {
+        v.val = DT{};
 
-    template<typename Head, typename... Tail>
-    this_type& serialize(const Head& head, const Tail&... tail) {
-        return operator&(head).serialize(tail...);
+        return ar & v.val;
     }
+    template<
+         typename Archive
+        ,typename DT = typename std::decay<T>::type
+        ,bool ok = std::is_fundamental<DT>::value || std::is_enum<DT>::value
+    >
+    static Archive& load(Archive &ar, init_wrapper<T> &v, typename std::enable_if<!ok>::type* = nullptr) {
+        v.val.clear();
 
-    template<typename... Args>
-    this_type& operator()(const Args&... args) {
-        return serialize(args...);
-    }
-
-    template<typename... Args>
-    this_type& save(const Args&... args) {
-        return serialize(args...);
+        return ar & v.val;
     }
 };
 
 /***************************************************************************/
 
+} // namespace detail
 } // namespace yas
 
-#endif // __yas__json_oarchive_hpp
+#endif // __yas__types__utility__init_hpp

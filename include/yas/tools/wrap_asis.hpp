@@ -33,82 +33,50 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef __yas__binary_oarchive_hpp
-#define __yas__binary_oarchive_hpp
+#ifndef __yas__tools__wrap_asis_hpp
+#define __yas__tools__wrap_asis_hpp
 
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/serializer.hpp>
-#include <yas/detail/io/header.hpp>
-#include <yas/detail/io/binary_streams.hpp>
-#include <yas/detail/tools/base_object.hpp>
-#include <yas/detail/tools/noncopyable.hpp>
-#include <yas/detail/tools/limit.hpp>
-
-#include <yas/types/utility/fundamental.hpp>
-#include <yas/types/utility/enum.hpp>
-#include <yas/types/utility/usertype.hpp>
-#include <yas/types/utility/autoarray.hpp>
-#include <yas/types/utility/buffer.hpp>
-#include <yas/types/utility/value.hpp>
-#include <yas/types/utility/object.hpp>
-#include <yas/types/utility/asis.hpp>
-#include <yas/types/utility/init.hpp>
-
-#include <yas/buffers.hpp>
-#include <yas/object.hpp>
-#include <yas/version.hpp>
 
 namespace yas {
 
 /***************************************************************************/
 
-template<typename OS, std::size_t F = binary|ehost>
-struct binary_oarchive
-    :detail::binary_ostream<OS, F>
-    ,detail::oarchive_header<F>
-{
-    YAS_NONCOPYABLE(binary_oarchive)
-    YAS_MOVABLE(binary_oarchive)
+template<typename T>
+struct asis_wrapper {
+    template<typename VT>
+    struct real_value_type {
+        using type = typename std::conditional<
+             std::is_array<typename std::remove_reference<VT>::type>::value
+            ,typename std::remove_cv<VT>::type
+            ,typename std::conditional<
+                 std::is_lvalue_reference<VT>::value
+                ,VT
+                ,typename std::decay<VT>::type
+            >::type
+        >::type;
+    };
+    using value_type = typename real_value_type<T>::type;
 
-    using stream_type = OS;
-    using this_type = binary_oarchive<OS, F>;
-
-    binary_oarchive(OS &os)
-        :detail::binary_ostream<OS, F>(os)
-        ,detail::oarchive_header<F>(os)
+    asis_wrapper(const asis_wrapper &) = delete;
+    asis_wrapper& operator=(const asis_wrapper &) = delete;
+    constexpr asis_wrapper(T &&v) noexcept
+        :val{std::forward<T>(v)}
+    {}
+    constexpr asis_wrapper(asis_wrapper &&r) noexcept
+        :val{std::forward<value_type>(r.val)}
     {}
 
-    template<typename T>
-    this_type& operator& (const T &v) {
-        using namespace detail;
-        return serializer<
-             detail::type_properties<T>::value
-            ,detail::serialization_method<T, this_type>::value
-            ,F
-            ,T
-        >::save(*this, v);
-    }
-
-    this_type& serialize() { return *this; }
-
-    template<typename Head, typename... Tail>
-    this_type& serialize(const Head &head, const Tail&... tail) {
-        return operator& (head).serialize(tail...);
-    }
-
-    template<typename... Args>
-    this_type& operator()(const Args&... args) {
-        return serialize(args...);
-    }
-
-    template<typename... Args>
-    this_type& save(const Args&... args) {
-        return serialize(args...);
-    }
+    value_type val;
 };
+
+template<typename T>
+asis_wrapper<T> asis(T &&val) {
+    return {std::forward<T>(val)};
+}
 
 /***************************************************************************/
 
 } // namespace yas
 
-#endif // __yas__binary_oarchive_hpp
+#endif // __yas__tools__wrap_asis_hpp

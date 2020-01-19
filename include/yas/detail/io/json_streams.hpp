@@ -68,6 +68,11 @@ struct json_ostream {
 		__YAS_THROW_WRITE_ERROR(size != os.write(ptr, size));
 	}
 
+    template<typename T>
+    void write(const asis_wrapper<T> &v) {
+        write(v.val);
+    }
+
     // for char and signed char
     template<typename T>
     void write(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char)) {
@@ -161,7 +166,12 @@ struct json_istream {
 		return size;
 	}
 
-	// for char and signed char
+    template<typename T>
+    void read(asis_wrapper<T> &v) {
+        read(v.val);
+    }
+
+    // for char and signed char
 	template<typename T>
 	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, char, signed char)) {
 		std::int16_t t;
