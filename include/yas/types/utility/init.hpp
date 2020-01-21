@@ -55,9 +55,7 @@ struct serializer<
 > {
     template<typename Archive>
     static Archive& save(Archive &ar, const init_wrapper<T> &v) {
-        ar.write(v);
-
-        return ar;
+        return ar & v.val;
     }
 
     template<

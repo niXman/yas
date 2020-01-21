@@ -51,7 +51,7 @@ bool wrap_init_test(std::ostream &log, const char *archive_type, const char *tes
 
             typename archive_traits::oarchive oa;
             archive_traits::ocreate(oa, archive_type);
-            oa & YAS_OBJECT_NVP("obj", ("i16", i16));
+            oa & YAS_OBJECT_NVP("obj", ("i16", yas::init(i16)));
 
             std::uint8_t arr_le[] = {0x79, 0x61, 0x73, 0x30, 0x31, 0x31, 0x37, 0x01, 0xff};
             std::uint8_t arr_be[] = {0}; // TODO:
@@ -82,7 +82,6 @@ bool wrap_init_test(std::ostream &log, const char *archive_type, const char *tes
                 YAS_TEST_REPORT(log, archive_type, test_name);
                 return false;
             }
-
             if ( is.size() != 32 ) {
                 YAS_TEST_REPORT(log, archive_type, test_name);
                 return false;
@@ -90,7 +89,7 @@ bool wrap_init_test(std::ostream &log, const char *archive_type, const char *tes
 
             typename archive_traits::oarchive oa;
             archive_traits::ocreate(oa, archive_type);
-            oa & YAS_OBJECT_NVP("obj", ("s", s));
+            oa & YAS_OBJECT_NVP("obj", ("s", yas::init(s)));
 
             std::uint8_t arr_le[] = {0x79, 0x61, 0x73, 0x30, 0x31, 0x31, 0x37, 0x80};
             std::uint8_t arr_be[] = {0}; // TODO:
@@ -113,7 +112,6 @@ bool wrap_init_test(std::ostream &log, const char *archive_type, const char *tes
                 YAS_TEST_REPORT(log, archive_type, test_name);
                 return false;
             }
-
             if ( is.size() != 0 ) {
                 YAS_TEST_REPORT(log, archive_type, test_name);
                 return false;
