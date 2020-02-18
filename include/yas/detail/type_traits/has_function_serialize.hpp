@@ -38,6 +38,8 @@
 
 #include <yas/detail/tools/cast.hpp>
 
+#include <type_traits>
+
 namespace yas {
 namespace detail {
 
@@ -45,10 +47,8 @@ extern void serialize(int&);
 
 /***************************************************************************/
 
-template<bool is_pod, bool is_enum, typename Ar, typename T>
-struct has_function_const_serialize {
-	static const bool value = false;
-};
+template<bool is_fundamental, bool is_enum, typename Ar, typename T>
+struct has_function_const_serialize: std::false_type {};
 
 template<typename Ar, typename T>
 struct has_function_const_serialize<false, false, Ar, T> {
@@ -66,10 +66,8 @@ struct has_function_const_serialize<false, false, Ar, T> {
 
 /***************************************************************************/
 
-template<bool is_pod, bool is_enum, typename Ar, typename T>
-struct has_function_serialize {
-	static const bool value = false;
-};
+template<bool is_fundamental, bool is_enum, typename Ar, typename T>
+struct has_function_serialize: std::false_type {};
 
 template<typename Ar, typename T>
 struct has_function_serialize<false, false, Ar, T> {

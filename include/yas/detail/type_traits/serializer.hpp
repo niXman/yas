@@ -43,12 +43,14 @@ namespace detail {
 
 /***************************************************************************/
 
-template<
-     type_prop
-    ,ser_case
-    ,std::size_t F
-    ,typename T
-> struct serializer;
+// TODO
+
+//template<
+//     type_prop
+//    ,ser_case
+//    ,std::size_t F
+//    ,typename T
+//> struct serializer;
 
 /***************************************************************************/
 

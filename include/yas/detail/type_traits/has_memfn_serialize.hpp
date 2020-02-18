@@ -36,9 +36,6 @@
 #ifndef __yas__detail__type_traits__has_memfn_serialize_hpp
 #define __yas__detail__type_traits__has_memfn_serialize_hpp
 
-#include <yas/detail/tools/cast.hpp>
-#include <yas/detail/type_traits/type_traits.hpp>
-
 #include <type_traits>
 
 namespace yas {
@@ -92,7 +89,7 @@ public:
 
 /***************************************************************************/
 
-template<bool is_pod, bool is_enum, typename Ar, typename T>
+template<bool is_fundamental, bool is_enum, typename Ar, typename T>
 struct has_memfn_serializer: std::false_type {};
 
 template<typename Ar, typename T>
@@ -167,7 +164,7 @@ public:
 
 /***************************************************************************/
 
-template<bool is_pod, bool is_enum, typename Ar, typename T>
+template<bool is_fundamental, bool is_enum, typename Ar, typename T>
 struct has_const_memfn_serializer: std::false_type {};
 
 template<typename Ar, typename T>
