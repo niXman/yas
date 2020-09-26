@@ -5,9 +5,6 @@ set (CMAKE_CXX_STANDARD 11)
 
 add_definitions(-UNDEBUG)
 
-# Process Abseil's CMake build system
-add_subdirectory("C:/abseil-cpp" "build/abseil")
-
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
     add_definitions(
@@ -34,6 +31,9 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     endif()
 
     message("TOOLSET=" ${MSVC_TOOLSET_VERSION})
+
+    # Process Abseil's CMake build system
+    add_subdirectory("C:/abseil-cpp" "build/abseil")
 
     include_directories("C:/local/boost_1_66_0")
     link_directories("C:/local/boost_1_66_0/lib${COMPILER_BITS}-msvc-14.1")
