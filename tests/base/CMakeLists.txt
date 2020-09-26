@@ -5,12 +5,16 @@ set (CMAKE_CXX_STANDARD 11)
 
 add_definitions(-UNDEBUG)
 
+# Process Abseil's CMake build system
+add_subdirectory("C:/abseil-cpp" "build/abseil")
+
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
     add_definitions(
         -DBOOST_ERROR_CODE_HEADER_ONLY
         -DBOOST_CHRONO_HEADER_ONLY
         -DYAS_SERIALIZE_BOOST_TYPES
+        -DYAS_SERIALIZE_ABSL_TYPES
         -DYAS_OBJECT_MAX_MEMBERS=50
     )
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
@@ -19,6 +23,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
         -DBOOST_ERROR_CODE_HEADER_ONLY
         -DBOOST_CHRONO_HEADER_ONLY
         -DYAS_SERIALIZE_BOOST_TYPES
+        -DYAS_SERIALIZE_ABSL_TYPES
         -DYAS_OBJECT_MAX_MEMBERS=50
     )
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
@@ -45,6 +50,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
         -DBOOST_ERROR_CODE_HEADER_ONLY
         -DBOOST_CHRONO_HEADER_ONLY
         -DYAS_SERIALIZE_BOOST_TYPES
+        -DYAS_SERIALIZE_ABSL_TYPES
         -DYAS_OBJECT_MAX_MEMBERS=50
         -D_CRT_SECURE_NO_WARNINGS
     )
@@ -121,7 +127,13 @@ set(SOURCE_FILES
     include/version.hpp
     include/wstring.hpp
     include/yas_object.hpp
+    include/absl_cont_btree_map.hpp
+    include/absl_cont_flat_hash_map.hpp
     main.cpp
 )
 
 add_executable(yas-base-test ${SOURCE_FILES})
+target_link_libraries(yas-base-test 
+    absl::btree
+    absl::flat_hash_map
+)
