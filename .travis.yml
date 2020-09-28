@@ -40,5 +40,5 @@ before_script:
 
 script:
   - cd $TRAVIS_BUILD_DIR/tests/base/build
-  - cmake --build . --config Release
+  - cmake --build . --config Release --target yas-base-test
   - ./yas-base-test binary && ./yas-base-test binary compacted && ./yas-base-test json && ./yas-base-test json compacted && ./yas-base-test text
