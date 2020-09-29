@@ -25,6 +25,7 @@ before_install:
   - wget http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.bz2
   - tar -jxf boost_1_64_0.tar.bz2
   - sudo cp -r boost_1_64_0/boost /usr/local/include
+  - sudo git clone https://github.com/abseil/abseil-cpp.git /usr/local/abseil-cpp
 
 install:
   - g++ -v
@@ -39,5 +40,5 @@ before_script:
 
 script:
   - cd $TRAVIS_BUILD_DIR/tests/base/build
-  - cmake --build . --config Release
+  - cmake --build . --config Release --target yas-base-test
   - ./yas-base-test binary && ./yas-base-test binary compacted && ./yas-base-test json && ./yas-base-test json compacted && ./yas-base-test text

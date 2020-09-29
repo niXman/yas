@@ -63,6 +63,11 @@
 #include <boost/fusion/include/comparison.hpp>
 #endif // YAS_SERIALIZE_BOOST_TYPES
 
+#ifdef YAS_SERIALIZE_ABSL_TYPES
+#include <yas/abseil_types.hpp>
+#endif // YAS_SERIALIZE_ABSL_TYPES
+
+
 /***************************************************************************/
 
 #include "test.hpp"
@@ -137,6 +142,13 @@
 #include "include/boost_tuple.hpp"
 #include "include/boost_variant.hpp"
 #endif // defined(YAS_SERIALIZE_BOOST_TYPES)
+
+/***************************************************************************/
+
+#ifdef YAS_SERIALIZE_ABSL_TYPES
+#include "include/absl_cont_btree_map.hpp"
+#include "include/absl_cont_flat_hash_map.hpp"
+#endif // YAS_SERIALIZE_ABSL_TYPES
 
 /***************************************************************************/
 
@@ -385,6 +397,10 @@ void tests(std::ostream &log, int &p, int &e) {
     YAS_RUN_TEST(log, boost_tuple, p, e);
     YAS_RUN_TEST(log, boost_variant, p, e);
 #endif // YAS_SERIALIZE_BOOST_TYPES
+#ifdef YAS_SERIALIZE_ABSL_TYPES
+    YAS_RUN_TEST(log, absl_cont_btree_map, p, e);
+    YAS_RUN_TEST(log, absl_cont_flat_hash_map, p, e);
+#endif
     YAS_RUN_TEST(log, json_conformance, p, e, yas::binary|yas::text);
 }
 
