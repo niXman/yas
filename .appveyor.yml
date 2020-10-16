@@ -1,5 +1,6 @@
 image:
   - Visual Studio 2019
+  - Visual Studio 2017
 
 platform:
   - x64
@@ -27,5 +28,5 @@ build_script:
   - mkdir build
   - cd build
   - cmake ..
-  - cmake --build . --config %configuration%
+  - cmake --build . --config %configuration% --target yas-base-test
   - Release\yas-base-test.exe binary
