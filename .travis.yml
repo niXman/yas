@@ -36,7 +36,7 @@ before_script:
   - cd $TRAVIS_BUILD_DIR/tests/base
   - mkdir build
   - cd build
-  - cmake -DCMAKE_BUILD_TYPE=Release ..
+  - cmake -DCMAKE_BUILD_TYPE=Release -DYAS_SERIALIZE_ABSL_TYPES=TRUE ..
 
 script:
   - cd $TRAVIS_BUILD_DIR/tests/base/build

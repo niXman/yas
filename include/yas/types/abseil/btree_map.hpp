@@ -35,6 +35,7 @@
 #ifndef __yas__types__abseil__absl_btree_map_serializers_hpp
 #define __yas__types__abseil__absl_btree_map_serializers_hpp
 
+#if defined(YAS_SERIALIZE_ABSL_TYPES)
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/serializer.hpp>
 #include <yas/types/concepts/keyval.hpp>
@@ -68,5 +69,7 @@ struct serializer<
 
 } // namespace detail
 } // namespace yas
+
+#endif // defined(YAS_SERIALIZE_ABSL_TYPES)
 
 #endif // __yas__types__abseil__absl_btree_map_serializers_hpp

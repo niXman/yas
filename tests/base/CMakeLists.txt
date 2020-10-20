@@ -5,27 +5,39 @@ set (CMAKE_CXX_STANDARD 11)
 
 add_definitions(-UNDEBUG)
 
+if (YAS_SERIALIZE_ABSL_TYPES)
+    message("Abseil support is enabled")
+else()
+    message("Abseil support is disabled")
+endif()
+
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
     add_definitions(
         -DBOOST_ERROR_CODE_HEADER_ONLY
         -DBOOST_CHRONO_HEADER_ONLY
         -DYAS_SERIALIZE_BOOST_TYPES
-        -DYAS_SERIALIZE_ABSL_TYPES
         -DYAS_OBJECT_MAX_MEMBERS=50
     )
 
-    # Process Abseil's CMake build system
-    add_subdirectory("/usr/local/abseil-cpp" "build/abseil")
+    if (YAS_SERIALIZE_ABSL_TYPES)
+        add_definitions(-DYAS_SERIALIZE_ABSL_TYPES)
+
+        # Process Abseil's CMake build system
+        add_subdirectory("/usr/local/abseil-cpp" "build/abseil")
+    endif()
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
     add_definitions(
         -DBOOST_ERROR_CODE_HEADER_ONLY
         -DBOOST_CHRONO_HEADER_ONLY
         -DYAS_SERIALIZE_BOOST_TYPES
-        -DYAS_SERIALIZE_ABSL_TYPES
         -DYAS_OBJECT_MAX_MEMBERS=50
     )
+
+    if (YAS_SERIALIZE_ABSL_TYPES)
+        add_definitions(-DYAS_SERIALIZE_ABSL_TYPES)
+    endif()
 
     # Process Abseil's CMake build system
     add_subdirectory("/usr/local/abseil-cpp" "build/abseil")
@@ -56,10 +68,13 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
         -DBOOST_ERROR_CODE_HEADER_ONLY
         -DBOOST_CHRONO_HEADER_ONLY
         -DYAS_SERIALIZE_BOOST_TYPES
-        -DYAS_SERIALIZE_ABSL_TYPES
         -DYAS_OBJECT_MAX_MEMBERS=50
         -D_CRT_SECURE_NO_WARNINGS
     )
+
+    if (YAS_SERIALIZE_ABSL_TYPES)
+        add_definitions(-DYAS_SERIALIZE_ABSL_TYPES)
+    endif()
 endif()
 
 include_directories(
@@ -133,13 +148,21 @@ set(SOURCE_FILES
     include/version.hpp
     include/wstring.hpp
     include/yas_object.hpp
-    include/absl_cont_btree_map.hpp
-    include/absl_cont_flat_hash_map.hpp
     main.cpp
 )
 
+if (YAS_SERIALIZE_ABSL_TYPES)
+    list(APPEND SOURCE_FILES
+        include/absl_cont_btree_map.hpp
+        include/absl_cont_flat_hash_map.hpp
+    )
+endif()
+
 add_executable(yas-base-test ${SOURCE_FILES})
-target_link_libraries(yas-base-test 
-    absl::btree
-    absl::flat_hash_map
-)
+
+if (YAS_SERIALIZE_ABSL_TYPES)
+    target_link_libraries(yas-base-test 
+        absl::btree
+        absl::flat_hash_map
+    )
+endif()
