@@ -51,7 +51,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     message("TOOLSET=" ${MSVC_TOOLSET_VERSION})
 
     # Process Abseil's CMake build system
-    #add_subdirectory("C:/abseil-cpp" "build/abseil")
+    add_subdirectory("C:/abseil-cpp" "build/abseil")
 
     include_directories("C:/local/boost_1_66_0")
     link_directories("C:/local/boost_1_66_0/lib${COMPILER_BITS}-msvc-14.1")
