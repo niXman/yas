@@ -37,10 +37,10 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 
     if (YAS_SERIALIZE_ABSL_TYPES)
         add_definitions(-DYAS_SERIALIZE_ABSL_TYPES)
+        
+        # Process Abseil's CMake build system
+        add_subdirectory("/usr/local/abseil-cpp" "build/abseil")
     endif()
-
-    # Process Abseil's CMake build system
-    add_subdirectory("/usr/local/abseil-cpp" "build/abseil")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     if(CMAKE_SIZEOF_VOID_P EQUAL 8)
         set(COMPILER_BITS 64)
@@ -49,9 +49,6 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     endif()
 
     message("TOOLSET=" ${MSVC_TOOLSET_VERSION})
-
-    # Process Abseil's CMake build system
-    add_subdirectory("C:/abseil-cpp" "build/abseil")
 
     include_directories("C:/local/boost_1_66_0")
     link_directories("C:/local/boost_1_66_0/lib${COMPILER_BITS}-msvc-14.1")
@@ -73,6 +70,9 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     )
 
     if (YAS_SERIALIZE_ABSL_TYPES)
+        add_subdirectory("C:/abseil-cpp" "build/abseil")
+    
+        # Process Abseil's CMake build system
         add_definitions(-DYAS_SERIALIZE_ABSL_TYPES)
     endif()
 endif()
@@ -148,15 +148,10 @@ set(SOURCE_FILES
     include/version.hpp
     include/wstring.hpp
     include/yas_object.hpp
+    include/absl_cont_btree_map.hpp
+    include/absl_cont_flat_hash_map.hpp
     main.cpp
 )
-
-if (YAS_SERIALIZE_ABSL_TYPES)
-    list(APPEND SOURCE_FILES
-        include/absl_cont_btree_map.hpp
-        include/absl_cont_flat_hash_map.hpp
-    )
-endif()
 
 add_executable(yas-base-test ${SOURCE_FILES})
 
