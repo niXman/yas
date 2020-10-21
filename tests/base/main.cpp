@@ -99,6 +99,7 @@
 #include "include/string.hpp"
 #include "include/string_view.hpp"
 #include "include/tuple.hpp"
+#include "include/u16string.hpp"
 #include "include/unordered_map.hpp"
 #include "include/unordered_multimap.hpp"
 #include "include/unordered_multiset.hpp"
@@ -355,6 +356,7 @@ void tests(std::ostream &log, int &p, int &e) {
     YAS_RUN_TEST(log, wstring, p, e);
     YAS_RUN_TEST(log, pair, p, e);
     YAS_RUN_TEST(log, tuple, p, e);
+    YAS_RUN_TEST(log, u16string, p, e);
     YAS_RUN_TEST(log, vector, p, e);
     YAS_RUN_TEST(log, list, p, e);
     YAS_RUN_TEST(log, forward_list, p, e);

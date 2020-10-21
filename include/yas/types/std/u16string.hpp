@@ -33,34 +33,47 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef __yas__std_types_hpp
-#define __yas__std_types_hpp
 
-#include <yas/detail/config/config.hpp>
+#ifndef __yas__types__std__std_u16string_serializers_hpp
+#define __yas__types__std__std_u16string_serializers_hpp
 
-#include <yas/types/std/pair.hpp>
-#include <yas/types/std/bitset.hpp>
-#include <yas/types/std/chrono.hpp>
-#include <yas/types/std/optional.hpp>
-#include <yas/types/std/complex.hpp>
-#include <yas/types/std/string.hpp>
-#include <yas/types/std/string_view.hpp>
-#include <yas/types/std/u16string.hpp>
-#include <yas/types/std/wstring.hpp>
-#include <yas/types/std/vector.hpp>
-#include <yas/types/std/list.hpp>
-#include <yas/types/std/forward_list.hpp>
-#include <yas/types/std/map.hpp>
-#include <yas/types/std/set.hpp>
-#include <yas/types/std/deque.hpp>
-#include <yas/types/std/multimap.hpp>
-#include <yas/types/std/multiset.hpp>
-#include <yas/types/std/array.hpp>
-#include <yas/types/std/tuple.hpp>
-#include <yas/types/std/variant.hpp>
-#include <yas/types/std/unordered_set.hpp>
-#include <yas/types/std/unordered_map.hpp>
-#include <yas/types/std/unordered_multiset.hpp>
-#include <yas/types/std/unordered_multimap.hpp>
+#include <yas/detail/tools/utf8conv.hpp>
 
-#endif // __yas__std_types_hpp
+#include <yas/detail/type_traits/type_traits.hpp>
+#include <yas/detail/type_traits/serializer.hpp>
+
+namespace yas {
+namespace detail {
+
+/***************************************************************************/
+
+template<std::size_t F>
+struct serializer<
+	type_prop::not_a_fundamental,
+	ser_case::use_internal_serializer,
+	F,
+	std::u16string
+> {
+	template<typename Archive>
+	static Archive& save(Archive& ar, const std::u16string& u16string) {
+		std::string dst;
+		detail::TypeConverter<std::string, std::u16string>::Convert(dst, u16string);
+		ar & dst;
+		return ar;
+	}
+
+	template<typename Archive>
+	static Archive& load(Archive& ar, std::u16string& u16string) {
+		std::string string;
+		ar & string;
+		detail::TypeConverter<std::u16string, std::string>::Convert(u16string, string);
+		return ar;
+	}
+};
+
+/***************************************************************************/
+
+} // namespace detail
+} // namespace yas
+
+#endif // __yas__types__std__std_u16string_serializers_hpp

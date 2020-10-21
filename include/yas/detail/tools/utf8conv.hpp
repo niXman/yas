@@ -127,6 +127,20 @@ struct TypeConverter<std::wstring, std::string> {
 	}
 };
 
+template<>
+struct TypeConverter<std::string, std::u16string> {
+	static void Convert(std::string &dst, const std::u16string &src) {
+		to_utf8(dst, src);
+	}
+};
+
+template<>
+struct TypeConverter<std::u16string, std::string> {
+	static void Convert(std::u16string &dst, const std::string &src) {
+		from_utf8(dst, src);
+	}
+};
+
 /***************************************************************************/
 
 #if defined(YAS_SERIALIZE_BOOST_TYPES)

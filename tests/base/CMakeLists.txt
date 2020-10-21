@@ -139,6 +139,7 @@ set(SOURCE_FILES
     include/string.hpp
     include/string_view.hpp
     include/tuple.hpp
+    include/u16string.hpp
     include/unordered_map.hpp
     include/unordered_multimap.hpp
     include/unordered_multiset.hpp
