@@ -25,8 +25,9 @@ before_install:
   - wget http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.bz2
   - tar -jxf boost_1_64_0.tar.bz2
   - sudo cp -r boost_1_64_0/boost /usr/local/include
-  - echo $HOME/abseil-cpp
-  - git clone https://github.com/abseil/abseil-cpp.git $HOME/abseil-cpp
+  - wget https://github.com/abseil/abseil-cpp/archive/20200923.2.zip && unzip 20200923.2.zip && mv abseil-cpp-20200923.2 abseil-cpp
+  - export ABSEIL_HOME=`pwd`/abseil-cpp
+  - echo $ABSEIL_HOME
 
 install:
   - g++ -v

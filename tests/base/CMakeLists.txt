@@ -24,7 +24,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         add_definitions(-DYAS_SERIALIZE_ABSL_TYPES)
 
         # Process Abseil's CMake build system
-        add_subdirectory("$ENV{HOME}/abseil-cpp" "build/abseil")
+        add_subdirectory("$ENV{ABSEIL_HOME}" "build/abseil")
     endif()
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
@@ -39,7 +39,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
         add_definitions(-DYAS_SERIALIZE_ABSL_TYPES)
         
         # Process Abseil's CMake build system
-        add_subdirectory("$ENV{HOME}/abseil-cpp" "build/abseil")
+        add_subdirectory("$ENV{ABSEIL_HOME}" "build/abseil")
     endif()
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     if(CMAKE_SIZEOF_VOID_P EQUAL 8)
