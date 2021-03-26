@@ -156,6 +156,58 @@ private:
 
 /***************************************************************************/
 
+template<typename Byte>
+struct vector_ostream {
+    YAS_NONCOPYABLE(vector_ostream)
+    YAS_MOVABLE(vector_ostream)
+
+    vector_ostream() = default;
+    
+    vector_ostream(std::vector<Byte>& buf_)
+    {
+        std::swap(buf, buf_);
+    }
+
+    template<typename T>
+    std::size_t write(const T *ptr, std::size_t size) {
+        buf.insert(buf.end(), ptr, ptr + size);
+        return size;
+    }
+    
+    static_assert(std::is_same<Byte,char>::value || std::is_same<Byte,int8_t>::value || std::is_same<Byte,uint8_t>::value, "template parameter should be a byte type");
+    std::vector<Byte> buf;
+};
+
+template<typename Byte>
+struct vector_istream {
+    YAS_NONCOPYABLE(vector_istream)
+    YAS_MOVABLE(vector_istream)
+
+    vector_istream(const std::vector<Byte>& buf_)
+        : buf(buf_)
+    {}
+
+    template<typename T>
+    std::size_t read(T *ptr, const std::size_t size) {
+        const std::size_t avail = buf.size() - offset;
+        if ( size <= avail ) {
+            std::memcpy(ptr, &buf[offset], size);
+            offset += size;
+            return size;
+        }
+        return avail;
+    }
+
+    bool empty() const { return offset == buf.size(); }
+    char peekch() const { return buf[offset]; }
+    char getch() { return buf[offset++]; }
+    void ungetch(char) { --offset; }
+
+    static_assert(std::is_same<Byte,char>::value || std::is_same<Byte,int8_t>::value || std::is_same<Byte,uint8_t>::value, "template parameter should be a byte type");
+    const std::vector<Byte>& buf;
+    int offset = 0;
+};
+
 } // ns yas
 
 #endif // __yas__mem_streams_hpp
