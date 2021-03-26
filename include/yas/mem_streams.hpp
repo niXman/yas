@@ -200,8 +200,8 @@ struct vector_istream {
     }
 
     bool empty() const { return offset == buf.size(); }
-    char peekch() const { return buf[offset]; }
-    char getch() { return buf[offset++]; }
+    char peekch() const { return *reinterpret_cast<const char*>(&buf[offset]); }
+    char getch() { return *reinterpret_cast<const char*>(&buf[offset++]); }
     void ungetch(char) { --offset; }
 
     static_assert(std::is_same<Byte,char>::value || std::is_same<Byte,int8_t>::value || std::is_same<Byte,uint8_t>::value, "template parameter should be a byte type");
