@@ -45,6 +45,7 @@
 #include <yas/mem_streams.hpp>
 #include <yas/file_streams.hpp>
 #include <yas/std_streams.hpp>
+#include <yas/count_streams.hpp>
 
 namespace yas {
 
@@ -250,6 +251,45 @@ typename std::enable_if<
 save(yas::std_ostream_adapter &os, Types &&... args) {
     yas::json_oarchive<yas::std_ostream_adapter, (F & (~yas::file))> oa(os);
     oa(std::forward<Types>(args)...);
+}
+
+/***************************************************************************/
+// byte counter
+
+template<std::size_t F, typename ...Types>
+typename std::enable_if<
+    (F & yas::count) && (F & yas::binary)
+    ,std::size_t
+>::type
+saved_size(Types &&... args) {
+    yas::count_ostream os;
+    yas::binary_oarchive<yas::count_ostream, (F & (~yas::count))> oa(os);
+    oa(std::forward<Types>(args)...);
+    return os.total_size;
+}
+
+template<std::size_t F, typename ...Types>
+typename std::enable_if<
+    (F & yas::count) && (F & yas::text)
+    ,std::size_t
+>::type
+saved_size(Types &&... args) {
+    yas::count_ostream os;
+    yas::text_oarchive<yas::count_ostream, (F & (~yas::count))> oa(os);
+    oa(std::forward<Types>(args)...);
+    return os.total_size;
+}
+
+template<std::size_t F, typename ...Types>
+typename std::enable_if<
+    (F & yas::count) && (F & yas::json)
+    ,std::size_t
+>::type
+saved_size(Types &&... args) {
+    yas::count_ostream os;
+    yas::json_oarchive<yas::count_ostream, (F & (~yas::count))> oa(os);
+    oa(std::forward<Types>(args)...);
+    return os.total_size;
 }
 
 /***************************************************************************/
