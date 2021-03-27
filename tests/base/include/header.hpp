@@ -71,6 +71,30 @@ bool header_test(std::ostream &log, const char* archive_type, const char *test_n
         yas::mem_istream is(os.get_intrusive_buffer());
         yas::binary_iarchive<yas::mem_istream> ia(is);
     }
+    
+    {
+        yas::vector_ostream<char> os;
+        yas::binary_oarchive<yas::vector_ostream<char>> oa(os);
+
+        yas::mem_istream is(yas::intrusive_buffer(os.buf));
+        yas::binary_iarchive<yas::mem_istream> ia(is);
+    }
+    
+    {
+        yas::vector_ostream<int8_t> os;
+        yas::binary_oarchive<yas::vector_ostream<int8_t>> oa(os);
+
+        yas::mem_istream is(yas::intrusive_buffer(os.buf));
+        yas::binary_iarchive<yas::mem_istream> ia(is);
+    }
+    
+    {
+        yas::vector_ostream<uint8_t> os;
+        yas::binary_oarchive<yas::vector_ostream<uint8_t>> oa(os);
+
+        yas::mem_istream is(yas::intrusive_buffer(os.buf));
+        yas::binary_iarchive<yas::mem_istream> ia(is);
+    }
 
     {
         __YAS_CONSTEXPR_IF( !yas::is_json_archive<typename archive_traits::oarchive_type>::value ) {
