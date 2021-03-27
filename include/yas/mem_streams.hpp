@@ -173,7 +173,8 @@ struct vector_ostream {
 
     template<typename T>
     std::size_t write(const T *ptr, std::size_t size) {
-        buf.insert(buf.end(), ptr, ptr + size);
+        const Byte* cptr = reinterpret_cast<const Byte*>(ptr);
+        buf.insert(buf.end(), cptr, cptr + size);
         return size;
     }
     
