@@ -297,6 +297,138 @@ struct archive_traits {
     }
 };
 
+// mem archives traits
+template<std::size_t F, typename Byte>
+struct archive_traits<yas::binary_oarchive<yas::vector_ostream<Byte>, F>,
+                      yas::binary_iarchive<yas::mem_istream, F>> {
+    
+    using oarchive_type = yas::binary_oarchive<yas::vector_ostream<Byte>, F>;
+    using iarchive_type = yas::binary_iarchive<yas::mem_istream, F>;
+
+    /** output archive */
+    struct oarchive {
+        oarchive()
+            :oa{nullptr}
+        {}
+
+        virtual ~oarchive()
+        { delete oa; }
+
+        oarchive_type* operator->() { return oa; }
+
+        template<typename T>
+        oarchive_type& operator& (const T &v) { return (*(oa) & v); }
+
+        oarchive_type& serialize() { return *oa; }
+
+        template<typename Head, typename... Tail>
+        oarchive_type& serialize(const Head &head, const Tail&... tail) {
+            return oa->operator&(head).serialize(tail...);
+        }
+
+        template<typename... Ts>
+        oarchive_type& operator()(const Ts&... ts) {
+            return oa->serialize(ts...);
+        }
+        template<typename... Ts>
+        oarchive_type& save(const Ts&... ts) {
+            return oa->save(ts...);
+        }
+
+        static constexpr bool is_little_endian() { return oarchive_type::is_little_endian(); }
+        static constexpr bool is_big_endian() { return oarchive_type::is_big_endian(); }
+        static constexpr yas::options host_endian() { return oarchive_type::host_endian(); }
+        std::size_t size() const { return stream.buf.size(); }
+        
+        yas::intrusive_buffer get_intrusive_buffer() const { return stream.get_intrusive_buffer(); }
+        yas::shared_buffer get_shared_buffer() const { return yas::shared_buffer(stream.buf.data(), stream.buf.size()); }
+
+        void dump(std::ostream &os = std::cout) {
+            os << yas::hexdump(reinterpret_cast<const char*>(stream.buf.data()), stream.buf.size()) << std::endl;
+        }
+        void print(std::ostream &os = std::cout) {
+            os.write(reinterpret_cast<const char*>(stream.buf.data()), stream.buf.size());
+            os << std::endl;
+        }
+
+        bool compare(const void *ptr, std::uint32_t size) const {
+            return size == stream.buf.size() ? (0 == std::memcmp(stream.buf.data(), ptr, size)) : false;
+        }
+
+        yas::vector_ostream<Byte> stream;
+        oarchive_type *oa;
+    };
+
+    static void ocreate(oarchive &oa, const char *archive_type) {
+        ((void) archive_type);
+        oa.oa = new oarchive_type(oa.stream);
+    }
+
+    /** input archive */
+    struct iarchive {
+        iarchive()
+            :stream(nullptr)
+            ,ia{nullptr}
+        {}
+
+        virtual ~iarchive()
+        { delete ia; delete stream;}
+
+        iarchive_type* operator->() { return ia; }
+
+        template<typename T>
+        iarchive_type& operator&(T &&v) { return (*(ia) & std::forward<T>(v)); }
+
+        iarchive_type& serialize() { return *ia; }
+
+        template<typename Head, typename... Tail>
+        iarchive_type& serialize(Head &&head, Tail &&... tail) {
+            return ia->operator&(std::forward<Head>(head)).serialize(std::forward<Tail>(tail)...);
+        }
+
+        template<typename... Ts>
+        iarchive_type& operator()(Ts &&... ts) {
+            return ia->operator()(std::forward<Ts>(ts)...);
+        }
+        template<typename... Ts>
+        iarchive_type& load(Ts &&... ts) {
+            return ia->load(std::forward<Ts>(ts)...);
+        }
+
+        bool is_little_endian() { return ia->is_little_endian(); }
+        bool is_big_endian() { return ia->is_big_endian(); }
+        static constexpr yas::options host_endian() { return iarchive_type::host_endian(); }
+        std::size_t size() const { return stream->get_intrusive_buffer().size; }
+        yas::intrusive_buffer get_intrusive_buffer() const { return stream->get_intrusive_buffer(); }
+
+        void dump(std::ostream &os = std::cout) {
+            const yas::intrusive_buffer buf = stream->get_intrusive_buffer();
+            os << yas::hexdump(buf.data, buf.size) << std::endl;
+        }
+        void print(std::ostream &os = std::cout) {
+            const yas::intrusive_buffer buf = stream->get_intrusive_buffer();
+            os.write(buf.data, buf.size);
+            os << std::endl;
+        }
+
+        bool compare(const void *ptr, std::uint32_t size) const {
+            const yas::intrusive_buffer buf = stream->get_intrusive_buffer();
+//			std::cout << "exp=" << std::endl << yas::hex_dump(ptr, size) << std::endl;
+//			std::cout << "buf=" << std::endl << yas::hex_dump(buf.data, buf.size) << std::endl;
+            return size == buf.size ? (0 == std::memcmp(buf.data, ptr, size)) : false;
+        }
+
+        yas::mem_istream* stream;
+        iarchive_type *ia;
+    };
+
+    static void icreate(iarchive &ia, oarchive &oa, const char *archive_type) {
+        ((void) archive_type);
+        ia.stream = new yas::mem_istream(yas::intrusive_buffer(oa.stream.buf));
+        ia.ia = new iarchive_type(*(ia.stream));
+    }
+};
+
 /***************************************************************************/
 
 #define YAS_RUN_TEST_SKIP_TEST(...) \
@@ -534,6 +666,22 @@ int main(int, char **argv) {
                          yas::binary_oarchive<yas::mem_ostream, binary_opts>
                         ,yas::binary_iarchive<yas::mem_istream, binary_opts>
                     >(log, passed, failed);
+                    
+                    tests<
+                         yas::binary_oarchive<yas::vector_ostream<char>, binary_opts>
+                        ,yas::binary_iarchive<yas::mem_istream, binary_opts>
+                    >(log, passed, failed);
+                    
+                    tests<
+                         yas::binary_oarchive<yas::vector_ostream<int8_t>, binary_opts>
+                        ,yas::binary_iarchive<yas::mem_istream, binary_opts>
+                    >(log, passed, failed);
+                    
+                    tests<
+                         yas::binary_oarchive<yas::vector_ostream<uint8_t>, binary_opts>
+                        ,yas::binary_iarchive<yas::mem_istream, binary_opts>
+                    >(log, passed, failed);
+                    
                 } else {
                     constexpr std::size_t binary_opts = yas::binary|yas::elittle;
                     tests<

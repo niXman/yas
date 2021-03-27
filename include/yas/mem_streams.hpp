@@ -129,21 +129,6 @@ struct mem_istream {
         ,cur(buf.data.get())
         ,end(buf.data.get()+buf.size)
     {}
-    mem_istream(const std::vector<char>& buf)
-        :beg(buf.data())
-        ,cur(buf.data())
-        ,end(buf.data()+buf.size())
-    {}
-    mem_istream(const std::vector<int8_t>& buf)
-        :beg(reinterpret_cast<const char*>(buf.data()))
-        ,cur(reinterpret_cast<const char*>(buf.data()))
-        ,end(reinterpret_cast<const char*>(buf.data()+buf.size()))
-    {}
-    mem_istream(const std::vector<uint8_t>& buf)
-        :beg(reinterpret_cast<const char*>(buf.data()))
-        ,cur(reinterpret_cast<const char*>(buf.data()))
-        ,end(reinterpret_cast<const char*>(buf.data()+buf.size()))
-    {}
 
     template<typename T>
     std::size_t read(T *ptr, const std::size_t size) {
@@ -177,6 +162,11 @@ struct vector_ostream {
     YAS_NONCOPYABLE(vector_ostream)
     YAS_MOVABLE(vector_ostream)
 
+    vector_ostream()
+        :owning_buf()
+        ,buf(owning_buf)
+    {}
+    
     vector_ostream(std::vector<Byte>& buf_)
         : buf(buf_)
     {}
@@ -187,7 +177,10 @@ struct vector_ostream {
         return size;
     }
     
+    intrusive_buffer get_intrusive_buffer() const { return intrusive_buffer(buf); }
+    
     static_assert(std::is_same<Byte,char>::value || std::is_same<Byte,int8_t>::value || std::is_same<Byte,uint8_t>::value, "template parameter should be a byte type");
+    std::vector<Byte>  owning_buf;
     std::vector<Byte>& buf;
 };
 

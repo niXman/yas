@@ -72,6 +72,18 @@ inline bool is_yas_archive(const char *fname) {
     return is_yas_archive(is);
 }
 
+inline bool is_yas_archive(const std::vector<char>& buf) {
+    return is_yas_archive(yas::intrusive_buffer(buf));
+}
+
+inline bool is_yas_archive(const std::vector<int8_t>& buf) {
+    return is_yas_archive(yas::intrusive_buffer(buf));
+}
+
+inline bool is_yas_archive(const std::vector<uint8_t>& buf) {
+    return is_yas_archive(yas::intrusive_buffer(buf));
+}
+
 /***************************************************************************/
 
 template<typename IS>
@@ -106,6 +118,17 @@ inline detail::header::archive_header read_header(const char *fname) {
     return header;
 }
 
+inline detail::header::archive_header read_header(const std::vector<char>& buf) {
+    return read_header(yas::intrusive_buffer(buf));
+}
+
+inline detail::header::archive_header read_header(const std::vector<int8_t>& buf) {
+    return read_header(yas::intrusive_buffer(buf));
+}
+
+inline detail::header::archive_header read_header(const std::vector<uint8_t>& buf) {
+    return read_header(yas::intrusive_buffer(buf));
+}
 /***************************************************************************/
 
 inline std::size_t archive_version(const detail::header::archive_header &h) {
@@ -126,6 +149,24 @@ inline std::size_t archive_version(const yas::shared_buffer &buf) {
 
 inline std::size_t archive_version(const char *fname) {
     const auto header = read_header(fname);
+
+    return archive_version(header);
+}
+
+inline std::size_t archive_version(const std::vector<char>& buf) {
+    const auto header = read_header(buf);
+
+    return archive_version(header);
+}
+
+inline std::size_t archive_version(const std::vector<int8_t>& buf) {
+    const auto header = read_header(buf);
+
+    return archive_version(header);
+}
+
+inline std::size_t archive_version(const std::vector<uint8_t>& buf) {
+    const auto header = read_header(buf);
 
     return archive_version(header);
 }
@@ -154,6 +195,24 @@ inline options archive_type(const char *fname) {
     return archive_type(header);
 }
 
+inline options archive_type(const std::vector<char>& buf) {
+    const auto header = read_header(buf);
+
+    return archive_type(header);
+}
+
+inline options archive_type(const std::vector<int8_t>& buf) {
+    const auto header = read_header(buf);
+
+    return archive_type(header);
+}
+
+inline options archive_type(const std::vector<uint8_t>& buf) {
+    const auto header = read_header(buf);
+
+    return archive_type(header);
+}
+
 /***************************************************************************/
 
 inline options archive_endian(const detail::header::archive_header &h) {
@@ -178,6 +237,24 @@ inline options archive_endian(const char *fname) {
     return archive_endian(header);
 }
 
+inline options archive_endian(const std::vector<char>& buf) {
+    const auto header = read_header(buf);
+
+    return archive_endian(header);
+}
+
+inline options archive_endian(const std::vector<int8_t>& buf) {
+    const auto header = read_header(buf);
+
+    return archive_endian(header);
+}
+
+inline options archive_endian(const std::vector<uint8_t>& buf) {
+    const auto header = read_header(buf);
+
+    return archive_endian(header);
+}
+
 /***************************************************************************/
 
 inline bool archive_is_compacted(const detail::header::archive_header &h) {
@@ -198,6 +275,24 @@ inline bool archive_is_compacted(const yas::shared_buffer &buf) {
 
 inline bool archive_is_compacted(const char *fname) {
     const auto header = read_header(fname);
+
+    return archive_is_compacted(header);
+}
+
+inline bool archive_is_compacted(const std::vector<char>& buf) {
+    const auto header = read_header(buf);
+
+    return archive_is_compacted(header);
+}
+
+inline bool archive_is_compacted(const std::vector<int8_t>& buf) {
+    const auto header = read_header(buf);
+
+    return archive_is_compacted(header);
+}
+
+inline bool archive_is_compacted(const std::vector<uint8_t>& buf) {
+    const auto header = read_header(buf);
 
     return archive_is_compacted(header);
 }

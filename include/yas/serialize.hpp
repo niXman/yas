@@ -108,12 +108,11 @@ typename std::enable_if<
     ,std::vector<Byte>
 >::type
 save(Types &&... args) {
-    std::vector<Byte> buf;
-    yas::vector_ostream<Byte> os(buf);
+    yas::vector_ostream<Byte> os;
     yas::binary_oarchive<yas::vector_ostream<Byte>, (F & (~yas::mem2))> oa(os);
     oa(std::forward<Types>(args)...);
     
-    return buf;
+    return os.owning_buf;
 }
 
 template<std::size_t F, typename Byte, typename ...Types>
@@ -131,12 +130,11 @@ typename std::enable_if<
      ,std::vector<Byte>
 >::type
 save(Types &&... args) {
-    std::vector<Byte> buf;
-    yas::vector_ostream<Byte> os(buf);
+    yas::vector_ostream<Byte> os;
     yas::text_oarchive<yas::vector_ostream<Byte>, (F & (~yas::mem2))> oa(os);
     oa(std::forward<Types>(args)...);
     
-    return buf;
+    return os.owning_buf;
 }
 
 template<std::size_t F, typename Byte, typename ...Types>
@@ -154,12 +152,11 @@ typename std::enable_if<
      ,std::vector<Byte>
 >::type
 save(Types &&... args) {
-    std::vector<Byte> buf;
-    yas::vector_ostream<Byte> os(buf);
+    yas::vector_ostream<Byte> os;
     yas::json_oarchive<yas::vector_ostream<Byte>, (F & (~yas::mem2))> oa(os);
     oa(std::forward<Types>(args)...);
     
-    return buf;
+    return os.owning_buf;
 }
 
 /***************************************************************************/
@@ -289,13 +286,14 @@ load(const Buf &buf, Types &&... args) {
 }
 
 /***************************************************************************/
-// mem2 (vector)
+// mem2 (vector) (just pass intrusive_buffer)
 
-template<std::size_t F, typename Byte, typename ...Types>
+template<std::size_t F, typename Buf, typename ...Types>
 typename std::enable_if<
     (F & yas::mem2) && (F & yas::binary)
 >::type
-load(yas::mem_istream&& is, Types &&... args) {
+load(const Buf &buf, Types &&... args) {
+    yas::mem_istream is(buf);
     yas::binary_iarchive<yas::mem_istream, (F & (~yas::mem2))> ia(is);
     ia(std::forward<Types>(args)...);
 }
@@ -304,7 +302,8 @@ template<std::size_t F, typename Buf, typename ...Types>
 typename std::enable_if<
     (F & yas::mem2) && (F & yas::text)
 >::type
-load(yas::mem_istream&& is, Types &&... args) {
+load(const Buf &buf, Types &&... args) {
+    yas::mem_istream is(buf);
     yas::text_iarchive<yas::mem_istream, (F & (~yas::mem2))> ia(is);
     ia(std::forward<Types>(args)...);
 }
@@ -313,7 +312,8 @@ template<std::size_t F, typename Buf, typename ...Types>
 typename std::enable_if<
     (F & yas::mem2) && (F & yas::json)
 >::type
-load(yas::mem_istream&& is, Types &&... args) {
+load(const Buf &buf, Types &&... args) {
+    yas::mem_istream is(buf);
     yas::json_iarchive<yas::mem_istream, (F & (~yas::mem2))> ia(is);
     ia(std::forward<Types>(args)...);
 }
