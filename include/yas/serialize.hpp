@@ -258,36 +258,36 @@ save(yas::std_ostream_adapter &os, Types &&... args) {
 
 template<std::size_t F, typename ...Types>
 typename std::enable_if<
-    (F & yas::count) && (F & yas::binary)
+    ((F & yas::binary) > 0)
     ,std::size_t
 >::type
 saved_size(Types &&... args) {
     yas::count_ostream os;
-    yas::binary_oarchive<yas::count_ostream, (F & (~yas::count))> oa(os);
+    yas::binary_oarchive<yas::count_ostream, F> oa(os);
     oa(std::forward<Types>(args)...);
     return os.total_size;
 }
 
 template<std::size_t F, typename ...Types>
 typename std::enable_if<
-    (F & yas::count) && (F & yas::text)
+    ((F & yas::text) > 0)
     ,std::size_t
 >::type
 saved_size(Types &&... args) {
     yas::count_ostream os;
-    yas::text_oarchive<yas::count_ostream, (F & (~yas::count))> oa(os);
+    yas::text_oarchive<yas::count_ostream, F> oa(os);
     oa(std::forward<Types>(args)...);
     return os.total_size;
 }
 
 template<std::size_t F, typename ...Types>
 typename std::enable_if<
-    (F & yas::count) && (F & yas::json)
+    ((F & yas::json) > 0)
     ,std::size_t
 >::type
 saved_size(Types &&... args) {
     yas::count_ostream os;
-    yas::json_oarchive<yas::count_ostream, (F & (~yas::count))> oa(os);
+    yas::json_oarchive<yas::count_ostream, F> oa(os);
     oa(std::forward<Types>(args)...);
     return os.total_size;
 }

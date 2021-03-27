@@ -277,7 +277,6 @@ enum options: std::uint32_t {
     ,mem       = 1u<<8
     ,file      = 1u<<9
     ,mem2      = 1u<<10
-    ,count     = 1u<<11
 };
 
 template<typename Ar>
