@@ -76,7 +76,7 @@ bool header_test(std::ostream &log, const char* archive_type, const char *test_n
         yas::vector_ostream<char> os;
         yas::binary_oarchive<yas::vector_ostream<char>> oa(os);
 
-        yas::mem_istream is(yas::intrusive_buffer(os.buf));
+        yas::mem_istream is(os.buf);
         yas::binary_iarchive<yas::mem_istream> ia(is);
     }
     
@@ -84,7 +84,7 @@ bool header_test(std::ostream &log, const char* archive_type, const char *test_n
         yas::vector_ostream<int8_t> os;
         yas::binary_oarchive<yas::vector_ostream<int8_t>> oa(os);
 
-        yas::mem_istream is(yas::intrusive_buffer(os.buf));
+        yas::mem_istream is(os.buf);
         yas::binary_iarchive<yas::mem_istream> ia(is);
     }
     
@@ -92,7 +92,7 @@ bool header_test(std::ostream &log, const char* archive_type, const char *test_n
         yas::vector_ostream<uint8_t> os;
         yas::binary_oarchive<yas::vector_ostream<uint8_t>> oa(os);
 
-        yas::mem_istream is(yas::intrusive_buffer(os.buf));
+        yas::mem_istream is(os.buf);
         yas::binary_iarchive<yas::mem_istream> ia(is);
     }
 
