@@ -505,7 +505,7 @@ bool yas_object_test(std::ostream &log, const char *archive_type, const char *te
             const size_t expected_size = yas::saved_size<yas::binary>(obj1);
             std::vector<char> buf;
             buf.reserve(expected_size);
-            yas::save<yas::binary|yas::mem2>(yas::vector_ostream<char>(buf), obj1);
+            yas::save<yas::binary|yas::mem>(yas::vector_ostream<char>(buf), obj1);
 
             if (expected_size != buf.size() || buf.capacity() != buf.size())
             {
@@ -514,7 +514,7 @@ bool yas_object_test(std::ostream &log, const char *archive_type, const char *te
             }
 
             _yas_object_test::type7 obj2;
-            yas::load<yas::binary|yas::mem2>(yas::intrusive_buffer(buf), obj2);
+            yas::load<yas::binary|yas::mem>(buf, obj2);
 
             if (!(obj1 == obj2))
             {
@@ -527,7 +527,7 @@ bool yas_object_test(std::ostream &log, const char *archive_type, const char *te
             const size_t expected_size = yas::saved_size<yas::text>(obj1);
             std::vector<char> buf;
             buf.reserve(expected_size);
-            yas::save<yas::text|yas::mem2>(yas::vector_ostream<char>(buf), obj1);
+            yas::save<yas::text|yas::mem>(yas::vector_ostream<char>(buf), obj1);
 
             if (expected_size != buf.size() || buf.capacity() != buf.size())
             {
@@ -536,7 +536,7 @@ bool yas_object_test(std::ostream &log, const char *archive_type, const char *te
             }
 
             _yas_object_test::type7 obj2;
-            yas::load<yas::text|yas::mem2>(yas::intrusive_buffer(buf), obj2);
+            yas::load<yas::text|yas::mem>(buf, obj2);
 
             if (!(obj1 == obj2))
             {
@@ -549,7 +549,7 @@ bool yas_object_test(std::ostream &log, const char *archive_type, const char *te
             const size_t expected_size = yas::saved_size<yas::json>(obj1);
             std::vector<char> buf;
             buf.reserve(expected_size);
-            yas::save<yas::json|yas::mem2>(yas::vector_ostream<char>(buf), obj1);
+            yas::save<yas::json|yas::mem>(yas::vector_ostream<char>(buf), obj1);
 
             if (expected_size != buf.size() || buf.capacity() != buf.size())
             {
@@ -558,7 +558,7 @@ bool yas_object_test(std::ostream &log, const char *archive_type, const char *te
             }
 
             _yas_object_test::type7 obj2;
-            yas::load<yas::json|yas::mem2>(yas::intrusive_buffer(buf), obj2);
+            yas::load<yas::json|yas::mem>(buf, obj2);
 
             if (!(obj1 == obj2))
             {

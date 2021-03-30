@@ -276,7 +276,6 @@ enum options: std::uint32_t {
     ,compacted = 1u<<7
     ,mem       = 1u<<8
     ,file      = 1u<<9
-    ,mem2      = 1u<<10
 };
 
 template<typename Ar>

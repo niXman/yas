@@ -129,6 +129,21 @@ struct mem_istream {
         ,cur(buf.data.get())
         ,end(buf.data.get()+buf.size)
     {}
+    mem_istream(const std::vector<char>& buf)
+        :beg(buf.data())
+        ,cur(buf.data())
+        ,end(buf.data()+buf.size())
+    {}
+    mem_istream(const std::vector<int8_t>& buf)
+        :beg(__YAS_RCAST(const char*,buf.data()))
+        ,cur(__YAS_RCAST(const char*,buf.data()))
+        ,end(__YAS_RCAST(const char*,buf.data())+buf.size())
+    {}
+    mem_istream(const std::vector<uint8_t>& buf)
+        :beg(__YAS_RCAST(const char*,buf.data()))
+        ,cur(__YAS_RCAST(const char*,buf.data()))
+        ,end(__YAS_RCAST(const char*,buf.data())+buf.size())
+    {}
 
     template<typename T>
     std::size_t read(T *ptr, const std::size_t size) {
