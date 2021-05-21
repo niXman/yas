@@ -71,7 +71,7 @@ struct file_ostream {
         }
 
         const char *fmode = file_mode_str(m);
-        file = std::fopen(fname, fmode);
+        fopen_s(&file, fname, fmode);
         if ( !file ) {
             __YAS_THROW_ERROR_OPEN_FILE();
         }
@@ -102,7 +102,8 @@ private:
         __YAS_THROW_BAD_FILE_MODE();
     }
     static bool file_exists(const char *fname) {
-        std::FILE* file = std::fopen(fname, "r");
+        std::FILE* file;
+        fopen_s(&file, fname, "r");
         if ( file ) {
             std::fclose(file);
 
@@ -121,8 +122,8 @@ struct file_istream {
     YAS_MOVABLE(file_istream)
 
     file_istream(const char *fname, std::size_t m = 0)
-        :file(std::fopen(fname, "rb"))
     {
+        fopen_s(&file, fname, "rb");
         if ( !file ) {
             __YAS_THROW_ERROR_OPEN_FILE();
         }

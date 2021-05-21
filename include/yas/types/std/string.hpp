@@ -58,7 +58,7 @@ struct serializer<
 > {
     template<typename Archive>
     static Archive& save(Archive& ar, const std::string &str) {
-        if ( F & yas::json ) {
+        if constexpr ( F & yas::json ) {
             if ( str.empty() ) {
                 ar.write("null", 4);
             } else {
@@ -76,7 +76,7 @@ struct serializer<
 
     template<typename Archive>
     static Archive& load(Archive& ar, std::string &str) {
-        if ( F & yas::json ) {
+        if constexpr ( F & yas::json ) {
             char ch = ar.getch();
             if ( ch == '\"' ) {
                 load_string(str, ar);

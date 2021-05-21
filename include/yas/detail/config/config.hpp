@@ -54,7 +54,7 @@
 #   define __YAS_CONSTEXPR_IF(...) if constexpr ( static_cast<bool>(__VA_ARGS__) )
 #   define __YAS_FALLTHROUGH [[fallthrough]]
 #else
-#   define __YAS_CONSTEXPR_IF(...) if (__VA_ARGS__)
+#   define __YAS_CONSTEXPR_IF(...) if constexpr ( static_cast<bool>(__VA_ARGS__) )
 #endif
 
 /***************************************************************************/
