@@ -33,44 +33,56 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef __yas__boost_types_hpp
-#define __yas__boost_types_hpp
+#ifndef __yas__types__boost__string_view_serializers_hpp
+#define __yas__types__boost__string_view_serializers_hpp
 
-#if defined(YAS_SERIALIZE_BOOST_TYPES)
+#include <yas/detail/type_traits/serializer.hpp>
+#include <yas/detail/tools/save_load_string.hpp>
 
-#include <yas/types/boost/array.hpp>
-#include <yas/types/boost/chrono.hpp>
-#include <yas/types/boost/container_deque.hpp>
-#include <yas/types/boost/container_flat_map.hpp>
-#include <yas/types/boost/container_flat_multimap.hpp>
-#include <yas/types/boost/container_flat_set.hpp>
-#include <yas/types/boost/container_flat_multiset.hpp>
-#include <yas/types/boost/container_list.hpp>
-#include <yas/types/boost/container_map.hpp>
-#include <yas/types/boost/container_multimap.hpp>
-#include <yas/types/boost/container_multiset.hpp>
-#include <yas/types/boost/container_set.hpp>
-#include <yas/types/boost/container_slist.hpp>
-#include <yas/types/boost/container_stable_vector.hpp>
-#include <yas/types/boost/container_static_vector.hpp>
-#include <yas/types/boost/container_string.hpp>
-#include <yas/types/boost/container_vector.hpp>
-#include <yas/types/boost/container_wstring.hpp>
-#include <yas/types/boost/fusion_list.hpp>
-#include <yas/types/boost/fusion_map.hpp>
-#include <yas/types/boost/fusion_pair.hpp>
-#include <yas/types/boost/fusion_set.hpp>
-#include <yas/types/boost/fusion_tuple.hpp>
-#include <yas/types/boost/fusion_vector.hpp>
-#include <yas/types/boost/optional.hpp>
-#include <yas/types/boost/string_view.hpp>
-#include <yas/types/boost/tuple.hpp>
-#include <yas/types/boost/variant.hpp>
-#include <yas/types/boost/unordered_set.hpp>
-#include <yas/types/boost/unordered_map.hpp>
-#include <yas/types/boost/unordered_multimap.hpp>
-#include <yas/types/boost/unordered_multiset.hpp>
+#include <boost/utility/string_view.hpp>
 
-#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
+#include <cassert>
 
-#endif // __yas__boost_types_hpp
+namespace yas {
+namespace detail {
+
+/***************************************************************************/
+
+template<std::size_t F>
+struct serializer<
+     type_prop::not_a_fundamental
+    ,ser_case::use_internal_serializer
+    ,F
+    ,boost::string_view
+> {
+    template<typename Archive>
+    static Archive& save(Archive& ar, const boost::string_view &str) {
+        if ( F & yas::json ) {
+            if ( str.empty() ) {
+                ar.write("null", 4);
+            } else {
+                ar.write("\"", 1);
+                save_string(ar, str.data(), str.length());
+                ar.write("\"", 1);
+            }
+        } else {
+            ar.write_seq_size(str.length());
+            ar.write(str.data(), str.length());
+        }
+
+        return ar;
+    }
+
+    template<typename Archive>
+    static Archive& load(Archive& ar, boost::string_view &) {
+        assert(0 == "can't deserialize into boost::string_view");
+        return ar;
+    }
+};
+
+/***************************************************************************/
+
+} // namespace detail
+} // namespace yas
+
+#endif // __yas__types__boost__string_view_serializers_hpp

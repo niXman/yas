@@ -109,6 +109,7 @@ set(SOURCE_FILES
     include/boost_fusion_set.hpp
     include/boost_fusion_tuple.hpp
     include/boost_fusion_vector.hpp
+    include/boost_string_view.hpp
     include/boost_tuple.hpp
     include/boost_variant.hpp
     include/buffer.hpp

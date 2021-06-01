@@ -142,6 +142,7 @@
 #include "include/boost_cont_deque.hpp"
 #include "include/boost_tuple.hpp"
 #include "include/boost_variant.hpp"
+#include "include/boost_string_view.hpp"
 #endif // defined(YAS_SERIALIZE_BOOST_TYPES)
 
 /***************************************************************************/
@@ -396,6 +397,7 @@ void tests(std::ostream &log, int &p, int &e) {
     YAS_RUN_TEST(log, boost_cont_deque, p, e);
     YAS_RUN_TEST(log, boost_tuple, p, e);
     YAS_RUN_TEST(log, boost_variant, p, e);
+    YAS_RUN_TEST(log, boost_string_view, p, e);
 #endif // YAS_SERIALIZE_BOOST_TYPES
 #ifdef YAS_SERIALIZE_ABSL_TYPES
     YAS_RUN_TEST(log, absl_cont_btree_map, p, e);

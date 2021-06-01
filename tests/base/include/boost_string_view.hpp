@@ -33,44 +33,33 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef __yas__boost_types_hpp
-#define __yas__boost_types_hpp
+#ifndef __yas__tests__base__include__boost_string_view_hpp
+#define __yas__tests__base__include__boost_string_view_hpp
 
-#if defined(YAS_SERIALIZE_BOOST_TYPES)
+#include <boost/utility/string_view.hpp>
 
-#include <yas/types/boost/array.hpp>
-#include <yas/types/boost/chrono.hpp>
-#include <yas/types/boost/container_deque.hpp>
-#include <yas/types/boost/container_flat_map.hpp>
-#include <yas/types/boost/container_flat_multimap.hpp>
-#include <yas/types/boost/container_flat_set.hpp>
-#include <yas/types/boost/container_flat_multiset.hpp>
-#include <yas/types/boost/container_list.hpp>
-#include <yas/types/boost/container_map.hpp>
-#include <yas/types/boost/container_multimap.hpp>
-#include <yas/types/boost/container_multiset.hpp>
-#include <yas/types/boost/container_set.hpp>
-#include <yas/types/boost/container_slist.hpp>
-#include <yas/types/boost/container_stable_vector.hpp>
-#include <yas/types/boost/container_static_vector.hpp>
-#include <yas/types/boost/container_string.hpp>
-#include <yas/types/boost/container_vector.hpp>
-#include <yas/types/boost/container_wstring.hpp>
-#include <yas/types/boost/fusion_list.hpp>
-#include <yas/types/boost/fusion_map.hpp>
-#include <yas/types/boost/fusion_pair.hpp>
-#include <yas/types/boost/fusion_set.hpp>
-#include <yas/types/boost/fusion_tuple.hpp>
-#include <yas/types/boost/fusion_vector.hpp>
-#include <yas/types/boost/optional.hpp>
-#include <yas/types/boost/string_view.hpp>
-#include <yas/types/boost/tuple.hpp>
-#include <yas/types/boost/variant.hpp>
-#include <yas/types/boost/unordered_set.hpp>
-#include <yas/types/boost/unordered_map.hpp>
-#include <yas/types/boost/unordered_multimap.hpp>
-#include <yas/types/boost/unordered_multiset.hpp>
+/***************************************************************************/
 
-#endif // defined(YAS_SERIALIZE_BOOST_TYPES)
+template<typename archive_traits>
+bool boost_string_view_test(std::ostream &log, const char *archive_type, const char *test_name) {
+    typename archive_traits::oarchive oa;
+    archive_traits::ocreate(oa, archive_type);
+    boost::string_view s("发送日期 string");
+    oa & YAS_OBJECT_NVP("obj", ("s", s));
 
-#endif // __yas__boost_types_hpp
+    typename archive_traits::iarchive ia;
+    archive_traits::icreate(ia, oa, archive_type);
+    std::string ss;
+    ia & YAS_OBJECT_NVP("obj", ("s", ss));
+
+    if ( ss.compare(0, s.length(), s.data()) ) {
+        YAS_TEST_REPORT(log, archive_type, test_name);
+        return false;
+    }
+
+    return true;
+}
+
+/***************************************************************************/
+
+#endif // __yas__tests__base__include__boost_string_view_hpp
