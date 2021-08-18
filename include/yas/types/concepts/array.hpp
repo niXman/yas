@@ -36,6 +36,8 @@
 #ifndef __yas__types__concepts__array_hpp
 #define __yas__types__concepts__array_hpp
 
+#include <vector>
+
 namespace yas {
 namespace detail {
 namespace concepts {
