@@ -37,6 +37,7 @@
 #define __yas__detail__tools__save_load_string_hpp
 
 #include <string>
+#include <vector>
 #include <cassert>
 
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
