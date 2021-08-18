@@ -159,9 +159,13 @@ struct mem_istream {
     }
 
     bool empty() const { return cur == end; }
-    char peekch() const { return *cur; }
-    char getch() { return *cur++; }
-    void ungetch(char) { --cur; }
+    char peekch() const { return empty() ? EOF : *cur; }
+    char getch() { return empty() ? EOF : *cur++; }
+    void ungetch(char) {
+        if ( cur != beg ) {
+            --cur;
+        }
+    }
 
     shared_buffer get_shared_buffer() const { return shared_buffer(cur, __YAS_SCAST(std::size_t, end-cur)); }
     intrusive_buffer get_intrusive_buffer() const { return intrusive_buffer(cur, __YAS_SCAST(std::size_t, end-cur)); }

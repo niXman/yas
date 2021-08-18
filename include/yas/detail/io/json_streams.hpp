@@ -208,6 +208,8 @@ struct json_istream {
 	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t)) {
 		char buf[sizeof(T)*4];
 		const std::size_t n = json_read_num(is, buf, sizeof(buf));
+		__YAS_THROW_READ_ERROR(n == 0);
+
 		v = Trait::template atoi<T>(buf, n);
 	}
 
@@ -216,6 +218,7 @@ struct json_istream {
 	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
 		char buf[sizeof(T)*4];
 		const std::size_t n = json_read_num(is, buf, sizeof(buf));
+		__YAS_THROW_READ_ERROR(n == 0);
 
 		v = Trait::template atou<T>(buf, n);
 	}
@@ -230,6 +233,7 @@ struct json_istream {
 		}
 
 		const std::size_t n = json_read_double(is, buf, sizeof(buf));
+		__YAS_THROW_READ_ERROR(n == 0);
 
 		if ( is.peekch() == '\"' ) {
 			is.getch();
@@ -248,6 +252,7 @@ struct json_istream {
 		}
 
 		const std::size_t n = json_read_double(is, buf, sizeof(buf));
+		__YAS_THROW_READ_ERROR(n == 0);
 
 		if ( is.peekch() == '\"' ) {
 			is.getch();
