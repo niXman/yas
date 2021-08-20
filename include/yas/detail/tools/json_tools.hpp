@@ -302,8 +302,6 @@ std::size_t json_read_num(Archive &ar, char *ptr, std::size_t size) {
         ++ptr;
     } while ( --size );
 
-    ar.ungetch(*ptr);
-
     return ptr-p;
 }
 
@@ -334,8 +332,6 @@ std::size_t json_read_double(Archive &ar, char *ptr, std::size_t size) {
         }
         ++ptr;
     } while ( --size );
-
-    ar.ungetch(*ptr);
 
     return ptr-p;
 }

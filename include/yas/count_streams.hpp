@@ -44,6 +44,9 @@ namespace yas {
 /***************************************************************************/
 
 struct count_ostream {
+    count_ostream()
+        :total_size{}
+    {}
 
     template<typename T>
     std::size_t write(const T *, const std::size_t size) {
@@ -51,7 +54,7 @@ struct count_ostream {
         return size;
     }
 
-    std::size_t total_size = 0;
+    std::size_t total_size;
 }; // struct null_ostream
 
 /***************************************************************************/

@@ -159,6 +159,19 @@ bool fundamental_test(std::ostream &log, const char *archive_type, const char *t
         }
     }
 
+    if ( archive_traits::oarchive_type::type() == yas::json ) {
+        yas::intrusive_buffer ibuf("1234", 2);
+
+        yas::mem_istream is(ibuf);
+        yas::json_iarchive<yas::mem_istream> ia(is);
+        int v = 0;
+        ia & v;
+        if ( v != 12 ) {
+            YAS_TEST_REPORT(log, archive_type, test_name);
+            return false;
+        }
+    }
+
     return true;
 }
 

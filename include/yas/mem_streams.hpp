@@ -158,6 +158,7 @@ struct mem_istream {
         return avail;
     }
 
+    std::size_t available() const { return end-cur; }
     bool empty() const { return cur == end; }
     char peekch() const { return *cur; }
     char getch() { return *cur++; }

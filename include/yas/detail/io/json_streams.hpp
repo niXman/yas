@@ -207,7 +207,7 @@ struct json_istream {
 	template<typename T>
 	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t)) {
 		char buf[sizeof(T)*4];
-		const std::size_t n = json_read_num(is, buf, sizeof(buf));
+		const std::size_t n = json_read_num(is, buf, (std::min)(sizeof(buf), is.available()));
 		v = Trait::template atoi<T>(buf, n);
 	}
 
@@ -215,7 +215,7 @@ struct json_istream {
 	template<typename T>
 	void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
 		char buf[sizeof(T)*4];
-		const std::size_t n = json_read_num(is, buf, sizeof(buf));
+		const std::size_t n = json_read_num(is, buf, (std::min)(sizeof(buf), is.available()));
 
 		v = Trait::template atou<T>(buf, n);
 	}
@@ -229,7 +229,7 @@ struct json_istream {
 			is.getch();
 		}
 
-		const std::size_t n = json_read_double(is, buf, sizeof(buf));
+		const std::size_t n = json_read_double(is, buf, (std::min)(sizeof(buf), is.available()));
 
 		if ( is.peekch() == '\"' ) {
 			is.getch();
@@ -247,7 +247,7 @@ struct json_istream {
 			is.getch();
 		}
 
-		const std::size_t n = json_read_double(is, buf, sizeof(buf));
+		const std::size_t n = json_read_double(is, buf, (std::min)(sizeof(buf), is.available()));
 
 		if ( is.peekch() == '\"' ) {
 			is.getch();
