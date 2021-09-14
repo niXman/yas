@@ -84,7 +84,7 @@ struct binary_iarchive
         using real_type = typename std::remove_reference<
             typename std::remove_const<T>::type
         >::type;
-        return serializer<
+        return detail::serializer<
              detail::type_properties<real_type>::value
             ,detail::serialization_method<real_type, this_type>::value
             ,F

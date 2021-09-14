@@ -86,7 +86,7 @@ struct text_oarchive
     template<typename T>
     this_type& operator& (const T &v) {
         using namespace detail;
-        return serializer<
+        return detail::serializer<
              detail::type_properties<T>::value
             ,detail::serialization_method<T, this_type>::value
             ,F

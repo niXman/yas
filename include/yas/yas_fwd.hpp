@@ -42,6 +42,9 @@ namespace yas {
 
 /***************************************************************************/
 
+struct shared_buffer;
+struct intrusive_buffer;
+
 struct mem_ostream;
 struct mem_istream;
 
