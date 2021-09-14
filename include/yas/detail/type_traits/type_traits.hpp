@@ -37,6 +37,7 @@
 #define __yas__detail__type_traits__type_traits_hpp
 
 #include <yas/detail/config/endian.hpp>
+#include <yas/detail/type_traits/flags.hpp>
 #include <yas/detail/type_traits/serializer.hpp>
 #include <yas/detail/type_traits/has_memfn_serialize.hpp>
 #include <yas/detail/type_traits/has_function_serialize.hpp>
@@ -261,69 +262,6 @@ public:
 
 /***************************************************************************/
 
-} // namespace detail
-
-/***************************************************************************/
-
-enum options: std::uint32_t {
-     binary    = 1u<<0
-    ,text      = 1u<<1
-    ,json      = 1u<<2
-    ,no_header = 1u<<3
-    ,elittle   = 1u<<4
-    ,ebig      = 1u<<5
-    ,ehost     = 1u<<6
-    ,compacted = 1u<<7
-    ,mem       = 1u<<8
-    ,file      = 1u<<9
-};
-
-template<typename Ar>
-struct is_binary_archive: std::integral_constant<bool, Ar::type() == options::binary>
-{};
-
-template<typename Ar>
-struct is_text_archive: std::integral_constant<bool, Ar::type() == options::text>
-{};
-
-template<typename Ar>
-struct is_json_archive: std::integral_constant<bool, Ar::type() == options::json>
-{};
-
-template<typename Ar>
-struct is_readable_archive: std::integral_constant<bool, Ar::is_readable()>
-{};
-
-template<typename Ar>
-struct is_writable_archive: std::integral_constant<bool, Ar::is_writable()>
-{};
-
-/***************************************************************************/
-
-namespace detail {
-
-template<typename...>
-using void_t = void;
-
-} // ns detail
-
-template<typename Ar, typename T, typename = void>
-struct is_serializable : std::false_type {};
-
-template<typename Ar, typename T>
-struct is_serializable<Ar, T, detail::void_t<decltype(
-    detail::serializer<
-         detail::type_properties<T>::value
-        ,detail::serialization_method<T, Ar>::value
-        ,Ar::flags()
-        ,T
-    >::save(std::declval<Ar &>(), std::declval<T>()))>> : std::true_type
-{};
-
-/***************************************************************************/
-
-namespace detail {
-
 template<
      std::size_t F
     ,typename T
@@ -338,7 +276,23 @@ struct can_be_processed_as_byte_array: std::integral_constant<bool,
 >
 {};
 
+template<typename...>
+using void_t = void;
+
 } // ns detail
+
+template<typename Ar, typename T, typename = void>
+struct is_serializable : std::false_type {};
+
+template<typename Ar, typename T>
+struct is_serializable<Ar, T, detail::void_t<decltype(
+    detail::serializer<
+        detail::type_properties<T>::value
+        ,detail::serialization_method<T, Ar>::value
+        ,Ar::flags()
+        ,T
+    >::save(std::declval<Ar &>(), std::declval<T>()))>> : std::true_type
+{};
 
 /***************************************************************************/
 
