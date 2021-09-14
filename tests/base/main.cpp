@@ -51,6 +51,7 @@
 #include <yas/json_iarchive.hpp>
 #include <yas/std_types.hpp>
 #include <yas/serialize.hpp>
+#include <yas/get_archive.hpp>
 #include <yas/tools/archinfo.hpp>
 #include <yas/tools/hexdump.hpp>
 
@@ -71,6 +72,7 @@
 /***************************************************************************/
 
 #include "test.hpp"
+#include "include/archive_type.hpp"
 #include "include/array.hpp"
 #include "include/auto_array.hpp"
 #include "include/base64.hpp"
@@ -345,6 +347,7 @@ void tests(std::ostream &log, int &p, int &e) {
     YAS_RUN_TEST(log, serialization, p, e);
     YAS_RUN_TEST(log, yas_object, p, e);
     YAS_RUN_TEST(log, base_object, p, e);
+    YAS_RUN_TEST(log, archive_type, p, e);
     YAS_RUN_TEST(log, array, p, e);
     YAS_RUN_TEST(log, bitset, p, e);
     YAS_RUN_TEST(log, buffer, p, e);
@@ -534,41 +537,10 @@ int main(int, char **argv) {
                          yas::binary_oarchive<yas::mem_ostream, binary_opts>
                         ,yas::binary_iarchive<yas::mem_istream, binary_opts>
                     >(log, passed, failed);
-                    
-                    tests<
-                         yas::binary_oarchive<yas::vector_ostream<char>, binary_opts>
-                        ,yas::binary_iarchive<yas::mem_istream, binary_opts>
-                    >(log, passed, failed);
-                    
-                    tests<
-                         yas::binary_oarchive<yas::vector_ostream<int8_t>, binary_opts>
-                        ,yas::binary_iarchive<yas::mem_istream, binary_opts>
-                    >(log, passed, failed);
-                    
-                    tests<
-                         yas::binary_oarchive<yas::vector_ostream<uint8_t>, binary_opts>
-                        ,yas::binary_iarchive<yas::mem_istream, binary_opts>
-                    >(log, passed, failed);
-                    
                 } else {
                     constexpr std::size_t binary_opts = yas::binary|yas::elittle;
                     tests<
                          yas::binary_oarchive<yas::mem_ostream, binary_opts>
-                        ,yas::binary_iarchive<yas::mem_istream, binary_opts>
-                    >(log, passed, failed);
-                    
-                    tests<
-                         yas::binary_oarchive<yas::vector_ostream<char>, binary_opts>
-                        ,yas::binary_iarchive<yas::mem_istream, binary_opts>
-                    >(log, passed, failed);
-                    
-                    tests<
-                         yas::binary_oarchive<yas::vector_ostream<int8_t>, binary_opts>
-                        ,yas::binary_iarchive<yas::mem_istream, binary_opts>
-                    >(log, passed, failed);
-                    
-                    tests<
-                         yas::binary_oarchive<yas::vector_ostream<uint8_t>, binary_opts>
                         ,yas::binary_iarchive<yas::mem_istream, binary_opts>
                     >(log, passed, failed);
                 }
@@ -579,41 +551,10 @@ int main(int, char **argv) {
                          yas::binary_oarchive<yas::mem_ostream, binary_opts>
                         ,yas::binary_iarchive<yas::mem_istream, binary_opts>
                     >(log, passed, failed);
-                    
-                    tests<
-                         yas::binary_oarchive<yas::vector_ostream<char>, binary_opts>
-                        ,yas::binary_iarchive<yas::mem_istream, binary_opts>
-                    >(log, passed, failed);
-                    
-                    tests<
-                         yas::binary_oarchive<yas::vector_ostream<int8_t>, binary_opts>
-                        ,yas::binary_iarchive<yas::mem_istream, binary_opts>
-                    >(log, passed, failed);
-                    
-                    tests<
-                         yas::binary_oarchive<yas::vector_ostream<uint8_t>, binary_opts>
-                        ,yas::binary_iarchive<yas::mem_istream, binary_opts>
-                    >(log, passed, failed);
-                    
                 } else {
                     constexpr std::size_t binary_opts = yas::binary|yas::ebig;
                     tests<
                          yas::binary_oarchive<yas::mem_ostream, binary_opts>
-                        ,yas::binary_iarchive<yas::mem_istream, binary_opts>
-                    >(log, passed, failed);
-                    
-                    tests<
-                         yas::binary_oarchive<yas::vector_ostream<char>, binary_opts>
-                        ,yas::binary_iarchive<yas::mem_istream, binary_opts>
-                    >(log, passed, failed);
-                    
-                    tests<
-                         yas::binary_oarchive<yas::vector_ostream<int8_t>, binary_opts>
-                        ,yas::binary_iarchive<yas::mem_istream, binary_opts>
-                    >(log, passed, failed);
-                    
-                    tests<
-                         yas::binary_oarchive<yas::vector_ostream<uint8_t>, binary_opts>
                         ,yas::binary_iarchive<yas::mem_istream, binary_opts>
                     >(log, passed, failed);
                 }
@@ -626,21 +567,6 @@ int main(int, char **argv) {
                  yas::text_oarchive<yas::mem_ostream, text_opts>
                 ,yas::text_iarchive<yas::mem_istream, text_opts>
             >(log, passed, failed);
-            
-            tests<
-                 yas::text_oarchive<yas::vector_ostream<char>, text_opts>
-                ,yas::text_iarchive<yas::mem_istream, text_opts>
-            >(log, passed, failed);
-
-            tests<
-                 yas::text_oarchive<yas::vector_ostream<int8_t>, text_opts>
-                ,yas::text_iarchive<yas::mem_istream, text_opts>
-            >(log, passed, failed);
-
-            tests<
-                 yas::text_oarchive<yas::vector_ostream<uint8_t>, text_opts>
-                ,yas::text_iarchive<yas::mem_istream, text_opts>
-            >(log, passed, failed);
         }
 
         if ( opts.json ) {
@@ -650,41 +576,10 @@ int main(int, char **argv) {
                      yas::json_oarchive<yas::mem_ostream, json_opts>
                     ,yas::json_iarchive<yas::mem_istream, json_opts>
                 >(log, passed, failed);
-                
-                tests<
-                     yas::json_oarchive<yas::vector_ostream<char>, json_opts>
-                    ,yas::json_iarchive<yas::mem_istream, json_opts>
-                >(log, passed, failed);
-
-                tests<
-                     yas::json_oarchive<yas::vector_ostream<int8_t>, json_opts>
-                    ,yas::json_iarchive<yas::mem_istream, json_opts>
-                >(log, passed, failed);
-
-                tests<
-                     yas::json_oarchive<yas::vector_ostream<uint8_t>, json_opts>
-                    ,yas::json_iarchive<yas::mem_istream, json_opts>
-                >(log, passed, failed);
-            
             } else {
                 constexpr std::size_t json_opts = yas::json|yas::ehost;
                 tests<
                      yas::json_oarchive<yas::mem_ostream, json_opts>
-                    ,yas::json_iarchive<yas::mem_istream, json_opts>
-                >(log, passed, failed);
-                
-                tests<
-                     yas::json_oarchive<yas::vector_ostream<char>, json_opts>
-                    ,yas::json_iarchive<yas::mem_istream, json_opts>
-                >(log, passed, failed);
-
-                tests<
-                     yas::json_oarchive<yas::vector_ostream<int8_t>, json_opts>
-                    ,yas::json_iarchive<yas::mem_istream, json_opts>
-                >(log, passed, failed);
-
-                tests<
-                     yas::json_oarchive<yas::vector_ostream<uint8_t>, json_opts>
                     ,yas::json_iarchive<yas::mem_istream, json_opts>
                 >(log, passed, failed);
             }

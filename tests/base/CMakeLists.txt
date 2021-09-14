@@ -83,6 +83,7 @@ include_directories(
 
 set(SOURCE_FILES
     include/array.hpp
+    include/archive_type.hpp
     include/auto_array.hpp
     include/base64.hpp
     include/base_object.hpp
