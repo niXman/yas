@@ -53,6 +53,8 @@ struct binary_iarchive;
 template<typename OS, std::size_t F>
 struct binary_oarchive;
 
+struct default_traits;
+
 template<typename IS, std::size_t F, typename Trait>
 struct text_iarchive;
 template<typename OS ,std::size_t F, typename Trait>

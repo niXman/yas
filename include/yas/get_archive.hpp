@@ -36,22 +36,13 @@
 #ifndef __yas__get_archive_hpp
 #define __yas__get_archive_hpp
 
-#include <yas/binary_oarchive.hpp>
-#include <yas/binary_iarchive.hpp>
-#include <yas/text_oarchive.hpp>
-#include <yas/text_iarchive.hpp>
-#include <yas/json_oarchive.hpp>
-#include <yas/json_iarchive.hpp>
-#include <yas/mem_streams.hpp>
-#include <yas/file_streams.hpp>
-#include <yas/std_streams.hpp>
-#include <yas/count_streams.hpp>
+#include <yas/yas_fwd.hpp>
 
 namespace yas {
 
 /***************************************************************************/
 
-template<std::size_t F, size_t WI = (F & (~((F & yas::mem) ? yas::mem : yas::file)))>
+template<std::size_t F, std::size_t WI = (F & (~((F & yas::mem) ? yas::mem : yas::file)))>
 struct get_output_archive {
     static_assert((F & yas::mem) || (F & yas::file), "");
     using stream_type = typename std::conditional<
@@ -66,13 +57,13 @@ struct get_output_archive {
         ,yas::binary_oarchive<stream_type, WI>
         ,typename std::conditional<
             ((F & yas::text) > 0)
-            ,yas::text_oarchive<stream_type, WI>
-            ,yas::json_oarchive<stream_type, WI>
+            ,yas::text_oarchive<stream_type, WI, default_traits>
+            ,yas::json_oarchive<stream_type, WI, default_traits>
         >::type
     >::type;
 };
 
-template<std::size_t F, size_t WI = (F & (~((F & yas::mem) ? yas::mem : yas::file)))>
+template<std::size_t F, std::size_t WI = (F & (~((F & yas::mem) ? yas::mem : yas::file)))>
 struct get_input_archive {
     static_assert((F & yas::mem) || (F & yas::file), "");
     using stream_type = typename std::conditional<
@@ -87,8 +78,8 @@ struct get_input_archive {
         ,yas::binary_iarchive<stream_type, WI>
         ,typename std::conditional<
             ((F & yas::text) > 0)
-            ,yas::text_iarchive<stream_type, WI>
-            ,yas::json_iarchive<stream_type, WI>
+            ,yas::text_iarchive<stream_type, WI, default_traits>
+            ,yas::json_iarchive<stream_type, WI, default_traits>
         >::type
     >::type;
 };
