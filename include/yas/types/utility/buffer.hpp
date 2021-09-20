@@ -51,86 +51,105 @@ namespace detail {
 
 template<std::size_t F>
 struct serializer<
-	type_prop::not_a_fundamental,
-	ser_case::use_internal_serializer,
-	F,
-	intrusive_buffer
+    type_prop::not_a_fundamental,
+    ser_case::use_internal_serializer,
+    F,
+    intrusive_buffer
 > {
-	template<typename Archive>
-	static Archive& save(Archive& ar, const intrusive_buffer& buf) {
-		if ( F & yas::json ) {
-//            const std::string data(buf.data, buf.size);
-//            const std::size_t size = buf.size;
-//            const auto o = YAS_OBJECT("intrusive_buffer", data, size);
-//            ar & o;
+    template<typename Archive>
+    static Archive& save(Archive& ar, const intrusive_buffer& buf) {
+        __YAS_CONSTEXPR_IF( F & yas::json ) {
             if ( !buf.data ) {
-                static const char arr[] = "null,\"b64size\":0";
+                static const char arr[] = "{\"size\":0,\"data\":null}";
                 ar.write(arr, sizeof(arr)-1);
             } else {
-                ar.write("\"", 1);
-                const auto b64size = modp_b64_encode(ar, buf.data, buf.size);
-                static const char arr[] = "\",\"b64size\":";
-                ar.write(arr, sizeof(arr)-1);
-                ar.write(b64size);
+                static const char size_[] = "{\"size\":";
+                ar.write(size_, sizeof(size_)-1);
+                const auto size = modp_b64_encode_strlen(buf.size);
+                ar.write(size);
+                static const char mid_[] = ",\"data\":\"";
+                ar.write(mid_, sizeof(mid_)-1);
+                modp_b64_encode(ar, buf.data, buf.size);
+                static const char end_[] = "\"}";
+                ar.write(end_, sizeof(end_)-1);
             }
         } else {
             ar.write_seq_size(buf.size);
             ar.write(buf.data, buf.size);
         }
 
-		return ar;
-	}
+        return ar;
+    }
     
-	template<typename Archive>
-	static Archive& load(Archive& ar, intrusive_buffer &) {
-		return ar;
-	}
+    template<typename Archive>
+    static Archive& load(Archive& ar, intrusive_buffer &) {
+        return ar;
+    }
 };
 
 /***************************************************************************/
 
 template<std::size_t F>
 struct serializer<
-	type_prop::not_a_fundamental,
-	ser_case::use_internal_serializer,
-	F,
-	shared_buffer
+    type_prop::not_a_fundamental,
+    ser_case::use_internal_serializer,
+    F,
+    shared_buffer
 > {
-	template<typename Archive>
-	static Archive& save(Archive& ar, const shared_buffer &buf) {
-        if ( F & yas::json ) {
-            if ( !buf.data ) {
-                static const char arr[] = "null,\"b64size\":0";
-                ar.write(arr, sizeof(arr)-1);
-            } else {
-                ar.write("\"", 1);
-                const auto b64size = modp_b64_encode(ar, buf.data.get(), buf.size);
-                static const char arr[] = "\",\"b64size\":";
-                ar.write(arr, sizeof(arr)-1);
-                ar.write(b64size);
-            }
-        } else {
-            ar.write_seq_size(buf.size);
-            ar.write(buf.data.get(), buf.size);
-        }
+    template<typename Archive>
+    static Archive& save(Archive& ar, const shared_buffer &buf) {
+        intrusive_buffer ibuf{buf.data.get(), buf.size};
+        ar & ibuf;
 
-		return ar;
-	}
+        return ar;
+    }
 
-	template<typename Archive>
-	static Archive& load(Archive& ar, shared_buffer &buf) {
-        if ( F & yas::json ) {
-            if ( F & yas::compacted ) {
-            } else {
+    template<typename Archive>
+    static Archive& load(Archive& ar, shared_buffer &buf) {
+        __YAS_CONSTEXPR_IF ( F & yas::json ) {
+            __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+                json_skipws(ar);
             }
+            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "{\"size\":");
+
+            __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+                json_skipws(ar);
+            }
+
+            std::size_t size{};
+            ar.read(size);
+
+            buf.resize(size);
+
+            __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+                json_skipws(ar);
+            }
+
+            __YAS_THROW_IF_BAD_JSON_CHARS(ar, ",");
+
+            __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+                json_skipws(ar);
+            }
+
+            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "\"data\":\"");
+
+            std::size_t declen = modp_b64_decode(buf.data.get(), ar, size);
+            buf.resize(declen);
+
+            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "\"");
+
+            __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+                json_skipws(ar);
+            }
+            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "}");
         } else {
             const std::size_t size = ar.read_seq_size();
             buf.resize(size);
             ar.read(buf.data.get(), buf.size);
         }
 
-		return ar;
-	}
+        return ar;
+    }
 };
 
 /***************************************************************************/

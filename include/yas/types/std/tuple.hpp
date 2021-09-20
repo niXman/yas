@@ -77,11 +77,15 @@ struct serializer<
 		__YAS_CONSTEXPR_IF ( F & options::binary ) {
 			std::uint8_t size = 0;
 			ar.read(size);
-			if ( size != sizeof...(Types) ) { __YAS_THROW_BAD_SIZE_ON_DESERIALIZE("std::tuple"); }
+			if ( size != sizeof...(Types) ) {
+                __YAS_THROW_BAD_SIZE_ON_DESERIALIZE("std::tuple");
+            }
 		} else if ( F & yas::text ) {
 			std::uint32_t size = 0;
 			ar.read(size);
-			if ( size != sizeof...(Types) ) { __YAS_THROW_BAD_SIZE_ON_DESERIALIZE("std::tuple"); }
+			if ( size != sizeof...(Types) ) {
+                __YAS_THROW_BAD_SIZE_ON_DESERIALIZE("std::tuple");
+            }
 		}
 
         __YAS_CONSTEXPR_IF ( F & yas::json ) {
