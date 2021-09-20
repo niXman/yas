@@ -125,6 +125,20 @@ bool buffer_test(std::ostream &log, const char *archive_type, const char *test_n
         }
     }
 
+    yas::shared_buffer ibuf1;
+    typename archive_traits::iarchive ia1;
+    archive_traits::icreate(ia1, oa1, archive_type);
+    auto io1 = YAS_OBJECT_NVP("obj", ("buf", ibuf1));
+    ia1 & io1;
+    if ( buf1.size != ibuf1.size ) {
+        YAS_TEST_REPORT(log, archive_type, test_name);
+        return false;
+    }
+    if ( std::memcmp(buf1.data, ibuf1.data.get(), ibuf1.size) != 0 ) {
+        YAS_TEST_REPORT(log, archive_type, test_name);
+        return false;
+    }
+
     static const char str2[] = "shared buffer test";
     const yas::shared_buffer buf2(str2, sizeof(str2)-1);
     typename archive_traits::oarchive oa2;
@@ -209,16 +223,16 @@ bool buffer_test(std::ostream &log, const char *archive_type, const char *test_n
         }
     }
 
-    yas::shared_buffer ibuf;
-    typename archive_traits::iarchive ia;
-    archive_traits::icreate(ia, oa2, archive_type);
-    auto io = YAS_OBJECT_NVP("obj", ("buf", ibuf));
-    ia & io;
-    if ( buf2.size != ibuf.size ) {
+    yas::shared_buffer ibuf2;
+    typename archive_traits::iarchive ia2;
+    archive_traits::icreate(ia2, oa2, archive_type);
+    auto io2 = YAS_OBJECT_NVP("obj", ("buf", ibuf2));
+    ia2 & io2;
+    if ( buf2.size != ibuf2.size ) {
         YAS_TEST_REPORT(log, archive_type, test_name);
         return false;
     }
-    if ( std::memcmp(buf2.data.get(), ibuf.data.get(), ibuf.size) != 0 ) {
+    if ( std::memcmp(buf2.data.get(), ibuf2.data.get(), ibuf2.size) != 0 ) {
         YAS_TEST_REPORT(log, archive_type, test_name);
         return false;
     }
