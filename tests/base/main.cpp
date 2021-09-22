@@ -68,6 +68,9 @@
 #include <yas/abseil_types.hpp>
 #endif // YAS_SERIALIZE_ABSL_TYPES
 
+#ifdef YAS_SERIALIZE_QT_TYPES
+#include <yas/qt_types.hpp>
+#endif // YAS_SERIALIZE_QT_TYPES
 
 /***************************************************************************/
 
@@ -153,6 +156,17 @@
 #include "include/absl_cont_btree_map.hpp"
 #include "include/absl_cont_flat_hash_map.hpp"
 #endif // YAS_SERIALIZE_ABSL_TYPES
+
+/***************************************************************************/
+
+#ifdef YAS_SERIALIZE_QT_TYPES
+#include "include/qbytearray.hpp"
+#include "include/qlist.hpp"
+#include "include/qmap.hpp"
+#include "include/qstring.hpp"
+#include "include/qstringlist.hpp"
+#include "include/qvector.hpp"
+#endif // YAS_SERIALIZE_QT_TYPES
 
 /***************************************************************************/
 
@@ -302,6 +316,7 @@ struct archive_traits {
 
 #define YAS_RUN_TEST_SKIP_TEST(...) \
     !(OA::type() & (__VA_ARGS__))
+
 #define YAS_RUN_TEST_RUN_TEST(...) \
     1
 
@@ -406,6 +421,14 @@ void tests(std::ostream &log, int &p, int &e) {
     YAS_RUN_TEST(log, absl_cont_btree_map, p, e);
     YAS_RUN_TEST(log, absl_cont_flat_hash_map, p, e);
 #endif
+#ifdef YAS_SERIALIZE_QT_TYPES
+    YAS_RUN_TEST(log, qbytearray, p, e);
+    YAS_RUN_TEST(log, qlist, p, e);
+    YAS_RUN_TEST(log, qmap, p, e);
+    YAS_RUN_TEST(log, qstring, p, e);
+    YAS_RUN_TEST(log, qstringlist, p, e);
+    YAS_RUN_TEST(log, qvector, p, e);
+#endif // YAS_SERIALIZE_QT_TYPES
     YAS_RUN_TEST(log, json_conformance, p, e, yas::binary|yas::text);
 }
 

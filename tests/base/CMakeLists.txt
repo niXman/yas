@@ -11,14 +11,26 @@ else()
     message("Abseil support is disabled")
 endif()
 
+if (YAS_SERIALIZE_QT_TYPES)
+    message("Qt support is enabled")
+else()
+    message("Qt support is disabled")
+endif()
+
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
     add_definitions(
         -DBOOST_ERROR_CODE_HEADER_ONLY
         -DBOOST_CHRONO_HEADER_ONLY
         -DYAS_SERIALIZE_BOOST_TYPES
+        -DYAS_SERIALIZE_QT_TYPES
         -DYAS_OBJECT_MAX_MEMBERS=50
     )
+
+    if (YAS_SERIALIZE_QT_TYPES)
+        add_definitions(-DYAS_SERIALIZE_QT_TYPES)
+        include_directories(${QT_INCLUDE_PATH})
+    endif()
 
     if (YAS_SERIALIZE_ABSL_TYPES)
         add_definitions(-DYAS_SERIALIZE_ABSL_TYPES)
@@ -27,13 +39,19 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         add_subdirectory("$ENV{ABSEIL_HOME}" "build/abseil")
     endif()
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fPIC")
     add_definitions(
         -DBOOST_ERROR_CODE_HEADER_ONLY
         -DBOOST_CHRONO_HEADER_ONLY
         -DYAS_SERIALIZE_BOOST_TYPES
+        -DYAS_SERIALIZE_QT_TYPES
         -DYAS_OBJECT_MAX_MEMBERS=50
     )
+
+    if (YAS_SERIALIZE_QT_TYPES)
+        add_definitions(-DYAS_SERIALIZE_QT_TYPES)
+        include_directories(${QT_INCLUDE_PATH})
+    endif()
 
     if (YAS_SERIALIZE_ABSL_TYPES)
         add_definitions(-DYAS_SERIALIZE_ABSL_TYPES)
@@ -64,10 +82,16 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     add_definitions(
         -DBOOST_ERROR_CODE_HEADER_ONLY
         -DBOOST_CHRONO_HEADER_ONLY
+        -DYAS_SERIALIZE_QT_TYPES
         -DYAS_SERIALIZE_BOOST_TYPES
         -DYAS_OBJECT_MAX_MEMBERS=50
         -D_CRT_SECURE_NO_WARNINGS
     )
+
+    if (YAS_SERIALIZE_QT_TYPES)
+        add_definitions(-DYAS_SERIALIZE_QT_TYPES)
+        include_directories(${QT_INCLUDE_PATH})
+    endif()
 
     if (YAS_SERIALIZE_ABSL_TYPES)
         add_subdirectory("C:/abseil-cpp" "build/abseil")
@@ -82,8 +106,10 @@ include_directories(
 )
 
 set(SOURCE_FILES
-    include/array.hpp
+    include/absl_cont_btree_map.hpp
+    include/absl_cont_flat_hash_map.hpp
     include/archive_type.hpp
+    include/array.hpp
     include/auto_array.hpp
     include/base64.hpp
     include/base_object.hpp
@@ -132,6 +158,12 @@ set(SOURCE_FILES
     include/one_memfn.hpp
     include/optional.hpp
     include/pair.hpp
+    include/qbytearray.hpp
+    include/qlist.hpp
+    include/qmap.hpp
+    include/qstring.hpp
+    include/qstringlist.hpp
+    include/qvector.hpp
     include/serialization.hpp
     include/serialize.hpp
     include/set.hpp
@@ -149,18 +181,26 @@ set(SOURCE_FILES
     include/variant.hpp
     include/vector.hpp
     include/version.hpp
+    include/wrap_asis.hpp
+    include/wrap_init.hpp
     include/wstring.hpp
     include/yas_object.hpp
-    include/absl_cont_btree_map.hpp
-    include/absl_cont_flat_hash_map.hpp
     main.cpp
 )
 
 add_executable(yas-base-test ${SOURCE_FILES})
 
 if (YAS_SERIALIZE_ABSL_TYPES)
-    target_link_libraries(yas-base-test 
+    target_link_libraries(yas-base-test
         absl::btree
         absl::flat_hash_map
+    )
+endif()
+
+if (YAS_SERIALIZE_QT_TYPES)
+    target_link_libraries(yas-base-test
+        -L${QT_LIB_PATH}
+        Qt5Core
+        -fPIC
     )
 endif()

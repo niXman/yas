@@ -45,7 +45,7 @@ namespace list {
 
 template<std::size_t F, typename Archive, typename C>
 Archive& save(Archive &ar, const C &c) {
-    if ( F & yas::json ) {
+    __YAS_CONSTEXPR_IF ( F & yas::json ) {
         ar.write("[", 1);
 
         if ( !c.empty() ) {
@@ -72,7 +72,7 @@ Archive& save(Archive &ar, const C &c) {
 
 template<std::size_t F, typename Archive, typename C>
 Archive& load(Archive &ar, C &c) {
-    if ( F & yas::json ) {
+    __YAS_CONSTEXPR_IF( F & yas::json ) {
         __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
             json_skipws(ar);
         }
@@ -117,10 +117,11 @@ Archive& load(Archive &ar, C &c) {
 
         __YAS_THROW_IF_BAD_JSON_CHARS(ar, "]");
     } else {
-        const auto size = ar.read_seq_size();
-        c.resize(size);
-        for ( auto &it: c ) {
-            ar & it;
+        auto size = ar.read_seq_size();
+        for ( ; size; --size ) {
+            typename C::value_type v = typename C::value_type();
+            ar & v;
+            c.push_back(std::move(v));
         }
     }
 
