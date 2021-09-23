@@ -53,9 +53,6 @@ struct no_json_key_exception: serialization_exception {
 #define __YAS_THROW_BAD_ARRAY_SIZE() \
 	__YAS_THROW_EXCEPTION(::yas::serialization_exception, "bad array size");
 
-#define __YAS_THROW_SPACE_IS_EXPECTED() \
-	__YAS_THROW_EXCEPTION(::yas::serialization_exception, "space symbol is expected");
-
 #define __YAS_THROW_BAD_SIZE_OF_ENUM() \
 	__YAS_THROW_EXCEPTION(::yas::serialization_exception, "bad size of enum");
 

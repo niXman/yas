@@ -44,6 +44,8 @@
 #include <yas/object.hpp>
 #include <yas/buffers.hpp>
 
+#include <cassert>
+
 namespace yas {
 namespace detail {
 
@@ -59,7 +61,7 @@ struct serializer<
     template<typename Archive>
     static Archive& save(Archive& ar, const intrusive_buffer& buf) {
         __YAS_CONSTEXPR_IF( F & yas::json ) {
-            if ( !buf.data ) {
+            if ( !buf.size ) {
                 static const char arr[] = "{\"size\":0,\"data\":null}";
                 ar.write(arr, sizeof(arr)-1);
             } else {
@@ -83,6 +85,8 @@ struct serializer<
     
     template<typename Archive>
     static Archive& load(Archive& ar, intrusive_buffer &) {
+        assert("can't deserialize into intrusive_buffer" == nullptr);
+
         return ar;
     }
 };
