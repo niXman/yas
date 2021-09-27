@@ -54,7 +54,7 @@ namespace yas {
 
 template<std::size_t F, typename ...Types>
 typename std::enable_if<
-     (F & yas::mem) && (F & yas::binary)
+    (F & yas::mem) && (F & yas::binary)
     ,yas::shared_buffer
 >::type
 save(Types &&... args) {
@@ -67,7 +67,7 @@ save(Types &&... args) {
 
 template<std::size_t F, typename ...Types>
 typename std::enable_if<
-     (F & yas::mem) && (F & yas::binary)
+    (F & yas::mem) && (F & yas::binary)
 >::type
 save(yas::mem_ostream& os, Types &&... args) {
     yas::binary_oarchive<yas::mem_ostream, (F & (~yas::mem))> oa(os);
@@ -76,7 +76,7 @@ save(yas::mem_ostream& os, Types &&... args) {
 
 template<std::size_t F, typename ...Types>
 typename std::enable_if<
-     (F & yas::mem) && (F & yas::binary)
+    (F & yas::mem) && (F & yas::binary)
 >::type
 save(yas::mem_ostream&& os, Types &&... args) {
     yas::binary_oarchive<yas::mem_ostream, (F & (~yas::mem))> oa(os);
@@ -85,7 +85,7 @@ save(yas::mem_ostream&& os, Types &&... args) {
 
 template<std::size_t F, typename Byte, typename ...Types>
 typename std::enable_if<
-     (F & yas::mem) && (F & yas::binary)
+    (F & yas::mem) && (F & yas::binary)
 >::type
 save(yas::vector_ostream<Byte>& os, Types &&... args) {
     yas::binary_oarchive<yas::vector_ostream<Byte>, (F & (~yas::mem))> oa(os);
@@ -94,7 +94,7 @@ save(yas::vector_ostream<Byte>& os, Types &&... args) {
 
 template<std::size_t F, typename Byte, typename ...Types>
 typename std::enable_if<
-     (F & yas::mem) && (F & yas::binary)
+    (F & yas::mem) && (F & yas::binary)
 >::type
 save(yas::vector_ostream<Byte>&& os, Types &&... args) {
     yas::binary_oarchive<yas::vector_ostream<Byte>, (F & (~yas::mem))> oa(os);
@@ -106,7 +106,7 @@ save(yas::vector_ostream<Byte>&& os, Types &&... args) {
 
 template<std::size_t F, typename ...Types>
 typename std::enable_if<
-     (F & yas::mem) && (F & yas::text)
+    (F & yas::mem) && (F & yas::text)
     ,yas::shared_buffer
 >::type
 save(Types &&... args) {
@@ -119,7 +119,7 @@ save(Types &&... args) {
 
 template<std::size_t F, typename ...Types>
 typename std::enable_if<
-     (F & yas::mem) && (F & yas::text)
+    (F & yas::mem) && (F & yas::text)
 >::type
 save(yas::mem_ostream& os, Types &&... args) {
     yas::text_oarchive<yas::mem_ostream, (F & (~yas::mem))> oa(os);
@@ -128,7 +128,7 @@ save(yas::mem_ostream& os, Types &&... args) {
 
 template<std::size_t F, typename ...Types>
 typename std::enable_if<
-     (F & yas::mem) && (F & yas::text)
+    (F & yas::mem) && (F & yas::text)
 >::type
 save(yas::mem_ostream&& os, Types &&... args) {
     yas::text_oarchive<yas::mem_ostream, (F & (~yas::mem))> oa(os);
@@ -137,7 +137,7 @@ save(yas::mem_ostream&& os, Types &&... args) {
 
 template<std::size_t F, typename Byte, typename ...Types>
 typename std::enable_if<
-     (F & yas::mem) && (F & yas::text)
+    (F & yas::mem) && (F & yas::text)
 >::type
 save(yas::vector_ostream<Byte>& os, Types &&... args) {
     yas::text_oarchive<yas::vector_ostream<Byte>, (F & (~yas::mem))> oa(os);
@@ -146,7 +146,7 @@ save(yas::vector_ostream<Byte>& os, Types &&... args) {
 
 template<std::size_t F, typename Byte, typename ...Types>
 typename std::enable_if<
-     (F & yas::mem) && (F & yas::text)
+    (F & yas::mem) && (F & yas::text)
 >::type
 save(yas::vector_ostream<Byte>&& os, Types &&... args) {
     yas::text_oarchive<yas::vector_ostream<Byte>, (F & (~yas::mem))> oa(os);
@@ -158,7 +158,7 @@ save(yas::vector_ostream<Byte>&& os, Types &&... args) {
 
 template<std::size_t F, typename ...Types>
 typename std::enable_if<
-     (F & yas::mem) && (F & yas::json)
+    (F & yas::mem) && (F & yas::json)
     ,yas::shared_buffer
 >::type
 save(Types &&... args) {
@@ -171,7 +171,7 @@ save(Types &&... args) {
 
 template<std::size_t F, typename ...Types>
 typename std::enable_if<
-     (F & yas::mem) && (F & yas::json)
+    (F & yas::mem) && (F & yas::json)
 >::type
 save(yas::mem_ostream& os, Types &&... args) {
     yas::json_oarchive<yas::mem_ostream, (F & (~yas::mem))> oa(os);
@@ -180,7 +180,7 @@ save(yas::mem_ostream& os, Types &&... args) {
 
 template<std::size_t F, typename ...Types>
 typename std::enable_if<
-     (F & yas::mem) && (F & yas::json)
+    (F & yas::mem) && (F & yas::json)
 >::type
 save(yas::mem_ostream&& os, Types &&... args) {
     yas::json_oarchive<yas::mem_ostream, (F & (~yas::mem))> oa(os);
@@ -189,7 +189,7 @@ save(yas::mem_ostream&& os, Types &&... args) {
 
 template<std::size_t F, typename Byte, typename ...Types>
 typename std::enable_if<
-     (F & yas::mem) && (F & yas::json)
+    (F & yas::mem) && (F & yas::json)
 >::type
 save(yas::vector_ostream<Byte>& os, Types &&... args) {
     yas::json_oarchive<yas::vector_ostream<Byte>, (F & (~yas::mem))> oa(os);
@@ -198,7 +198,7 @@ save(yas::vector_ostream<Byte>& os, Types &&... args) {
 
 template<std::size_t F, typename Byte, typename ...Types>
 typename std::enable_if<
-     (F & yas::mem) && (F & yas::json)
+    (F & yas::mem) && (F & yas::json)
 >::type
 save(yas::vector_ostream<Byte>&& os, Types &&... args) {
     yas::json_oarchive<yas::vector_ostream<Byte>, (F & (~yas::mem))> oa(os);

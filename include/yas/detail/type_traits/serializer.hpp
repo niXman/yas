@@ -36,21 +36,19 @@
 #ifndef __yas__detail__type_traits__serializer_hpp
 #define __yas__detail__type_traits__serializer_hpp
 
-#include <yas/detail/type_traits/type_traits.hpp>
+#include <yas/detail/type_traits/flags.hpp>
 
 namespace yas {
 namespace detail {
 
 /***************************************************************************/
 
-// TODO
-
-//template<
-//     type_prop
-//    ,ser_case
-//    ,std::size_t F
-//    ,typename T
-//> struct serializer;
+template<
+     type_prop
+    ,ser_case
+    ,std::size_t F
+    ,typename T
+> struct serializer;
 
 /***************************************************************************/
 

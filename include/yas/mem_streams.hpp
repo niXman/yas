@@ -173,7 +173,7 @@ private:
 
 /***************************************************************************/
 
-template<typename Byte>
+template<typename ByteType>
 struct vector_ostream {
     YAS_NONCOPYABLE(vector_ostream)
     YAS_MOVABLE(vector_ostream)
@@ -183,22 +183,22 @@ struct vector_ostream {
         ,buf(owning_buf)
     {}
     
-    vector_ostream(std::vector<Byte>& buf_)
+    vector_ostream(std::vector<ByteType>& buf_)
         : buf(buf_)
     {}
 
     template<typename T>
     std::size_t write(const T *ptr, std::size_t size) {
-        const Byte* cptr = reinterpret_cast<const Byte*>(ptr);
+        const ByteType* cptr = reinterpret_cast<const ByteType*>(ptr);
         buf.insert(buf.end(), cptr, cptr + size);
         return size;
     }
     
     intrusive_buffer get_intrusive_buffer() const { return intrusive_buffer(buf); }
     
-    static_assert(std::is_same<Byte,char>::value || std::is_same<Byte,int8_t>::value || std::is_same<Byte,uint8_t>::value, "template parameter should be a byte type");
-    std::vector<Byte>  owning_buf;
-    std::vector<Byte>& buf;
+    static_assert(std::is_fundamental<ByteType>::value && sizeof(ByteType) == 1, "template parameter should be a byte type");
+    std::vector<ByteType>  owning_buf;
+    std::vector<ByteType>& buf;
 };
 
 } // ns yas

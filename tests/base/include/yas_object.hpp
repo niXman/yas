@@ -493,7 +493,8 @@ bool yas_object_test(std::ostream &log, const char *archive_type, const char *te
             }
         }
     }
-    
+
+#if 0
     {
         _yas_object_test::type7 obj1;
         obj1.v0 = -4;
@@ -567,7 +568,7 @@ bool yas_object_test(std::ostream &log, const char *archive_type, const char *te
             }
         }
     }
-
+#endif
     return true;
 }
 

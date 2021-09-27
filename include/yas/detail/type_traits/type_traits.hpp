@@ -199,29 +199,6 @@ struct enable_if_is_64bit
 
 /***************************************************************************/
 
-enum class type_prop {
-     is_enum
-    ,is_fundamental
-    ,is_array
-    ,is_array_of_fundamentals
-    ,not_a_fundamental
-};
-
-enum class ser_case {
-     has_one_memfn
-    ,has_split_memfns
-    ,has_one_function
-    ,has_split_functions
-    ,use_internal_serializer
-};
-
-template<
-     type_prop
-    ,ser_case
-    ,std::size_t F
-    ,typename T
-> struct serializer;
-
 template<typename T>
 struct type_properties {
     static constexpr type_prop value =

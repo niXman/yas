@@ -37,6 +37,7 @@
 #define __yas__yas_fwd_hpp
 
 #include <yas/detail/type_traits/flags.hpp>
+#include <yas/detail/type_traits/serializer.hpp>
 
 namespace yas {
 
@@ -57,15 +58,16 @@ template<typename OS, std::size_t F>
 struct binary_oarchive;
 
 struct default_traits;
+struct std_traits;
 
-template<typename IS, std::size_t F, typename Trait>
+template<typename IS, std::size_t F, typename Traits>
 struct text_iarchive;
-template<typename OS ,std::size_t F, typename Trait>
+template<typename OS ,std::size_t F, typename Traits>
 struct text_oarchive;
 
-template<typename IS, std::size_t F, typename Trait>
+template<typename IS, std::size_t F, typename Traits>
 struct json_iarchive;
-template<typename OS, std::size_t F, typename Trait>
+template<typename OS, std::size_t F, typename Traits>
 struct json_oarchive;
 
 /***************************************************************************/

@@ -78,6 +78,24 @@ struct is_writable_archive: std::integral_constant<bool, Ar::is_writable()>
 
 /***************************************************************************/
 
+enum class type_prop {
+     is_enum
+    ,is_fundamental
+    ,is_array
+    ,is_array_of_fundamentals
+    ,not_a_fundamental
+};
+
+enum class ser_case {
+     has_one_memfn
+    ,has_split_memfns
+    ,has_one_function
+    ,has_split_functions
+    ,use_internal_serializer
+};
+
+/***************************************************************************/
+
 } // ns yas
 
 #endif // __yas__detail__type_traits__flags_hpp

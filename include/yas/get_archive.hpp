@@ -38,6 +38,17 @@
 
 #include <yas/yas_fwd.hpp>
 
+#include <yas/binary_oarchive.hpp>
+#include <yas/binary_iarchive.hpp>
+#include <yas/text_oarchive.hpp>
+#include <yas/text_iarchive.hpp>
+#include <yas/json_oarchive.hpp>
+#include <yas/json_iarchive.hpp>
+#include <yas/mem_streams.hpp>
+#include <yas/file_streams.hpp>
+#include <yas/std_streams.hpp>
+#include <yas/count_streams.hpp>
+
 namespace yas {
 
 /***************************************************************************/
