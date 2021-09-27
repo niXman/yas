@@ -43,6 +43,7 @@
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/tools/cast.hpp>
 #include <yas/detail/tools/json_tools.hpp>
+#include <yas/tools/wrap_asis.hpp>
 
 #include <limits>
 

@@ -37,9 +37,12 @@
 #define __yas__detail__io__binary_streams_hpp
 
 #include <yas/detail/config/config.hpp>
+
 #include <yas/detail/io/io_exceptions.hpp>
+#include <yas/detail/io/serialization_exceptions.hpp>
 #include <yas/detail/io/endian_conv.hpp>
 #include <yas/detail/type_traits/type_traits.hpp>
+#include <yas/detail/tools/cast.hpp>
 #include <yas/tools/wrap_asis.hpp>
 
 namespace yas {
