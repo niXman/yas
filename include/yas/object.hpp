@@ -42,6 +42,7 @@
 #include <yas/detail/tools/ctsort.hpp>
 #include <yas/detail/tools/ctmap.hpp>
 
+#include <tuple>
 #include <cstring>
 
 namespace yas {
