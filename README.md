@@ -128,8 +128,14 @@ You can support the YAS project by donating:
  - [boost::fusion::list](https://www.boost.org/doc/libs/1_64_0/libs/fusion/doc/html/fusion/container/list.html)
  - [boost::fusion::map](https://www.boost.org/doc/libs/1_64_0/libs/fusion/doc/html/fusion/container/map.html)
  - [boost::fusion::set](https://www.boost.org/doc/libs/1_64_0/libs/fusion/doc/html/fusion/container/set.html)
- - [yas::intrusive_buffer](https://github.com/niXman/yas/blob/master/include/yas/buffers.hpp#L48) (only save)
+ - [yas::intrusive_buffer](https://github.com/niXman/yas/blob/master/include/yas/buffers.hpp#L48)
  - [yas::shared_buffer](https://github.com/niXman/yas/blob/master/include/yas/buffers.hpp#L67)
+ - [QByteArray](https://doc.qt.io/qt-5/qbytearray.html)
+ - [QList](https://doc.qt.io/qt-5/qlist.html)
+ - [QMap](https://doc.qt.io/qt-5/qmap.html)
+ - [QString](https://doc.qt.io/qt-5/qstring.html)
+ - [QStringList](https://doc.qt.io/qt-5/qstringlist.html)
+ - [QVector](https://doc.qt.io/qt-5/qvector.html)
 
 ## Projects using YAS
 * [Ufochain](https://github.com/ufo-project/ufochain): a mimblewimble implementation of crypto currency using X17r algorithm
