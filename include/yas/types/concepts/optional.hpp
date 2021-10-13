@@ -81,11 +81,11 @@ Archive& load(Archive &ar, Optional<T> &v) {
         __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
             json_skipws(ar);
         }
-        __YAS_THROW_IF_BAD_JSON_CHARS(ar, "[");
+        __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "[");
         bool inited = false;
         ar & YAS_OBJECT(nullptr, inited);
         if ( !inited ) {
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "]");
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "]");
 
             v = Optional<T>();
 
@@ -94,7 +94,7 @@ Archive& load(Archive &ar, Optional<T> &v) {
         __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
             json_skipws(ar);
         }
-        __YAS_THROW_IF_BAD_JSON_CHARS(ar, ",");
+        __YAS_THROW_IF_WRONG_JSON_CHARS(ar, ",");
 
         T val{};
         ar & YAS_OBJECT(nullptr, val);
@@ -104,7 +104,7 @@ Archive& load(Archive &ar, Optional<T> &v) {
         __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
             json_skipws(ar);
         }
-        __YAS_THROW_IF_BAD_JSON_CHARS(ar, "]");
+        __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "]");
     } else {
         bool inited = false;
         ar.read(inited);

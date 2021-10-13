@@ -78,29 +78,31 @@ struct serializer<
 			std::uint8_t size = 0;
 			ar.read(size);
 			if ( size != sizeof...(Types) ) {
-                __YAS_THROW_BAD_SIZE_ON_DESERIALIZE("std::tuple");
+                __YAS_THROW_WRONG_SIZE_ON_DESERIALIZE(std::tuple);
             }
 		} else if ( F & yas::text ) {
 			std::uint32_t size = 0;
 			ar.read(size);
 			if ( size != sizeof...(Types) ) {
-                __YAS_THROW_BAD_SIZE_ON_DESERIALIZE("std::tuple");
+                __YAS_THROW_WRONG_SIZE_ON_DESERIALIZE(std::tuple);
             }
 		}
 
         __YAS_CONSTEXPR_IF ( F & yas::json ) {
             __YAS_CONSTEXPR_IF ( 0 == sizeof...(Types) ) {
-                __YAS_THROW_IF_BAD_JSON_CHARS(ar, "[]");
+                __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "[]");
 
                 return ar;
             }
 
-			__YAS_THROW_IF_BAD_JSON_CHARS(ar, "[");
+			__YAS_THROW_IF_WRONG_JSON_CHARS(ar, "[");
         }
 
 		apply(ar, tuple);
 
-        __YAS_CONSTEXPR_IF ( F & yas::json ) { __YAS_THROW_IF_BAD_JSON_CHARS(ar, "]"); }
+        __YAS_CONSTEXPR_IF ( F & yas::json ) {
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "]");
+        }
 
         return ar;
     }
@@ -134,7 +136,7 @@ private:
         ar & YAS_OBJECT_NVP(nullptr, (tuple_element_name_t::c_str(), std::get<I>(t)));
 
         __YAS_CONSTEXPR_IF ( (F & yas::json) && I+1 < sizeof...(Tp) ) {
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, ",");
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, ",");
         }
 
         return apply<I+1>(ar, t);

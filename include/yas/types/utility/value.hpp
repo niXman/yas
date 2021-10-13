@@ -50,40 +50,40 @@ namespace detail {
 
 template<std::size_t F, typename T>
 struct serializer<
-	type_prop::not_a_fundamental,
-	ser_case::use_internal_serializer,
-	F,
+    type_prop::not_a_fundamental,
+    ser_case::use_internal_serializer,
+    F,
     value<T>
 > {
-	template<typename Archive>
-	static Archive& save(Archive& ar, const value<T> &v) {
-		__YAS_CONSTEXPR_IF ( F & yas::json ) {
+    template<typename Archive>
+    static Archive& save(Archive& ar, const value<T> &v) {
+        __YAS_CONSTEXPR_IF ( F & yas::json ) {
             ar.write("\"", 1);
             ar.write(v.key, v.klen);
             ar.write("\":", 2);
         }
 
-		return (ar & v.val);
-	}
+        return (ar & v.val);
+    }
 
-	template<typename Archive>
-	static Archive& load(Archive& ar, value<T> &v) {
-		__YAS_CONSTEXPR_IF ( F & yas::json ) {
-			__YAS_CONSTEXPR_IF ( F & yas::compacted ) {
-                __YAS_THROW_IF_BAD_JSON_CHARS(ar, "\"");
+    template<typename Archive>
+    static Archive& load(Archive& ar, value<T> &v) {
+        __YAS_CONSTEXPR_IF ( F & yas::json ) {
+            __YAS_CONSTEXPR_IF ( F & yas::compacted ) {
+                __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "\"");
                 char key[1024];
                 const auto klen = json_read_key(ar, key, sizeof(key));
                 if ( klen != v.klen || 0 != std::memcmp(key, v.key, v.klen) ) {
                     __YAS_THROW_UNEXPECTED_JSON_KEY("unexpected json key");
                 }
-                __YAS_THROW_IF_BAD_JSON_CHARS(ar, "\":");
+                __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "\":");
             } else {
                 json_skipws(ar);
             }
         }
 
-		return (ar & v.val);
-	}
+        return (ar & v.val);
+    }
 };
 
 /***************************************************************************/

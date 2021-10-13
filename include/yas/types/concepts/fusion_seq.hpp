@@ -111,7 +111,7 @@ apply(Archive &ar, Cont<Tp...> &t) {
     }
 
     if ( (F & yas::json) && I + 1 < sizeof...(Tp) ) {
-        __YAS_THROW_IF_BAD_JSON_CHARS(ar, ",");
+        __YAS_THROW_IF_WRONG_JSON_CHARS(ar, ",");
     }
 
     return apply<F, I + 1>(ar, t);
@@ -126,17 +126,17 @@ template<
     ,typename... Types
 >
 Archive &save(Archive &ar, const Cont<Types...> &cont) {
-    if ( F & options::binary ) {
+    __YAS_CONSTEXPR_IF ( F & options::binary ) {
         ar.write(__YAS_SCAST(std::uint8_t, sizeof...(Types)));
     } else if ( F & yas::text ) {
         ar.write(sizeof...(Types));
     }
 
-    if ( F & yas::json ) { ar.write("[", 1); }
+    __YAS_CONSTEXPR_IF ( F & yas::json ) { ar.write("[", 1); }
 
     apply<F, 0>(ar, cont);
 
-    if ( F & yas::json ) { ar.write("]", 1); }
+    __YAS_CONSTEXPR_IF ( F & yas::json ) { ar.write("]", 1); }
 
     return ar;
 };
@@ -148,21 +148,29 @@ template<
     ,typename... Types
 >
 Archive &load(Archive &ar, Cont<Types...> &cont) {
-    if ( F & options::binary ) {
+    __YAS_CONSTEXPR_IF ( F & options::binary ) {
         std::uint8_t size = 0;
         ar.read(size);
-        if ( size != sizeof...(Types)) { __YAS_THROW_BAD_SIZE_ON_DESERIALIZE("fusion::container"); }
+        if ( size != sizeof...(Types)) {
+            __YAS_THROW_WRONG_SIZE_ON_DESERIALIZE(fusion::container);
+        }
     } else if ( F & yas::text ) {
         std::uint32_t size = 0;
         ar.read(size);
-        if ( size != sizeof...(Types)) { __YAS_THROW_BAD_SIZE_ON_DESERIALIZE("fusion::container"); }
+        if ( size != sizeof...(Types)) {
+            __YAS_THROW_WRONG_SIZE_ON_DESERIALIZE(fusion::container);
+        }
     }
 
-    if ( F & yas::json ) { __YAS_THROW_IF_BAD_JSON_CHARS(ar, "["); }
+    __YAS_CONSTEXPR_IF ( F & yas::json ) {
+        __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "[");
+    }
 
     apply<F, 0>(ar, cont);
 
-    if ( F & yas::json ) { __YAS_THROW_IF_BAD_JSON_CHARS(ar, "]"); }
+    __YAS_CONSTEXPR_IF ( F & yas::json ) {
+        __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "]");
+    }
 
     return ar;
 };

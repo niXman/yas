@@ -51,39 +51,39 @@ namespace detail {
 
 template<std::size_t F>
 struct serializer<
-	type_prop::not_a_fundamental,
-	ser_case::use_internal_serializer,
-	F,
-	boost::container::string
+    type_prop::not_a_fundamental,
+    ser_case::use_internal_serializer,
+    F,
+    boost::container::string
 > {
-	template<typename Archive>
-	static Archive& save(Archive& ar, const boost::container::string& string) {
-		if ( F & yas::json ) {
-			ar.write("\"", 1);
-			save_string(ar, string.data(), string.length());
-			ar.write("\"", 1);
-		} else {
-			ar.write_seq_size(string.length());
-			ar.write(string.data(), string.length());
-		}
+    template<typename Archive>
+    static Archive& save(Archive& ar, const boost::container::string& string) {
+        __YAS_CONSTEXPR_IF ( F & yas::json ) {
+            ar.write("\"", 1);
+            save_string(ar, string.data(), string.length());
+            ar.write("\"", 1);
+        } else {
+            ar.write_seq_size(string.length());
+            ar.write(string.data(), string.length());
+        }
 
-		return ar;
-	}
+        return ar;
+    }
 
-	template<typename Archive>
-	static Archive& load(Archive& ar, boost::container::string& string) {
-		if ( F & yas::json ) {
-			__YAS_THROW_IF_BAD_JSON_CHARS(ar, "\"");
-			load_string(string, ar);
-			__YAS_THROW_IF_BAD_JSON_CHARS(ar, "\"");
-		} else {
-			const auto size = ar.read_seq_size();
-			string.resize(size);
-			ar.read(__YAS_CCAST(char*, string.data()), size);
-		}
+    template<typename Archive>
+    static Archive& load(Archive& ar, boost::container::string& string) {
+        __YAS_CONSTEXPR_IF ( F & yas::json ) {
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "\"");
+            load_string(string, ar);
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "\"");
+        } else {
+            const auto size = ar.read_seq_size();
+            string.resize(size);
+            ar.read(__YAS_CCAST(char*, string.data()), size);
+        }
 
-		return ar;
-	}
+        return ar;
+    }
 };
 
 /***************************************************************************/

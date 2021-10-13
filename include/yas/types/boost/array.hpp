@@ -42,6 +42,8 @@
 #include <yas/detail/type_traits/serializer.hpp>
 #include <yas/detail/io/serialization_exceptions.hpp>
 
+#include <yas/types/concepts/const_sized_array.hpp>
+
 #include <boost/array.hpp>
 
 namespace yas {
@@ -51,64 +53,19 @@ namespace detail {
 
 template<std::size_t F, typename T, std::size_t N>
 struct serializer<
-	 type_prop::not_a_fundamental,
-	 ser_case::use_internal_serializer,
-	 F,
-	 boost::array<T, N>
+     type_prop::not_a_fundamental,
+     ser_case::use_internal_serializer,
+     F,
+     boost::array<T, N>
 > {
     template<typename Archive>
     static Archive& save(Archive& ar, const boost::array<T, N>& array) {
-        if ( F & yas::json ) {
-            ar.write("[", 1);
-
-            auto it = array.begin();
-            ar & (*it);
-            for ( ++it ; it != array.end(); ++it ) {
-                ar.write(",", 1);
-                ar & (*it);
-            }
-
-            ar.write("]", 1);
-        } else {
-            ar.write_seq_size(N);
-            if ( can_be_processed_as_byte_array<F, T>::value ) {
-                ar.write(array.data(), N * sizeof(T));
-            } else {
-                for ( const auto &it: array ) {
-                    ar & it;
-                }
-            }
-        }
-
-        return ar;
+        return concepts::const_sized_array::save<N, F>(ar, array.data(), array.data()+N);
     }
 
     template<typename Archive>
     static Archive& load(Archive& ar, boost::array<T, N>& array) {
-        if ( F & yas::json ) {
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "[");
-
-            auto it = array.begin();
-            ar & (*it);
-            for ( ++it; it != array.end(); ++it ) {
-                __YAS_THROW_IF_BAD_JSON_CHARS(ar, ",");
-                ar & (*it);
-            }
-
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "]");
-        } else {
-            const auto size = ar.read_seq_size();
-            if ( size != N ) { __YAS_THROW_BAD_ARRAY_SIZE(); }
-            if ( can_be_processed_as_byte_array<F, T>::value ) {
-                ar.read(array.data(), N * sizeof(T));
-            } else {
-                for ( auto &it: array ) {
-                    ar & it;
-                }
-            }
-        }
-
-        return ar;
+        return concepts::const_sized_array::load<N, F>(ar, array.data(), array.data()+N);
     }
 };
 

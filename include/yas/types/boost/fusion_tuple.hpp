@@ -60,8 +60,8 @@ struct serializer<
 	,F
 	,boost::fusion::tuple<Types...>
 > {
-	template<typename Archive>
-	static Archive& save(Archive& ar, const boost::fusion::tuple<Types...> &tuple) {
+    template<typename Archive>
+    static Archive& save(Archive& ar, const boost::fusion::tuple<Types...> &tuple) {
         __YAS_CONSTEXPR_IF ( F & options::binary ) {
             ar.write(__YAS_SCAST(std::uint8_t, sizeof...(Types)));
         } else if ( F & yas::text ) {
@@ -75,28 +75,32 @@ struct serializer<
         __YAS_CONSTEXPR_IF ( F & yas::json ) { ar.write("]", 1); }
 
         return ar;
-	}
+    }
 
-	template<typename Archive>
-	static Archive& load(Archive& ar, boost::fusion::tuple<Types...> &tuple) {
+    template<typename Archive>
+    static Archive& load(Archive& ar, boost::fusion::tuple<Types...> &tuple) {
         __YAS_CONSTEXPR_IF ( F & options::binary ) {
             std::uint8_t size = 0;
             ar.read(size);
-            if ( size != sizeof...(Types) ) { __YAS_THROW_BAD_SIZE_ON_DESERIALIZE("fusion::tuple"); }
+            if ( size != sizeof...(Types) ) { __YAS_THROW_WRONG_SIZE_ON_DESERIALIZE(fusion::tuple); }
         } else if ( F & yas::text ) {
             std::uint32_t size = 0;
             ar.read(size);
-            if ( size != sizeof...(Types) ) { __YAS_THROW_BAD_SIZE_ON_DESERIALIZE("fusion::tuple"); }
+            if ( size != sizeof...(Types) ) { __YAS_THROW_WRONG_SIZE_ON_DESERIALIZE(fusion::tuple); }
         }
 
-        __YAS_CONSTEXPR_IF ( F & yas::json ) { __YAS_THROW_IF_BAD_JSON_CHARS(ar, "["); }
+        __YAS_CONSTEXPR_IF ( F & yas::json ) {
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "[");
+        }
 
         apply(ar, tuple);
 
-        __YAS_CONSTEXPR_IF ( F & yas::json ) { __YAS_THROW_IF_BAD_JSON_CHARS(ar, "]"); }
+        __YAS_CONSTEXPR_IF ( F & yas::json ) {
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "]");
+        }
 
         return ar;
-	}
+    }
 
 private:
     template<std::size_t I = 0, typename Archive, typename... Tp>
@@ -133,7 +137,7 @@ private:
         );
 
         __YAS_CONSTEXPR_IF ( (F & yas::json) && I+1 < sizeof...(Tp) ) {
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, ",");
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, ",");
         }
 
         return apply<I+1>(ar, t);

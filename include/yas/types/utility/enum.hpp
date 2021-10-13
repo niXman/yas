@@ -73,7 +73,7 @@ struct serializer<
         if ( can_be_processed_as_byte_array<F, T>::value ) {
             std::uint8_t size{};
             ar.read(&size, sizeof(size));
-            if ( sizeof(u) != size ) { __YAS_THROW_BAD_SIZE_OF_ENUM(); }
+            if ( sizeof(u) != size ) { __YAS_THROW_WRONG_SIZE_OF_ENUM(); }
             ar.read(&u, sizeof(u));
         } else {
             ar & u;

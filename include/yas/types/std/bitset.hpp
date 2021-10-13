@@ -50,14 +50,14 @@ namespace detail {
 
 template<std::size_t F, std::size_t N>
 struct serializer<
-	type_prop::not_a_fundamental,
-	ser_case::use_internal_serializer,
-	F,
-	std::bitset<N>
+    type_prop::not_a_fundamental,
+    ser_case::use_internal_serializer,
+    F,
+    std::bitset<N>
 > {
-	template<typename Archive>
-	static Archive& save(Archive& ar, const std::bitset<N>& bits) {
-		if ( F & yas::json ) {
+    template<typename Archive>
+    static Archive& save(Archive& ar, const std::bitset<N>& bits) {
+        __YAS_CONSTEXPR_IF ( F & yas::json ) {
             std::vector<std::uint8_t> result((N + 7) >> 3);
             for ( std::size_t idx = 0; idx < N; ++idx ) {
                 result[idx >> 3] = __YAS_SCAST(std::uint8_t, result[idx >> 3] | (bits[idx] << (idx & 7)));
@@ -76,40 +76,44 @@ struct serializer<
             ar & result;
         }
 
-		return ar;
-	}
+        return ar;
+    }
 
-	template<typename Archive>
-	static Archive& load(Archive& ar, std::bitset<N>& bits) {
-        if ( F & yas::json ) {
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "[");
+    template<typename Archive>
+    static Archive& load(Archive& ar, std::bitset<N>& bits) {
+        __YAS_CONSTEXPR_IF ( F & yas::json ) {
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "[");
 
             std::vector<std::uint8_t> buf;
             ar & buf;
 
-            if ( buf.size() != ((N + 7) >> 3) ) { __YAS_THROW_BAD_BITSET_STORAGE_SIZE(); }
+            if ( buf.size() != ((N + 7) >> 3) ) {
+                __YAS_THROW_WRONG_BITSET_STORAGE_SIZE();
+            }
 
             for ( std::size_t idx = 0; idx < N; ++idx ) {
                 bits[idx] = ((buf[idx >> 3] >> (idx & 7)) & 1);
             }
 
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "]");
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "]");
         }  else {
             const auto size = ar.read_seq_size();
-            if ( size != N ) { __YAS_THROW_BAD_BITSET_SIZE(); }
+            if ( size != N ) { __YAS_THROW_WRONG_BITSET_SIZE(); }
 
             std::vector<std::uint8_t> buf;
             ar & buf;
 
-            if ( buf.size() != ((N + 7) >> 3)) { __YAS_THROW_BAD_BITSET_STORAGE_SIZE(); }
+            if ( buf.size() != ((N + 7) >> 3)) {
+                __YAS_THROW_WRONG_BITSET_STORAGE_SIZE();
+            }
 
             for ( std::size_t idx = 0; idx < N; ++idx ) {
                 bits[idx] = ((buf[idx >> 3] >> (idx & 7)) & 1);
             }
         }
 
-		return ar;
-	}
+        return ar;
+    }
 };
 
 /***************************************************************************/

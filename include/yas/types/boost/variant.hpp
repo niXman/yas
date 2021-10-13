@@ -144,18 +144,18 @@ struct serializer<
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
             }
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "[");
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "[");
             std::size_t idx = 0;
             ar & YAS_OBJECT(nullptr, idx);
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
             }
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, ",");
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, ",");
             boost_variant_switch<F>(ar, idx, v);
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
             }
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "]");
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "]");
         } else {
             std::uint8_t idx = 0;
             ar & idx;

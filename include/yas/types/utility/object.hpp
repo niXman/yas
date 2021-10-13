@@ -77,14 +77,14 @@ struct serializer<
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
             }
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "{");
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "{");
 
             apply(ar, o.map, o.pairs);
 
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
             }
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "}");
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "}");
         } else {
             apply(ar, o.map, o.pairs);
         }
@@ -121,7 +121,7 @@ private:
             if ( ch == '}' ) {
                 return ar;
             } else {
-                __YAS_THROW_IF_BAD_JSON_CHARS(ar, ",");
+                __YAS_THROW_IF_WRONG_JSON_CHARS(ar, ",");
                 json_skipws(ar);
                 json_skip_object(ar);
                 ar.ungetch('}');
@@ -165,14 +165,14 @@ private:
                             return ar;
                         }
 
-                        __YAS_THROW_IF_BAD_JSON_CHARS(ar, ",");
+                        __YAS_THROW_IF_WRONG_JSON_CHARS(ar, ",");
                     }
                 }
             }
             __YAS_CONSTEXPR_IF ( I+1 < sizeof...(Tp) ) {
                 json_skipws(ar);
 
-                __YAS_THROW_IF_BAD_JSON_CHARS(ar, ",");
+                __YAS_THROW_IF_WRONG_JSON_CHARS(ar, ",");
             }
         } else {
             ar & std::get<I>(t);

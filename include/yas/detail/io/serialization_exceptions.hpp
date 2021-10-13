@@ -50,22 +50,22 @@ struct no_json_key_exception: serialization_exception {
 
 /***************************************************************************/
 
-#define __YAS_THROW_BAD_ARRAY_SIZE() \
-	__YAS_THROW_EXCEPTION(::yas::serialization_exception, "bad array size");
+#define __YAS_THROW_WRONG_ARRAY_SIZE() \
+	__YAS_THROW_EXCEPTION(::yas::serialization_exception, "wrong array size");
 
-#define __YAS_THROW_BAD_SIZE_OF_ENUM() \
-	__YAS_THROW_EXCEPTION(::yas::serialization_exception, "bad size of enum");
+#define __YAS_THROW_WRONG_SIZE_OF_ENUM() \
+	__YAS_THROW_EXCEPTION(::yas::serialization_exception, "wrong size of enum");
 
-#define __YAS_THROW_BAD_BITSET_SIZE() \
-	__YAS_THROW_EXCEPTION(::yas::serialization_exception, "bad bitset size");
+#define __YAS_THROW_WRONG_BITSET_SIZE() \
+	__YAS_THROW_EXCEPTION(::yas::serialization_exception, "wrong bitset size");
 
-#define __YAS_THROW_BAD_BITSET_STORAGE_SIZE() \
-	__YAS_THROW_EXCEPTION(::yas::serialization_exception, "bad bitset storage size");
+#define __YAS_THROW_WRONG_BITSET_STORAGE_SIZE() \
+	__YAS_THROW_EXCEPTION(::yas::serialization_exception, "wrong bitset storage size");
 
-#define __YAS_THROW_BAD_SIZE_ON_DESERIALIZE(type) \
-	__YAS_THROW_EXCEPTION(::yas::serialization_exception, "bad size on deserialize " type);
+#define __YAS_THROW_WRONG_SIZE_ON_DESERIALIZE(type) \
+	__YAS_THROW_EXCEPTION(::yas::serialization_exception, "wrong size on deserialize " #type);
 
-#define __YAS_THROW_IF_BAD_JSON_CHARS(ar, chars) { \
+#define __YAS_THROW_IF_WRONG_JSON_CHARS(ar, chars) { \
         char tmp[sizeof(chars)]; \
         ar.read(tmp, sizeof(tmp)-1); \
         if ( std::memcmp(tmp, chars, sizeof(chars)-1) != 0 ) { \

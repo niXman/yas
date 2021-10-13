@@ -40,203 +40,211 @@
 
 template<typename archive_traits>
 bool buffer_test(std::ostream &log, const char *archive_type, const char *test_name) {
-    static const char str1[] = "intrusive buffer test";
-    yas::intrusive_buffer buf1(str1, sizeof(str1)-1);
+    // intrusive buffer
+    {
+        static const char str[] = "intrusive buffer test";
+        yas::intrusive_buffer buf(str, sizeof(str)-1);
 
-    typename archive_traits::oarchive oa1;
-    archive_traits::ocreate(oa1, archive_type);
-    auto o0 = YAS_OBJECT_NVP("obj", ("buf", buf1));
-    oa1 & o0;
+        typename archive_traits::oarchive oa1;
+        archive_traits::ocreate(oa1, archive_type);
+        auto o0 = YAS_OBJECT_NVP("obj", ("buf", buf));
+        oa1 & o0;
 
-    // binary
-    if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
-        if ( archive_traits::oarchive_type::flags() & yas::compacted ) {
-            static const std::uint8_t arr_le[] = {
-                 0x79,0x61,0x73,0x30,0x31,0x31,0x37,0x95,0x69,0x6e,0x74,0x72,0x75,0x73
-                ,0x69,0x76,0x65,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
+        // binary
+        if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
+            if ( archive_traits::oarchive_type::flags() & yas::compacted ) {
+                static const std::uint8_t arr_le[] = {
+                    0x79, 0x61, 0x73, 0x30, 0x31, 0x31, 0x37, 0x95, 0x69, 0x6e, 0x74, 0x72, 0x75, 0x73, 0x69, 0x76,
+                    0x65, 0x20, 0x62, 0x75, 0x66, 0x66, 0x65, 0x72, 0x20, 0x74, 0x65, 0x73, 0x74
+                };
+                static const std::uint8_t arr_be[] = {
+                    0x79, 0x61, 0x73, 0x30, 0x31, 0x39, 0x37, 0x95, 0x69, 0x6e, 0x74, 0x72, 0x75, 0x73, 0x69, 0x76,
+                    0x65, 0x20, 0x62, 0x75, 0x66, 0x66, 0x65, 0x72, 0x20, 0x74, 0x65, 0x73, 0x74
+                };
+
+                const std::uint8_t *ptr = oa1.is_little_endian() ? arr_le : arr_be;
+                const std::size_t size = oa1.is_little_endian() ? sizeof(arr_le) : sizeof(arr_be);
+                if ( oa1.size() != size ) {
+                    YAS_TEST_REPORT(log, archive_type, test_name);
+                    return false;
+                }
+                if ( !oa1.compare(ptr, size)) {
+                    YAS_TEST_REPORT(log, archive_type, test_name);
+                    return false;
+                }
+            } else {
+                static const std::uint8_t arr_le[] = {
+                    0x79, 0x61, 0x73, 0x30, 0x30, 0x31, 0x37, 0x15, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x69,
+                    0x6e, 0x74, 0x72, 0x75, 0x73, 0x69, 0x76, 0x65, 0x20, 0x62, 0x75, 0x66, 0x66, 0x65, 0x72, 0x20,
+                    0x74, 0x65, 0x73, 0x74
+                };
+                static const std::uint8_t arr_be[] = {
+                    0x79, 0x61, 0x73, 0x30, 0x30, 0x39, 0x37, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x15, 0x69,
+                    0x6e, 0x74, 0x72, 0x75, 0x73, 0x69, 0x76, 0x65, 0x20, 0x62, 0x75, 0x66, 0x66, 0x65, 0x72, 0x20,
+                    0x74, 0x65, 0x73, 0x74
+                };
+
+                const std::uint8_t *ptr = oa1.is_little_endian() ? arr_le : arr_be;
+                const std::size_t size = oa1.is_little_endian() ? sizeof(arr_le) : sizeof(arr_be);
+                if ( oa1.size() != size ) {
+                    YAS_TEST_REPORT(log, archive_type, test_name);
+                    return false;
+                }
+                if ( !oa1.compare(ptr, size)) {
+                    YAS_TEST_REPORT(log, archive_type, test_name);
+                    return false;
+                }
+            }
+            // text
+        } else if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
+            static const std::uint8_t ptr[] = {
+                0x79, 0x61, 0x73, 0x30, 0x30, 0x32, 0x33, 0x32, 0x32, 0x31, 0x69, 0x6e, 0x74, 0x72, 0x75, 0x73, 0x69,
+                0x76, 0x65, 0x20, 0x62, 0x75, 0x66, 0x66, 0x65, 0x72, 0x20, 0x74, 0x65, 0x73, 0x74
             };
-            static const std::uint8_t arr_be[] = {
-                 0x79,0x61,0x73,0x30,0x31,0x39,0x37,0x95,0x69,0x6e,0x74,0x72,0x75,0x73
-                ,0x69,0x76,0x65,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
-            };
-
-            const std::uint8_t *ptr  = oa1.is_little_endian() ? arr_le : arr_be;
-            const std::size_t   size = oa1.is_little_endian() ? sizeof(arr_le) : sizeof(arr_be);
+            const std::size_t size = sizeof(ptr);
             if ( oa1.size() != size ) {
                 YAS_TEST_REPORT(log, archive_type, test_name);
                 return false;
             }
-            if ( !oa1.compare(ptr, size) ) {
+            if ( !oa1.compare(ptr, size)) {
                 YAS_TEST_REPORT(log, archive_type, test_name);
                 return false;
             }
-        } else {
-            static const std::uint8_t arr_le[] = {
-                 0x79,0x61,0x73,0x30,0x30,0x31,0x37,0x15,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x69,0x6e,0x74
-                ,0x72,0x75,0x73,0x69,0x76,0x65,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
+            // json
+        } else if ( yas::is_json_archive<typename archive_traits::oarchive_type>::value ) {
+            static const std::uint8_t arr[] = {
+                0x7b, 0x22, 0x62, 0x75, 0x66, 0x22, 0x3a, 0x7b, 0x22, 0x73, 0x69, 0x7a, 0x65, 0x22, 0x3a, 0x32, 0x38,
+                0x2c, 0x22, 0x64, 0x61, 0x74, 0x61, 0x22, 0x3a, 0x22, 0x61, 0x57, 0x35, 0x30, 0x63, 0x6e, 0x56, 0x7a,
+                0x61, 0x58, 0x5a, 0x6c, 0x49, 0x47, 0x4a, 0x31, 0x5a, 0x6d, 0x5a, 0x6c, 0x63, 0x69, 0x42, 0x30, 0x5a,
+                0x58, 0x4e, 0x30, 0x22, 0x7d, 0x7d
             };
-            static const std::uint8_t arr_be[] = {
-                 0x79,0x61,0x73,0x30,0x30,0x39,0x37,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x15,0x69,0x6e,0x74
-                ,0x72,0x75,0x73,0x69,0x76,0x65,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
-            };
-
-            const std::uint8_t *ptr  = oa1.is_little_endian() ? arr_le : arr_be;
-            const std::size_t   size = oa1.is_little_endian() ? sizeof(arr_le) : sizeof(arr_be);
+            const std::size_t size = sizeof(arr);
             if ( oa1.size() != size ) {
                 YAS_TEST_REPORT(log, archive_type, test_name);
                 return false;
             }
-            if ( !oa1.compare(ptr, size) ) {
+            if ( !oa1.compare(arr, size)) {
                 YAS_TEST_REPORT(log, archive_type, test_name);
                 return false;
             }
         }
-    // text
-    } else if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
-        static const std::uint8_t ptr[] = {
-             0x79,0x61,0x73,0x30,0x30,0x32,0x33,0x32,0x32,0x31,0x69,0x6e,0x74,0x72,0x75
-            ,0x73,0x69,0x76,0x65,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
-        };
-        const std::size_t size = sizeof(ptr);
-        if ( oa1.size() != size ) {
+
+        char ibuf_arr[21]{0};
+        yas::intrusive_buffer buf2{ibuf_arr, sizeof(ibuf_arr)};
+        typename archive_traits::iarchive ia1;
+        archive_traits::icreate(ia1, oa1, archive_type);
+        auto io1 = YAS_OBJECT_NVP("obj", ("buf", buf2));
+        ia1 & io1;
+        if ( buf2.size != buf.size ) {
             YAS_TEST_REPORT(log, archive_type, test_name);
             return false;
         }
-        if ( !oa1.compare(ptr, size) ) {
-            YAS_TEST_REPORT(log, archive_type, test_name);
-            return false;
-        }
-    // json
-    } else if ( yas::is_json_archive<typename archive_traits::oarchive_type>::value ) {
-        static const std::uint8_t arr[] = {
-             0x7b,0x22,0x62,0x75,0x66,0x22,0x3a,0x7b,0x22,0x73,0x69,0x7a,0x65,0x22,0x3a,0x32,0x38
-            ,0x2c,0x22,0x64,0x61,0x74,0x61,0x22,0x3a,0x22,0x61,0x57,0x35,0x30,0x63,0x6e,0x56
-            ,0x7a,0x61,0x58,0x5a,0x6c,0x49,0x47,0x4a,0x31,0x5a,0x6d,0x5a,0x6c,0x63,0x69,0x42,0x30
-            ,0x5a,0x58,0x4e,0x30,0x22,0x7d,0x7d
-        };
-        const std::size_t size = sizeof(arr);
-        if ( oa1.size() != size ) {
-            YAS_TEST_REPORT(log, archive_type, test_name);
-            return false;
-        }
-        if ( !oa1.compare(arr, size) ) {
+        if ( std::memcmp(buf.data, buf2.data, buf2.size) != 0 ) {
             YAS_TEST_REPORT(log, archive_type, test_name);
             return false;
         }
     }
 
-    yas::shared_buffer ibuf1;
-    typename archive_traits::iarchive ia1;
-    archive_traits::icreate(ia1, oa1, archive_type);
-    auto io1 = YAS_OBJECT_NVP("obj", ("buf", ibuf1));
-    ia1 & io1;
-    if ( buf1.size != ibuf1.size ) {
-        YAS_TEST_REPORT(log, archive_type, test_name);
-        return false;
-    }
-    if ( std::memcmp(buf1.data, ibuf1.data.get(), ibuf1.size) != 0 ) {
-        YAS_TEST_REPORT(log, archive_type, test_name);
-        return false;
-    }
+    // shared buffer
+    {
+        static const char str[] = "shared buffer test";
+        const yas::shared_buffer buf(str, sizeof(str)-1);
+        typename archive_traits::oarchive oa2;
+        archive_traits::ocreate(oa2, archive_type);
+        auto o1 = YAS_OBJECT_NVP("obj", ("buf", buf));
+        oa2 & o1;
 
-    static const char str2[] = "shared buffer test";
-    const yas::shared_buffer buf2(str2, sizeof(str2)-1);
-    typename archive_traits::oarchive oa2;
-    archive_traits::ocreate(oa2, archive_type);
-    auto o1 = YAS_OBJECT_NVP("obj", ("buf", buf2));
-    oa2 & o1;
+        // binary
+        if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ) {
+            if ( archive_traits::oarchive_type::flags() & yas::compacted ) {
+                static const std::uint8_t arr_le[] = {
+                    0x79, 0x61, 0x73, 0x30, 0x31, 0x31, 0x37, 0x92, 0x73, 0x68, 0x61, 0x72, 0x65, 0x64, 0x20, 0x62,
+                    0x75, 0x66, 0x66, 0x65, 0x72, 0x20, 0x74, 0x65, 0x73, 0x74
+                };
+                static const std::uint8_t arr_be[] = {
+                    0x79, 0x61, 0x73, 0x30, 0x31, 0x39, 0x37, 0x92, 0x73, 0x68, 0x61, 0x72, 0x65, 0x64, 0x20, 0x62,
+                    0x75, 0x66, 0x66, 0x65, 0x72, 0x20, 0x74, 0x65, 0x73, 0x74
+                };
 
-    // binary
-    if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value ){
-        if ( archive_traits::oarchive_type::flags() & yas::compacted ) {
-            static const std::uint8_t arr_le[] = {
-                 0x79,0x61,0x73,0x30,0x31,0x31,0x37,0x92,0x73,0x68,0x61,0x72,0x65
-                ,0x64,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
+                const std::uint8_t *ptr = oa2.is_little_endian() ? arr_le : arr_be;
+                const std::size_t size = oa2.is_little_endian() ? sizeof(arr_le) : sizeof(arr_be);
+                if ( oa2.size() != size ) {
+                    YAS_TEST_REPORT(log, archive_type, test_name);
+                    return false;
+                }
+                if ( !oa2.compare(ptr, size)) {
+                    YAS_TEST_REPORT(log, archive_type, test_name);
+                    return false;
+                }
+            } else {
+                static const std::uint8_t arr_le[] = {
+                    0x79, 0x61, 0x73, 0x30, 0x30, 0x31, 0x37, 0x12, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x73,
+                    0x68, 0x61, 0x72, 0x65, 0x64, 0x20, 0x62, 0x75, 0x66, 0x66, 0x65, 0x72, 0x20, 0x74, 0x65, 0x73, 0x74
+                };
+                static const std::uint8_t arr_be[] = {
+                    0x79, 0x61, 0x73, 0x30, 0x30, 0x39, 0x37, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x12, 0x73,
+                    0x68, 0x61, 0x72, 0x65, 0x64, 0x20, 0x62, 0x75, 0x66, 0x66, 0x65, 0x72, 0x20, 0x74, 0x65, 0x73, 0x74
+                };
+
+                const std::uint8_t *ptr = oa2.is_little_endian() ? arr_le : arr_be;
+                const std::size_t size = oa2.is_little_endian() ? sizeof(arr_le) : sizeof(arr_be);
+                if ( oa2.size() != size ) {
+                    YAS_TEST_REPORT(log, archive_type, test_name);
+                    return false;
+                }
+                if ( !oa2.compare(ptr, size)) {
+                    YAS_TEST_REPORT(log, archive_type, test_name);
+                    return false;
+                }
+            }
+            // text
+        } else if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
+            static const std::uint8_t ptr[] = {
+                0x79, 0x61, 0x73, 0x30, 0x30, 0x32, 0x33, 0x32, 0x31, 0x38, 0x73, 0x68, 0x61, 0x72, 0x65, 0x64, 0x20,
+                0x62, 0x75, 0x66, 0x66, 0x65, 0x72, 0x20, 0x74, 0x65, 0x73, 0x74
             };
-            static const std::uint8_t arr_be[] = {
-                 0x79,0x61,0x73,0x30,0x31,0x39,0x37,0x92,0x73,0x68,0x61,0x72,0x65
-                ,0x64,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
-            };
-
-            const std::uint8_t *ptr  = oa2.is_little_endian() ? arr_le : arr_be;
-            const std::size_t   size = oa2.is_little_endian() ? sizeof(arr_le) : sizeof(arr_be);
+            const std::size_t size = sizeof(ptr);
             if ( oa2.size() != size ) {
                 YAS_TEST_REPORT(log, archive_type, test_name);
                 return false;
             }
-            if ( !oa2.compare(ptr, size) ) {
+            if ( !oa2.compare(ptr, size)) {
                 YAS_TEST_REPORT(log, archive_type, test_name);
                 return false;
             }
-        } else {
-            static const std::uint8_t arr_le[] = {
-                 0x79,0x61,0x73,0x30,0x30,0x31,0x37,0x12,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x73
-                ,0x68,0x61,0x72,0x65,0x64,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
+            // json
+        } else if ( yas::is_json_archive<typename archive_traits::oarchive_type>::value ) {
+            static const std::uint8_t arr[] = {
+                0x7b, 0x22, 0x62, 0x75, 0x66, 0x22, 0x3a, 0x7b, 0x22, 0x73, 0x69, 0x7a, 0x65, 0x22, 0x3a, 0x32, 0x34,
+                0x2c, 0x22, 0x64, 0x61, 0x74, 0x61, 0x22, 0x3a, 0x22, 0x63, 0x32, 0x68, 0x68, 0x63, 0x6d, 0x56, 0x6b,
+                0x49, 0x47, 0x4a, 0x31, 0x5a, 0x6d, 0x5a, 0x6c, 0x63, 0x69, 0x42, 0x30, 0x5a, 0x58, 0x4e, 0x30, 0x22,
+                0x7d, 0x7d
             };
-            static const std::uint8_t arr_be[] = {
-                 0x79,0x61,0x73,0x30,0x30,0x39,0x37,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x12,0x73
-                ,0x68,0x61,0x72,0x65,0x64,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
-            };
-
-            const std::uint8_t *ptr  = oa2.is_little_endian() ? arr_le : arr_be;
-            const std::size_t   size = oa2.is_little_endian() ? sizeof(arr_le) : sizeof(arr_be);
+            const std::size_t size = sizeof(arr);
             if ( oa2.size() != size ) {
                 YAS_TEST_REPORT(log, archive_type, test_name);
                 return false;
             }
-            if ( !oa2.compare(ptr, size) ) {
+            if ( !oa2.compare(arr, size)) {
                 YAS_TEST_REPORT(log, archive_type, test_name);
                 return false;
             }
         }
-    // text
-    } else if ( yas::is_text_archive<typename archive_traits::oarchive_type>::value ) {
-        static const std::uint8_t ptr[] = {
-             0x79,0x61,0x73,0x30,0x30,0x32,0x33,0x32,0x31,0x38,0x73,0x68,0x61,0x72
-            ,0x65,0x64,0x20,0x62,0x75,0x66,0x66,0x65,0x72,0x20,0x74,0x65,0x73,0x74
-        };
-        const std::size_t size = sizeof(ptr);
-        if ( oa2.size() != size ) {
-            YAS_TEST_REPORT(log, archive_type, test_name);
-            return false;
-        }
-        if ( !oa2.compare(ptr, size) ) {
-            YAS_TEST_REPORT(log, archive_type, test_name);
-            return false;
-        }
-    // json
-    } else if ( yas::is_json_archive<typename archive_traits::oarchive_type>::value ) {
-        static const std::uint8_t arr[] = {
-             0x7b,0x22,0x62,0x75,0x66,0x22,0x3a,0x7b,0x22,0x73,0x69,0x7a,0x65,0x22,0x3a,0x32,0x34
-            ,0x2c,0x22,0x64,0x61,0x74,0x61,0x22,0x3a,0x22,0x63,0x32,0x68,0x68,0x63,0x6d,0x56
-            ,0x6b,0x49,0x47,0x4a,0x31,0x5a,0x6d,0x5a,0x6c,0x63,0x69,0x42,0x30,0x5a,0x58,0x4e,0x30
-            ,0x22,0x7d,0x7d
-        };
-        const std::size_t size = sizeof(arr);
-        if ( oa2.size() != size ) {
-            YAS_TEST_REPORT(log, archive_type, test_name);
-            return false;
-        }
-        if ( !oa2.compare(arr, size) ) {
-            YAS_TEST_REPORT(log, archive_type, test_name);
-            return false;
-        }
-    }
 
-    yas::shared_buffer ibuf2;
-    typename archive_traits::iarchive ia2;
-    archive_traits::icreate(ia2, oa2, archive_type);
-    auto io2 = YAS_OBJECT_NVP("obj", ("buf", ibuf2));
-    ia2 & io2;
-    if ( buf2.size != ibuf2.size ) {
-        YAS_TEST_REPORT(log, archive_type, test_name);
-        return false;
+        yas::shared_buffer buf2;
+        typename archive_traits::iarchive ia2;
+        archive_traits::icreate(ia2, oa2, archive_type);
+        auto io2 = YAS_OBJECT_NVP("obj", ("buf", buf2));
+        ia2 & io2;
+        if ( buf.size != buf2.size ) {
+            YAS_TEST_REPORT(log, archive_type, test_name);
+            return false;
+        }
+        if ( std::memcmp(buf.data.get(), buf2.data.get(), buf2.size) != 0 ) {
+            YAS_TEST_REPORT(log, archive_type, test_name);
+            return false;
+        }
     }
-    if ( std::memcmp(buf2.data.get(), ibuf2.data.get(), ibuf2.size) != 0 ) {
-        YAS_TEST_REPORT(log, archive_type, test_name);
-        return false;
-    }
-
     return true;
 }
 

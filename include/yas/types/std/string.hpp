@@ -58,7 +58,7 @@ struct serializer<
 > {
     template<typename Archive>
     static Archive& save(Archive& ar, const std::string &str) {
-        if ( F & yas::json ) {
+        __YAS_CONSTEXPR_IF ( F & yas::json ) {
             if ( str.empty() ) {
                 ar.write("null", 4);
             } else {
@@ -76,14 +76,14 @@ struct serializer<
 
     template<typename Archive>
     static Archive& load(Archive& ar, std::string &str) {
-        if ( F & yas::json ) {
+        __YAS_CONSTEXPR_IF ( F & yas::json ) {
             char ch = ar.getch();
             if ( ch == '\"' ) {
                 load_string(str, ar);
-                __YAS_THROW_IF_BAD_JSON_CHARS(ar, "\"");
+                __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "\"");
             } else if ( ch == 'n' ) {
                 ar.ungetch(ch);
-                __YAS_THROW_IF_BAD_JSON_CHARS(ar, "null");
+                __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "null");
                 str.clear();
             } else if ( is_valid_for_int_and_double(ar, ch) ) {
                 str += ch;
@@ -91,7 +91,7 @@ struct serializer<
                     str += ar.getch();
                 }
             } else {
-                __YAS_THROW_IF_BAD_JSON_CHARS(ar, "unreachable");
+                __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "unreachable");
             }
         } else {
             const auto size = ar.read_seq_size();

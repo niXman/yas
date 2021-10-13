@@ -53,96 +53,104 @@ namespace detail {
 
 template<std::size_t F, typename... Types>
 struct serializer<
-	 type_prop::not_a_fundamental
-	,ser_case::use_internal_serializer
-	,F
-	,boost::tuple<Types...>
+     type_prop::not_a_fundamental
+    ,ser_case::use_internal_serializer
+    ,F
+    ,boost::tuple<Types...>
 > {
-	template<typename Archive>
-	static Archive& save(Archive &ar, const boost::tuple<Types...> &tuple) {
+    template<typename Archive>
+    static Archive& save(Archive &ar, const boost::tuple<Types...> &tuple) {
         constexpr std::size_t tuple_size = boost::tuples::length<boost::tuple<Types...>>::value;
         __YAS_CONSTEXPR_IF ( F & options::binary ) {
-			ar.write(__YAS_SCAST(std::uint8_t, tuple_size));
-		} else if ( F & yas::text ) {
-			ar.write(tuple_size);
-		}
+            ar.write(__YAS_SCAST(std::uint8_t, tuple_size));
+        } else if ( F & yas::text ) {
+            ar.write(tuple_size);
+        }
 
         __YAS_CONSTEXPR_IF ( F & yas::json ) { ar.write("[", 1); }
 
-		apply<tuple_size>(ar, tuple);
+        apply<tuple_size>(ar, tuple);
 
         __YAS_CONSTEXPR_IF ( F & yas::json ) { ar.write("]", 1); }
 
-		return ar;
-	}
-	template<typename Archive>
-	static Archive& load(Archive &ar, boost::tuple<Types...> &tuple) {
-		constexpr std::size_t tuple_size = boost::tuples::length<boost::tuple<Types...>>::value;
+        return ar;
+    }
+    template<typename Archive>
+    static Archive& load(Archive &ar, boost::tuple<Types...> &tuple) {
+        constexpr std::size_t tuple_size = boost::tuples::length<boost::tuple<Types...>>::value;
         __YAS_CONSTEXPR_IF ( F & options::binary ) {
-			std::uint8_t size = 0;
-			ar.read(size);
-			if ( size != tuple_size ) { __YAS_THROW_BAD_SIZE_ON_DESERIALIZE("boost::tuple"); }
-		} else if ( F & yas::text ) {
-			std::uint32_t size = 0;
-			ar.read(size);
-			if ( size != tuple_size ) { __YAS_THROW_BAD_SIZE_ON_DESERIALIZE("boost::tuple"); }
-		}
+            std::uint8_t size = 0;
+            ar.read(size);
+            if ( size != tuple_size ) {
+                __YAS_THROW_WRONG_SIZE_ON_DESERIALIZE(boost::tuple);
+            }
+        } else if ( F & yas::text ) {
+            std::uint32_t size = 0;
+            ar.read(size);
+            if ( size != tuple_size ) {
+                __YAS_THROW_WRONG_SIZE_ON_DESERIALIZE(boost::tuple);
+            }
+        }
 
         __YAS_CONSTEXPR_IF ( F & yas::json ) {
             if ( 0 == tuple_size ) {
-                __YAS_THROW_IF_BAD_JSON_CHARS(ar, "[]");
+                __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "[]");
 
                 return ar;
             }
 
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "[");
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "[");
         }
 
         apply<tuple_size>(ar, tuple);
 
-        __YAS_CONSTEXPR_IF ( F & yas::json ) { __YAS_THROW_IF_BAD_JSON_CHARS(ar, "]"); }
+        __YAS_CONSTEXPR_IF ( F & yas::json ) {
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "]");
+        }
 
-		return ar;
-	}
+        return ar;
+    }
 
 private:
-	template<std::size_t S, std::size_t I = 0, typename Archive, typename... Tp>
-	static typename std::enable_if<I == S, Archive&>::type
-	apply(Archive &ar, const boost::tuple<Tp...> &)
-	{ return ar; }
-	template<std::size_t S, std::size_t I = 0, typename Archive, typename... Tp>
-	static typename std::enable_if<I < S, Archive&>::type
-	apply(Archive &ar, const boost::tuple<Tp...> &t) {
-        using tuple_element_name_t = tuple_element_name<I>;
-        ar & YAS_OBJECT_NVP(
-			 nullptr
-		    ,(tuple_element_name_t::c_str(), boost::get<I>(t))
-		);
-
-        __YAS_CONSTEXPR_IF ( (F & yas::json) && I+1 < S ) {
-			ar.write(",", 1);
-		}
-
-		return apply<S, I+1>(ar, t);
-	}
-
-	template<std::size_t S, std::size_t I = 0, typename Archive, typename... Tp>
-	static typename std::enable_if<I == S, Archive&>::type
-	apply(Archive &ar, boost::tuple<Tp...> &)
-	{ return ar; }
-	template<std::size_t S, std::size_t I = 0, typename Archive, typename... Tp>
-	static typename std::enable_if<I < S, Archive&>::type
-	apply(Archive &ar, boost::tuple<Tp...> &t) {
+    template<std::size_t S, std::size_t I = 0, typename Archive, typename... Tp>
+    static typename std::enable_if<I == S, Archive&>::type
+    apply(Archive &ar, const boost::tuple<Tp...> &)
+    { return ar; }
+    template<std::size_t S, std::size_t I = 0, typename Archive, typename... Tp>
+    static typename std::enable_if<I < S, Archive&>::type
+    apply(Archive &ar, const boost::tuple<Tp...> &t) {
         using tuple_element_name_t = tuple_element_name<I>;
         ar & YAS_OBJECT_NVP(
              nullptr
             ,(tuple_element_name_t::c_str(), boost::get<I>(t))
         );
 
-        __YAS_CONSTEXPR_IF ( (F & yas::json) && I+1 < S ) { __YAS_THROW_IF_BAD_JSON_CHARS(ar, ","); }
+        __YAS_CONSTEXPR_IF ( (F & yas::json) && I+1 < S ) {
+            ar.write(",", 1);
+        }
 
-		return apply<S, I+1>(ar, t);
-	}
+        return apply<S, I+1>(ar, t);
+    }
+
+    template<std::size_t S, std::size_t I = 0, typename Archive, typename... Tp>
+    static typename std::enable_if<I == S, Archive&>::type
+    apply(Archive &ar, boost::tuple<Tp...> &)
+    { return ar; }
+    template<std::size_t S, std::size_t I = 0, typename Archive, typename... Tp>
+    static typename std::enable_if<I < S, Archive&>::type
+    apply(Archive &ar, boost::tuple<Tp...> &t) {
+        using tuple_element_name_t = tuple_element_name<I>;
+        ar & YAS_OBJECT_NVP(
+             nullptr
+            ,(tuple_element_name_t::c_str(), boost::get<I>(t))
+        );
+
+        __YAS_CONSTEXPR_IF ( (F & yas::json) && I+1 < S ) {
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, ",");
+        }
+
+        return apply<S, I+1>(ar, t);
+    }
 };
 
 /***************************************************************************/

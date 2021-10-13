@@ -84,8 +84,18 @@ struct serializer<
     }
     
     template<typename Archive>
-    static Archive& load(Archive& ar, intrusive_buffer &) {
-        assert("can't deserialize into intrusive_buffer" == nullptr);
+    static Archive& load(Archive& ar, intrusive_buffer &ibuf) {
+        if ( ibuf.data == nullptr || ibuf.size == 0 ) {
+            __YAS_THROW_WRONG_SIZE_ON_DESERIALIZE(yas::intrusive_buffer);
+        }
+
+        shared_buffer sbuf;
+        ar & sbuf;
+        if ( sbuf.size != ibuf.size ) {
+            __YAS_THROW_WRONG_SIZE_ON_DESERIALIZE(yas::intrusive_buffer);
+        }
+
+        std::memcpy(__YAS_CCAST(char *, ibuf.data), sbuf.data.get(), sbuf.size);
 
         return ar;
     }
@@ -114,7 +124,7 @@ struct serializer<
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
             }
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "{\"size\":");
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "{\"size\":");
 
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
@@ -129,23 +139,33 @@ struct serializer<
                 json_skipws(ar);
             }
 
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, ",");
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, ",");
 
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
             }
 
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "\"data\":\"");
+            if ( size == 0 ) {
+                __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "\"data\":");
 
-            std::size_t declen = modp_b64_decode(buf.data.get(), ar, size);
-            buf.resize(declen);
+                __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+                    json_skipws(ar);
+                }
 
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "\"");
+                __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "null");
+            } else {
+                __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "\"data\":\"");
+
+                std::size_t declen = modp_b64_decode(buf.data.get(), ar, size);
+                buf.resize(declen);
+
+                __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "\"");
+            }
 
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
             }
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "}");
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "}");
         } else {
             const std::size_t size = ar.read_seq_size();
             buf.resize(size);

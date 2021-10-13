@@ -179,12 +179,12 @@ template<typename Archive>
 void json_skip_object(Archive &ar) {
     while ( true ) {
         json_skipws(ar);
-        __YAS_THROW_IF_BAD_JSON_CHARS(ar, "\"")
+        __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "\"")
 
         json_skip_string(ar); // key
 
         json_skipws(ar);
-        __YAS_THROW_IF_BAD_JSON_CHARS(ar, ":")
+        __YAS_THROW_IF_WRONG_JSON_CHARS(ar, ":")
 
         json_skipws(ar);
         json_skip_val(ar); // val

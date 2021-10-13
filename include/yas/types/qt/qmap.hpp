@@ -53,10 +53,10 @@ template<
     ,typename V
 >
 struct serializer<
-	type_prop::not_a_fundamental,
-	ser_case::use_internal_serializer,
-	F,
-	QMap<K, V>
+    type_prop::not_a_fundamental,
+    ser_case::use_internal_serializer,
+    F,
+    QMap<K, V>
 > {
     template<typename Archive>
     static Archive& save(Archive& ar, const QMap<K, V>& map) {
@@ -95,14 +95,14 @@ struct serializer<
         return ar;
     }
 
-	template<typename Archive>
-	static Archive& load(Archive& ar, QMap<K, V> &map) {
+    template<typename Archive>
+    static Archive& load(Archive& ar, QMap<K, V> &map) {
         __YAS_CONSTEXPR_IF ( F & yas::json ) {
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
             }
 
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "[");
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "[");
 
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
@@ -146,7 +146,7 @@ struct serializer<
                 }
             }
 
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "]");
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "]");
         } else {
             auto size = ar.read_seq_size();
             for ( ; size; --size ) {
@@ -160,7 +160,7 @@ struct serializer<
         }
 
         return ar;
-	}
+    }
 };
 
 /***************************************************************************/

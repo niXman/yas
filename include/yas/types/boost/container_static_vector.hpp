@@ -51,14 +51,14 @@ namespace detail {
 
 template<std::size_t F, typename T, std::size_t N>
 struct serializer<
-	type_prop::not_a_fundamental,
-	ser_case::use_internal_serializer,
-	F,
-	boost::container::static_vector<T, N>
+    type_prop::not_a_fundamental,
+    ser_case::use_internal_serializer,
+    F,
+    boost::container::static_vector<T, N>
 > {
-	template<typename Archive>
-	static Archive& save(Archive &ar, const boost::container::static_vector<T, N> &vector) {
-		__YAS_CONSTEXPR_IF ( F & yas::json ) {
+    template<typename Archive>
+    static Archive& save(Archive &ar, const boost::container::static_vector<T, N> &vector) {
+        __YAS_CONSTEXPR_IF ( F & yas::json ) {
             ar.write("[", 1);
             ar & YAS_OBJECT_NVP(
                  nullptr
@@ -80,31 +80,33 @@ struct serializer<
             }
         }
 
-		return ar;
-	}
+        return ar;
+    }
 
-	template<typename Archive>
-	static Archive& load(Archive &ar, boost::container::static_vector<T, N> &vector) {
+    template<typename Archive>
+    static Archive& load(Archive &ar, boost::container::static_vector<T, N> &vector) {
         __YAS_CONSTEXPR_IF ( F & yas::json ) {
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
             }
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "[");
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "[");
             std::size_t capacity=0, size=0;
             ar & YAS_OBJECT(nullptr, capacity, size);
-            if ( capacity != N || size > N ) { __YAS_THROW_BAD_ARRAY_SIZE(); }
+            if ( capacity != N || size > N ) {
+                __YAS_THROW_WRONG_ARRAY_SIZE();
+            }
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
             }
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, ",");
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, ",");
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
             }
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "{");
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "{");
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
             }
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "\"val\":");
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "\"val\":");
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
             }
@@ -112,15 +114,17 @@ struct serializer<
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
             }
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "}");
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "}");
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
             }
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "]");
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "]");
         } else {
             const std::size_t capacity = ar.read_seq_size();
             const std::size_t size = ar.read_seq_size();
-            if ( capacity != N || size > N ) { __YAS_THROW_BAD_ARRAY_SIZE(); }
+            if ( capacity != N || size > N ) {
+                __YAS_THROW_WRONG_ARRAY_SIZE();
+            }
             vector.resize(size);
             __YAS_CONSTEXPR_IF ( can_be_processed_as_byte_array<F, T>::value ) {
                 ar.read(vector.data(), sizeof(T) * size);
@@ -131,8 +135,8 @@ struct serializer<
             }
         }
 
-		return ar;
-	}
+        return ar;
+    }
 };
 
 /***************************************************************************/
