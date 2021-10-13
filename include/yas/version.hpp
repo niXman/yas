@@ -41,7 +41,7 @@
 // YAS_VERSION % 100 is the bugfix level
 
 #define YAS_VERSION_MAJOR 7
-#define YAS_VERSION_MINOR 1
+#define YAS_VERSION_MINOR 2
 #define YAS_VERSION_BUGFIX 0
 
 #define YAS_VERSION \
