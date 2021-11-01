@@ -416,12 +416,12 @@ bool yas_object_test(std::ostream &log, const char *archive_type, const char *te
         int a = 0, b = 0;
 
         bool ex = false;
-        try {
+        __YAS_TRY {
             typename archive_traits::iarchive ia;
             archive_traits::icreate(ia, oa, archive_type);
             auto o1 = YAS_OBJECT(nullptr, a, b);
             ia & o1;
-        } catch (const yas::serialization_exception &) {
+        } __YAS_CATCH (const yas::serialization_exception &) {
             ex = true;
         }
         if ( ex ) {
@@ -444,12 +444,12 @@ bool yas_object_test(std::ostream &log, const char *archive_type, const char *te
                 int a = 0, b = 0;
 
                 bool ex = false;
-                try {
+                __YAS_TRY {
                     typename archive_traits::iarchive ia;
                     archive_traits::icreate(ia, oa, archive_type);
                     auto o1 = YAS_OBJECT(nullptr, b, a);
                     ia & o1;
-                } catch (const yas::serialization_exception &) {
+                } __YAS_CATCH (const yas::serialization_exception &) {
                     ex = true;
                 }
                 if ( ex ) {
@@ -474,12 +474,12 @@ bool yas_object_test(std::ostream &log, const char *archive_type, const char *te
                 int c = 0;
 
                 bool ex = false;
-                try {
+                __YAS_TRY {
                     typename archive_traits::iarchive ia;
                     archive_traits::icreate(ia, oa, archive_type);
                     auto o1 = YAS_OBJECT(nullptr, c);
                     ia & o1;
-                } catch (const yas::serialization_exception &) {
+                } __YAS_CATCH (const yas::serialization_exception &) {
                     ex = true;
                 }
                 if ( ex ) {

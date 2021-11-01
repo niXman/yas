@@ -40,6 +40,18 @@
 
 #include <stdexcept>
 
+#define __YAS_EXCEPTION_MAKE_MSG(msg) \
+    __FILE__ "(" YAS_PP_STRINGIZE(__LINE__) "): " msg
+
+#ifdef BOOST_NO_EXCEPTIONS
+namespace boost {
+void throw_exception(std::exception const &e) {
+    std::fprintf(stderr, __YAS_EXCEPTION_MAKE_MSG("boost::exception: ") "%s\n", e.what());
+    std::abort();
+} // void throw_exception()
+} // ns boost
+#endif // BOOST_NO_EXCEPTIONS
+
 namespace yas {
 
 /***************************************************************************/
@@ -57,11 +69,19 @@ namespace yas {
         const char *msg; \
     };
 
-#define __YAS_EXCEPTION_MAKE_MSG(msg) \
-    __FILE__ "(" YAS_PP_STRINGIZE(__LINE__) "): " msg
-
-#define __YAS_THROW_EXCEPTION(type, msg) \
-    throw type(__YAS_EXCEPTION_MAKE_MSG(msg))
+#if __cpp_exceptions
+#   define __YAS_TRY try
+#   define __YAS_CATCH(x) catch(x)
+#   define __YAS_THROW_EXCEPTION(type, msg) \
+        throw type(__YAS_EXCEPTION_MAKE_MSG(msg))
+#else
+#   define __YAS_TRY if (true)
+#   define __YAS_CATCH(x) if (false)
+#   define __YAS_THROW_EXCEPTION(type, msg) { \
+        std::fprintf(stderr, "%s\n", __YAS_EXCEPTION_MAKE_MSG(msg)); \
+        std::abort(); \
+    }
+#endif // __cpp_exceptions
 
 /***************************************************************************/
 

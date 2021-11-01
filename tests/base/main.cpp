@@ -551,7 +551,7 @@ int main(int, char **argv) {
     ));
 
     int passed = 0, failed = 0;
-    try {
+    __YAS_TRY {
         if ( opts.binary ) {
             if ( opts.endian_little ) {
                 if ( opts.compacted ) {
@@ -607,10 +607,12 @@ int main(int, char **argv) {
                 >(log, passed, failed);
             }
         }
-    } catch (const std::exception &ex) {
+    } __YAS_CATCH (const std::exception &ex) {
+#if __cpp_exceptions
         std::cout << "[std::exception]: " << ex.what() << std::endl;
         return EXIT_FAILURE;
-    } catch (...) {
+#endif // __cpp_exceptions
+    } __YAS_CATCH (...) {
         std::cout << "[unknown exception]: " << std::endl;
         return EXIT_FAILURE;
     }

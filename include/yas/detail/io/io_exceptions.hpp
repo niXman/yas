@@ -47,7 +47,7 @@ __YAS_DECLARE_EXCEPTION_TYPE(io_exception)
 
 /***************************************************************************/
 
-#define __YAS_THROW_BAD_ARCHIVE_INFORMATION() \
+#define __YAS_THROW_WRONG_ARCHIVE_HEADER() \
 	__YAS_THROW_EXCEPTION(::yas::io_exception, "archive is corrupted or try to use \"yas::no_header\" flag");
 
 #define __YAS_THROW_BAD_ARCHIVE_VERSION() \

@@ -90,12 +90,13 @@ void read_header(IO &io, archive_header &h) {
     std::uint8_t buf[k_header_size];
     __YAS_THROW_READ_ERROR(k_header_size != io.read(buf, k_header_size));
 
-    if ( 0 != std::memcmp(buf, yas_id, sizeof(yas_id)) )
-        __YAS_THROW_BAD_ARCHIVE_INFORMATION();
+    if ( 0 != std::memcmp(buf, yas_id, sizeof(yas_id)) ) {
+        __YAS_THROW_WRONG_ARCHIVE_HEADER();
+    }
 
     constexpr std::uint8_t d = (std::numeric_limits<std::uint8_t>::max)();
-    constexpr std::uint8_t hexmap[256] = {
-        d , d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d
+    static constexpr const std::uint8_t hexmap[256] = {
+         d , d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d
         ,d , d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d, d
         ,d , d, d, d, d, d, d, d, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, d, d
         ,d , d, d, d, d,10,11,12,13,14,15, d, d, d, d, d, d, d, d, d

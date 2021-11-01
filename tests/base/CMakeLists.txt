@@ -3,61 +3,66 @@ project(yas-base-test)
 
 set (CMAKE_CXX_STANDARD 11)
 
-add_definitions(-UNDEBUG)
+add_definitions(
+    -UNDEBUG
+    -DYAS_OBJECT_MAX_MEMBERS=50
+)
+
+# YAS_NO_EXCEPTIONS
+# YAS_SERIALIZE_BOOST_TYPES
+# YAS_SERIALIZE_QT_TYPES
+# YAS_SERIALIZE_ABSL_TYPES
+
+if (YAS_NO_EXCEPTIONS)
+    message("C++ exceptions support is disabled")
+
+    add_definitions(
+        -DBOOST_NO_EXCEPTIONS
+    )
+else()
+    message("C++ exceptions support is enabled")
+endif()
+
+if (YAS_SERIALIZE_BOOST_TYPES)
+    message("Boost support is enabled")
+
+    add_definitions(
+        -DYAS_SERIALIZE_BOOST_TYPES
+        -DBOOST_ERROR_CODE_HEADER_ONLY
+        -DBOOST_CHRONO_HEADER_ONLY
+    )
+else()
+    message("Boost support is disabled")
+endif()
 
 if (YAS_SERIALIZE_ABSL_TYPES)
     message("Abseil support is enabled")
+
+    add_definitions(-DYAS_SERIALIZE_ABSL_TYPES)
+
+    # Process Abseil's CMake build system
+    add_subdirectory("$ENV{ABSEIL_HOME}" "build/abseil")
 else()
     message("Abseil support is disabled")
 endif()
 
 if (YAS_SERIALIZE_QT_TYPES)
     message("Qt support is enabled")
+
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+    add_definitions(-DYAS_SERIALIZE_QT_TYPES)
+    include_directories(${QT_INCLUDE_PATH})
 else()
     message("Qt support is disabled")
 endif()
 
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fPIC")
-    add_definitions(
-        -DBOOST_ERROR_CODE_HEADER_ONLY
-        -DBOOST_CHRONO_HEADER_ONLY
-        -DYAS_SERIALIZE_BOOST_TYPES
-        -DYAS_OBJECT_MAX_MEMBERS=50
-    )
-
-    if (YAS_SERIALIZE_QT_TYPES)
-        add_definitions(-DYAS_SERIALIZE_QT_TYPES)
-        include_directories(${QT_INCLUDE_PATH})
-    endif()
-
-    if (YAS_SERIALIZE_ABSL_TYPES)
-        add_definitions(-DYAS_SERIALIZE_ABSL_TYPES)
-
-        # Process Abseil's CMake build system
-        add_subdirectory("$ENV{ABSEIL_HOME}" "build/abseil")
-    endif()
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fPIC")
-    add_definitions(
-        -DBOOST_ERROR_CODE_HEADER_ONLY
-        -DBOOST_CHRONO_HEADER_ONLY
-        -DYAS_SERIALIZE_BOOST_TYPES
-        -DYAS_OBJECT_MAX_MEMBERS=50
-    )
-
-    if (YAS_SERIALIZE_QT_TYPES)
-        add_definitions(-DYAS_SERIALIZE_QT_TYPES)
-        include_directories(${QT_INCLUDE_PATH})
-    endif()
-
-    if (YAS_SERIALIZE_ABSL_TYPES)
-        add_definitions(-DYAS_SERIALIZE_ABSL_TYPES)
-        
-        # Process Abseil's CMake build system
-        add_subdirectory("$ENV{ABSEIL_HOME}" "build/abseil")
-    endif()
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang") # Clang
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra") # -fno-exceptions
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions")
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") # GCC
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions")
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC") # MSVC
     if(CMAKE_SIZEOF_VOID_P EQUAL 8)
         set(COMPILER_BITS 64)
     else()
@@ -69,6 +74,13 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     include_directories("C:/local/boost_1_66_0")
     link_directories("C:/local/boost_1_66_0/lib${COMPILER_BITS}-msvc-14.1")
 
+    if (YAS_NO_EXCEPTIONS)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc /GR-")
+        add_definitions(
+            /D_HAS_EXCEPTIONS=0
+        )
+    endif()
+
     if (${MSVC_TOOLSET_VERSION} EQUAL 142)
         message("MSVC-2019")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /bigobj")
@@ -78,24 +90,9 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     endif()
     
     add_definitions(
-        -DBOOST_ERROR_CODE_HEADER_ONLY
-        -DBOOST_CHRONO_HEADER_ONLY
-        -DYAS_SERIALIZE_BOOST_TYPES
-        -DYAS_OBJECT_MAX_MEMBERS=50
         -D_CRT_SECURE_NO_WARNINGS
     )
 
-    if (YAS_SERIALIZE_QT_TYPES)
-        add_definitions(-DYAS_SERIALIZE_QT_TYPES)
-        include_directories(${QT_INCLUDE_PATH})
-    endif()
-
-    if (YAS_SERIALIZE_ABSL_TYPES)
-        add_subdirectory("C:/abseil-cpp" "build/abseil")
-    
-        # Process Abseil's CMake build system
-        add_definitions(-DYAS_SERIALIZE_ABSL_TYPES)
-    endif()
 endif()
 
 include_directories(

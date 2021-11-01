@@ -84,21 +84,21 @@ bool serialization_test(std::ostream &log, const char *archive_type, const char 
 	}
 
 	// null streams compilation test
-    {
-        try {
+    if ( false ) {
+        __YAS_TRY {
             yas::null_ostream binary_os;
             yas::binary_oarchive<yas::null_ostream> binary_oa(binary_os);
             yas::null_istream binary_is(binary_os.get_intrusive_buffer());
             yas::binary_iarchive<yas::null_istream> binary_ia(binary_is);
-        } catch (const yas::io_exception &) {
+        } __YAS_CATCH (const yas::io_exception &) {
         }
 
-        try {
+        __YAS_TRY {
             yas::null_ostream text_os;
             yas::text_oarchive<yas::null_ostream> text_oa(text_os);
             yas::null_istream text_is(text_os.get_intrusive_buffer());
             yas::text_iarchive<yas::null_istream> text_ia(text_is);
-        } catch (const yas::io_exception &) {
+        } __YAS_CATCH (const yas::io_exception &) {
         }
 
         yas::null_ostream json_os;
