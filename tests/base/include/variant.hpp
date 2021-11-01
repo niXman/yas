@@ -90,6 +90,21 @@ bool variant_test(std::ostream &log, const char *archive_type, const char *test_
             return false;
         }
     }
+    {
+        std::variant<std::monostate, int> v0, v1(4);
+
+        typename archive_traits::oarchive oa;
+        archive_traits::ocreate(oa, archive_type);
+        oa & YAS_OBJECT_NVP("obj", ("variant", v0));
+
+        typename archive_traits::iarchive ia;
+        archive_traits::icreate(ia, oa, archive_type);
+        ia & YAS_OBJECT_NVP("obj", ("variant", v1));
+        if ( !(v0 == v1) ) {
+            YAS_TEST_REPORT(log, archive_type, test_name);
+            return false;
+        }
+    }
 #endif // __cplusplus >= 201703L
 
     return true;

@@ -144,22 +144,50 @@ struct serializer<
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
             }
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "[");
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "[");
             std::size_t idx = 0;
             ar & YAS_OBJECT(nullptr, idx);
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
             }
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, ",");
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, ",");
             std_variant_switch<F>(ar, idx, v);
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
             }
-            __YAS_THROW_IF_BAD_JSON_CHARS(ar, "]");
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "]");
         } else {
             std::uint8_t idx = 0;
             ar & idx;
             std_variant_switch<F>(ar, idx, v);
+        }
+
+        return ar;
+    }
+};
+
+/***************************************************************************/
+
+template<std::size_t F>
+struct serializer<
+     type_prop::not_a_fundamental
+    ,ser_case::use_internal_serializer
+    ,F
+    ,std::monostate
+> {
+    template<typename Archive>
+    static Archive& save(Archive& ar, const std::monostate &) {
+        __YAS_CONSTEXPR_IF ( F & yas::json ) {
+            ar.write("null", 4);
+        }
+
+        return ar;
+    }
+
+    template<typename Archive>
+    static Archive& load(Archive& ar, std::monostate &) {
+        __YAS_CONSTEXPR_IF ( F & yas::json ) {
+            __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "null");
         }
 
         return ar;
