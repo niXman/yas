@@ -227,24 +227,12 @@ void json_skip_val(Archive &ar) {
 template<typename Archive>
 std::size_t json_read_key(Archive &ar, char *ptr, std::size_t size) {
     const char *p = ptr;
-    __YAS_CONSTEXPR_IF( Archive::flags() & yas::compacted ) {
-        while ( size-- ) {
-            *ptr = ar.getch();
-            if ( *ptr == '\"' ) {
-                ar.ungetch(*ptr);
-                *ptr = 0;
-
-                return ptr-p;
-            }
-            ++ptr;
-        }
-    }
-
     while ( size-- ) {
         *ptr = ar.getch();
         if ( *ptr == '\"' ) {
-            continue;
-        } else if ( *ptr == ':' ) {
+            ar.ungetch(*ptr);
+            *ptr = 0;
+
             break;
         }
         ++ptr;

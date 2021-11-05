@@ -140,8 +140,17 @@ private:
             } else {
                 while ( true ) {
                     char key[1024];
+                    // pre-key double quote
                     json_skipws(ar);
+                    __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "\"");
                     json_read_key(ar, key, sizeof(key));
+
+                    // post-key double quote
+                    __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "\"");
+                    json_skipws(ar);
+
+                    // key-val separator
+                    __YAS_THROW_IF_WRONG_JSON_CHARS(ar, ":");
                     json_skipws(ar);
 
                     const std::uint32_t hash = fnv1a(key);

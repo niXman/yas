@@ -57,11 +57,15 @@ else()
 endif()
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang") # Clang
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra") # -fno-exceptions
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+    if (YAS_NO_EXCEPTIONS)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions")
+    endif()
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") # GCC
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions")
+    if (YAS_NO_EXCEPTIONS)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions")
+    endif()
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC") # MSVC
     if(CMAKE_SIZEOF_VOID_P EQUAL 8)
         set(COMPILER_BITS 64)
