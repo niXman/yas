@@ -81,7 +81,7 @@ namespace detail {
 
 #define __YAS_GENERATE_STD_VARIANT_SWITCH_FOR_NONZERO(n) \
     template<std::size_t F, typename Archive, YAS_PP_ENUM_PARAMS(n, typename T)> \
-    void std_variant_switch(Archive &ar, std::size_t idx, std::variant<YAS_PP_ENUM_PARAMS(n, T)> &v) { \
+    void std_variant_switch(Archive &ar, std::uint8_t idx, std::variant<YAS_PP_ENUM_PARAMS(n, T)> &v) { \
         switch ( idx ) { \
             YAS_PP_REPEAT( \
                  n \
@@ -123,7 +123,7 @@ struct serializer<
 > {
     template<typename Archive>
     static Archive& save(Archive& ar, const std::variant<Types...> &v) {
-        const std::size_t idx = v.index();
+        const std::uint8_t idx = v.index();
         __YAS_CONSTEXPR_IF ( F & yas::json ) {
             ar.write("[", 1);
             ar & YAS_OBJECT(nullptr, idx);
@@ -131,7 +131,7 @@ struct serializer<
             std_variant_switch<F>(ar, idx, __YAS_CCAST(std::variant<Types...> &, v));
             ar.write("]", 1);
         } else {
-            ar.write(__YAS_SCAST(std::uint8_t, idx));
+            ar.write(idx);
             std_variant_switch<F>(ar, idx, __YAS_CCAST(std::variant<Types...> &, v));
         }
 
@@ -145,7 +145,7 @@ struct serializer<
                 json_skipws(ar);
             }
             __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "[");
-            std::size_t idx = 0;
+            std::uint8_t idx = 0;
             ar & YAS_OBJECT(nullptr, idx);
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
