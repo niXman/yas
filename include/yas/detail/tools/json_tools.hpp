@@ -142,6 +142,7 @@ void json_skip_string(Archive &ar) {
             case '\\': {
                 const char ch2 = ar.getch();
                 switch ( ch2 ) {
+                    case 'u' : json_skip_unicode(ar);
                     case '\"':
                     case '\\':
                     case '/' :
@@ -149,8 +150,7 @@ void json_skip_string(Archive &ar) {
                     case 'f' :
                     case 'n' :
                     case 'r' :
-                    case 't' : return;
-                    case 'u' : return json_skip_unicode(ar);
+                    case 't' : continue;
                     default: __YAS_THROW_INVALID_JSON_STRING("invalid string: forbidden char")
                 }
             }
