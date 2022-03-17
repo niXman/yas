@@ -165,7 +165,8 @@ template<typename Archive>
 void json_skip_array(Archive &ar) {
     while ( true ) {
         json_skipws(ar);
-        json_skip_val(ar);
+        if (ar.peekch() != ']')
+            json_skip_val(ar);
 
         json_skipws(ar);
         const char ch = ar.getch();
