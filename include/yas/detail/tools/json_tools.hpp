@@ -179,6 +179,11 @@ template<typename Archive>
 void json_skip_object(Archive &ar) {
     while ( true ) {
         json_skipws(ar);
+        if ( ar.peekch() == '}' ) {
+            ar.getch();
+            break;
+        }
+
         __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "\"")
 
         json_skip_string(ar); // key
