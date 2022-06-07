@@ -45,6 +45,17 @@ namespace array {
 
 /***************************************************************************/
 
+template<typename ValueType, typename Archive, typename Reference>
+void save_one(Archive &ar, const Reference &ref, std::true_type) {
+    ar & ref;
+}
+
+template<typename ValueType, typename Archive, typename Reference>
+void save_one(Archive &ar, const Reference &ref, std::false_type) {
+    ValueType v = ref;
+    ar & v;
+}
+
 template<typename Archive, typename C>
 void save_array(Archive &ar, const C &c, std::true_type) {
     ar.write(&c[0], sizeof(typename C::value_type) * c.size());
@@ -52,8 +63,9 @@ void save_array(Archive &ar, const C &c, std::true_type) {
 
 template<typename Archive, typename C>
 void save_array(Archive &ar, const C &c, std::false_type) {
-    for ( const auto &it: c ) {
-        ar & it;
+    for ( const auto &ref: c ) {
+        using cond = std::is_same<typename C::value_type&, typename C::reference>;
+        save_one<typename C::value_type>(ar, ref, cond{});
     }
 }
 
@@ -64,10 +76,11 @@ Archive& save(Archive &ar, const C &c) {
 
         if ( !c.empty() ) {
             auto it = c.begin();
-            ar & (*it);
+            using cond = std::is_same<typename C::value_type&, typename C::reference>;
+            save_one<typename C::value_type>(ar, *it, cond{});
             for ( ++it; it != c.end(); ++it ) {
                 ar.write(",", 1);
-                ar & (*it);
+                save_one<typename C::value_type>(ar, *it, cond{});
             }
         }
 

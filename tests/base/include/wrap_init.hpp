@@ -78,7 +78,7 @@ bool wrap_init_test(std::ostream &log, const char *archive_type, const char *tes
         {
             std::string s, is;
             is.resize(32);
-            if ( is.capacity() != 32 ) {
+            if ( is.capacity() < 32 ) {
                 YAS_TEST_REPORT(log, archive_type, test_name);
                 return false;
             }
@@ -108,7 +108,7 @@ bool wrap_init_test(std::ostream &log, const char *archive_type, const char *tes
             archive_traits::icreate(ia, oa, archive_type);
             ia & YAS_OBJECT_NVP("obj", ("s", yas::init(is)));
 
-            if ( is.capacity() != 32 ) {
+            if ( is.capacity() < 32 ) {
                 YAS_TEST_REPORT(log, archive_type, test_name);
                 return false;
             }
