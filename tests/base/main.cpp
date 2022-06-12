@@ -314,33 +314,18 @@ struct archive_traits {
     }
 };
 
-#define YAS_RUN_TEST_SKIP_TEST(...) \
-    !(OA::type() & (__VA_ARGS__))
-
-#define YAS_RUN_TEST_RUN_TEST(...) \
-    1
-
-#define YAS_RUN_TEST_CHECK_FOR_SKIP(...) \
-    YAS_PP_IF( \
-        __YAS_PP_TUPLE_IS_EMPTY(__VA_ARGS__) \
-        ,YAS_RUN_TEST_RUN_TEST \
-        ,YAS_RUN_TEST_SKIP_TEST \
-    )(__VA_ARGS__)
-
-#define YAS_RUN_TEST(log, testname, passcnt, failcnt, .../*skip for*/) { \
-    if ( YAS_RUN_TEST_CHECK_FOR_SKIP(__VA_ARGS__) ) { \
-        const char *artype = ( \
-            yas::is_binary_archive<OA>::value ? "binary" \
-                : yas::is_text_archive<OA>::value ? "text" \
-                    : yas::is_json_archive<OA>::value ? "json" \
-                        : "unknown" \
-        ); \
-        std::fprintf(stdout,"%-6s: %-24s -> ", artype, #testname); std::fflush(stdout); \
-        \
-        const bool passed = testname##_test<archive_traits<OA, IA>>(log, artype, #testname); \
-        if ( passed ) { ++passcnt; } else { ++failcnt; } \
-        std::fprintf(stdout, "%s\n", (passed ? "passed" : "failed")); std::fflush(stdout); \
-    } \
+#define YAS_RUN_TEST(log, testname, passcnt, failcnt) { \
+    const char *artype = ( \
+        yas::is_binary_archive<OA>::value ? "binary" \
+            : yas::is_text_archive<OA>::value ? "text" \
+                : yas::is_json_archive<OA>::value ? "json" \
+                    : "unknown" \
+    ); \
+    std::fprintf(stdout,"%-6s: %-24s -> ", artype, #testname); std::fflush(stdout); \
+    \
+    const bool passed = testname##_test<archive_traits<OA, IA>>(log, artype, #testname); \
+    if ( passed ) { ++passcnt; } else { ++failcnt; } \
+    std::fprintf(stdout, "%s\n", (passed ? "passed" : "failed")); std::fflush(stdout); \
 }
 
 template<typename OA, typename IA>
@@ -429,7 +414,9 @@ void tests(std::ostream &log, int &p, int &e) {
     YAS_RUN_TEST(log, qstringlist, p, e);
     YAS_RUN_TEST(log, qvector, p, e);
 #endif // YAS_SERIALIZE_QT_TYPES
-    YAS_RUN_TEST(log, json_conformance, p, e, yas::binary|yas::text);
+    if (OA::type() & yas::json) {
+        YAS_RUN_TEST(log, json_conformance, p, e);
+    }
 }
 
 /***************************************************************************/

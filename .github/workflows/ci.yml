@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Linux GCC
+            os: ubuntu-latest
+            CMAKE_FLAGS: -DCMAKE_CXX_COMPILER=g++ -DCMAKE_CXX_FLAGS="-fstack-protector-all -fsanitize=address -fno-omit-frame-pointer"
+
+          - name: Linux Clang
+            os: ubuntu-latest
+            CMAKE_FLAGS: -DCMAKE_CXX_COMPILER=clang++
+
+          - name: macOS
+            os: macos-latest
+
+          - name: Windows
+            os: windows-latest
+
+    env:
+      ABSEIL_HOME: ${{github.workspace}}/abseil-cpp
+      ABSEIL_VERSION: 20200923.2
+      BOOST_PATH: ${{github.workspace}}
+      BOOST_VERSION: 1.76.0
+      CONFIGURATION: Release
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # Retrieve the cached dependencies
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        id: cache-dependencies
+        with:
+          # Set the path to cache
+          path: |
+            ${{env.ABSEIL_HOME}}
+            ${{env.BOOST_PATH}}
+          # Use the version as the key to only cache the correct version
+          key: deps-${{runner.os}}-${{env.ABSEIL_VERSION}}-${{env.BOOST_VERSION}}
+
+      # Actual install step (only runs if the cache is empty)
+      - name: Download Abseil
+        if: steps.cache-dependencies.outputs.cache-hit != 'true'
+        run: git clone --depth 1 --branch "${{env.ABSEIL_VERSION}}" https://github.com/abseil/abseil-cpp.git "${{env.ABSEIL_HOME}}"
+
+      - name: Install boost
+        id: install-boost
+        if: steps.cache-dependencies.outputs.cache-hit != 'true'
+        uses: MarkusJx/install-boost@v2.3.0
+        with:
+          # Set the boost version (required)
+          boost_version: ${{env.BOOST_VERSION}}
+          # Set the install directory
+          boost_install_dir: ${{env.BOOST_PATH}}
+
+      - name: Configure
+        run: cmake -S tests/base -B build ${{matrix.CMAKE_FLAGS}} -DCMAKE_BUILD_TYPE=${{env.CONFIGURATION}} -DYAS_SERIALIZE_ABSL_TYPES=TRUE -DYAS_BUILD_TESTS=ON
+
+        env:
+          BOOST_ROOT: ${{steps.install-boost.outputs.BOOST_ROOT}}
+
+      - name: Build
+        run: cmake --build build --config ${{env.CONFIGURATION}} --parallel
+
+      - name: Test
+        run: ctest -C ${{env.CONFIGURATION}} --output-on-failure
+        working-directory: build

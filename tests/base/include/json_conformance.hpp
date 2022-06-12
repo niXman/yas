@@ -43,6 +43,10 @@
 #include <array>
 #include <fstream>
 
+#ifndef JSON_DATA_DIR
+#define JSON_DATA_DIR "../json_data"
+#endif
+
 /***************************************************************************/
 
 struct canada_t {
@@ -134,8 +138,8 @@ bool operator!= (const canada_t &l, const canada_t &r) { return !(l == r); }
 template<typename archive_traits>
 bool json_conformance_test(std::ostream &log, const char *artype, const char *testname) {
     {
-        static const char *max_fname = "../json_data/canada-max.json";
-        static const char *min_fname = "../json_data/canada-min.json";
+        static const char *max_fname = JSON_DATA_DIR "/canada-max.json";
+        static const char *min_fname = JSON_DATA_DIR "/canada-min.json";
         canada_t canada_max = canada_t(), canada_min = canada_t();
 
         yas::load<yas::file|yas::json>(max_fname, canada_max);

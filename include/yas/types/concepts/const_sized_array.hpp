@@ -92,7 +92,6 @@ Archive& load_chars(Archive &ar, T *beg, T *, __YAS_ENABLE_IF_IS_ANY_OF(T, char,
     __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "\"");
 
     ar.read(beg, N-1);
-    *(beg+N) = 0;
 
     __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "\"");
 

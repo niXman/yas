@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.2)
-project(yas-base-test)
+project(yas-base-test CXX)
 
 set (CMAKE_CXX_STANDARD 11)
 
@@ -41,7 +41,7 @@ if (YAS_SERIALIZE_ABSL_TYPES)
     add_definitions(-DYAS_SERIALIZE_ABSL_TYPES)
 
     # Process Abseil's CMake build system
-    add_subdirectory("$ENV{ABSEIL_HOME}" "build/abseil")
+    add_subdirectory("$ENV{ABSEIL_HOME}" abseil)
 else()
     message("Abseil support is disabled")
 endif()
@@ -85,9 +85,9 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC") # MSVC
         )
     endif()
 
-    if (${MSVC_TOOLSET_VERSION} EQUAL 142)
+    if (${MSVC_TOOLSET_VERSION} GREATER_EQUAL 142)
         message("MSVC-2019")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /bigobj")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /bigobj /Zc:preprocessor")
     else()
         message("MSVC-2017")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /bigobj /d1parsePackExpressions-")
@@ -188,6 +188,10 @@ set(SOURCE_FILES
 
 add_executable(yas-base-test ${SOURCE_FILES})
 
+target_compile_definitions(yas-base-test PRIVATE
+    JSON_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}/json_data"
+)
+
 if (YAS_SERIALIZE_ABSL_TYPES)
     target_link_libraries(yas-base-test
         absl::btree
@@ -201,4 +205,14 @@ if (YAS_SERIALIZE_QT_TYPES)
         Qt5Core
         -fPIC
     )
+endif()
+
+option(YAS_BUILD_TESTS "Set to ON to build tests" OFF)
+if (YAS_BUILD_TESTS)
+    enable_testing()
+    add_test(NAME "Binary"           COMMAND yas-base-test binary)
+    add_test(NAME "Binary|Compacted" COMMAND yas-base-test binary compacted)
+    add_test(NAME "JSON"             COMMAND yas-base-test json)
+    add_test(NAME "JSON|Compacted"   COMMAND yas-base-test json compacted)
+    add_test(NAME "Text"             COMMAND yas-base-test text)
 endif()

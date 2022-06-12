@@ -88,7 +88,7 @@ struct text_ostream {
 
     // for signed 16/32/64 bits
     template<typename T>
-    void write(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t)) {
+    void write(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t, std::ptrdiff_t)) {
         char buf[sizeof(v) * 4];
         std::size_t len = Trait::itoa(buf + 1, sizeof(buf) - 1, v);
 
@@ -99,7 +99,7 @@ struct text_ostream {
 
     // for unsigned 16/32/64 bits
     template<typename T>
-    void write(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
+    void write(const T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t, std::size_t)) {
         char buf[sizeof(v) * 4];
         std::size_t len = Trait::utoa(buf + 1, sizeof(buf), v);
 
@@ -187,7 +187,7 @@ struct text_istream {
 
     // for signed 16/32/64 bits
     template<typename T>
-    void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t)) {
+    void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::int16_t, std::int32_t, std::int64_t, std::ptrdiff_t)) {
         char buf[sizeof(T) * 4];
         std::uint8_t n;
 
@@ -202,7 +202,7 @@ struct text_istream {
 
     // for unsigned 16/32/64 bits
     template<typename T>
-    void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t)) {
+    void read(T &v, __YAS_ENABLE_IF_IS_ANY_OF(T, std::uint16_t, std::uint32_t, std::uint64_t, std::size_t)) {
         char buf[sizeof(T) * 4];
         std::uint8_t n;
 
