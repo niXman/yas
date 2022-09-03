@@ -83,7 +83,8 @@
     || defined(__x86_64) || defined(__x86_64__) \
     || defined(_M_X64) || defined(__arm64__) \
     || defined(__ARM_ARCH_7__) || defined(__ARM_ARCH_7A__) \
-    || defined(__ARM_ARCH_7S__)
+    || defined(__ARM_ARCH_7S__) || defined(_M_ARM) \
+    || defined(_M_ARM64)
 #   define __YAS_LITTLE_ENDIAN (1)
 #   define __YAS_BIG_ENDIAN (0)
 #else
