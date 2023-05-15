@@ -66,6 +66,7 @@ struct serializer<
 	static Archive& load(Archive& ar, std::wstring& wstring) {
 		std::string string;
 		ar & string;
+		wstring=L"";//wstring need set "",When the same object is save/load multiple times, it will always be appended after wstring.bug！！
 		detail::TypeConverter<std::wstring, std::string>::Convert(wstring, string);
 		return ar;
 	}
