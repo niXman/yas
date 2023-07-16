@@ -178,11 +178,12 @@ set(SOURCE_FILES
     include/unordered_set.hpp
     include/variant.hpp
     include/vector.hpp
-    include/version.hpp
-    include/wrap_asis.hpp
-    include/wrap_init.hpp
     include/wstring.hpp
+    include/version.hpp
+    include/yas_asis.hpp
+    include/yas_init.hpp
     include/yas_object.hpp
+    include/yas_array.hpp
     main.cpp
 )
 

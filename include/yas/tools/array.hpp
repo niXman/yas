@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2021 niXman (github dot nixman at pm dot me). All
+// Copyright (c) 2010-2023 niXman (github dot nixman at pm dot me). All
 // rights reserved.
 //
 // This file is part of YAS(https://github.com/niXman/yas) project.
@@ -33,49 +33,61 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef __yas__tests__base__include__wrap_asis_hpp
-#define __yas__tests__base__include__wrap_asis_hpp
+#ifndef __yas__tools__array_hpp
+#define __yas__tools__array_hpp
+
+#include <yas/detail/type_traits/type_traits.hpp>
+
+#include <cstdlib>
+
+namespace yas {
 
 /***************************************************************************/
 
-template<typename archive_traits>
-bool wrap_asis_test(std::ostream &log, const char *archive_type, const char *test_name) {
-    if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value &&
-         archive_traits::oarchive_type::flags() & yas::compacted )
-    {
-        std::uint8_t i8 = 1, i8i;
-        std::uint32_t i32 = 1, i32i;
+template<typename T>
+struct save_array_wrapper {
+    const T *ptr;
+    const std::size_t size;
+};
 
-        typename archive_traits::oarchive oa;
-        archive_traits::ocreate(oa, archive_type);
-        oa & YAS_OBJECT_NVP("obj", ("i8", i8), ("i32", yas::asis(i32)));
+template<typename T>
+save_array_wrapper<T> array(const T *ptr, std::size_t size) {
+    return {ptr, size};
+}
 
-        std::uint8_t arr_le[] = {0x79, 0x61, 0x73, 0x30, 0x31, 0x31, 0x37, 0x01, 0x01, 0x00, 0x00, 0x00};
-        std::uint8_t arr_be[] = {0}; // TODO:
-        const std::uint8_t *ptr  = oa.is_little_endian() ? arr_le : arr_be;
-        const std::size_t   size = oa.is_little_endian() ? sizeof(arr_le) : sizeof(arr_be);
-        if ( oa.size() != size ) {
-            YAS_TEST_REPORT(log, archive_type, test_name);
-            return false;
-        }
-        if ( !oa.compare(ptr, size) ) {
-            YAS_TEST_REPORT(log, archive_type, test_name);
-            return false;
-        }
-
-        typename archive_traits::iarchive ia;
-        archive_traits::icreate(ia, oa, archive_type);
-        ia & YAS_OBJECT_NVP("obj", ("i8", i8i), ("i32", yas::asis(i32i)));
-
-        if ( i8 != i8i || i32 != i32i ) {
-            YAS_TEST_REPORT(log, archive_type, test_name);
-            return false;
-        }
-    }
-
-    return true;
+template<typename T>
+save_array_wrapper<T> array(const T *beg, const T *end) {
+    return {beg, __YAS_SCAST(std::size_t, end - beg)};
 }
 
 /***************************************************************************/
 
-#endif // __yas__tests__base__include__wrap_asis_hpp
+template<typename T>
+struct load_array_wrapper {
+    load_array_wrapper(const load_array_wrapper &) = delete;
+    load_array_wrapper& operator=(const load_array_wrapper &) = delete;
+    load_array_wrapper(load_array_wrapper &&) = default;
+    load_array_wrapper& operator=(load_array_wrapper &&) = default;
+
+    static T* alloc(std::size_t num) { return new T[num]; }
+    static void free(T *ptr) { delete[] ptr; }
+
+    T **ptr;
+    std::size_t *size;
+    T*(*alloc_fnptr)(std::size_t);
+};
+
+template<typename T>
+load_array_wrapper<T> array(
+     T **ptr
+    ,std::size_t *size
+    ,T*(*allocfn)(std::size_t) = load_array_wrapper<T>::alloc)
+{
+    return {ptr, size, allocfn};
+}
+
+/***************************************************************************/
+
+} // namespace yas
+
+#endif // __yas__tools__array_hpp

@@ -33,13 +33,13 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef __yas__tests__base__include__array_hpp
-#define __yas__tests__base__include__array_hpp
+#ifndef __yas__tests__base__include__std_array_hpp
+#define __yas__tests__base__include__std_array_hpp
 
 /***************************************************************************/
 
 template<typename archive_traits>
-bool array_test(std::ostream &log, const char *archive_type, const char *test_name) {
+bool std_array_test(std::ostream &log, const char *archive_type, const char *test_name) {
 	std::array<int, 10> arr1 = {
 		{0,1,2,3,4,5,6,7,8,9}
 	}, arr2{{}};
@@ -114,4 +114,4 @@ bool array_test(std::ostream &log, const char *archive_type, const char *test_na
 
 /***************************************************************************/
 
-#endif // __yas__tests__base__include__array_hpp
+#endif // __yas__tests__base__include__std_array_hpp

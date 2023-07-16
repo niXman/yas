@@ -38,6 +38,7 @@
 
 #include <cstdint>
 #include <ostream>
+#include <vector>
 
 #include <yas/object.hpp>
 #include "../test.hpp"

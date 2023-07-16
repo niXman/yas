@@ -33,13 +33,13 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef __yas__tests__base__include__wrap_init_hpp
-#define __yas__tests__base__include__wrap_init_hpp
+#ifndef __yas__tests__base__include__yas_init_hpp
+#define __yas__tests__base__include__yas_init_hpp
 
 /***************************************************************************/
 
 template<typename archive_traits>
-bool wrap_init_test(std::ostream &log, const char *archive_type, const char *test_name) {
+bool yas_init_test(std::ostream &log, const char *archive_type, const char *test_name) {
     if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value &&
          archive_traits::oarchive_type::flags() & yas::compacted )
     {
@@ -124,4 +124,4 @@ bool wrap_init_test(std::ostream &log, const char *archive_type, const char *tes
 
 /***************************************************************************/
 
-#endif // __yas__tests__base__include__wrap_init_hpp
+#endif // __yas__tests__base__include__yas_init_hpp

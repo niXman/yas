@@ -33,56 +33,50 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef __yas__types__utility__init_hpp
-#define __yas__types__utility__init_hpp
+#ifndef __yas__tools__init_hpp
+#define __yas__tools__init_hpp
 
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/type_traits/serializer.hpp>
-
-#include <yas/tools/init.hpp>
 
 namespace yas {
-namespace detail {
 
 /***************************************************************************/
 
-template<std::size_t F, typename T>
-struct serializer<
-    type_prop::not_a_fundamental,
-    ser_case::use_internal_serializer,
-    F,
-    init_wrapper<T>
-> {
-    template<typename Archive>
-    static Archive& save(Archive &ar, const init_wrapper<T> &v) {
-        return ar & v.val;
-    }
+template<typename T>
+struct init_wrapper {
+    template<typename VT>
+    struct real_value_type {
+        using type = typename std::conditional<
+             std::is_array<typename std::remove_reference<VT>::type>::value
+            ,typename std::remove_cv<VT>::type
+            ,typename std::conditional<
+                 std::is_lvalue_reference<VT>::value
+                ,VT
+                ,typename std::decay<VT>::type
+            >::type
+        >::type;
+    };
+    using value_type = typename real_value_type<T>::type;
 
-    template<
-         typename Archive
-        ,typename DT = typename std::decay<T>::type
-        ,bool ok = std::is_fundamental<DT>::value || std::is_enum<DT>::value
-    >
-    static Archive& load(Archive &ar, init_wrapper<T> &v, typename std::enable_if<ok>::type* = nullptr) {
-        v.val = DT{};
+    init_wrapper(const init_wrapper &) = delete;
+    init_wrapper& operator=(const init_wrapper &) = delete;
+    constexpr init_wrapper(T &&v) noexcept
+        :val(std::forward<T>(v))
+    {}
+    constexpr init_wrapper(init_wrapper &&r) noexcept
+        :val(std::forward<value_type>(r.val))
+    {}
 
-        return ar & v.val;
-    }
-    template<
-         typename Archive
-        ,typename DT = typename std::decay<T>::type
-        ,bool ok = std::is_fundamental<DT>::value || std::is_enum<DT>::value
-    >
-    static Archive& load(Archive &ar, init_wrapper<T> &v, typename std::enable_if<!ok>::type* = nullptr) {
-        v.val.clear();
-
-        return ar & v.val;
-    }
+    value_type val;
 };
 
+template<typename T>
+init_wrapper<T> init(T &&val) {
+    return {std::forward<T>(val)};
+}
+
 /***************************************************************************/
 
-} // namespace detail
 } // namespace yas
 
-#endif // __yas__types__utility__init_hpp
+#endif // __yas__tools__init_hpp

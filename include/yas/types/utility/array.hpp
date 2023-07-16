@@ -1,5 +1,5 @@
 
-// Copyright (c) 2010-2021 niXman (github dot nixman at pm dot me). All
+// Copyright (c) 2010-2023 niXman (github dot nixman at pm dot me). All
 // rights reserved.
 //
 // This file is part of YAS(https://github.com/niXman/yas) project.
@@ -33,90 +33,85 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef __yas__types__utility__buffer_hpp
-#define __yas__types__utility__buffer_hpp
+#ifndef __yas__types__utility__array_hpp
+#define __yas__types__utility__array_hpp
 
 #include <yas/detail/type_traits/type_traits.hpp>
 #include <yas/detail/type_traits/serializer.hpp>
-#include <yas/detail/tools/base64.hpp>
 #include <yas/detail/io/serialization_exceptions.hpp>
 
-#include <yas/buffers.hpp>
+#include <yas/tools/array.hpp>
 
 namespace yas {
 namespace detail {
 
 /***************************************************************************/
 
-template<std::size_t F>
+template<std::size_t F, typename T>
 struct serializer<
     type_prop::not_a_fundamental,
     ser_case::use_internal_serializer,
     F,
-    intrusive_buffer
+    save_array_wrapper<T>
 > {
     template<typename Archive>
-    static Archive& save(Archive& ar, const intrusive_buffer& buf) {
+    static Archive& save(Archive &ar, const save_array_wrapper<T> &arr) {
+        auto beg = arr.ptr;
+        const auto end = beg + arr.size;
         __YAS_CONSTEXPR_IF( F & yas::json ) {
-            if ( !buf.size ) {
-                static const char arr[] = "{\"size\":0,\"data\":null}";
-                ar.write(arr, sizeof(arr)-1);
-            } else {
+            if ( arr.size ) {
                 static const char size_[] = "{\"size\":";
                 ar.write(size_, sizeof(size_)-1);
-                const auto size = modp_b64_encode_strlen(buf.size);
-                ar.write(size);
-                static const char mid_[] = ",\"data\":\"";
+                ar.write(arr.size);
+                static const char mid_[] = ",\"data\":[";
                 ar.write(mid_, sizeof(mid_)-1);
-                modp_b64_encode(ar, buf.data, buf.size);
-                static const char end_[] = "\"}";
+                ar & (*beg);
+                for ( ++beg; beg != end; ++beg ) {
+                    ar.write(",", 1);
+                    ar & (*beg);
+                }
+                static const char end_[] = "]}";
                 ar.write(end_, sizeof(end_)-1);
+            } else {
+                static const char _empty[] = "{\"size\":0,\"data\":[]}";
+                ar.write(_empty, sizeof(_empty)-1);
             }
         } else {
-            ar.write_seq_size(buf.size);
-            ar.write(buf.data, buf.size);
+            ar.write_seq_size(arr.size);
+            __YAS_CONSTEXPR_IF ( can_be_processed_as_byte_array<F, T>::value ) {
+                ar.write(beg, sizeof(T) * arr.size);
+            } else {
+                for ( ; beg != end; ++beg ) {
+                    ar & (*beg);
+                }
+            }
         }
 
         return ar;
     }
-    
+
     template<typename Archive>
-    static Archive& load(Archive& ar, intrusive_buffer &ibuf) {
-        if ( ibuf.data == nullptr || ibuf.size == 0 ) {
-            __YAS_THROW_WRONG_SIZE_ON_DESERIALIZE(yas::intrusive_buffer);
-        }
-
-        shared_buffer sbuf;
-        ar & sbuf;
-        if ( sbuf.size != ibuf.size ) {
-            __YAS_THROW_WRONG_SIZE_ON_DESERIALIZE(yas::intrusive_buffer);
-        }
-
-        std::memcpy(__YAS_CCAST(char *, ibuf.data), sbuf.data.get(), sbuf.size);
-
+    static Archive& load(Archive &ar, save_array_wrapper<T> &/*arr*/) {
         return ar;
     }
 };
 
 /***************************************************************************/
 
-template<std::size_t F>
+template<std::size_t F, typename T>
 struct serializer<
     type_prop::not_a_fundamental,
     ser_case::use_internal_serializer,
     F,
-    shared_buffer
+    load_array_wrapper<T>
 > {
     template<typename Archive>
-    static Archive& save(Archive& ar, const shared_buffer &buf) {
-        intrusive_buffer ibuf{buf.data.get(), buf.size};
-        ar & ibuf;
-
+    static Archive& save(Archive &ar, const load_array_wrapper<T> &/*arr*/) {
         return ar;
     }
 
     template<typename Archive>
-    static Archive& load(Archive& ar, shared_buffer &buf) {
+    static Archive& load(Archive &ar, load_array_wrapper<T> &arr) {
         __YAS_CONSTEXPR_IF ( F & yas::json ) {
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
@@ -130,8 +125,6 @@ struct serializer<
             std::size_t size{};
             ar.read(size);
 
-            buf.resize(size);
-
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
             }
@@ -142,31 +135,82 @@ struct serializer<
                 json_skipws(ar);
             }
 
-            if ( size == 0 ) {
+            if ( size ) {
+                (*arr.ptr) = (arr.alloc_fnptr)(size);
+                __YAS_THROW_CANT_ALLOCATE_MEMORY(*arr.ptr);
+                (*arr.size) = size;
+
                 __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "\"data\":");
 
                 __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                     json_skipws(ar);
                 }
 
-                __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "null");
+                __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "[");
+
+                auto *beg = (*arr.ptr);
+                auto *end = beg + (*arr.size);
+                for ( ; beg != end; ++beg ) {
+                    ar & (*beg);
+                    __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+                        json_skipws(ar);
+                    }
+
+                    const char ch2 = ar.peekch();
+                    if ( ch2 == ']' ) {
+                        break;
+                    } else {
+                        __YAS_THROW_IF_WRONG_JSON_CHARS(ar, ",");
+                    }
+
+                    __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+                        json_skipws(ar);
+                    }
+                }
+
+                __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+                    json_skipws(ar);
+                }
+
+                __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "]");
             } else {
-                __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "\"data\":\"");
+                (*arr.size) = 0u;
 
-                std::size_t declen = modp_b64_decode(buf.data.get(), ar, size);
-                buf.resize(declen);
+                __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "\"data\":");
 
-                __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "\"");
+                __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+                    json_skipws(ar);
+                }
+
+                __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "[");
+
+                __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
+                    json_skipws(ar);
+                }
+
+                __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "]");
             }
 
             __YAS_CONSTEXPR_IF ( !(F & yas::compacted) ) {
                 json_skipws(ar);
             }
+
             __YAS_THROW_IF_WRONG_JSON_CHARS(ar, "}");
         } else {
             const std::size_t size = ar.read_seq_size();
-            buf.resize(size);
-            ar.read(buf.data.get(), buf.size);
+            (*arr.ptr) = (arr.alloc_fnptr)(size);
+            __YAS_THROW_CANT_ALLOCATE_MEMORY(*arr.ptr);
+            (*arr.size) = size;
+
+            auto *beg = (*arr.ptr);
+            auto *end = beg + (*arr.size);
+            __YAS_CONSTEXPR_IF ( can_be_processed_as_byte_array<F, T>::value ) {
+                ar.read(beg, sizeof(T) * (*arr.size));
+            } else {
+                for ( ; beg != end; ++beg ) {
+                    ar & (*beg);
+                }
+            }
         }
 
         return ar;
@@ -175,7 +219,7 @@ struct serializer<
 
 /***************************************************************************/
 
-} // namespace detail
-} // namespace yas
+} // ns detail
+} // ns yas
 
-#endif // __yas__types__utility__buffer_hpp
+#endif // __yas__types__utility__array_hpp

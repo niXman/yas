@@ -119,8 +119,9 @@
 #include "include/serialization.hpp"
 #include "include/yas_object.hpp"
 #include "include/json_conformance.hpp"
-#include "include/wrap_asis.hpp"
-#include "include/wrap_init.hpp"
+#include "include/yas_asis.hpp"
+#include "include/yas_init.hpp"
+#include "include/yas_array.hpp"
 
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
 #include "include/boost_fusion_list.hpp"
@@ -348,7 +349,7 @@ void tests(std::ostream &log, int &p, int &e) {
     YAS_RUN_TEST(log, yas_object, p, e);
     YAS_RUN_TEST(log, base_object, p, e);
     YAS_RUN_TEST(log, archive_type, p, e);
-    YAS_RUN_TEST(log, array, p, e);
+    YAS_RUN_TEST(log, std_array, p, e);
     YAS_RUN_TEST(log, bitset, p, e);
     YAS_RUN_TEST(log, buffer, p, e);
     YAS_RUN_TEST(log, chrono, p, e)
@@ -373,8 +374,9 @@ void tests(std::ostream &log, int &p, int &e) {
     YAS_RUN_TEST(log, unordered_multiset, p, e);
     YAS_RUN_TEST(log, optional, p, e);
     YAS_RUN_TEST(log, variant, p, e);
-    YAS_RUN_TEST(log, wrap_asis, p, e);
-    YAS_RUN_TEST(log, wrap_init, p, e);
+    YAS_RUN_TEST(log, yas_asis, p, e);
+    YAS_RUN_TEST(log, yas_init, p, e);
+    YAS_RUN_TEST(log, yas_array, p, e);
 #if defined(YAS_SERIALIZE_BOOST_TYPES)
     YAS_RUN_TEST(log, boost_fusion_pair, p, e);
     YAS_RUN_TEST(log, boost_fusion_tuple, p, e);
@@ -504,7 +506,13 @@ struct options {
 
 /***************************************************************************/
 
-int main(int, char **argv) {
+int main(int argc, char **argv) {
+    if ( argc == 1 ) {
+        std::cerr << "command line error!" << std::endl;
+
+        return EXIT_FAILURE;
+    }
+
     options opts(argv);
     if ( !opts.msg.empty() ) {
         std::cerr << "command line parse error: " << opts.msg << std::endl;

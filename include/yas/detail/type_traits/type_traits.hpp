@@ -264,7 +264,7 @@ struct is_serializable : std::false_type {};
 template<typename Ar, typename T>
 struct is_serializable<Ar, T, detail::void_t<decltype(
     detail::serializer<
-        detail::type_properties<T>::value
+         detail::type_properties<T>::value
         ,detail::serialization_method<T, Ar>::value
         ,Ar::flags()
         ,T

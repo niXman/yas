@@ -69,11 +69,11 @@ Archive& save_chars(Archive &ar, const T *beg, const T *end, __YAS_DISABLE_IF_IS
 
 template<std::size_t N, std::size_t F, typename Archive, typename T>
 Archive& save(Archive &ar, const T *beg, const T *end) {
-    if ( F & yas::json ) {
+    __YAS_CONSTEXPR_IF ( F & yas::json ) {
         return save_chars<N, F>(ar, beg, end);
     } else {
         ar.write_seq_size(N);
-        if ( can_be_processed_as_byte_array<F, T>::value ) {
+        __YAS_CONSTEXPR_IF ( can_be_processed_as_byte_array<F, T>::value ) {
             ar.write(beg, sizeof(T) * N);
         } else {
             for ( ; beg != end; ++beg ) {
@@ -141,14 +141,14 @@ Archive& load_chars(Archive &ar, T *beg, T *end, __YAS_DISABLE_IF_IS_ANY_OF(T, c
 
 template<std::size_t N, std::size_t F, typename Archive, typename T>
 Archive& load(Archive &ar, T *beg, T *end) {
-    if ( F & yas::json ) {
+    __YAS_CONSTEXPR_IF ( F & yas::json ) {
         return load_chars<N, F>(ar, beg, end);
     } else {
         const auto size = ar.read_seq_size();
         if ( size != N ) {
             __YAS_THROW_WRONG_ARRAY_SIZE();
         }
-        if ( can_be_processed_as_byte_array<F, T>::value ) {
+        __YAS_CONSTEXPR_IF ( can_be_processed_as_byte_array<F, T>::value ) {
             ar.read(beg, sizeof(T) * N);
         } else {
             for ( ; beg != end; ++beg ) {

@@ -54,6 +54,7 @@
 #include <yas/types/utility/object.hpp>
 #include <yas/types/utility/asis.hpp>
 #include <yas/types/utility/init.hpp>
+#include <yas/types/utility/array.hpp>
 
 #include <yas/buffers.hpp>
 #include <yas/object.hpp>

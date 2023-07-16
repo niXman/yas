@@ -87,6 +87,17 @@ struct no_json_key_exception: serialization_exception {
 
 /***************************************************************************/
 
+struct cant_allocate_memory_exception: serialization_exception {
+    using serialization_exception::serialization_exception;
+};
+
+#define __YAS_THROW_CANT_ALLOCATE_MEMORY(cond) \
+    if ( !(cond) ) { \
+        __YAS_THROW_EXCEPTION(::yas::cant_allocate_memory_exception, "can't allocate memory"); \
+    }
+
+/***************************************************************************/
+
 } // ns yas
 
 #endif // __yas__detail__io__serialization_exceptions_hpp

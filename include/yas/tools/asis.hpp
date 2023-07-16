@@ -33,8 +33,8 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef __yas__tools__wrap_init_hpp
-#define __yas__tools__wrap_init_hpp
+#ifndef __yas__tools__asis_hpp
+#define __yas__tools__asis_hpp
 
 #include <yas/detail/type_traits/type_traits.hpp>
 
@@ -43,7 +43,7 @@ namespace yas {
 /***************************************************************************/
 
 template<typename T>
-struct init_wrapper {
+struct asis_wrapper {
     template<typename VT>
     struct real_value_type {
         using type = typename std::conditional<
@@ -58,20 +58,20 @@ struct init_wrapper {
     };
     using value_type = typename real_value_type<T>::type;
 
-    init_wrapper(const init_wrapper &) = delete;
-    init_wrapper& operator=(const init_wrapper &) = delete;
-    constexpr init_wrapper(T &&v) noexcept
-        :val(std::forward<T>(v))
+    asis_wrapper(const asis_wrapper &) = delete;
+    asis_wrapper& operator=(const asis_wrapper &) = delete;
+    constexpr asis_wrapper(T &&v) noexcept
+        :val{std::forward<T>(v)}
     {}
-    constexpr init_wrapper(init_wrapper &&r) noexcept
-        :val(std::forward<value_type>(r.val))
+    constexpr asis_wrapper(asis_wrapper &&r) noexcept
+        :val{std::forward<value_type>(r.val)}
     {}
 
     value_type val;
 };
 
 template<typename T>
-init_wrapper<T> init(T &&val) {
+asis_wrapper<T> asis(T &&val) {
     return {std::forward<T>(val)};
 }
 
@@ -79,4 +79,4 @@ init_wrapper<T> init(T &&val) {
 
 } // namespace yas
 
-#endif // __yas__tools__wrap_init_hpp
+#endif // __yas__tools__asis_hpp

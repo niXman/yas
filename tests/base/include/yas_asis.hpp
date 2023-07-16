@@ -33,50 +33,49 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#ifndef __yas__tools__wrap_asis_hpp
-#define __yas__tools__wrap_asis_hpp
-
-#include <yas/detail/type_traits/type_traits.hpp>
-
-namespace yas {
+#ifndef __yas__tests__base__include__yas_asis_hpp
+#define __yas__tests__base__include__yas_asis_hpp
 
 /***************************************************************************/
 
-template<typename T>
-struct asis_wrapper {
-    template<typename VT>
-    struct real_value_type {
-        using type = typename std::conditional<
-             std::is_array<typename std::remove_reference<VT>::type>::value
-            ,typename std::remove_cv<VT>::type
-            ,typename std::conditional<
-                 std::is_lvalue_reference<VT>::value
-                ,VT
-                ,typename std::decay<VT>::type
-            >::type
-        >::type;
-    };
-    using value_type = typename real_value_type<T>::type;
+template<typename archive_traits>
+bool yas_asis_test(std::ostream &log, const char *archive_type, const char *test_name) {
+    if ( yas::is_binary_archive<typename archive_traits::oarchive_type>::value &&
+         archive_traits::oarchive_type::flags() & yas::compacted )
+    {
+        std::uint8_t i8 = 1, i8i;
+        std::uint32_t i32 = 1, i32i;
 
-    asis_wrapper(const asis_wrapper &) = delete;
-    asis_wrapper& operator=(const asis_wrapper &) = delete;
-    constexpr asis_wrapper(T &&v) noexcept
-        :val{std::forward<T>(v)}
-    {}
-    constexpr asis_wrapper(asis_wrapper &&r) noexcept
-        :val{std::forward<value_type>(r.val)}
-    {}
+        typename archive_traits::oarchive oa;
+        archive_traits::ocreate(oa, archive_type);
+        oa & YAS_OBJECT_NVP("obj", ("i8", i8), ("i32", yas::asis(i32)));
 
-    value_type val;
-};
+        std::uint8_t arr_le[] = {0x79, 0x61, 0x73, 0x30, 0x31, 0x31, 0x37, 0x01, 0x01, 0x00, 0x00, 0x00};
+        std::uint8_t arr_be[] = {0}; // TODO:
+        const std::uint8_t *ptr  = oa.is_little_endian() ? arr_le : arr_be;
+        const std::size_t   size = oa.is_little_endian() ? sizeof(arr_le) : sizeof(arr_be);
+        if ( oa.size() != size ) {
+            YAS_TEST_REPORT(log, archive_type, test_name);
+            return false;
+        }
+        if ( !oa.compare(ptr, size) ) {
+            YAS_TEST_REPORT(log, archive_type, test_name);
+            return false;
+        }
 
-template<typename T>
-asis_wrapper<T> asis(T &&val) {
-    return {std::forward<T>(val)};
+        typename archive_traits::iarchive ia;
+        archive_traits::icreate(ia, oa, archive_type);
+        ia & YAS_OBJECT_NVP("obj", ("i8", i8i), ("i32", yas::asis(i32i)));
+
+        if ( i8 != i8i || i32 != i32i ) {
+            YAS_TEST_REPORT(log, archive_type, test_name);
+            return false;
+        }
+    }
+
+    return true;
 }
 
 /***************************************************************************/
 
-} // namespace yas
-
-#endif // __yas__tools__wrap_asis_hpp
+#endif // __yas__tests__base__include__yas_asis_hpp
