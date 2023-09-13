@@ -214,8 +214,7 @@ template<typename Archive>
 static int string_get_codepoint(Archive &ar)  {
     int codepoint = 0;
 
-    char ch0;
-    ar.read(ch0);
+    char ch0 = ar.getch();
     switch ( ch0 ) {
         case '0': break;
         case '1': codepoint += 0x1000; break;
@@ -242,8 +241,7 @@ static int string_get_codepoint(Archive &ar)  {
         default: return -1;
     }
 
-    char ch1;
-    ar.read(ch1);
+    char ch1 = ar.getch();
     switch ( ch1 ) {
         case '0': break;
         case '1': codepoint += 0x0100; break;
@@ -270,8 +268,7 @@ static int string_get_codepoint(Archive &ar)  {
         default: return -1;
     }
 
-    char ch2;
-    ar.read(ch2);
+    char ch2 = ar.getch();
     switch ( ch2 ) {
         case '0': break;
         case '1': codepoint += 0x0010; break;
@@ -298,8 +295,7 @@ static int string_get_codepoint(Archive &ar)  {
         default: return -1;
     }
 
-    char ch3;
-    ar.read(ch3);
+    char ch3 = ar.getch();
     switch ( ch3 ) {
         case '0': break;
         case '1': codepoint += 0x0001; break;
