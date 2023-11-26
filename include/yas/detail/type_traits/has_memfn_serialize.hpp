@@ -43,174 +43,36 @@ namespace detail {
 
 /***************************************************************************/
 
-template <typename>
-struct void_exp_result {};
+template<typename ...T>
+using void_t = void;
 
-template <typename T, typename U>
-U const& operator,(U const&, void_exp_result<T>);
-
-template <typename T, typename U>
-U& operator,(U&, void_exp_result<T>);
-
-template <typename T1, typename T2>
-struct clone_constness {
-	typedef T2 type;
-};
-
-template <typename T1, typename T2>
-struct clone_constness<const T1, T2> {
-	typedef const T2 type;
-};
-
-/***************************************************************************/
-
-template<typename T>
-struct has_memfn {
-private:
-	class yes { char m; };
-	class no { yes m[2]; };
-
-	struct base_mixin {
-		void serialize() {}
-	};
-
-	struct base: T, base_mixin {};
-
-	template<typename Tt, Tt t>
-	class Helper {};
-
-	template<typename U>
-	static no deduce(const U&, Helper<void(base_mixin::*)(), &U::serialize>* = 0);
-	static yes deduce(...);
-
-public:
-	enum { value = sizeof(yes) == sizeof(deduce(std::declval<base>())) };
-};
-
-/***************************************************************************/
-
-template<bool is_fundamental, bool is_enum, typename Ar, typename T>
+template<bool is_fundamental, bool is_enum, typename Ar, typename T, typename = void>
 struct has_memfn_serializer: std::false_type {};
 
 template<typename Ar, typename T>
-struct has_memfn_serializer<false, false, Ar, T> {
-private:
-	class yes {};
-	class no { yes m[2]; };
-
-	struct derived: T {
-		using T::serialize;
-		no serialize(...) const;
-	};
-
-	using derived_type = typename detail::clone_constness<T, derived>::type;
-
-	template <typename U, typename due_type>
-	struct return_value_check {
-		static yes deduce(due_type);
-		static no deduce(...);
-		static no deduce(no);
-		static no deduce(detail::void_exp_result<T>);
-	};
-
-	template <typename U>
-	struct return_value_check<U, void> {
-		static yes deduce(...);
-		static no deduce(no);
-	};
-
-	template <bool has, typename>
-	struct impl {
-		enum { value = false };
-	};
-
-	template <typename UAr>
-	struct impl<true, UAr> {
-		enum {
-			value = sizeof(return_value_check<T, void>::deduce((
-				std::declval<derived_type>().serialize(std::declval<UAr>()), detail::void_exp_result<T>()
-			))) == sizeof(yes)
-		};
-	};
-
-public:
-	static const bool value = impl<detail::has_memfn<T>::value, void(Ar)>::value;
-};
+struct has_memfn_serializer<
+  false,
+  false,
+  Ar,
+  T,
+  // Ignore the `T::serialize()` method return type
+  void_t<decltype(std::declval<T>().serialize(std::declval<void(Ar)>()))>
+> : std::true_type { };
 
 /***************************************************************************/
 
-template<typename T>
-struct has_const_memfn {
-private:
-	class yes { char m; };
-	class no { yes m[2]; };
-
-	struct base_mixin {
-		void serialize() {}
-	};
-
-	struct base: T, base_mixin {};
-
-	template<typename Tt, Tt t>
-	class Helper {};
-
-	template<typename U>
-	static no deduce(const U&, Helper<void(base_mixin::*)(), &U::serialize>* = 0);
-	static yes deduce(...);
-
-public:
-	enum { value = sizeof(yes) == sizeof(deduce(std::declval<base>())) };
-};
-
-/***************************************************************************/
-
-template<bool is_fundamental, bool is_enum, typename Ar, typename T>
+template<bool is_fundamental, bool is_enum, typename Ar, typename T, typename = void>
 struct has_const_memfn_serializer: std::false_type {};
 
 template<typename Ar, typename T>
-struct has_const_memfn_serializer<false, false, Ar, T> {
-private:
-	class yes {};
-	class no { yes m[2]; };
-
-	struct derived: T {
-		using T::serialize;
-		no serialize(...) const;
-	};
-
-	using derived_type = typename detail::clone_constness<T, derived>::type;
-
-	template <typename U, typename due_type>
-	struct return_value_check {
-		static yes deduce(due_type);
-		static no deduce(...);
-		static no deduce(no);
-		static no deduce(detail::void_exp_result<T>);
-	};
-
-	template <typename U>
-	struct return_value_check<U, void> {
-		static yes deduce(...);
-		static no deduce(no);
-	};
-
-	template <bool has, typename>
-	struct impl {
-		enum { value = false };
-	};
-
-	template <typename UAr>
-	struct impl<true, UAr> {
-		enum {
-			value = sizeof(return_value_check<T, void>::deduce((
-			    std::declval<const derived_type>().serialize(std::declval<UAr>()), detail::void_exp_result<T>()
-			))) == sizeof(yes)
-		};
-	};
-
-public:
-	static const bool value = impl<detail::has_const_memfn<T>::value, void(Ar)>::value;
-};
+struct has_const_memfn_serializer<
+  false,
+  false,
+  Ar,
+  T,
+  // Ignore the `T::serialize() const` method return type
+  void_t<decltype(std::declval<const T>().serialize(std::declval<void(Ar)>()))>
+> : std::true_type { };
 
 /***************************************************************************/
 
