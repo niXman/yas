@@ -49,7 +49,7 @@
 
 /***************************************************************************/
 
-struct canada_t {
+struct canada_t final {
     canada_t() = default;
 
     std::string type;
