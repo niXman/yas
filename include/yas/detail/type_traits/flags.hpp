@@ -57,15 +57,15 @@ enum options: std::uint32_t {
 };
 
 template<typename Ar>
-struct is_binary_archive: std::integral_constant<bool, Ar::type() == options::binary>
+struct is_binary_archive: std::integral_constant<bool, Ar::flags() & yas::options::binary>
 {};
 
 template<typename Ar>
-struct is_text_archive: std::integral_constant<bool, Ar::type() == options::text>
+struct is_text_archive: std::integral_constant<bool,  Ar::flags()& yas::options::text>
 {};
 
 template<typename Ar>
-struct is_json_archive: std::integral_constant<bool, Ar::type() == options::json>
+struct is_json_archive: std::integral_constant<bool, Ar::flags()& yas::options::json>
 {};
 
 template<typename Ar>
