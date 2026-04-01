@@ -115,10 +115,10 @@ struct shared_buffer {
         size = new_size;
     }
 
-    void assign(const void *ptr, std::size_t size) {
-        resize(size);
-        if ( size ) {
-            std::memcpy(data.get(), ptr, size);
+    void assign(const void *ptr, std::size_t len) {
+        resize(len);
+        if ( len ) {
+            std::memcpy(data.get(), ptr, len);
         }
     }
 
